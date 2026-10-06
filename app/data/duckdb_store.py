@@ -28,13 +28,17 @@ class DataStore:
         return name
 
     def load_file(self, path: str | Path) -> list[str]:
+        from app.data.excel_loader import load_excel
         p = Path(path)
         if p.suffix.lower() == ".csv":
             return [self.load_dataframe(p.stem, pd.read_csv(p))]
-        if p.suffix.lower() in {".xlsx", ".xlsm"}:
-            sheets = pd.read_excel(p, sheet_name=None)  # Sprint 2 : Excel difficile
-            return [self.load_dataframe(f"{p.stem}_{s}" if len(sheets) > 1 else p.stem, d)
-                    for s, d in sheets.items()]
+        if p.suffix.lower() in {".xlsx", ".xlsm", ".xls"}:
+            sheets = load_excel(p)
+            stem = p.stem
+            return [
+                self.load_dataframe(f"{stem}_{s}" if len(sheets) > 1 else stem, df)
+                for s, df in sheets.items()
+            ]
         raise ValueError(f"Format non supporté : {p.suffix}")
 
     def schema_description(self) -> str:
