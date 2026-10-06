@@ -1,0 +1,28 @@
+id: finance_v1
+title: "Tableau de bord Finance"
+description: "Marge brute, chiffre d'affaires et taux de retour"
+tiles:
+  - id: kpi_marge
+    type: kpi
+    title: "Marge brute totale"
+    metric: "marge brute"
+  - id: kpi_ca
+    type: kpi
+    title: "Chiffre d'affaires total"
+    metric: "chiffre d'affaires"
+  - id: bar_retour
+    type: bar
+    title: "Taux de retour par catégorie"
+    metric: "taux de retour"
+    dimensions:
+      - categorie_produit
+  - id: line_ca_temps
+    type: line
+    title: "Évolution du CA dans le temps"
+    metric: "chiffre d'affaires"
+    dimensions:
+      - date_vente
+theme:
+  primary_color: "#e74c3c"
+  font: sans-serif
+  logo_url: ""

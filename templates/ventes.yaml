@@ -1,0 +1,28 @@
+id: ventes_v1
+title: "Tableau de bord Ventes"
+description: "Métriques clés des ventes par région et canal"
+tiles:
+  - id: kpi_ca
+    type: kpi
+    title: "Chiffre d'affaires total"
+    metric: "chiffre d'affaires"
+  - id: bar_region
+    type: bar
+    title: "CA par région"
+    metric: "chiffre d'affaires"
+    dimensions:
+      - region
+  - id: bar_canal
+    type: bar
+    title: "CA par canal"
+    metric: "chiffre d'affaires"
+    dimensions:
+      - canal
+  - id: kpi_panier
+    type: kpi
+    title: "Panier moyen"
+    metric: "panier moyen"
+theme:
+  primary_color: "#2ecc71"
+  font: sans-serif
+  logo_url: ""

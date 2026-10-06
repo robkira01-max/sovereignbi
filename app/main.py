@@ -8,9 +8,11 @@ from app.data.duckdb_store import DataStore
 from app.llm.ollama_client import OllamaClient
 from app.pipeline.graph import build_graph, load_semantic
 from app.routers.admin import router as admin_router
+from app.routers.dashboards import router as dashboards_router
 
 app = FastAPI(title="SovereignBI", version="0.1.0")
 app.include_router(admin_router)
+app.include_router(dashboards_router)
 store = DataStore()
 _graph = None
 

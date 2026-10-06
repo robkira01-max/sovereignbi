@@ -11,3 +11,5 @@ build/
 .ruff_cache/
 *.db
 *.duckdb
+data/*.jsonl
+data/dashboards/

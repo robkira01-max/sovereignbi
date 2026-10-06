@@ -19,6 +19,8 @@ dependencies = [
   "qdrant-client>=1.9",      # store vectoriel in-memory (Apache 2.0)
   "scikit-learn>=1.4",       # TF-IDF fallback embedder (BSD)
   "sentence-transformers>=3.0", # BGE-M3 embedder (Apache 2.0)
+  "streamlit>=1.35",           # UI web (Apache 2.0)
+  "plotly>=5.0",               # graphiques (MIT)
 ]
 
 [project.optional-dependencies]

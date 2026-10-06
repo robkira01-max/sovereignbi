@@ -19,6 +19,8 @@
 | qdrant-client | 1.9 | Apache 2.0 | Store vectoriel in-memory (schema linking) |
 | scikit-learn | 1.4 | BSD | TF-IDF fallback embedder (sans réseau) |
 | sentence-transformers | 3.0 | Apache 2.0 | BGE-M3 embedder (chargement lazy, production) |
+| streamlit | 1.35 | Apache 2.0 | Interface utilisateur web |
+| plotly | 5.0 | MIT | Graphiques interactifs (Streamlit UI) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
 
 ## Modèles LLM (runtime — choix par l'administrateur)

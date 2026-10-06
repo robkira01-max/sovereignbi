@@ -1,0 +1,30 @@
+id: operations_v1
+title: "Tableau de bord Opérations"
+description: "Commandes, livraisons et performance des vendeurs"
+tiles:
+  - id: kpi_commandes
+    type: kpi
+    title: "Nombre de commandes"
+    metric: "nombre de commandes"
+  - id: bar_vendeur
+    type: bar
+    title: "CA par vendeur"
+    metric: "chiffre d'affaires"
+    dimensions:
+      - id_vendeur
+  - id: table_livraisons
+    type: table
+    title: "Statuts de livraison"
+    metric: "nombre de commandes"
+    dimensions:
+      - statut_livraison
+  - id: bar_mode_paiement
+    type: bar
+    title: "Répartition par mode de paiement"
+    metric: "nombre de commandes"
+    dimensions:
+      - mode_paiement
+theme:
+  primary_color: "#9b59b6"
+  font: sans-serif
+  logo_url: ""
