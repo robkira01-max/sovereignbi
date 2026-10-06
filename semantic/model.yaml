@@ -1,0 +1,9 @@
+# Modèle sémantique : vocabulaire métier -> tables/colonnes. Édité par un admin, versionné dans git.
+glossary:
+  - terme: "chiffre d'affaires"
+    definition: "SUM(montant) sur la table ventes"
+  - terme: "panier moyen"
+    definition: "SUM(montant) / COUNT(DISTINCT commande_id)"
+rules:
+  - "Les montants sont en dollars canadiens."
+  - "Pour une période, utiliser la colonne date_vente."

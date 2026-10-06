@@ -1,0 +1,6 @@
+{"question": "Quel est le chiffre d'affaires total ?", "gold_sql": "SELECT SUM(montant) FROM ventes"}
+{"question": "Combien de commandes y a-t-il par région ?", "gold_sql": "SELECT region, COUNT(DISTINCT commande_id) FROM ventes GROUP BY region ORDER BY region"}
+{"question": "Quel produit génère le plus de chiffre d'affaires ?", "gold_sql": "SELECT produit FROM ventes GROUP BY produit ORDER BY SUM(montant) DESC LIMIT 1"}
+{"question": "Quel est le panier moyen ?", "gold_sql": "SELECT SUM(montant) / COUNT(DISTINCT commande_id) FROM ventes"}
+{"question": "Quelle quantité de chaises a été vendue en Ontario ?", "gold_sql": "SELECT SUM(quantite) FROM ventes WHERE produit = 'Chaise' AND region = 'Ontario'"}
+{"question": "Quel est le chiffre d'affaires de mars 2026 ?", "gold_sql": "SELECT SUM(montant) FROM ventes WHERE date_vente >= '2026-03-01' AND date_vente < '2026-04-01'"}

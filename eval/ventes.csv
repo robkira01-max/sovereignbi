@@ -1,0 +1,9 @@
+commande_id,date_vente,region,produit,quantite,montant
+1,2026-01-05,Ontario,Chaise,2,200.0
+2,2026-01-09,Québec,Table,1,450.0
+3,2026-02-14,Ontario,Table,2,900.0
+4,2026-02-20,Québec,Chaise,4,400.0
+5,2026-03-03,Alberta,Lampe,3,150.0
+6,2026-03-11,Ontario,Lampe,5,250.0
+7,2026-03-18,Alberta,Chaise,1,100.0
+8,2026-04-02,Québec,Lampe,2,100.0

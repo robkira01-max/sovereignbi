@@ -1,0 +1,27 @@
+[project]
+name = "sovereignbi"
+version = "0.1.0"
+description = "BI conversationnelle souveraine, 100 % locale"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",          # API HTTP (MIT)
+  "uvicorn[standard]>=0.30", # serveur ASGI (BSD)
+  "python-multipart>=0.0.9", # upload de fichiers
+  "httpx>=0.27",             # client HTTP vers Ollama local (BSD)
+  "duckdb>=1.0",             # moteur SQL embarqué (MIT)
+  "pandas>=2.2",             # lecture Excel/CSV (BSD)
+  "openpyxl>=3.1",           # lecture .xlsx (MIT)
+  "sqlglot>=25.0",           # parsing/validation SQL (MIT)
+  "langgraph>=0.2",          # orchestration du pipeline (MIT)
+  "pyyaml>=6.0",             # modèle sémantique
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.setuptools]
+packages = ["app"]
