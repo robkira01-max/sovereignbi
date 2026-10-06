@@ -16,6 +16,9 @@
 | pyyaml | 6.0 | MIT | Modèle sémantique YAML |
 | xlrd | 2.0 | BSD | Lecture .xls legacy |
 | psycopg2-binary | 2.9 | LGPL v3 | Connecteur PostgreSQL — usage dynamique uniquement (driver), non embarqué dans le produit livré. Acceptable pour les règles du projet. |
+| qdrant-client | 1.9 | Apache 2.0 | Store vectoriel in-memory (schema linking) |
+| scikit-learn | 1.4 | BSD | TF-IDF fallback embedder (sans réseau) |
+| sentence-transformers | 3.0 | Apache 2.0 | BGE-M3 embedder (chargement lazy, production) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
 
 ## Modèles LLM (runtime — choix par l'administrateur)

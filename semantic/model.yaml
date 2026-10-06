@@ -1,9 +1,134 @@
-# Modèle sémantique : vocabulaire métier -> tables/colonnes. Édité par un admin, versionné dans git.
+schema_version: "2"
+
+metrics:
+  - name: "chiffre d'affaires"
+    aliases: ["CA", "revenu", "chiffre d affaires"]
+    sql: "SUM(montant_ht)"
+    tables: ["ventes_detail"]
+    description: "Somme des montants hors taxes de toutes les lignes de vente"
+  - name: "panier moyen"
+    aliases: ["valeur moyenne par commande"]
+    sql: "SUM(montant_ht) / COUNT(DISTINCT id_commande)"
+    tables: ["ventes_detail"]
+    description: "Montant moyen par commande"
+  - name: "nombre de commandes"
+    aliases: ["volume de commandes"]
+    sql: "COUNT(DISTINCT id_commande)"
+    tables: ["ventes_detail"]
+    description: "Nombre de commandes distinctes"
+  - name: "taux de retour"
+    aliases: []
+    sql: "COUNT(*) FILTER (WHERE statut = 'retourne') * 1.0 / NULLIF(COUNT(*), 0)"
+    tables: ["ventes_detail"]
+    description: "Part des ventes retournées"
+  - name: "marge brute"
+    aliases: ["marge"]
+    sql: "SUM(montant_ht - quantite * p.cout_unitaire)"
+    tables: ["ventes_detail", "produits"]
+    description: "Marge brute totale après déduction des coûts d'achat"
+    join_required: true
+
+tables:
+  - name: ventes_detail
+    description: "Table principale : une ligne par ligne de commande (article vendu)"
+    columns:
+      - {name: id_ligne, type: integer, description: "Identifiant unique de la ligne de vente"}
+      - {name: id_commande, type: varchar, description: "Identifiant de la commande parente"}
+      - {name: id_client, type: varchar, description: "Identifiant du client — jointure avec clients.id_client"}
+      - {name: id_vendeur, type: varchar, description: "Identifiant du vendeur — jointure avec employes.id_employe"}
+      - {name: date_vente, type: date, description: "Date de la vente — utiliser pour les filtres temporels"}
+      - {name: region, type: varchar, description: "Région canadienne : Ontario, Québec, BC, Alberta, Manitoba"}
+      - {name: canal, type: varchar, description: "Canal de vente : en_ligne, magasin, telephone"}
+      - {name: code_produit, type: varchar, description: "Code produit — jointure avec produits.code_produit"}
+      - {name: nom_produit, type: varchar, description: "Nom du produit vendu"}
+      - {name: categorie_produit, type: varchar, description: "Catégorie du produit vendu"}
+      - {name: quantite, type: integer, description: "Quantité d'unités vendues sur cette ligne"}
+      - {name: prix_unitaire_ht, type: float, description: "Prix unitaire hors taxes en CAD"}
+      - {name: taux_remise, type: float, description: "Taux de remise appliqué (0 à 0.3)"}
+      - {name: remise_montant, type: float, description: "Montant de la remise en CAD"}
+      - {name: montant_ht, type: float, description: "Montant HT de la ligne = quantite x prix_unitaire x (1 - taux_remise)"}
+      - {name: montant_ttc, type: float, description: "Montant TTC incluant la TVA (15%)"}
+      - {name: mode_paiement, type: varchar, description: "Mode de paiement : carte, virement, cheque, especes"}
+      - {name: statut, type: varchar, description: "Statut de la vente : confirme, retourne, annule, en_cours"}
+
+  - name: clients
+    description: "Référentiel clients"
+    columns:
+      - {name: id_client, type: varchar, description: "Identifiant unique du client"}
+      - {name: province, type: varchar, description: "Province canadienne du client"}
+      - {name: type_client, type: varchar, description: "Type : entreprise ou particulier"}
+      - {name: age, type: integer, description: "Âge du client particulier"}
+      - {name: genre, type: varchar, description: "Genre : M, F, NB"}
+      - {name: langue, type: varchar, description: "Langue : fr ou en"}
+      - {name: date_creation, type: date, description: "Date d'inscription du client"}
+
+  - name: produits
+    description: "Catalogue produits"
+    columns:
+      - {name: code_produit, type: varchar, description: "Identifiant unique du produit"}
+      - {name: nom_produit, type: varchar, description: "Nom du produit"}
+      - {name: categorie, type: varchar, description: "Catégorie du produit"}
+      - {name: prix_catalogue, type: float, description: "Prix de vente catalogue en CAD"}
+      - {name: cout_unitaire, type: float, description: "Coût d'achat unitaire — utiliser pour calculer la marge"}
+      - {name: poids_kg, type: float, description: "Poids du produit en kilogrammes"}
+      - {name: quantite_stock, type: integer, description: "Quantité en stock"}
+      - {name: actif, type: boolean, description: "Produit actif dans le catalogue"}
+
+  - name: commandes
+    description: "Entêtes de commandes avec informations de livraison"
+    columns:
+      - {name: id_commande, type: varchar, description: "Identifiant unique de la commande"}
+      - {name: id_client, type: varchar, description: "Client de la commande"}
+      - {name: date_commande, type: date, description: "Date de création de la commande"}
+      - {name: statut_livraison, type: varchar, description: "Statut : livre, en_transit, retourne, annule"}
+      - {name: transporteur, type: varchar, description: "Transporteur utilisé"}
+      - {name: cout_livraison, type: float, description: "Coût de livraison en CAD"}
+      - {name: date_livraison_prevue, type: date, description: "Date de livraison prévue"}
+      - {name: date_livraison_reelle, type: date, description: "Date de livraison réelle — NULL si non livré"}
+      - {name: delai_livraison_jours, type: integer, description: "Délai en jours entre commande et livraison"}
+
+  - name: employes
+    description: "Référentiel employés et vendeurs"
+    columns:
+      - {name: id_employe, type: varchar, description: "Identifiant — jointure avec ventes_detail.id_vendeur"}
+      - {name: nom, type: varchar, description: "Nom de l'employé"}
+      - {name: departement, type: varchar, description: "Département de l'employé"}
+      - {name: date_embauche, type: date, description: "Date d'embauche"}
+      - {name: salaire_annuel, type: float, description: "Salaire annuel en CAD"}
+      - {name: type_contrat, type: varchar, description: "Type de contrat : CDI, CDD, independant"}
+
+joins:
+  - from_table: ventes_detail
+    to_table: clients
+    condition: "ventes_detail.id_client = clients.id_client"
+    type: LEFT
+  - from_table: ventes_detail
+    to_table: produits
+    condition: "ventes_detail.code_produit = produits.code_produit"
+    type: LEFT
+  - from_table: ventes_detail
+    to_table: commandes
+    condition: "ventes_detail.id_commande = commandes.id_commande"
+    type: LEFT
+  - from_table: ventes_detail
+    to_table: employes
+    condition: "ventes_detail.id_vendeur = employes.id_employe"
+    type: LEFT
+
+rules:
+  - "Les montants sont toujours en dollars canadiens (CAD)."
+  - "Pour filtrer par période, utiliser la colonne date_vente de ventes_detail."
+  - "Le 'chiffre d'affaires' est toujours SUM(montant_ht), jamais montant_ttc."
+  - "Pour les jointures, toujours partir de ventes_detail comme table principale."
+  - "La TVA est de 15 % (montant_ttc = montant_ht x 1.15)."
+  - "Un client actif a la colonne actif = TRUE dans la table clients."
+  - "Les produits hors catalogue ont actif = FALSE."
+  - "Pour comparer les livraisons en retard : date_livraison_reelle > date_livraison_prevue."
+
 glossary:
   - terme: "chiffre d'affaires"
-    definition: "SUM(montant) sur la table ventes"
+    definition: "SUM(montant_ht) sur la table ventes_detail"
   - terme: "panier moyen"
-    definition: "SUM(montant) / COUNT(DISTINCT commande_id)"
-rules:
-  - "Les montants sont en dollars canadiens."
-  - "Pour une période, utiliser la colonne date_vente."
+    definition: "SUM(montant_ht) / COUNT(DISTINCT id_commande)"
+  - terme: "marge brute"
+    definition: "SUM(montant_ht - quantite * cout_unitaire) avec jointure produits"
