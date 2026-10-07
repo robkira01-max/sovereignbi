@@ -26,6 +26,7 @@ dependencies = [
   "pymssql>=2.3",              # connecteur SQL Server (FreeTDS/LGPL — driver dynamique)
   "pypdf>=4.0",                # extraction texte PDF (MIT)
   "python-docx>=1.1",          # extraction texte DOCX (MIT)
+  "structlog>=24.0",           # logs structurés (MIT/Apache 2.0)
 ]
 
 [project.optional-dependencies]

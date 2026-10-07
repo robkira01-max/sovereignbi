@@ -1,13 +1,21 @@
+import os
 import tempfile
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 
-from app.api.middleware import ApiVersionMiddleware
+from app.api.middleware import (
+    ApiVersionMiddleware,
+    RateLimitMiddleware,
+    SecurityHeadersMiddleware,
+)
 from app.api.v1.router import router as v1_router
+from app.startup import log_startup_warnings, validate_env
 from app.cache.query_cache import QueryCache
 from app.data.duckdb_store import DataStore
 from app.llm.ollama_client import OllamaClient
@@ -37,6 +45,22 @@ from app.monitoring.metrics import (
     uploads_total,
 )
 from app.security.rbac import RequireRole
+from app.security.audit import audit_configuration, log_audit_results
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    warnings = validate_env()
+    log_startup_warnings(warnings)
+    findings = audit_configuration()
+    log_audit_results(findings)
+    yield
+
+
+def _cors_origins() -> list[str]:
+    raw = os.environ.get("SOVEREIGN_CORS_ORIGINS", "http://localhost:8000")
+    return [o.strip() for o in raw.split(",") if o.strip()]
+
 
 app = FastAPI(
     title="SovereignBI",
@@ -53,8 +77,20 @@ app = FastAPI(
         {"name": "orgs", "description": "Multi-tenant — gestion des organisations"},
         {"name": "cache", "description": "Statistiques et invalidation du cache requêtes"},
     ],
+    lifespan=lifespan,
 )
+
+# Middleware stack (applied in reverse order — last added = outermost)
 app.add_middleware(ApiVersionMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins(),
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["X-Api-Key", "Content-Type", "Accept"],
+)
 app.include_router(v1_router)
 app.include_router(admin_router)
 app.include_router(dashboards_router)
