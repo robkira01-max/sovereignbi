@@ -12,6 +12,9 @@ build/
 *.db
 *.duckdb
 data/*.jsonl
+data/alert_notifications.jsonl
+data/alert_webhook.json
+data/alert_history.jsonl
 data/dashboards/
 data/semantic_versions/
 data/wizard_sessions.jsonl
