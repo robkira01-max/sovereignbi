@@ -8,12 +8,14 @@ from app.data.duckdb_store import DataStore
 from app.llm.ollama_client import OllamaClient
 from app.pipeline.graph import build_graph, load_semantic
 from app.rag.doc_store import DocStore
+from app.multitenancy.org import OrgRegistry
 from app.routers.admin import router as admin_router
 from app.routers.connectors import router as connectors_router
 from app.routers.dashboards import router as dashboards_router
 from app.routers.docs_rag import router as docs_router
 from app.routers.embed import router as embed_router
 from app.routers.export import router as export_router
+from app.routers.orgs import router as orgs_router
 from app.routers.wizard import router as wizard_router
 from app.security.rbac import RequireRole
 
@@ -25,13 +27,16 @@ app.include_router(connectors_router)
 app.include_router(docs_router)
 app.include_router(wizard_router)
 app.include_router(embed_router)
+app.include_router(orgs_router)
 
 store = DataStore()
 doc_store = DocStore()
+org_registry = OrgRegistry()
 _graph = None
 
 app.state.store = store
 app.state.doc_store = doc_store
+app.state.org_registry = org_registry
 
 
 def get_graph():
