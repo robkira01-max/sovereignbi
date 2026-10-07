@@ -45,13 +45,22 @@ def extract_sql(text: str) -> str:
     return (m.group(1) if m else text).strip().rstrip(";")
 
 
-def build_graph(llm: LLM, store: DataStore, semantic: str = "", linker=None):
+def build_graph(llm: LLM, store: DataStore, semantic: str = "", linker=None, retriever=None):
     def generate_sql(state: State) -> State:
         if linker is not None:
             context = linker.get_relevant_context(state["question"])
         else:
             context = semantic
-        prompt = f"Schéma pertinent :\n{store.schema_description()}\n\n{context}\n\nQuestion : {state['question']}"
+        few_shot_text = ""
+        if retriever is not None:
+            from app.learning.few_shot import format_few_shot
+            examples = retriever.retrieve(state["question"])
+            if examples:
+                few_shot_text = format_few_shot(examples)
+        prompt = f"Schéma pertinent :\n{store.schema_description()}\n\n{context}\n\n"
+        if few_shot_text:
+            prompt += f"{few_shot_text}\n\n"
+        prompt += f"Question : {state['question']}"
         if state.get("error"):
             prompt += f"\n\nTa requête précédente a échoué :\n{state['sql']}\nErreur : {state['error']}\nCorrige-la."
         return {"sql": extract_sql(llm.complete(SQL_SYSTEM, prompt)), "error": None}

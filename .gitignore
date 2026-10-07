@@ -13,3 +13,4 @@ build/
 *.duckdb
 data/*.jsonl
 data/dashboards/
+data/semantic_versions/
