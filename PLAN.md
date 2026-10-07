@@ -140,8 +140,11 @@ Connecteurs MySQL (pymysql/MIT) et SQL Server (pymssql/LGPL-driver) via `POST /c
 ### Sprint 8 — Templates liaison assistée + catalogue + intégration iframe (livré)
 Wizard 3 étapes (métriques → dimensions → preview → confirm) via `/wizard/sessions/*` ; catalogue avec recherche, tags et notes (`/catalogue`) ; tokens d'embed HMAC-SHA256 signés ; routes `/embed/dashboard` et `/embed/ask` pour intégration iframe sans auth RBAC. **Succès** : 387/387 tests verts.
 
+### Sprint 9 — Frontend React SPA (livré)
+Vite + React + TypeScript dans `frontend/` ; pages Chat, Dashboards, Upload, Login ; composants ConfidenceBadge, SqlBlock, TileRenderer (recharts kpi/bar/line/table/pie), NavBar, ApiKeyGuard ; 17 tests Vitest + 4 tests Python ; FastAPI sert le build sur `/app/` si `frontend/dist/` existe. **Succès** : 391/391 tests Python, 17/17 Vitest.
+
 ### Après le pilote
-Templates avec liaison assistée et catalogue, intégration/iframe, React, PDF/DOCX avancé.
+PDF/DOCX avancé, multi-tenant, alertes, API versionnée, connecteurs Snowflake/BigQuery.
 
 ---
 

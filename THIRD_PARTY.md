@@ -39,3 +39,17 @@
 | DeepSeek V3.2 (poids ouverts) | MIT (V3.2 — vérifier sur fiche officielle) | Candidat Ollama ; distillations héritent de la licence de base |
 
 > **Règle** : le choix du modèle de production se fait **par le score d'éval**, pas par réputation. Vérifier la licence sur la fiche officielle du modèle avant tout usage commercial.
+
+## Frontend (Sprint 9)
+
+| Bibliothèque | Version min | Licence | Usage |
+|---|---|---|---|
+| react | 18.x | MIT | UI SPA |
+| react-dom | 18.x | MIT | Rendu DOM React |
+| recharts | 2.x | MIT | Graphiques interactifs (BarChart, LineChart, PieChart) |
+| vite | 5.x | MIT | Bundler frontend |
+| @vitejs/plugin-react | 4.x | MIT | Plugin React pour Vite |
+| vitest | 1.x | MIT | Tests unitaires frontend |
+| @testing-library/react | 16.x | MIT | Tests composants React |
+| @testing-library/jest-dom | 6.x | MIT | Matchers DOM pour Vitest |
+| typescript | 5.x | Apache 2.0 | Typage statique JavaScript |

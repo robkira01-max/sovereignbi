@@ -83,3 +83,10 @@ def ask(req: AskRequest, _: str = Depends(_VIEWER)):
         "attempts": s.get("attempts"),
         "confidence": s.get("confidence"),
     }
+
+
+# Serve React build if dist/ exists (optional — not required for API usage)
+_REACT_DIST = Path(__file__).parent.parent / "frontend" / "dist"
+if _REACT_DIST.exists():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/app", StaticFiles(directory=str(_REACT_DIST), html=True), name="frontend")
