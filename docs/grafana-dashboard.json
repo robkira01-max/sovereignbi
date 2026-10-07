@@ -1,0 +1,63 @@
+{
+  "title": "SovereignBI — Monitoring",
+  "uid": "sovereignbi-main",
+  "schemaVersion": 38,
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Requêtes /ask (total)",
+      "type": "stat",
+      "targets": [{ "expr": "sum(sovereignbi_asks_total)", "legendFormat": "Total" }],
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 }
+    },
+    {
+      "id": 2,
+      "title": "Taux de succès /ask",
+      "type": "stat",
+      "targets": [{
+        "expr": "sum(sovereignbi_asks_total{status='success'}) / sum(sovereignbi_asks_total)",
+        "legendFormat": "Succès %"
+      }],
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 }
+    },
+    {
+      "id": 3,
+      "title": "Cache hit rate",
+      "type": "stat",
+      "targets": [{
+        "expr": "sovereignbi_cache_hits_total / (sovereignbi_cache_hits_total + sovereignbi_cache_misses_total)",
+        "legendFormat": "Hit rate"
+      }],
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 }
+    },
+    {
+      "id": 4,
+      "title": "Tables actives",
+      "type": "stat",
+      "targets": [{ "expr": "sovereignbi_active_tables", "legendFormat": "Tables" }],
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 }
+    },
+    {
+      "id": 5,
+      "title": "Durée /ask (p95)",
+      "type": "timeseries",
+      "targets": [{
+        "expr": "histogram_quantile(0.95, rate(sovereignbi_ask_duration_seconds_bucket[5m]))",
+        "legendFormat": "p95"
+      }],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 }
+    },
+    {
+      "id": 6,
+      "title": "Uploads / min",
+      "type": "timeseries",
+      "targets": [{
+        "expr": "rate(sovereignbi_uploads_total[1m])",
+        "legendFormat": "uploads/min"
+      }],
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 }
+    }
+  ]
+}

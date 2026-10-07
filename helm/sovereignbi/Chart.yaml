@@ -1,0 +1,14 @@
+apiVersion: v2
+name: sovereignbi
+description: SovereignBI — BI conversationnel 100% local, text-to-SQL, Ollama, DuckDB
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - bi
+  - analytics
+  - sql
+  - ollama
+  - local-ai
+maintainers:
+  - name: SovereignBI Team

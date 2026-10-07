@@ -1,0 +1,62 @@
+replicaCount: 1
+
+image:
+  repository: sovereignbi
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: false
+  className: ""
+  host: sovereignbi.local
+  tls: []
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "2"
+    memory: "2Gi"
+
+env:
+  SOVEREIGN_VIEWER_KEY: ""
+  SOVEREIGN_EDITOR_KEY: ""
+  SOVEREIGN_ADMIN_KEY: ""
+  SOVEREIGN_EMBED_SECRET: ""
+  SOVEREIGN_CERT_SECRET: ""
+  OLLAMA_BASE_URL: "http://ollama:11434"
+  OLLAMA_MODEL: "mistral"
+  SOVEREIGN_EMBEDDER: "bge"
+
+ollama:
+  enabled: true
+  image: ollama/ollama:latest
+  service:
+    port: 11434
+
+persistence:
+  enabled: true
+  size: 5Gi
+  storageClass: ""
+  mountPath: /app/data
+
+probes:
+  liveness:
+    path: /live
+    initialDelaySeconds: 10
+    periodSeconds: 30
+  readiness:
+    path: /ready
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+prometheus:
+  enabled: true
+  scrape: true
+  path: /metrics
+  port: 8000

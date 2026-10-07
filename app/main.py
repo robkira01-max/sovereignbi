@@ -1,7 +1,9 @@
 import tempfile
+import time
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 
 from app.api.middleware import ApiVersionMiddleware
@@ -25,6 +27,15 @@ from app.routers.marketplace import router as marketplace_router
 from app.routers.onboarding import router as onboarding_router
 from app.routers.orgs import router as orgs_router
 from app.routers.wizard import router as wizard_router
+from app.monitoring.metrics import (
+    active_tables,
+    ask_duration_seconds,
+    asks_total,
+    cache_hits_total,
+    cache_misses_total,
+    render_all,
+    uploads_total,
+)
 from app.security.rbac import RequireRole
 
 app = FastAPI(
@@ -106,6 +117,8 @@ async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
         p.write_bytes(await file.read())
         tables = store.load_file(p)
     query_cache.invalidate()
+    uploads_total.inc()
+    active_tables.set(len(store.tables))
     return {"tables": tables}
 
 
@@ -118,9 +131,16 @@ def ask(req: AskRequest, _: str = Depends(_VIEWER)):
     if req.use_cache and not req.dry_run:
         cached = query_cache.get(req.question, table_names)
         if cached is not None:
+            cache_hits_total.inc()
             return {**cached, "cached": True}
 
+    cache_misses_total.inc()
+    t0 = time.perf_counter()
     s = get_graph().invoke({"question": req.question, "dry_run": req.dry_run})
+    ask_duration_seconds.observe(time.perf_counter() - t0)
+    status = "error" if s.get("error") else "success"
+    asks_total.inc(status=status)
+
     result = {
         "sql": s.get("sql"),
         "columns": s.get("columns", []),
@@ -145,6 +165,25 @@ def cache_stats(_: str = Depends(_VIEWER)):
 def invalidate_cache(_: str = Depends(_ADMIN)):
     count = query_cache.invalidate()
     return {"invalidated": count}
+
+
+@app.get("/metrics", tags=["monitoring"], response_class=PlainTextResponse)
+def prometheus_metrics():
+    """Métriques Prometheus au format text/plain exposition."""
+    active_tables.set(len(store.tables))
+    return PlainTextResponse(render_all(), media_type="text/plain; version=0.0.4; charset=utf-8")
+
+
+@app.get("/ready", tags=["monitoring"])
+def readiness():
+    """Kubernetes readiness probe."""
+    return {"ready": True, "tables": len(store.tables)}
+
+
+@app.get("/live", tags=["monitoring"])
+def liveness():
+    """Kubernetes liveness probe."""
+    return {"alive": True}
 
 
 # Serve React build if dist/ exists (optional — not required for API usage)
