@@ -27,6 +27,15 @@
 | pypdf | 4.0 | MIT | Extraction texte PDF (RAG documentaire) |
 | python-docx | 1.1 | MIT | Extraction texte DOCX (RAG documentaire) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
+| playwright | 1.44 | Apache 2.0 | Tests E2E navigateur (dev uniquement) |
+
+## Connecteurs optionnels (non installés par défaut — import lazy)
+
+| Bibliothèque | Licence | Usage |
+|---|---|---|
+| snowflake-connector-python | Apache 2.0 | Connecteur Snowflake — importer manuellement : `pip install snowflake-connector-python` |
+| google-cloud-bigquery | Apache 2.0 | Connecteur BigQuery — importer manuellement : `pip install google-cloud-bigquery` |
+| pymongo | Apache 2.0 | Connecteur MongoDB — importer manuellement : `pip install pymongo` |
 
 ## Modèles LLM (runtime — choix par l'administrateur)
 

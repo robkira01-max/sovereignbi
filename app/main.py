@@ -35,6 +35,7 @@ from app.routers.marketplace import router as marketplace_router
 from app.routers.onboarding import router as onboarding_router
 from app.routers.orgs import router as orgs_router
 from app.routers.wizard import router as wizard_router
+from app.routers.template_import import router as template_import_router
 from app.monitoring.metrics import (
     active_tables,
     ask_duration_seconds,
@@ -105,6 +106,7 @@ app.include_router(compliance_router)
 app.include_router(marketplace_router)
 app.include_router(onboarding_router)
 app.include_router(orgs_router)
+app.include_router(template_import_router)
 
 store = DataStore()
 doc_store = DocStore()
