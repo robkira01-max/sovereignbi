@@ -21,6 +21,7 @@
 | sentence-transformers | 3.0 | Apache 2.0 | BGE-M3 embedder (chargement lazy, production) |
 | streamlit | 1.35 | Apache 2.0 | Interface utilisateur web |
 | plotly | 5.0 | MIT | Graphiques interactifs (Streamlit UI) |
+| fpdf2 | 2.7 | MIT | Génération de PDF (export résultats) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
 
 ## Modèles LLM (runtime — choix par l'administrateur)

@@ -21,6 +21,7 @@ dependencies = [
   "sentence-transformers>=3.0", # BGE-M3 embedder (Apache 2.0)
   "streamlit>=1.35",           # UI web (Apache 2.0)
   "plotly>=5.0",               # graphiques (MIT)
+  "fpdf2>=2.7",                # export PDF (MIT)
 ]
 
 [project.optional-dependencies]

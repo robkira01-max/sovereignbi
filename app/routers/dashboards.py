@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 
 from app.dashboards.models import (
     Dashboard,
@@ -13,8 +13,12 @@ from app.dashboards.models import (
     load_template,
     save_dashboard,
 )
+from app.security.rbac import RequireRole
 
 router = APIRouter(tags=["dashboards"])
+
+_VIEWER = RequireRole("viewer")
+_EDITOR = RequireRole("editor")
 
 _DASHBOARDS_DIR = Path("data/dashboards")
 _TEMPLATES_DIR = Path("templates")
@@ -27,7 +31,7 @@ def _now() -> str:
 # ─── Dashboards ───────────────────────────────────────────────────────────────
 
 @router.get("/dashboards")
-def list_dashboards():
+def list_dashboards(_: str = Depends(_VIEWER)):
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     items = []
     for p in sorted(_DASHBOARDS_DIR.glob("*.yaml")):
@@ -40,7 +44,7 @@ def list_dashboards():
 
 
 @router.get("/dashboards/{dashboard_id}")
-def get_dashboard(dashboard_id: str):
+def get_dashboard(dashboard_id: str, _: str = Depends(_VIEWER)):
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
     if not p.exists():
@@ -54,7 +58,7 @@ def get_dashboard(dashboard_id: str):
 
 
 @router.post("/dashboards")
-def create_dashboard(body: dict = Body(...)):
+def create_dashboard(body: dict = Body(...), _: str = Depends(_EDITOR)):
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     dashboard_id = body.get("id")
     if not dashboard_id:
@@ -95,7 +99,7 @@ def create_dashboard(body: dict = Body(...)):
 
 
 @router.post("/dashboards/{dashboard_id}/pin")
-def pin_tile(dashboard_id: str, body: dict = Body(...)):
+def pin_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR)):
     """Épingle le SQL d'une réponse chat à une tuile du dashboard."""
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
@@ -129,7 +133,7 @@ def pin_tile(dashboard_id: str, body: dict = Body(...)):
 # ─── Templates ────────────────────────────────────────────────────────────────
 
 @router.get("/templates")
-def list_templates():
+def list_templates(_: str = Depends(_VIEWER)):
     if not _TEMPLATES_DIR.exists():
         return {"templates": []}
     items = []
@@ -143,7 +147,7 @@ def list_templates():
 
 
 @router.get("/templates/{template_id}")
-def get_template(template_id: str):
+def get_template(template_id: str, _: str = Depends(_VIEWER)):
     if not _TEMPLATES_DIR.exists():
         raise HTTPException(404, "Dossier de templates introuvable.")
     p = _TEMPLATES_DIR / f"{template_id}.yaml"

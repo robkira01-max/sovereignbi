@@ -4,6 +4,15 @@ services:
     volumes:
       - ollama_models:/root/.ollama
     networks: [internal]          # aucun accès Internet
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 20G
     # GPU NVIDIA (décommenter si disponible) :
     # deploy:
     #   resources:
@@ -12,14 +21,28 @@ services:
 
   api:
     build: .
+    env_file: .env
     environment:
       OLLAMA_URL: http://ollama:11434
-      LLM_MODEL: qwen2.5-coder:32b
     ports: ["8000:8000"]
-    depends_on: [ollama]
+    depends_on:
+      ollama:
+        condition: service_healthy
     networks: [internal, exposed]
+    read_only: true
+    tmpfs:
+      - /tmp
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 2G
     # NB : "exposed" est nécessaire pour publier le port. Le code n'émet aucun appel
-    # sortant ; au sprint 6, ajouter une règle de pare-feu hôte pour le prouver.
+    # sortant. Vérifier avec : ss -tnp | grep 8000 (aucune connexion sortante attendue).
 
 networks:
   internal:

@@ -1,7 +1,7 @@
 import tempfile
 from pathlib import Path
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from app.data.duckdb_store import DataStore
@@ -9,12 +9,19 @@ from app.llm.ollama_client import OllamaClient
 from app.pipeline.graph import build_graph, load_semantic
 from app.routers.admin import router as admin_router
 from app.routers.dashboards import router as dashboards_router
+from app.routers.export import router as export_router
+from app.security.rbac import RequireRole
 
 app = FastAPI(title="SovereignBI", version="0.1.0")
 app.include_router(admin_router)
 app.include_router(dashboards_router)
+app.include_router(export_router)
+
 store = DataStore()
 _graph = None
+
+# Expose store and graph getter via app.state (used by export router)
+app.state.store = store
 
 
 def get_graph():
@@ -22,6 +29,12 @@ def get_graph():
     if _graph is None:
         _graph = build_graph(OllamaClient(), store, load_semantic())
     return _graph
+
+
+app.state.get_graph = get_graph
+
+_VIEWER = RequireRole("viewer")
+_EDITOR = RequireRole("editor")
 
 
 class AskRequest(BaseModel):
@@ -35,7 +48,7 @@ def health():
 
 
 @app.post("/upload")
-async def upload(file: UploadFile = File(...)):
+async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
     suffix = Path(file.filename or "").suffix.lower()
     if suffix not in {".csv", ".xlsx", ".xlsm"}:
         raise HTTPException(400, "Formats acceptés : CSV, XLSX, XLSM")
@@ -47,7 +60,7 @@ async def upload(file: UploadFile = File(...)):
 
 
 @app.post("/ask")
-def ask(req: AskRequest):
+def ask(req: AskRequest, _: str = Depends(_VIEWER)):
     if not store.tables:
         raise HTTPException(400, "Aucune donnée chargée. Utilisez /upload d'abord.")
     s = get_graph().invoke({"question": req.question, "dry_run": req.dry_run})

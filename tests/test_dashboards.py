@@ -1,5 +1,6 @@
 """Tests for dashboards models, renderer, templates, and API routes."""
 import ast
+import os
 from dataclasses import asdict
 from pathlib import Path
 
@@ -8,6 +9,10 @@ import pytest
 from fastapi.testclient import TestClient
 
 ROOT = Path(__file__).parent.parent
+
+# Keys are set by conftest.py before any import
+_EDITOR_HEADERS = {"X-Api-Key": os.environ.get("SOVEREIGN_EDITOR_KEY", "test-editor-key-s6")}
+_VIEWER_HEADERS = {"X-Api-Key": os.environ.get("SOVEREIGN_VIEWER_KEY", "test-viewer-key-s6")}
 
 
 # ─── Models ──────────────────────────────────────────────────────────────────
@@ -243,7 +248,7 @@ def client(tmp_path, monkeypatch):
     monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
     monkeypatch.setattr(dr, "_TEMPLATES_DIR", ROOT / "templates")
     from app.main import app
-    return TestClient(app)
+    return TestClient(app, headers=_EDITOR_HEADERS)
 
 
 def test_list_dashboards_empty(client, tmp_path, monkeypatch):
