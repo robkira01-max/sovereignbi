@@ -4,6 +4,8 @@ from pathlib import Path
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
+from app.api.middleware import ApiVersionMiddleware
+from app.api.v1.router import router as v1_router
 from app.data.duckdb_store import DataStore
 from app.llm.ollama_client import OllamaClient
 from app.pipeline.graph import build_graph, load_semantic
@@ -20,7 +22,23 @@ from app.routers.orgs import router as orgs_router
 from app.routers.wizard import router as wizard_router
 from app.security.rbac import RequireRole
 
-app = FastAPI(title="SovereignBI", version="0.1.0")
+app = FastAPI(
+    title="SovereignBI",
+    version="1.0.0",
+    description=(
+        "Outil BI conversationnel 100% local — text-to-SQL, LLM via Ollama, DuckDB. "
+        "Aucune donnée ne quitte votre infrastructure."
+    ),
+    openapi_tags=[
+        {"name": "v1", "description": "API REST versionnée — endpoints stables"},
+        {"name": "alerts", "description": "Règles d'alerte et surveillance SQL"},
+        {"name": "export", "description": "Export Excel et PDF"},
+        {"name": "dashboards", "description": "Tableaux de bord persistants"},
+        {"name": "orgs", "description": "Multi-tenant — gestion des organisations"},
+    ],
+)
+app.add_middleware(ApiVersionMiddleware)
+app.include_router(v1_router)
 app.include_router(admin_router)
 app.include_router(dashboards_router)
 app.include_router(export_router)
