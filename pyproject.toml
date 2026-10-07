@@ -22,6 +22,10 @@ dependencies = [
   "streamlit>=1.35",           # UI web (Apache 2.0)
   "plotly>=5.0",               # graphiques (MIT)
   "fpdf2>=2.7",                # export PDF (MIT)
+  "pymysql>=1.1",              # connecteur MySQL (MIT)
+  "pymssql>=2.3",              # connecteur SQL Server (FreeTDS/LGPL — driver dynamique)
+  "pypdf>=4.0",                # extraction texte PDF (MIT)
+  "python-docx>=1.1",          # extraction texte DOCX (MIT)
 ]
 
 [project.optional-dependencies]

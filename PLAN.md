@@ -134,8 +134,11 @@ Exemples validés (👍 + SQL confirmé) réinjectés en few-shot par similarit�
 ### Sprint 6 — Durcissement et pilote (2 sem.)
 Réseau Docker interne + pare-feu hôte sortant, chiffrement disque documenté, RBAC minimal, export Excel/PDF, `THIRD_PARTY.md` et SBOM, tests d'injection de prompt (cellules, PDF) et d'exfiltration, déploiement chez un pilote. **Succès** : aucune connexion sortante sur 24 h ; `docker compose up` en une commande ; 1 pilote en usage réel.
 
+### Sprint 7 — Connecteurs + RAG documentaire + Certificat de précision (livré)
+Connecteurs MySQL (pymysql/MIT) et SQL Server (pymssql/LGPL-driver) via `POST /connectors/mysql|mssql` ; RAG documentaire PDF/DOCX (pypdf+python-docx) dans DuckDB FTS via `POST /documents/ingest` + `GET /documents/search`, injectable dans le prompt SQL ; certificat de précision `confidence` (score 0–1, label, explication) retourné par `/ask`. **Succès** : 332/332 tests verts.
+
 ### Après le pilote
-Templates avec liaison assistée et catalogue, intégration/iframe, React, MySQL/SQL Server, PDF/DOCX (RAG métier), « certificat de précision » client.
+Templates avec liaison assistée et catalogue, intégration/iframe, React, PDF/DOCX avancé.
 
 ---
 

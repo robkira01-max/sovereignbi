@@ -22,6 +22,10 @@
 | streamlit | 1.35 | Apache 2.0 | Interface utilisateur web |
 | plotly | 5.0 | MIT | Graphiques interactifs (Streamlit UI) |
 | fpdf2 | 2.7 | MIT | Génération de PDF (export résultats) |
+| pymysql | 1.1 | MIT | Connecteur MySQL (pure Python, aucun driver système) |
+| pymssql | 2.3 | LGPL v2.1 (FreeTDS) | Connecteur SQL Server — usage dynamique uniquement (driver), non embarqué dans le produit livré. Même raisonnement que psycopg2. |
+| pypdf | 4.0 | MIT | Extraction texte PDF (RAG documentaire) |
+| python-docx | 1.1 | MIT | Extraction texte DOCX (RAG documentaire) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
 
 ## Modèles LLM (runtime — choix par l'administrateur)

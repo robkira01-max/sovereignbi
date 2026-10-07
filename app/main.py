@@ -7,8 +7,11 @@ from pydantic import BaseModel
 from app.data.duckdb_store import DataStore
 from app.llm.ollama_client import OllamaClient
 from app.pipeline.graph import build_graph, load_semantic
+from app.rag.doc_store import DocStore
 from app.routers.admin import router as admin_router
+from app.routers.connectors import router as connectors_router
 from app.routers.dashboards import router as dashboards_router
+from app.routers.docs_rag import router as docs_router
 from app.routers.export import router as export_router
 from app.security.rbac import RequireRole
 
@@ -16,18 +19,21 @@ app = FastAPI(title="SovereignBI", version="0.1.0")
 app.include_router(admin_router)
 app.include_router(dashboards_router)
 app.include_router(export_router)
+app.include_router(connectors_router)
+app.include_router(docs_router)
 
 store = DataStore()
+doc_store = DocStore()
 _graph = None
 
-# Expose store and graph getter via app.state (used by export router)
 app.state.store = store
+app.state.doc_store = doc_store
 
 
 def get_graph():
     global _graph
     if _graph is None:
-        _graph = build_graph(OllamaClient(), store, load_semantic())
+        _graph = build_graph(OllamaClient(), store, load_semantic(), doc_store=doc_store)
     return _graph
 
 
@@ -71,4 +77,5 @@ def ask(req: AskRequest, _: str = Depends(_VIEWER)):
         "answer": s.get("answer"),
         "error": s.get("error"),
         "attempts": s.get("attempts"),
+        "confidence": s.get("confidence"),
     }

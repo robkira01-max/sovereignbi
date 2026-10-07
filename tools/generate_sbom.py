@@ -33,6 +33,10 @@ _LICENCE_MAP: dict[str, str] = {
     "plotly": "MIT",
     "pytest": "MIT",
     "fpdf2": "MIT",
+    "pymysql": "MIT",
+    "pymssql": "LGPL-2.1",
+    "pypdf": "MIT",
+    "python-docx": "MIT",
 }
 
 _DEP_RE = re.compile(r'^"?([A-Za-z0-9_\-]+)[>=<!].*"?')

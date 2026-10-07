@@ -28,6 +28,7 @@ class State(TypedDict, total=False):
     rows: list[tuple]
     attempts: int
     answer: str
+    confidence: dict | None
 
 
 def load_semantic(path: str = "semantic/model.yaml") -> str:
@@ -45,7 +46,14 @@ def extract_sql(text: str) -> str:
     return (m.group(1) if m else text).strip().rstrip(";")
 
 
-def build_graph(llm: LLM, store: DataStore, semantic: str = "", linker=None, retriever=None):
+def build_graph(
+    llm: LLM,
+    store: DataStore,
+    semantic: str = "",
+    linker=None,
+    retriever=None,
+    doc_store=None,
+):
     def generate_sql(state: State) -> State:
         if linker is not None:
             context = linker.get_relevant_context(state["question"])
@@ -57,7 +65,14 @@ def build_graph(llm: LLM, store: DataStore, semantic: str = "", linker=None, ret
             examples = retriever.retrieve(state["question"])
             if examples:
                 few_shot_text = format_few_shot(examples)
+        doc_context = ""
+        if doc_store is not None and doc_store.chunk_count > 0:
+            chunks = doc_store.search(state["question"], k=3)
+            if chunks:
+                doc_context = doc_store.format_context(chunks)
         prompt = f"Schéma pertinent :\n{store.schema_description()}\n\n{context}\n\n"
+        if doc_context:
+            prompt += f"{doc_context}\n\n"
         if few_shot_text:
             prompt += f"{few_shot_text}\n\n"
         prompt += f"Question : {state['question']}"
@@ -75,17 +90,37 @@ def build_graph(llm: LLM, store: DataStore, semantic: str = "", linker=None, ret
             return {"sql": safe, "attempts": attempts, "error": None, "columns": cols, "rows": rows}
         except SQLGuardError as e:
             return {"attempts": attempts, "error": f"Refusé : {e}"}
-        except Exception as e:  # erreur d'exécution DuckDB
+        except Exception as e:
             return {"attempts": attempts, "error": str(e)}
 
     def answer(state: State) -> State:
+        from app.pipeline.confidence import compute_confidence
+
         if state.get("error"):
-            return {"answer": f"Je n'ai pas réussi à répondre ({state['error']})."}
+            cs = compute_confidence(state, 0)
+            return {
+                "answer": f"Je n'ai pas réussi à répondre ({state['error']}).",
+                "confidence": {"score": cs.score, "label": cs.label, "explanation": cs.explanation},
+            }
         if state.get("dry_run"):
-            return {"answer": "Mode dry-run : requête générée, non exécutée."}
+            cs = compute_confidence(state, 0)
+            return {
+                "answer": "Mode dry-run : requête générée, non exécutée.",
+                "confidence": {"score": cs.score, "label": cs.label, "explanation": cs.explanation},
+            }
         preview = {"colonnes": state["columns"], "lignes": state["rows"][:50]}
         text = llm.complete(ANSWER_SYSTEM, f"Question : {state['question']}\nRésultats : {preview}")
-        return {"answer": text.strip()}
+        few_shot_count = 0
+        if retriever is not None:
+            try:
+                few_shot_count = len(retriever.retrieve(state["question"]))
+            except Exception:
+                few_shot_count = 0
+        cs = compute_confidence(state, few_shot_count)
+        return {
+            "answer": text.strip(),
+            "confidence": {"score": cs.score, "label": cs.label, "explanation": cs.explanation},
+        }
 
     def route(state: State) -> str:
         if state.get("error") and state.get("attempts", 0) < MAX_ATTEMPTS:
