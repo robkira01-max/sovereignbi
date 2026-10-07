@@ -62,7 +62,7 @@ class DocStore:
         self._con = con or duckdb.connect(":memory:")
         self._con.execute(_CREATE_TABLE)
 
-    def ingest(self, path: str | Path) -> int:
+    def ingest(self, path: str | Path, use_ocr_fallback: bool = True) -> int:
         p = Path(path)
         content = p.read_bytes()
         doc_id = hashlib.sha256(content).hexdigest()
@@ -76,7 +76,11 @@ class DocStore:
 
         ext = p.suffix.lower()
         if ext == ".pdf":
-            pages = _extract_pdf(content)
+            if use_ocr_fallback:
+                from app.rag.ocr import extract_text_with_fallback
+                pages = extract_text_with_fallback(p)
+            else:
+                pages = _extract_pdf(content)
         elif ext == ".docx":
             pages = _extract_docx(content)
         else:

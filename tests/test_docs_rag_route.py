@@ -41,7 +41,7 @@ def test_ingest_pdf_requires_editor_role(client):
 
 
 def test_ingest_accepts_pdf(client):
-    with patch("app.rag.doc_store._extract_pdf", return_value=["texte du rapport"]):
+    with patch("app.rag.ocr.extract_text_with_fallback", return_value=["texte du rapport"]):
         r = client.post(
             "/documents/ingest",
             files={"file": ("rapport.pdf", _FAKE_PDF, "application/pdf")},
@@ -89,7 +89,7 @@ def test_search_docs_requires_viewer_role(client):
 
 
 def test_search_docs_returns_results(client):
-    with patch("app.rag.doc_store._extract_pdf", return_value=["Ontario ventes rapport"]):
+    with patch("app.rag.ocr.extract_text_with_fallback", return_value=["Ontario ventes rapport"]):
         client.post(
             "/documents/ingest",
             files={"file": ("r.pdf", _FAKE_PDF, "application/pdf")},
@@ -113,7 +113,7 @@ def test_list_docs_with_viewer(client):
 
 
 def test_delete_doc(client):
-    with patch("app.rag.doc_store._extract_pdf", return_value=["texte à supprimer"]):
+    with patch("app.rag.ocr.extract_text_with_fallback", return_value=["texte à supprimer"]):
         resp = client.post(
             "/documents/ingest",
             files={"file": ("del.pdf", _FAKE_PDF, "application/pdf")},

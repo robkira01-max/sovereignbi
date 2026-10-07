@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 import io
+import tempfile
+from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import JSONResponse
 
+from app.rag.doc_pipeline import ingest_document
 from app.security.rbac import RequireRole
 
 router = APIRouter(prefix="/documents", tags=["documents"])
@@ -21,10 +24,9 @@ _ALLOWED_EXT = {".pdf", ".docx"}
 async def ingest_doc(
     request: Request,
     file: UploadFile = File(...),
+    load_tables: bool = Query(default=False),
     _: str = Depends(_EDITOR),
 ):
-    from pathlib import Path
-
     suffix = Path(file.filename or "").suffix.lower()
     if suffix not in _ALLOWED_EXT:
         raise HTTPException(400, f"Extension non supportée. Acceptés : {', '.join(_ALLOWED_EXT)}")
@@ -34,14 +36,24 @@ async def ingest_doc(
         raise HTTPException(413, "Fichier trop volumineux (max 50 MB).")
 
     doc_store = request.app.state.doc_store
+    data_store = getattr(request.app.state, "store", None) if load_tables else None
+
     try:
-        chunks = doc_store.ingest_bytes(content, file.filename)
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            tmp.write(content)
+            tmp_path = Path(tmp.name)
+        result = ingest_document(tmp_path, doc_store, data_store)
+        tmp_path.unlink(missing_ok=True)
     except Exception as exc:
         raise HTTPException(422, f"Erreur d'ingestion : {exc}")
 
-    import hashlib
-    doc_id = hashlib.sha256(content).hexdigest()
-    return {"doc_id": doc_id, "chunks": chunks, "source": file.filename}
+    return {
+        "doc_id": result.doc_id,
+        "chunks": result.text_chunks,
+        "source": file.filename,
+        "tables_found": result.tables_found,
+        "tables_loaded": result.tables_loaded,
+    }
 
 
 @router.get("/search")
