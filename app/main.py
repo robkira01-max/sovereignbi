@@ -12,7 +12,9 @@ from app.routers.admin import router as admin_router
 from app.routers.connectors import router as connectors_router
 from app.routers.dashboards import router as dashboards_router
 from app.routers.docs_rag import router as docs_router
+from app.routers.embed import router as embed_router
 from app.routers.export import router as export_router
+from app.routers.wizard import router as wizard_router
 from app.security.rbac import RequireRole
 
 app = FastAPI(title="SovereignBI", version="0.1.0")
@@ -21,6 +23,8 @@ app.include_router(dashboards_router)
 app.include_router(export_router)
 app.include_router(connectors_router)
 app.include_router(docs_router)
+app.include_router(wizard_router)
+app.include_router(embed_router)
 
 store = DataStore()
 doc_store = DocStore()

@@ -137,6 +137,9 @@ Réseau Docker interne + pare-feu hôte sortant, chiffrement disque documenté, 
 ### Sprint 7 — Connecteurs + RAG documentaire + Certificat de précision (livré)
 Connecteurs MySQL (pymysql/MIT) et SQL Server (pymssql/LGPL-driver) via `POST /connectors/mysql|mssql` ; RAG documentaire PDF/DOCX (pypdf+python-docx) dans DuckDB FTS via `POST /documents/ingest` + `GET /documents/search`, injectable dans le prompt SQL ; certificat de précision `confidence` (score 0–1, label, explication) retourné par `/ask`. **Succès** : 332/332 tests verts.
 
+### Sprint 8 — Templates liaison assistée + catalogue + intégration iframe (livré)
+Wizard 3 étapes (métriques → dimensions → preview → confirm) via `/wizard/sessions/*` ; catalogue avec recherche, tags et notes (`/catalogue`) ; tokens d'embed HMAC-SHA256 signés ; routes `/embed/dashboard` et `/embed/ask` pour intégration iframe sans auth RBAC. **Succès** : 387/387 tests verts.
+
 ### Après le pilote
 Templates avec liaison assistée et catalogue, intégration/iframe, React, PDF/DOCX avancé.
 
