@@ -21,6 +21,7 @@ from app.routers.export import router as export_router
 from app.routers.alerts import router as alerts_router
 from app.routers.compliance import router as compliance_router
 from app.routers.marketplace import router as marketplace_router
+from app.routers.onboarding import router as onboarding_router
 from app.routers.orgs import router as orgs_router
 from app.routers.wizard import router as wizard_router
 from app.security.rbac import RequireRole
@@ -53,6 +54,7 @@ app.include_router(embed_router)
 app.include_router(alerts_router)
 app.include_router(compliance_router)
 app.include_router(marketplace_router)
+app.include_router(onboarding_router)
 app.include_router(orgs_router)
 
 store = DataStore()
