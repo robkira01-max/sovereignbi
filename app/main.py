@@ -36,6 +36,9 @@ from app.routers.onboarding import router as onboarding_router
 from app.routers.orgs import router as orgs_router
 from app.routers.wizard import router as wizard_router
 from app.routers.template_import import router as template_import_router
+from app.routers.addin import router as addin_router
+from app.routers.sync import router as sync_router
+from app.sync.scheduler import CronScheduler
 from app.monitoring.metrics import (
     active_tables,
     ask_duration_seconds,
@@ -55,11 +58,19 @@ async def lifespan(app: FastAPI):
     log_startup_warnings(warnings)
     findings = audit_configuration()
     log_audit_results(findings)
+    scheduler = CronScheduler()
+    scheduler.start()
+    app.state.scheduler = scheduler
     yield
+    scheduler.stop()
 
 
 def _cors_origins() -> list[str]:
-    raw = os.environ.get("SOVEREIGN_CORS_ORIGINS", "http://localhost:8000")
+    raw = os.environ.get(
+        "SOVEREIGN_CORS_ORIGINS",
+        "http://localhost:8000,http://localhost:9000,"
+        "https://excel.officeapps.live.com,https://officeapps.live.com",
+    )
     return [o.strip() for o in raw.split(",") if o.strip()]
 
 
@@ -107,6 +118,8 @@ app.include_router(marketplace_router)
 app.include_router(onboarding_router)
 app.include_router(orgs_router)
 app.include_router(template_import_router)
+app.include_router(addin_router)
+app.include_router(sync_router)
 
 store = DataStore()
 doc_store = DocStore()
@@ -223,6 +236,12 @@ def liveness():
     """Kubernetes liveness probe."""
     return {"alive": True}
 
+
+# Serve Excel add-in static files
+_ADDIN_DIR = Path(__file__).parent.parent / "frontend" / "excel-addin"
+if _ADDIN_DIR.exists():
+    from fastapi.staticfiles import StaticFiles as _StaticFiles
+    app.mount("/addin/excel", _StaticFiles(directory=str(_ADDIN_DIR)), name="excel-addin")
 
 # Serve React build if dist/ exists (optional — not required for API usage)
 _REACT_DIST = Path(__file__).parent.parent / "frontend" / "dist"

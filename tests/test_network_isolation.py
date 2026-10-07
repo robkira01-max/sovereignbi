@@ -42,8 +42,9 @@ def test_no_hardcoded_external_urls_in_app():
     from pathlib import Path
 
     # Pattern: http(s)://something that is NOT localhost/127.0.0.1/ollama
+    # officeapps.live.com is the Microsoft Office.js CDN — needed for the Excel add-in CORS config
     _EXTERNAL_URL_RE = re.compile(
-        r'https?://(?!localhost|127\.0\.0\.1|ollama|{)[^\s\'"#)]+'
+        r'https?://(?!localhost|127\.0\.0\.1|ollama|[a-z.]*officeapps\.live\.com|{)[^\s\'"#)]+'
     )
     _COMMENT_RE = re.compile(r'^\s*#')
 

@@ -46,6 +46,7 @@ _LICENCE_MAP: dict[str, str] = {
     "anyio": "MIT",
     "starlette": "BSD",
     "pydantic": "MIT",
+    "cryptography": "Apache-2.0",
 }
 
 _DEP_RE = re.compile(r'^"?([A-Za-z0-9_\-]+)[>=<!].*"?')
