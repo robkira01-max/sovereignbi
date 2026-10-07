@@ -12,3 +12,6 @@ os.environ.setdefault("SOVEREIGN_EMBEDDER", "tfidf")
 os.environ.setdefault("SOVEREIGN_VIEWER_KEY", "test-viewer-key-s6")
 os.environ.setdefault("SOVEREIGN_EDITOR_KEY", "test-editor-key-s6")
 os.environ.setdefault("SOVEREIGN_ADMIN_KEY", "test-admin-key-sprint3")
+
+# Rate limiter — force high value so tests never hit the 60 rpm default
+os.environ["SOVEREIGN_RATE_LIMIT_RPM"] = "100000"
