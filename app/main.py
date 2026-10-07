@@ -18,6 +18,7 @@ from app.routers.docs_rag import router as docs_router
 from app.routers.embed import router as embed_router
 from app.routers.export import router as export_router
 from app.routers.alerts import router as alerts_router
+from app.routers.compliance import router as compliance_router
 from app.routers.orgs import router as orgs_router
 from app.routers.wizard import router as wizard_router
 from app.security.rbac import RequireRole
@@ -47,6 +48,7 @@ app.include_router(docs_router)
 app.include_router(wizard_router)
 app.include_router(embed_router)
 app.include_router(alerts_router)
+app.include_router(compliance_router)
 app.include_router(orgs_router)
 
 store = DataStore()
