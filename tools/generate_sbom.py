@@ -37,6 +37,15 @@ _LICENCE_MAP: dict[str, str] = {
     "pymssql": "LGPL-2.1",
     "pypdf": "MIT",
     "python-docx": "MIT",
+    "structlog": "MIT",
+    "pytesseract": "Apache-2.0",
+    "Pillow": "HPND",
+    "pdf2image": "MIT",
+    "aiofiles": "Apache-2.0",
+    "email-validator": "BSD",
+    "anyio": "MIT",
+    "starlette": "BSD",
+    "pydantic": "MIT",
 }
 
 _DEP_RE = re.compile(r'^"?([A-Za-z0-9_\-]+)[>=<!].*"?')
