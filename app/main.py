@@ -19,6 +19,7 @@ from app.routers.docs_rag import router as docs_router
 from app.routers.embed import router as embed_router
 from app.routers.export import router as export_router
 from app.routers.alerts import router as alerts_router
+from app.routers.accuracy import router as accuracy_router
 from app.routers.compliance import router as compliance_router
 from app.routers.marketplace import router as marketplace_router
 from app.routers.onboarding import router as onboarding_router
@@ -52,6 +53,7 @@ app.include_router(docs_router)
 app.include_router(wizard_router)
 app.include_router(embed_router)
 app.include_router(alerts_router)
+app.include_router(accuracy_router)
 app.include_router(compliance_router)
 app.include_router(marketplace_router)
 app.include_router(onboarding_router)
