@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from app.api.middleware import ApiVersionMiddleware
 from app.api.v1.router import router as v1_router
+from app.cache.query_cache import QueryCache
 from app.data.duckdb_store import DataStore
 from app.llm.ollama_client import OllamaClient
 from app.pipeline.graph import build_graph, load_semantic
@@ -36,6 +37,7 @@ app = FastAPI(
         {"name": "export", "description": "Export Excel et PDF"},
         {"name": "dashboards", "description": "Tableaux de bord persistants"},
         {"name": "orgs", "description": "Multi-tenant — gestion des organisations"},
+        {"name": "cache", "description": "Statistiques et invalidation du cache requêtes"},
     ],
 )
 app.add_middleware(ApiVersionMiddleware)
@@ -54,11 +56,13 @@ app.include_router(orgs_router)
 store = DataStore()
 doc_store = DocStore()
 org_registry = OrgRegistry()
+query_cache = QueryCache()
 _graph = None
 
 app.state.store = store
 app.state.doc_store = doc_store
 app.state.org_registry = org_registry
+app.state.query_cache = query_cache
 
 
 def get_graph():
@@ -72,11 +76,13 @@ app.state.get_graph = get_graph
 
 _VIEWER = RequireRole("viewer")
 _EDITOR = RequireRole("editor")
+_ADMIN = RequireRole("admin")
 
 
 class AskRequest(BaseModel):
     question: str
     dry_run: bool = False
+    use_cache: bool = True
 
 
 @app.get("/health")
@@ -93,6 +99,7 @@ async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
         p = Path(d) / Path(file.filename).name
         p.write_bytes(await file.read())
         tables = store.load_file(p)
+    query_cache.invalidate()
     return {"tables": tables}
 
 
@@ -100,8 +107,15 @@ async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
 def ask(req: AskRequest, _: str = Depends(_VIEWER)):
     if not store.tables:
         raise HTTPException(400, "Aucune donnée chargée. Utilisez /upload d'abord.")
+
+    table_names = frozenset(store.tables)
+    if req.use_cache and not req.dry_run:
+        cached = query_cache.get(req.question, table_names)
+        if cached is not None:
+            return {**cached, "cached": True}
+
     s = get_graph().invoke({"question": req.question, "dry_run": req.dry_run})
-    return {
+    result = {
         "sql": s.get("sql"),
         "columns": s.get("columns", []),
         "rows": s.get("rows", [])[:200],
@@ -109,7 +123,22 @@ def ask(req: AskRequest, _: str = Depends(_VIEWER)):
         "error": s.get("error"),
         "attempts": s.get("attempts"),
         "confidence": s.get("confidence"),
+        "cached": False,
     }
+    if req.use_cache and not req.dry_run and not s.get("error"):
+        query_cache.set(req.question, table_names, result)
+    return result
+
+
+@app.get("/cache/stats", tags=["cache"])
+def cache_stats(_: str = Depends(_VIEWER)):
+    return query_cache.stats()
+
+
+@app.delete("/cache", tags=["cache"])
+def invalidate_cache(_: str = Depends(_ADMIN)):
+    count = query_cache.invalidate()
+    return {"invalidated": count}
 
 
 # Serve React build if dist/ exists (optional — not required for API usage)
