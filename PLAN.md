@@ -143,8 +143,11 @@ Wizard 3 étapes (métriques → dimensions → preview → confirm) via `/wizar
 ### Sprint 9 — Frontend React SPA (livré)
 Vite + React + TypeScript dans `frontend/` ; pages Chat, Dashboards, Upload, Login ; composants ConfidenceBadge, SqlBlock, TileRenderer (recharts kpi/bar/line/table/pie), NavBar, ApiKeyGuard ; 17 tests Vitest + 4 tests Python ; FastAPI sert le build sur `/app/` si `frontend/dist/` existe. **Succès** : 391/391 tests Python, 17/17 Vitest.
 
-### Après le pilote
-PDF/DOCX avancé, multi-tenant, alertes, API versionnée, connecteurs Snowflake/BigQuery.
+### Sprints 10–22 (livrés)
+PDF/DOCX avancé, multi-tenant, alertes, API versionnée v1, connecteurs Snowflake/BigQuery/MongoDB, conformité Loi 25/PIPEDA, tests E2E Playwright, cache performance, marketplace templates, onboarding guidé, certificat de précision, Helm chart + Prometheus/Grafana, productionisation hardening. **732 tests au total.**
+
+### Sprint 23 — Extracteur universel de templates ✅ (2026-10-07)
+Importation de templates depuis PDF, PNG/JPEG (OCR), Excel ou CSV : détection du secteur, extraction de KPI et sections, conversion en `DashboardTemplate` + tuiles (kpi/bar/pie/line/table), persistance JSON, routes `/user-templates` (extract/save/list/get/apply), RBAC viewer/editor. pypdf (MIT) remplace PyMuPDF (AGPL) pour rester conforme à la politique licences. **31 tests, 732/732 total.**
 
 ---
 
