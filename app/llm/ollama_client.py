@@ -10,10 +10,10 @@ class LLM(Protocol):
 
 
 class OllamaClient:
-    def __init__(self, url: str | None = None, model: str | None = None, timeout: float = 300.0):
+    def __init__(self, url: str | None = None, model: str | None = None, timeout: float = 600.0):
         self.url = (url or os.environ.get("OLLAMA_URL", "http://localhost:11434")).rstrip("/")
-        self.model = model or os.environ.get("LLM_MODEL", "qwen2.5-coder:32b")
-        self.timeout = timeout
+        self.model = model or os.environ.get("LLM_MODEL", "deepseek-r1:1.5b")
+        self.timeout = float(os.environ.get("LLM_TIMEOUT", str(timeout)))
 
     def complete(self, system: str, user: str) -> str:
         r = httpx.post(

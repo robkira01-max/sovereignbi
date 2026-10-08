@@ -106,8 +106,10 @@ def log_audit_results(findings: list[SecurityFinding]) -> None:
     if not findings:
         log.info("security_audit_ok", message="Aucun problème de configuration détecté.")
         return
+    _severity_map = {"critical": "critical", "high": "warning", "medium": "warning", "info": "info"}
     for f in findings:
-        logger_fn = getattr(log, f.severity if f.severity != "info" else "info")
+        level = _severity_map.get(f.severity, "info")
+        logger_fn = getattr(log, level)
         logger_fn(
             "security_finding",
             code=f.code,
