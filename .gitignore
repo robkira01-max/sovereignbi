@@ -19,5 +19,7 @@ data/dashboards/
 data/semantic_versions/
 data/wizard_sessions.jsonl
 data/template_catalogue.jsonl
+data/templates/
+data/sync/
 frontend/node_modules/
 frontend/dist/
