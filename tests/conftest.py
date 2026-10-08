@@ -15,3 +15,6 @@ os.environ.setdefault("SOVEREIGN_ADMIN_KEY", "test-admin-key-sprint3")
 
 # Rate limiter — force high value so tests never hit the 60 rpm default
 os.environ["SOVEREIGN_RATE_LIMIT_RPM"] = "100000"
+
+# LLM timeout — fail fast so addin /ask tests don't hang waiting for Ollama
+os.environ.setdefault("LLM_TIMEOUT", "5")
