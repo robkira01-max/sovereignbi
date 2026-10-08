@@ -130,6 +130,96 @@ def pin_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR
     return {"id": dashboard_id, "tile_id": tile_id, "updated_at": d.updated_at}
 
 
+@router.patch("/dashboards/{dashboard_id}/layout")
+def patch_layout(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR)):
+    """Réordonne les tuiles du dashboard (drag-and-drop).
+
+    Body: {"tiles": [{"id": "t1", "position": 0}, {"id": "t2", "position": 1}, ...]}
+    Toutes les tuiles existantes doivent être présentes — pas d'ajout ni de suppression.
+    """
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+
+    order_items = body.get("tiles")
+    if not isinstance(order_items, list):
+        raise HTTPException(400, "Le champ 'tiles' (liste) est requis.")
+
+    d = load_dashboard(p)
+    existing_ids = {tile.id for tile in d.tiles}
+    incoming_ids = {item.get("id") for item in order_items if isinstance(item, dict)}
+
+    if incoming_ids != existing_ids:
+        raise HTTPException(400, "La liste doit contenir exactement les tuiles existantes.")
+
+    position_map = {
+        item["id"]: item.get("position", i)
+        for i, item in enumerate(order_items)
+        if isinstance(item, dict) and "id" in item
+    }
+    for tile in d.tiles:
+        tile.position = position_map.get(tile.id)
+    d.tiles.sort(key=lambda t: (t.position is None, t.position or 0))
+
+    d.updated_at = _now()
+    save_dashboard(d, p)
+    return {"id": dashboard_id, "updated_at": d.updated_at,
+            "order": [t.id for t in d.tiles]}
+
+
+@router.post("/dashboards/{dashboard_id}/tiles")
+def add_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR)):
+    """Ajoute une tuile à un dashboard existant."""
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+
+    tile_id = body.get("id")
+    tile_type = body.get("type")
+    tile_title = body.get("title")
+    if not tile_id or not tile_type or not tile_title:
+        raise HTTPException(400, "Les champs 'id', 'type' et 'title' sont requis.")
+
+    d = load_dashboard(p)
+    if any(t.id == tile_id for t in d.tiles):
+        raise HTTPException(409, f"Une tuile avec l'id '{tile_id}' existe déjà.")
+
+    from app.dashboards.models import Tile
+    new_tile = Tile(
+        id=tile_id,
+        type=tile_type,
+        title=tile_title,
+        metric=body.get("metric"),
+        sql_pinned=body.get("sql_pinned"),
+        dimensions=body.get("dimensions", []),
+        filters=body.get("filters", {}),
+        options=body.get("options", {}),
+        position=body.get("position", len(d.tiles)),
+    )
+    d.tiles.append(new_tile)
+    d.updated_at = _now()
+    save_dashboard(d, p)
+    return {"id": dashboard_id, "tile_id": tile_id, "updated_at": d.updated_at}
+
+
+@router.delete("/dashboards/{dashboard_id}/tiles/{tile_id}", status_code=200)
+def remove_tile(dashboard_id: str, tile_id: str, _: str = Depends(_EDITOR)):
+    """Supprime une tuile d'un dashboard."""
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+
+    d = load_dashboard(p)
+    original_count = len(d.tiles)
+    d.tiles = [t for t in d.tiles if t.id != tile_id]
+    if len(d.tiles) == original_count:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable dans le dashboard.")
+
+    d.updated_at = _now()
+    save_dashboard(d, p)
+    return {"id": dashboard_id, "tile_id": tile_id, "updated_at": d.updated_at}
+
+
 # ─── Templates ────────────────────────────────────────────────────────────────
 
 @router.get("/templates")

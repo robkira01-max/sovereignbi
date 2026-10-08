@@ -301,3 +301,147 @@ def test_get_template(client):
 def test_get_template_not_found(client):
     r = client.get("/templates/nonexistent_xyz")
     assert r.status_code == 404
+
+
+# ─── Sprint 26 : patch layout, add tile, remove tile ─────────────────────────
+
+def _create_dash(client, dash_id: str = "s26_dash") -> None:
+    body = {
+        "id": dash_id,
+        "title": "Sprint 26 Test",
+        "scope": "personal",
+        "tiles": [
+            {"id": "t1", "type": "kpi", "title": "KPI 1"},
+            {"id": "t2", "type": "bar", "title": "Bar 2"},
+            {"id": "t3", "type": "line", "title": "Line 3"},
+        ],
+    }
+    r = client.post("/dashboards", json=body)
+    assert r.status_code == 200
+
+
+def test_patch_layout_reorders_tiles(client):
+    _create_dash(client)
+    r = client.patch(
+        "/dashboards/s26_dash/layout",
+        json={"tiles": [{"id": "t3", "position": 0}, {"id": "t1", "position": 1}, {"id": "t2", "position": 2}]},
+    )
+    assert r.status_code == 200
+    data = r.json()
+    assert data["order"] == ["t3", "t1", "t2"]
+
+
+def test_patch_layout_returns_updated_at(client):
+    _create_dash(client, "s26_ts")
+    r = client.patch(
+        "/dashboards/s26_ts/layout",
+        json={"tiles": [{"id": "t1", "position": 0}, {"id": "t2", "position": 1}, {"id": "t3", "position": 2}]},
+    )
+    assert r.status_code == 200
+    assert "updated_at" in r.json()
+
+
+def test_patch_layout_missing_tile_400(client):
+    _create_dash(client, "s26_miss")
+    r = client.patch(
+        "/dashboards/s26_miss/layout",
+        json={"tiles": [{"id": "t1", "position": 0}, {"id": "t2", "position": 1}]},
+    )
+    assert r.status_code == 400
+
+
+def test_patch_layout_extra_tile_400(client):
+    _create_dash(client, "s26_extra")
+    r = client.patch(
+        "/dashboards/s26_extra/layout",
+        json={"tiles": [
+            {"id": "t1", "position": 0},
+            {"id": "t2", "position": 1},
+            {"id": "t3", "position": 2},
+            {"id": "t_new", "position": 3},
+        ]},
+    )
+    assert r.status_code == 400
+
+
+def test_patch_layout_not_found(client):
+    r = client.patch(
+        "/dashboards/no_such/layout",
+        json={"tiles": [{"id": "t1", "position": 0}]},
+    )
+    assert r.status_code == 404
+
+
+def test_add_tile_appends(client):
+    _create_dash(client, "s26_add")
+    r = client.post(
+        "/dashboards/s26_add/tiles",
+        json={"id": "t_new", "type": "pie", "title": "Pie Chart"},
+    )
+    assert r.status_code == 200
+    assert r.json()["tile_id"] == "t_new"
+    # Verify tile is present in dashboard
+    d = client.get("/dashboards/s26_add").json()
+    tile_ids = [t["id"] for t in d["tiles"]]
+    assert "t_new" in tile_ids
+
+
+def test_add_tile_duplicate_409(client):
+    _create_dash(client, "s26_dup")
+    r = client.post(
+        "/dashboards/s26_dup/tiles",
+        json={"id": "t1", "type": "kpi", "title": "Duplicate"},
+    )
+    assert r.status_code == 409
+
+
+def test_add_tile_missing_fields_400(client):
+    _create_dash(client, "s26_flds")
+    r = client.post(
+        "/dashboards/s26_flds/tiles",
+        json={"id": "t_only"},
+    )
+    assert r.status_code == 400
+
+
+def test_add_tile_dashboard_not_found(client):
+    r = client.post(
+        "/dashboards/no_such/tiles",
+        json={"id": "t1", "type": "kpi", "title": "X"},
+    )
+    assert r.status_code == 404
+
+
+def test_remove_tile_success(client):
+    _create_dash(client, "s26_rm")
+    r = client.delete("/dashboards/s26_rm/tiles/t2")
+    assert r.status_code == 200
+    assert r.json()["tile_id"] == "t2"
+    d = client.get("/dashboards/s26_rm").json()
+    tile_ids = [t["id"] for t in d["tiles"]]
+    assert "t2" not in tile_ids
+    assert "t1" in tile_ids
+    assert "t3" in tile_ids
+
+
+def test_remove_tile_not_found_404(client):
+    _create_dash(client, "s26_rm404")
+    r = client.delete("/dashboards/s26_rm404/tiles/no_tile")
+    assert r.status_code == 404
+
+
+def test_remove_tile_dashboard_not_found(client):
+    r = client.delete("/dashboards/no_such/tiles/t1")
+    assert r.status_code == 404
+
+
+def test_tile_position_persisted(client):
+    """After patch_layout, get_dashboard returns tiles sorted by position."""
+    _create_dash(client, "s26_pos")
+    client.patch(
+        "/dashboards/s26_pos/layout",
+        json={"tiles": [{"id": "t3", "position": 0}, {"id": "t2", "position": 1}, {"id": "t1", "position": 2}]},
+    )
+    d = client.get("/dashboards/s26_pos").json()
+    ids = [t["id"] for t in d["tiles"]]
+    assert ids == ["t3", "t2", "t1"]

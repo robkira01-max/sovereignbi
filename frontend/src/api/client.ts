@@ -32,8 +32,28 @@ export const api = {
     }).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json() })
   },
 
-  dashboards: () => apiFetch<Dashboard[]>('/dashboards'),
+  dashboards: () =>
+    apiFetch<{ dashboards: DashboardSummary[] }>('/dashboards').then(r => r.dashboards),
   getDashboard: (id: string) => apiFetch<Dashboard>(`/dashboards/${id}`),
+
+  patchLayout: (id: string, tiles: { id: string; position: number }[]) =>
+    apiFetch<{ id: string; updated_at: string; order: string[] }>(
+      `/dashboards/${id}/layout`,
+      { method: 'PATCH', body: JSON.stringify({ tiles }) }
+    ),
+
+  addTile: (id: string, tile: Omit<Tile, 'position'> & { position?: number }) =>
+    apiFetch<{ id: string; tile_id: string; updated_at: string }>(
+      `/dashboards/${id}/tiles`,
+      { method: 'POST', body: JSON.stringify(tile) }
+    ),
+
+  removeTile: (dashboardId: string, tileId: string) =>
+    apiFetch<{ id: string; tile_id: string; updated_at: string }>(
+      `/dashboards/${dashboardId}/tiles/${tileId}`,
+      { method: 'DELETE' }
+    ),
+
   health: () => apiFetch<{ status: string }>('/health'),
 }
 
@@ -47,15 +67,27 @@ export interface AskResponse {
   confidence: { score: number; label: string; explanation: string } | null
 }
 
+export interface DashboardSummary {
+  id: string
+  title: string
+  scope: string
+  updated_at: string
+}
+
 export interface Dashboard {
   id: string
   title: string
+  scope: string
   tiles: Tile[]
+  theme?: { primary_color?: string; font?: string; logo_url?: string }
 }
 
 export interface Tile {
   id: string
   type: string
   title: string
+  metric?: string
   sql_pinned?: string
+  dimensions?: string[]
+  position?: number
 }

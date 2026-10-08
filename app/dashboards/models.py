@@ -19,6 +19,7 @@ class Tile:
     dimensions: list[str] = field(default_factory=list)
     filters: dict[str, Any] = field(default_factory=dict)
     options: dict[str, Any] = field(default_factory=dict)
+    position: int | None = None  # display order (0-based); None = append
 
 
 @dataclass
@@ -64,6 +65,7 @@ def _tile_from_dict(d: dict) -> Tile:
         dimensions=d.get("dimensions", []),
         filters=d.get("filters", {}),
         options=d.get("options", {}),
+        position=d.get("position"),
     )
 
 
