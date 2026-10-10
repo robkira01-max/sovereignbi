@@ -66,9 +66,11 @@ def run_sync(
 
     try:
         import duckdb
-        store.con.execute(f'DROP TABLE IF EXISTS "{schedule.target_table}"')
+        from app.data.duckdb_store import _safe_name
+        safe_table = _safe_name(schedule.target_table)
+        store.con.execute(f'DROP TABLE IF EXISTS "{safe_table}"')
         store.con.execute(
-            f'CREATE TABLE "{schedule.target_table}" AS SELECT * FROM df'
+            f'CREATE TABLE "{safe_table}" AS SELECT * FROM df'
         )
         rows = len(df)
     except Exception as exc:

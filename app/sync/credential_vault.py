@@ -14,6 +14,12 @@ _DEV_KEY_BYTES = b"sovereignbi-dev-vault-key-32byt"
 def _get_fernet() -> Fernet:
     raw = os.environ.get(VAULT_KEY_ENV, "").encode()
     if not raw:
+        app_env = os.environ.get("APP_ENV", "development").lower()
+        if app_env == "production":
+            raise RuntimeError(
+                f"{VAULT_KEY_ENV} est obligatoire en production. "
+                "Générer : python3 -c \"import os,base64; print(base64.urlsafe_b64encode(os.urandom(32)).decode())\""
+            )
         warnings.warn(
             f"{VAULT_KEY_ENV} non définie — clé de dev utilisée. "
             "Définir cette variable en production.",

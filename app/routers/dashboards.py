@@ -1,6 +1,7 @@
 """Dashboard and template API routes."""
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,6 +23,14 @@ _EDITOR = RequireRole("editor")
 
 _DASHBOARDS_DIR = Path("data/dashboards")
 _TEMPLATES_DIR = Path("templates")
+
+_ID_RE = re.compile(r'^[A-Za-z0-9_\-]{1,128}$')
+
+
+def _validate_id(value: str, label: str = "id") -> None:
+    """Reject path-traversal and shell-injection attempts in IDs."""
+    if not _ID_RE.match(value):
+        raise HTTPException(400, f"{label} invalide : caractères autorisés a-z A-Z 0-9 _ -")
 
 
 def _now() -> str:
@@ -45,6 +54,7 @@ def list_dashboards(_: str = Depends(_VIEWER)):
 
 @router.get("/dashboards/{dashboard_id}")
 def get_dashboard(dashboard_id: str, _: str = Depends(_VIEWER)):
+    _validate_id(dashboard_id, "dashboard_id")
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
     if not p.exists():
@@ -63,6 +73,7 @@ def create_dashboard(body: dict = Body(...), _: str = Depends(_EDITOR)):
     dashboard_id = body.get("id")
     if not dashboard_id:
         raise HTTPException(400, "Le champ 'id' est requis.")
+    _validate_id(dashboard_id, "dashboard_id")
     from app.dashboards.models import DashboardTheme, Tile
 
     tiles = [
@@ -101,6 +112,7 @@ def create_dashboard(body: dict = Body(...), _: str = Depends(_EDITOR)):
 @router.post("/dashboards/{dashboard_id}/pin")
 def pin_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR)):
     """Épingle le SQL d'une réponse chat à une tuile du dashboard."""
+    _validate_id(dashboard_id, "dashboard_id")
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
     if not p.exists():
@@ -137,6 +149,7 @@ def patch_layout(dashboard_id: str, body: dict = Body(...), _: str = Depends(_ED
     Body: {"tiles": [{"id": "t1", "position": 0}, {"id": "t2", "position": 1}, ...]}
     Toutes les tuiles existantes doivent être présentes — pas d'ajout ni de suppression.
     """
+    _validate_id(dashboard_id, "dashboard_id")
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
     if not p.exists():
         raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
@@ -170,6 +183,7 @@ def patch_layout(dashboard_id: str, body: dict = Body(...), _: str = Depends(_ED
 @router.post("/dashboards/{dashboard_id}/tiles")
 def add_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR)):
     """Ajoute une tuile à un dashboard existant."""
+    _validate_id(dashboard_id, "dashboard_id")
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
     if not p.exists():
         raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
@@ -205,6 +219,8 @@ def add_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR
 @router.delete("/dashboards/{dashboard_id}/tiles/{tile_id}", status_code=200)
 def remove_tile(dashboard_id: str, tile_id: str, _: str = Depends(_EDITOR)):
     """Supprime une tuile d'un dashboard."""
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
     if not p.exists():
         raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")

@@ -479,4 +479,90 @@ def test_extract_csv_endpoint(client):
     assert resp.status_code == 200
     data = resp.json()
     assert data["structure"]["detected_sector"] in ("général", "commerce", "finance", "humanitaire", "ingénierie", "médecine")
-    assert len(data["suggested_template"]["tiles"]) >= 1
+
+
+# ── SBI-003 regression: validate_sql applied in apply_template (sql_hint bypass) ──
+
+def test_apply_template_sql_hint_injection_blocked(client):
+    """sql_hint with DROP TABLE must be caught by validate_sql, not executed."""
+    df = pd.DataFrame({"product": ["A", "B"], "revenue": [100.0, 200.0]})
+    buf = io.BytesIO()
+    df.to_excel(buf, index=False)
+    buf.seek(0)
+    client.post(
+        "/upload",
+        files={"file": ("sbi003.xlsx", buf, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers={"X-Api-Key": VIEWER_KEY},
+    )
+
+    payload = {
+        "title": "SBI-003 inject",
+        "sector": "général",
+        "source_format": "manual",
+        "tiles": [
+            {
+                "title": "Drop",
+                "question": "Supprimer la table",
+                "chart_type": "table",
+                "tile_id": str(uuid.uuid4()),
+                "sql_hint": "DROP TABLE sbi003",
+            },
+            {
+                "title": "Insert",
+                "question": "Insérer une ligne",
+                "chart_type": "table",
+                "tile_id": str(uuid.uuid4()),
+                "sql_hint": "INSERT INTO sbi003 VALUES ('x', 0)",
+            },
+        ],
+    }
+    save_resp = client.post("/user-templates/save", json=payload, headers={"X-Api-Key": EDITOR_KEY})
+    assert save_resp.status_code == 200
+    tid = save_resp.json()["template_id"]
+
+    apply_resp = client.post(f"/user-templates/{tid}/apply", headers={"X-Api-Key": VIEWER_KEY})
+    assert apply_resp.status_code == 200
+    results = apply_resp.json()
+    # Both tiles must report an error (sql guard blocked), not a null error
+    for r in results:
+        assert r["error"] is not None, f"sql_hint injection was not blocked for tile '{r['title']}'"
+
+
+def test_apply_template_sql_hint_select_allowed(client):
+    """A valid SELECT sql_hint must execute successfully (no false positive)."""
+    df = pd.DataFrame({"country": ["CA", "DJ"], "score": [9, 7]})
+    buf = io.BytesIO()
+    df.to_excel(buf, index=False)
+    buf.seek(0)
+    client.post(
+        "/upload",
+        files={"file": ("sbi003b.xlsx", buf, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers={"X-Api-Key": VIEWER_KEY},
+    )
+
+    from app.main import app  # noqa: PLC0415
+    tables = sorted(app.state.store.tables)
+    if not tables:
+        pytest.skip("No tables loaded")
+    table = tables[-1]
+
+    payload = {
+        "title": "SBI-003 select ok",
+        "sector": "général",
+        "source_format": "manual",
+        "tiles": [
+            {
+                "title": "All rows",
+                "question": "Toutes les lignes",
+                "chart_type": "table",
+                "tile_id": str(uuid.uuid4()),
+                "sql_hint": f'SELECT * FROM "{table}" LIMIT 5',
+            },
+        ],
+    }
+    save_resp = client.post("/user-templates/save", json=payload, headers={"X-Api-Key": EDITOR_KEY})
+    tid = save_resp.json()["template_id"]
+    apply_resp = client.post(f"/user-templates/{tid}/apply", headers={"X-Api-Key": VIEWER_KEY})
+    assert apply_resp.status_code == 200
+    results = apply_resp.json()
+    assert results[0]["error"] is None

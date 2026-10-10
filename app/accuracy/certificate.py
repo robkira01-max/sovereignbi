@@ -52,7 +52,15 @@ def _grade(score: float) -> str:
 
 
 def _sign(payload: str) -> str:
-    secret = os.environ.get("SOVEREIGN_CERT_SECRET", "dev-cert-secret")
+    secret = os.environ.get("SOVEREIGN_CERT_SECRET", "")
+    if not secret:
+        app_env = os.environ.get("APP_ENV", "development").lower()
+        if app_env == "production":
+            raise RuntimeError(
+                "SOVEREIGN_CERT_SECRET est obligatoire en production. "
+                "Générer : python3 -c \"import secrets; print(secrets.token_hex(32))\""
+            )
+        secret = "dev-cert-secret"
     return hmac.new(secret.encode(), payload.encode(), hashlib.sha256).hexdigest()
 
 

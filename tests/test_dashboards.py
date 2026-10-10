@@ -435,6 +435,29 @@ def test_remove_tile_dashboard_not_found(client):
     assert r.status_code == 404
 
 
+# ─── Security: path traversal protection ──────────────────────────────────────
+
+def test_path_traversal_get_400(client):
+    r = client.get("/dashboards/../../../etc/passwd")
+    assert r.status_code in (400, 404)
+
+
+def test_path_traversal_dot_400(client):
+    r = client.get("/dashboards/dash.yaml")
+    assert r.status_code == 400
+
+
+def test_path_traversal_slash_400(client):
+    r = client.get("/dashboards/foo%2Fbar")
+    assert r.status_code in (400, 404)
+
+
+def test_path_traversal_create_400(client):
+    r = client.post("/dashboards", json={"id": "../evil", "title": "x",
+                                          "scope": "personal", "tiles": []})
+    assert r.status_code == 400
+
+
 def test_tile_position_persisted(client):
     """After patch_layout, get_dashboard returns tiles sorted by position."""
     _create_dash(client, "s26_pos")

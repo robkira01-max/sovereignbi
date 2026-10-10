@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from pydantic import BaseModel
 
 from app.security.rbac import RequireRole
+from app.security.sql_guard import SQLGuardError, validate_sql
 from app.templates.models import (
     DashboardTemplate,
     DashboardTile,
@@ -184,9 +185,10 @@ def apply_template_route(
                 sql = f'SELECT * FROM "{table}" LIMIT 5'
 
         try:
+            sql = validate_sql(sql, set(tables))
             cols, rows = store.execute(sql)
             result = [dict(zip(cols, row)) for row in rows]
-        except Exception as exc:
+        except (SQLGuardError, Exception) as exc:
             error = str(exc)
 
         results.append({
