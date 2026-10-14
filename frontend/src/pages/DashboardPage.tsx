@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/client'
 import type { Dashboard, DashboardSummary, Tile } from '../api/client'
 import { TileRenderer } from '../components/TileRenderer'
+import { useLocale } from '../hooks/useLocale'
 
 const TILE_TYPES = ['kpi', 'bar', 'line', 'pie', 'table']
 
 export function DashboardPage() {
+  const { t } = useLocale()
   const [summaries, setSummaries] = useState<DashboardSummary[]>([])
   const [selected, setSelected] = useState<Dashboard | null>(null)
   const [tiles, setTiles] = useState<Tile[]>([])
@@ -29,7 +31,6 @@ export function DashboardPage() {
 
   const byPosition = (a: Tile, b: Tile) => (a.position ?? 999) - (b.position ?? 999)
 
-  // ── Drag & drop handlers ─────────────────────────────────────────────────────
   const onDragStart = (i: number) => { dragIdx.current = i }
 
   const onDrop = (i: number) => {
@@ -38,28 +39,26 @@ export function DashboardPage() {
     const next = [...tiles]
     const [moved] = next.splice(from, 1)
     next.splice(i, 0, moved)
-    const reordered = next.map((t, idx) => ({ ...t, position: idx }))
+    const reordered = next.map((tile, idx) => ({ ...tile, position: idx }))
     setTiles(reordered)
     dragIdx.current = null
 
     if (!selected) return
     setSaving(true)
-    api.patchLayout(selected.id, reordered.map((t, idx) => ({ id: t.id, position: idx })))
+    api.patchLayout(selected.id, reordered.map((tile, idx) => ({ id: tile.id, position: idx })))
       .catch(e => setError(e.message))
       .finally(() => setSaving(false))
   }
 
-  // ── Remove tile ───────────────────────────────────────────────────────────────
   const removeTile = (tileId: string) => {
     if (!selected) return
     setSaving(true)
     api.removeTile(selected.id, tileId)
-      .then(() => setTiles(prev => prev.filter(t => t.id !== tileId)))
+      .then(() => setTiles(prev => prev.filter(tile => tile.id !== tileId)))
       .catch(e => setError(e.message))
       .finally(() => setSaving(false))
   }
 
-  // ── Add tile ──────────────────────────────────────────────────────────────────
   const submitAdd = () => {
     if (!selected || !newTile.id || !newTile.title) return
     setSaving(true)
@@ -75,25 +74,25 @@ export function DashboardPage() {
 
   return (
     <div style={{ maxWidth: '960px', margin: '32px auto', padding: '0 16px' }}>
-      <h2>Tableaux de bord</h2>
+      <h2>{t('dashboard.title')}</h2>
       {error && (
         <p style={{ color: '#dc2626', background: '#fef2f2', padding: '8px 12px', borderRadius: '6px' }}>
-          {error} <button onClick={() => setError('')} style={{ marginLeft: '8px', cursor: 'pointer' }}>×</button>
+          {error} <button onClick={() => setError('')} style={{ marginInlineStart: '8px', cursor: 'pointer' }}>×</button>
         </p>
       )}
 
       {!selected ? (
         <>
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {summaries.length === 0 && <li style={{ color: '#6b7280' }}>Aucun tableau de bord.</li>}
+            {summaries.length === 0 && <li style={{ color: '#6b7280' }}>{t('dashboard.no_dashboards')}</li>}
             {summaries.map(d => (
               <li key={d.id} style={{ marginBottom: '8px' }}>
                 <button
                   onClick={() => openDashboard(d.id)}
-                  style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', width: '100%', textAlign: 'left' }}
+                  style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', width: '100%', textAlign: 'start' }}
                 >
                   <strong>{d.title}</strong>
-                  <span style={{ marginLeft: '8px', fontSize: '0.8rem', color: '#6b7280' }}>{d.scope}</span>
+                  <span style={{ marginInlineStart: '8px', fontSize: '0.8rem', color: '#6b7280' }}>{d.scope}</span>
                 </button>
               </li>
             ))}
@@ -102,45 +101,45 @@ export function DashboardPage() {
       ) : (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
-            <button onClick={() => { setSelected(null); setShowAdd(false) }} style={{ cursor: 'pointer' }}>← Retour</button>
+            <button onClick={() => { setSelected(null); setShowAdd(false) }} style={{ cursor: 'pointer' }}>{t('dashboard.back')}</button>
             <h3 style={{ margin: 0, flex: 1 }}>{selected.title}</h3>
-            {saving && <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>Enregistrement…</span>}
+            {saving && <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>{t('dashboard.saving')}</span>}
             <button
               onClick={() => setShowAdd(v => !v)}
               style={{ padding: '6px 14px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
             >
-              + Tuile
+              {t('dashboard.add_tile')}
             </button>
           </div>
 
           {showAdd && (
             <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '16px', marginBottom: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem' }}>
-                ID
+                {t('dashboard.id_label')}
                 <input value={newTile.id} onChange={e => setNewTile(p => ({ ...p, id: e.target.value }))}
-                  placeholder="ex: kpi_total" style={inputStyle} />
+                  placeholder={t('dashboard.tile_id_placeholder')} style={inputStyle} />
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem' }}>
-                Titre
+                {t('dashboard.title_label')}
                 <input value={newTile.title} onChange={e => setNewTile(p => ({ ...p, title: e.target.value }))}
-                  placeholder="ex: Total ventes" style={inputStyle} />
+                  placeholder={t('dashboard.tile_title_placeholder')} style={inputStyle} />
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem' }}>
-                Type
+                {t('dashboard.type_label')}
                 <select value={newTile.type} onChange={e => setNewTile(p => ({ ...p, type: e.target.value }))} style={inputStyle}>
-                  {TILE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  {TILE_TYPES.map(tp => <option key={tp} value={tp}>{tp}</option>)}
                 </select>
               </label>
               <button onClick={submitAdd} disabled={!newTile.id || !newTile.title}
                 style={{ padding: '6px 14px', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
-                Ajouter
+                {t('dashboard.add')}
               </button>
-              <button onClick={() => setShowAdd(false)} style={{ padding: '6px 14px', cursor: 'pointer' }}>Annuler</button>
+              <button onClick={() => setShowAdd(false)} style={{ padding: '6px 14px', cursor: 'pointer' }}>{t('dashboard.cancel')}</button>
             </div>
           )}
 
           <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '8px' }}>
-            Faites glisser les tuiles pour les réordonner.
+            {t('dashboard.drag_hint')}
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
@@ -165,9 +164,9 @@ export function DashboardPage() {
                   <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#374151', flex: 1 }}>{tile.title}</h4>
                   <button
                     onClick={() => removeTile(tile.id)}
-                    title="Supprimer cette tuile"
+                    title={t('dashboard.delete_tile')}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '1rem', padding: '0 4px', lineHeight: 1 }}
-                    aria-label={`Supprimer ${tile.title}`}
+                    aria-label={`${t('dashboard.delete_tile')} ${tile.title}`}
                   >
                     ×
                   </button>
@@ -183,7 +182,7 @@ export function DashboardPage() {
               </div>
             ))}
             {tiles.length === 0 && (
-              <p style={{ color: '#6b7280', gridColumn: '1/-1' }}>Aucune tuile. Cliquez « + Tuile » pour en ajouter.</p>
+              <p style={{ color: '#6b7280', gridColumn: '1/-1' }}>{t('dashboard.no_tiles')}</p>
             )}
           </div>
         </div>

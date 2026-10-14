@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useLocale } from '../hooks/useLocale'
 
 interface Props {
   sql: string
 }
 
 export function SqlBlock({ sql }: Props) {
+  const { t } = useLocale()
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
@@ -36,13 +38,13 @@ export function SqlBlock({ sql }: Props) {
         style={{
           position: 'absolute',
           top: '8px',
-          right: '8px',
+          insetInlineEnd: '8px',
           fontSize: '0.7rem',
           padding: '2px 6px',
           cursor: 'pointer',
         }}
       >
-        {copied ? 'Copié !' : 'Copier'}
+        {copied ? t('sql.copied') : t('sql.copy')}
       </button>
     </div>
   )

@@ -1,3 +1,4 @@
+import { LocaleProvider } from './hooks/useLocale'
 import { LoginPage } from './pages/LoginPage'
 import { ChatPage } from './pages/ChatPage'
 import { DashboardPage } from './pages/DashboardPage'
@@ -7,7 +8,7 @@ import { NavBar } from './components/NavBar'
 
 const path = typeof window !== 'undefined' ? window.location.pathname : '/chat'
 
-export default function App() {
+function Inner() {
   if (path === '/login' || path === '/') {
     return <LoginPage />
   }
@@ -25,5 +26,13 @@ export default function App() {
         {page}
       </div>
     </ApiKeyGuard>
+  )
+}
+
+export default function App() {
+  return (
+    <LocaleProvider>
+      <Inner />
+    </LocaleProvider>
   )
 }

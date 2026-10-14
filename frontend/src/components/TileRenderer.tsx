@@ -3,6 +3,7 @@ import {
   LineChart, Line,
   PieChart, Pie, Cell,
 } from 'recharts'
+import { useLocale } from '../hooks/useLocale'
 
 interface TileData {
   columns: string[]
@@ -24,6 +25,7 @@ function toChartData(data: TileData): Record<string, unknown>[] {
 }
 
 export function TileRenderer({ type, title, data }: Props) {
+  const { t } = useLocale()
   const chartData = toChartData(data)
   const [xKey, yKey] = data.columns.length >= 2
     ? [data.columns[0], data.columns[1]]
@@ -106,6 +108,6 @@ export function TileRenderer({ type, title, data }: Props) {
         </div>
       )
     default:
-      return <div data-testid="tile-unknown">Type de tuile inconnu : {type}</div>
+      return <div data-testid="tile-unknown">{t('tile.unknown')} {type}</div>
   }
 }

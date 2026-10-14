@@ -3,8 +3,10 @@ import { api } from '../api/client'
 import type { AskResponse } from '../api/client'
 import { ConfidenceBadge } from '../components/ConfidenceBadge'
 import { SqlBlock } from '../components/SqlBlock'
+import { useLocale } from '../hooks/useLocale'
 
 export function ChatPage() {
+  const { t, tpl } = useLocale()
   const [question, setQuestion] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<AskResponse | null>(null)
@@ -20,7 +22,7 @@ export function ChatPage() {
       const res = await api.ask(question.trim())
       setResult(res)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue')
+      setError(err instanceof Error ? err.message : t('chat.error_unknown'))
     } finally {
       setLoading(false)
     }
@@ -28,12 +30,12 @@ export function ChatPage() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '32px auto', padding: '0 16px' }}>
-      <h2>Chat analytique</h2>
+      <h2>{t('chat.title')}</h2>
       <form onSubmit={handleAsk} style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
         <textarea
           value={question}
           onChange={e => setQuestion(e.target.value)}
-          placeholder="Ex : Quel est le CA total par région ?"
+          placeholder={t('chat.placeholder')}
           rows={3}
           style={{ flex: 1, padding: '10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '0.95rem', resize: 'vertical' }}
         />
@@ -42,7 +44,7 @@ export function ChatPage() {
           disabled={loading}
           style={{ padding: '10px 20px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, alignSelf: 'flex-end' }}
         >
-          {loading ? '…' : 'Poser'}
+          {loading ? '…' : t('chat.submit')}
         </button>
       </form>
 
@@ -51,21 +53,21 @@ export function ChatPage() {
       {result && (
         <div>
           <div style={{ marginBottom: '12px' }}>
-            <strong>Réponse</strong>
+            <strong>{t('chat.answer')}</strong>
             <ConfidenceBadge confidence={result.confidence} />
             <p style={{ marginTop: '8px' }}>{result.answer}</p>
           </div>
 
           {result.sql && (
             <div style={{ marginBottom: '12px' }}>
-              <strong>SQL</strong>
+              <strong>{t('chat.sql')}</strong>
               <SqlBlock sql={result.sql} />
             </div>
           )}
 
           {result.columns.length > 0 && (
             <div>
-              <strong>Résultats ({result.rows.length} lignes)</strong>
+              <strong>{tpl('chat.results', { n: result.rows.length })}</strong>
               <div style={{ overflowX: 'auto', marginTop: '8px' }}>
                 <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.85rem' }}>
                   <thead>

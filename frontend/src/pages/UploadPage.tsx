@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react'
 import { api } from '../api/client'
+import { useLocale } from '../hooks/useLocale'
 
 export function UploadPage() {
+  const { t } = useLocale()
   const inputRef = useRef<HTMLInputElement>(null)
   const [tables, setTables] = useState<string[]>([])
   const [error, setError] = useState('')
@@ -11,7 +13,7 @@ export function UploadPage() {
   const handleFile = async (file: File) => {
     const ext = file.name.split('.').pop()?.toLowerCase()
     if (!['csv', 'xlsx', 'xlsm'].includes(ext ?? '')) {
-      setError('Format accepté : CSV, XLSX, XLSM')
+      setError(t('upload.format_error'))
       return
     }
     setLoading(true)
@@ -20,7 +22,7 @@ export function UploadPage() {
       const res = await api.upload(file)
       setTables(res.tables)
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur upload')
+      setError(e instanceof Error ? e.message : t('upload.error_upload'))
     } finally {
       setLoading(false)
     }
@@ -28,7 +30,7 @@ export function UploadPage() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '32px auto', padding: '0 16px' }}>
-      <h2>Importer des données</h2>
+      <h2>{t('upload.title')}</h2>
       <div
         data-testid="drop-zone"
         onDragOver={e => { e.preventDefault(); setDragOver(true) }}
@@ -45,7 +47,7 @@ export function UploadPage() {
           marginBottom: '16px',
         }}
       >
-        {loading ? 'Chargement…' : 'Glissez un fichier CSV / XLSX ou cliquez pour sélectionner'}
+        {loading ? t('upload.loading') : t('upload.drop_hint')}
         <input
           ref={inputRef}
           type="file"
@@ -59,8 +61,8 @@ export function UploadPage() {
 
       {tables.length > 0 && (
         <div>
-          <strong>Tables chargées :</strong>
-          <ul>{tables.map(t => <li key={t}>{t}</li>)}</ul>
+          <strong>{t('upload.tables_loaded')}</strong>
+          <ul>{tables.map(tb => <li key={tb}>{tb}</li>)}</ul>
         </div>
       )}
     </div>

@@ -1,12 +1,17 @@
+import { useLocale, SUPPORTED_LOCALES, type Locale } from '../hooks/useLocale'
+import { LOCALE_LABELS } from '../i18n'
+
 interface Props {
   currentPath: string
 }
 
 export function NavBar({ currentPath }: Props) {
+  const { t, locale, setLocale } = useLocale()
+
   const nav = [
-    { href: '/chat', label: 'Chat' },
-    { href: '/dashboards', label: 'Tableaux de bord' },
-    { href: '/upload', label: 'Importer' },
+    { href: '/chat', key: 'nav.chat' },
+    { href: '/dashboards', key: 'nav.dashboards' },
+    { href: '/upload', key: 'nav.import' },
   ]
 
   const handleLogout = () => {
@@ -24,10 +29,11 @@ export function NavBar({ currentPath }: Props) {
         padding: '10px 20px',
         background: '#1e40af',
         color: '#fff',
+        flexWrap: 'wrap',
       }}
     >
-      <strong style={{ marginRight: '16px' }}>SovereignBI</strong>
-      {nav.map(({ href, label }) => (
+      <strong style={{ marginInlineEnd: '16px' }}>SovereignBI</strong>
+      {nav.map(({ href, key }) => (
         <a
           key={href}
           href={href}
@@ -37,15 +43,46 @@ export function NavBar({ currentPath }: Props) {
             fontWeight: currentPath === href ? 700 : 400,
           }}
         >
-          {label}
+          {t(key)}
         </a>
       ))}
-      <button
-        onClick={handleLogout}
-        style={{ marginLeft: 'auto', background: 'transparent', color: '#fff', border: '1px solid #93c5fd', borderRadius: '4px', padding: '4px 10px', cursor: 'pointer' }}
-      >
-        Déconnexion
-      </button>
+
+      <div style={{ marginInlineStart: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        {SUPPORTED_LOCALES.map((l: Locale) => (
+          <button
+            key={l}
+            data-testid={`locale-btn-${l}`}
+            onClick={() => setLocale(l)}
+            aria-pressed={locale === l}
+            style={{
+              background: locale === l ? '#fff' : 'transparent',
+              color: locale === l ? '#1e40af' : '#fff',
+              border: '1px solid #93c5fd',
+              borderRadius: '4px',
+              padding: '2px 7px',
+              cursor: 'pointer',
+              fontSize: '0.75rem',
+              fontWeight: locale === l ? 700 : 400,
+            }}
+          >
+            {LOCALE_LABELS[l]}
+          </button>
+        ))}
+        <button
+          onClick={handleLogout}
+          style={{
+            marginInlineStart: '8px',
+            background: 'transparent',
+            color: '#fff',
+            border: '1px solid #93c5fd',
+            borderRadius: '4px',
+            padding: '4px 10px',
+            cursor: 'pointer',
+          }}
+        >
+          {t('nav.logout')}
+        </button>
+      </div>
     </nav>
   )
 }
