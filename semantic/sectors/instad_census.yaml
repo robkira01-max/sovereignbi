@@ -1,0 +1,132 @@
+schema_version: "2"
+sector: "instad_census"
+label: "Recensement — INSTAD Djibouti"
+description: >
+  Modèle sémantique pour les données du recensement général de la
+  population et de l'habitat (RGPH) de Djibouti (INSTAD — Institut
+  National de la Statistique et des Études Démographiques et Économiques).
+  Derniers recensements : 2009, 2016, 2024.
+
+metrics:
+  - name: "population_totale"
+    aliases:
+      ["population", "total population", "población total",
+       "إجمالي السكان", "عدد السكان الإجمالي"]
+    sql: "SUM(population_totale)"
+    tables: ["population_region"]
+    description: "Population totale de Djibouti par région"
+
+  - name: "taux_urbanisation"
+    aliases:
+      ["urbanisation", "urban rate", "tasa de urbanización",
+       "معدل التحضر"]
+    sql: "SUM(population_urbaine) * 1.0 / NULLIF(SUM(population_totale), 0) * 100"
+    tables: ["population_region"]
+    description: "Proportion de la population vivant en zone urbaine"
+
+  - name: "taux_alphabetisation"
+    aliases:
+      ["alphabétisation", "literacy rate", "tasa de alfabetización",
+       "معدل محو الأمية"]
+    sql: "AVG(taux_alphabetisation_pct)"
+    tables: ["education_region"]
+    description: "Taux d'alphabétisation moyen par région"
+
+  - name: "taux_chomage"
+    aliases:
+      ["chômage", "unemployment", "desempleo", "معدل البطالة", "البطالة"]
+    sql: "AVG(taux_chomage_pct)"
+    tables: ["emploi_region"]
+    description: "Taux de chômage moyen"
+
+  - name: "menages_total"
+    aliases:
+      ["ménages", "households", "hogares", "الأسر المعيشية"]
+    sql: "SUM(nb_menages)"
+    tables: ["population_region"]
+    description: "Nombre total de ménages"
+
+tables:
+  - name: population_region
+    description: "Population et ménages par région et district de Djibouti"
+    columns:
+      - {name: region, type: varchar, description: "Région administrative : Djibouti-ville | Ali Sabieh | Dikhil | Obock | Tadjourah | Arta HXL #adm1+name"}
+      - {name: district, type: varchar, description: "Sous-préfecture / district HXL #adm2+name"}
+      - {name: annee_recensement, type: integer, description: "Année du recensement HXL #date+year"}
+      - {name: population_totale, type: integer, description: "Population totale HXL #population+total"}
+      - {name: population_urbaine, type: integer, description: "Population urbaine HXL #population+urban"}
+      - {name: population_rurale, type: integer, description: "Population rurale HXL #population+rural"}
+      - {name: hommes, type: integer, description: "Population masculine HXL #population+male"}
+      - {name: femmes, type: integer, description: "Population féminine HXL #population+female"}
+      - {name: nb_menages, type: integer, description: "Nombre de ménages HXL #households+total"}
+      - {name: taille_menage_moyenne, type: float, description: "Taille moyenne des ménages (personnes/ménage)"}
+      - {name: nationalite_djiboutienne_pct, type: float, description: "% de la population de nationalité djiboutienne"}
+
+  - name: education_region
+    description: "Indicateurs d'éducation par région (données INSTAD)"
+    columns:
+      - {name: region, type: varchar, description: "Région HXL #adm1+name"}
+      - {name: annee_recensement, type: integer, description: "Année HXL #date+year"}
+      - {name: taux_scolarisation_primaire_pct, type: float, description: "Taux brut de scolarisation au primaire en %"}
+      - {name: taux_scolarisation_secondaire_pct, type: float, description: "Taux brut de scolarisation au secondaire en %"}
+      - {name: taux_alphabetisation_pct, type: float, description: "Taux d'alphabétisation des 15 ans et plus en %"}
+      - {name: taux_alphabetisation_hommes_pct, type: float, description: "Taux d'alphabétisation masculin en %"}
+      - {name: taux_alphabetisation_femmes_pct, type: float, description: "Taux d'alphabétisation féminin en %"}
+      - {name: nb_eleves, type: integer, description: "Nombre d'élèves scolarisés HXL #education+enrolled"}
+
+  - name: emploi_region
+    description: "Indicateurs du marché du travail par région (INSTAD)"
+    columns:
+      - {name: region, type: varchar, description: "Région HXL #adm1+name"}
+      - {name: annee_recensement, type: integer, description: "Année HXL #date+year"}
+      - {name: population_active, type: integer, description: "Population active (15 ans et plus) HXL #population+active"}
+      - {name: emplois_total, type: integer, description: "Nombre de personnes occupées"}
+      - {name: chomeurs, type: integer, description: "Nombre de chômeurs"}
+      - {name: taux_chomage_pct, type: float, description: "Taux de chômage en % HXL #indicator+unemployment+rate"}
+      - {name: taux_activite_pct, type: float, description: "Taux d'activité en %"}
+      - {name: secteur_formel_pct, type: float, description: "% de l'emploi dans le secteur formel"}
+      - {name: secteur_informel_pct, type: float, description: "% de l'emploi dans le secteur informel"}
+
+  - name: logement
+    description: "Conditions de logement et accès aux services de base"
+    columns:
+      - {name: region, type: varchar, description: "Région HXL #adm1+name"}
+      - {name: annee_recensement, type: integer, description: "Année HXL #date+year"}
+      - {name: acces_eau_potable_pct, type: float, description: "% ménages avec accès eau potable HXL #indicator+water+access"}
+      - {name: acces_electricite_pct, type: float, description: "% ménages avec accès électricité HXL #indicator+electricity+access"}
+      - {name: acces_internet_pct, type: float, description: "% ménages avec accès internet"}
+      - {name: toilettes_ameliorees_pct, type: float, description: "% ménages avec sanitaires améliorés"}
+      - {name: type_habitat_dur_pct, type: float, description: "% logements en matériaux durs (béton, brique)"}
+      - {name: surpeuplement_pct, type: float, description: "% ménages en situation de surpeuplement (> 3 pers/pièce)"}
+
+joins:
+  - from_table: education_region
+    to_table: population_region
+    condition: "education_region.region = population_region.region AND education_region.annee_recensement = population_region.annee_recensement"
+    type: LEFT
+  - from_table: emploi_region
+    to_table: population_region
+    condition: "emploi_region.region = population_region.region AND emploi_region.annee_recensement = population_region.annee_recensement"
+    type: LEFT
+  - from_table: logement
+    to_table: population_region
+    condition: "logement.region = population_region.region AND logement.annee_recensement = population_region.annee_recensement"
+    type: LEFT
+
+rules:
+  - "Les régions de Djibouti sont : Djibouti-ville, Ali Sabieh, Dikhil, Obock, Tadjourah, Arta."
+  - "Djibouti-ville concentre environ 75% de la population totale du pays."
+  - "Les données sont issues des RGPH (Recensements Généraux de la Population et de l'Habitat) : 2009, 2016, 2024."
+  - "Pour comparer entre recensements, filtrer sur annee_recensement."
+  - "Les taux sont exprimés en pourcentage (0 à 100), pas en décimales."
+  - "La population active désigne les personnes de 15 ans et plus sur le marché du travail."
+
+glossary:
+  - terme: "INSTAD"
+    definition: "Institut National de la Statistique et des Études Démographiques et Économiques de Djibouti"
+  - terme: "RGPH"
+    definition: "Recensement Général de la Population et de l'Habitat"
+  - terme: "secteur informel"
+    definition: "Emplois sans contrat formel ni couverture sociale (commerce informel, artisanat, emplois domestiques…)"
+  - terme: "surpeuplement"
+    definition: "Logement où le nombre de personnes dépasse 3 par pièce principale"

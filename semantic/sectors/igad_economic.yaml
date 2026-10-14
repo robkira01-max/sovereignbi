@@ -1,0 +1,155 @@
+schema_version: "2"
+sector: "igad_economic"
+label: "Économique — IGAD / Corne de l'Afrique"
+description: >
+  Modèle sémantique pour les données économiques et de développement
+  de la région IGAD (Djibouti, Éthiopie, Kenya, Somalie, Soudan,
+  Ouganda, Tanzanie, Érythrée, Rwanda).
+  Sources : Banque mondiale, FMI, BAD, IGAD Statistics.
+
+metrics:
+  - name: "pib_total_usd"
+    aliases:
+      ["PIB", "GDP", "PIB total", "produit intérieur brut",
+       "gross domestic product", "producto interno bruto",
+       "الناتج المحلي الإجمالي"]
+    sql: "SUM(pib_usd)"
+    tables: ["indicateurs_economiques"]
+    description: "PIB total en dollars américains courants"
+
+  - name: "taux_croissance_moyen"
+    aliases:
+      ["croissance", "growth rate", "tasa de crecimiento",
+       "معدل النمو"]
+    sql: "AVG(taux_croissance_pib)"
+    tables: ["indicateurs_economiques"]
+    description: "Taux de croissance annuel moyen du PIB en %"
+
+  - name: "balance_commerciale"
+    aliases:
+      ["balance commerciale", "trade balance", "balanza comercial",
+       "الميزان التجاري"]
+    sql: "SUM(exportations_usd - importations_usd)"
+    tables: ["commerce_regional"]
+    description: "Balance commerciale (exportations - importations) en USD"
+
+  - name: "population_totale"
+    aliases:
+      ["population", "total population", "población total",
+       "إجمالي السكان", "عدد السكان"]
+    sql: "SUM(population)"
+    tables: ["demographie"]
+    description: "Population totale de la région"
+
+  - name: "score_securite_alimentaire"
+    aliases:
+      ["IPC", "food security", "sécurité alimentaire", "seguridad alimentaria",
+       "الأمن الغذائي"]
+    sql: "AVG(ipc_phase_moyenne)"
+    tables: ["securite_alimentaire"]
+    description: "Phase IPC moyenne (1 = pas de crise, 5 = famine)"
+
+  - name: "taux_pauvrete"
+    aliases:
+      ["pauvreté", "poverty rate", "tasa de pobreza",
+       "معدل الفقر"]
+    sql: "AVG(taux_pauvrete_pct)"
+    tables: ["indicateurs_developpement"]
+    description: "Taux de pauvreté moyen (% de la population sous 2.15 USD/jour)"
+
+tables:
+  - name: indicateurs_economiques
+    description: "Indicateurs macro-économiques annuels par pays IGAD"
+    columns:
+      - {name: pays, type: varchar, description: "Pays IGAD HXL #country+name"}
+      - {name: code_pays, type: varchar, description: "Code ISO 3 lettres HXL #country+code"}
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: pib_usd, type: float, description: "PIB courant en milliards USD"}
+      - {name: pib_per_capita_usd, type: float, description: "PIB par habitant en USD"}
+      - {name: taux_croissance_pib, type: float, description: "Taux de croissance annuel du PIB en %"}
+      - {name: inflation_pct, type: float, description: "Taux d'inflation annuel en %"}
+      - {name: taux_chomage_pct, type: float, description: "Taux de chômage en %"}
+      - {name: investissements_etrangers_usd, type: float, description: "IDE entrants en milliards USD"}
+      - {name: dette_publique_pct_pib, type: float, description: "Dette publique en % du PIB"}
+      - {name: source, type: varchar, description: "Source : Banque mondiale, FMI, BAD"}
+
+  - name: commerce_regional
+    description: "Flux commerciaux intra-IGAD et avec le reste du monde"
+    columns:
+      - {name: pays_exportateur, type: varchar, description: "Pays exportateur HXL #org+origin+country"}
+      - {name: pays_importateur, type: varchar, description: "Pays importateur HXL #org+dest+country"}
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: secteur, type: varchar, description: "Secteur : agriculture | energie | mineraux | services | textile"}
+      - {name: exportations_usd, type: float, description: "Valeur des exportations en millions USD HXL #trade+export+value"}
+      - {name: importations_usd, type: float, description: "Valeur des importations en millions USD HXL #trade+import+value"}
+      - {name: type_echange, type: varchar, description: "intra_igad | afrique | europe | asie | ameriques"}
+
+  - name: demographie
+    description: "Indicateurs démographiques par pays et par an"
+    columns:
+      - {name: pays, type: varchar, description: "Pays HXL #country+name"}
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: population, type: float, description: "Population totale HXL #population+total"}
+      - {name: taux_croissance_pop, type: float, description: "Taux de croissance démographique en %"}
+      - {name: esperance_vie, type: float, description: "Espérance de vie à la naissance (années)"}
+      - {name: taux_fertilite, type: float, description: "Taux de fécondité total (enfants par femme)"}
+      - {name: pop_urbaine_pct, type: float, description: "Part de la population urbaine en %"}
+      - {name: pop_moins_15_pct, type: float, description: "Part de la population de moins de 15 ans en %"}
+
+  - name: securite_alimentaire
+    description: "Classification IPC de la sécurité alimentaire (Integrated Food Security Phase Classification)"
+    columns:
+      - {name: pays, type: varchar, description: "Pays HXL #country+name"}
+      - {name: region_admin, type: varchar, description: "Région administrative HXL #adm1+name"}
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: trimestre, type: integer, description: "Trimestre (1 à 4)"}
+      - {name: ipc_phase_moyenne, type: float, description: "Phase IPC moyenne (1=minimal, 2=stress, 3=crise, 4=urgence, 5=famine)"}
+      - {name: population_en_crise, type: integer, description: "Population en phase IPC 3+ HXL #affected+food+insecure"}
+      - {name: population_analysee, type: integer, description: "Population totale analysée HXL #population+total+analysed"}
+      - {name: cause_principale, type: varchar, description: "conflit | secheresse | inondation | economique | mixte"}
+
+  - name: indicateurs_developpement
+    description: "Indicateurs de développement humain et sociaux"
+    columns:
+      - {name: pays, type: varchar, description: "Pays HXL #country+name"}
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: idh, type: float, description: "Indice de Développement Humain (0 à 1)"}
+      - {name: taux_pauvrete_pct, type: float, description: "% population sous 2.15 USD/jour"}
+      - {name: taux_alphabetisation_pct, type: float, description: "Taux d'alphabétisation adultes en %"}
+      - {name: acces_eau_potable_pct, type: float, description: "% population avec accès eau potable"}
+      - {name: acces_electricite_pct, type: float, description: "% population avec accès électricité"}
+      - {name: mortalite_infantile, type: float, description: "Taux de mortalité infantile pour 1000 naissances"}
+
+joins:
+  - from_table: indicateurs_economiques
+    to_table: demographie
+    condition: "indicateurs_economiques.pays = demographie.pays AND indicateurs_economiques.annee = demographie.annee"
+    type: LEFT
+  - from_table: securite_alimentaire
+    to_table: demographie
+    condition: "securite_alimentaire.pays = demographie.pays AND securite_alimentaire.annee = demographie.annee"
+    type: LEFT
+  - from_table: indicateurs_economiques
+    to_table: indicateurs_developpement
+    condition: "indicateurs_economiques.pays = indicateurs_developpement.pays AND indicateurs_economiques.annee = indicateurs_developpement.annee"
+    type: LEFT
+
+rules:
+  - "Les valeurs monétaires sont en USD courants sauf mention contraire."
+  - "L'IPC va de 1 (minimal) à 5 (famine) — plus la valeur est haute, plus la situation est grave."
+  - "Les pays IGAD sont : Djibouti (DJ), Éthiopie (ET), Kenya (KE), Somalie (SO), Soudan du Sud (SS), Soudan (SD), Ouganda (UG), Tanzanie (TZ), Érythrée (ER), Rwanda (RW)."
+  - "Pour les tendances temporelles, toujours grouper par annee ORDER BY annee ASC."
+  - "Le PIB est en milliards USD dans indicateurs_economiques — multiplier par 1e9 pour obtenir le montant absolu."
+  - "intra_igad désigne les échanges commerciaux entre pays membres de l'IGAD."
+
+glossary:
+  - terme: "IGAD"
+    definition: "Intergovernmental Authority on Development — organisation intergouvernementale regroupant les pays de la Corne et de l'Est de l'Afrique"
+  - terme: "IPC"
+    definition: "Integrated Food Security Phase Classification — échelle mondiale de 1 (pas de crise) à 5 (famine)"
+  - terme: "IDH"
+    definition: "Indice de Développement Humain — indicateur PNUD combinant santé, éducation et revenu"
+  - terme: "IDE"
+    definition: "Investissements Directs Étrangers"
+  - terme: "BAD"
+    definition: "Banque Africaine de Développement"

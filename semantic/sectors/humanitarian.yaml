@@ -1,0 +1,150 @@
+schema_version: "2"
+sector: "humanitarian"
+label: "Humanitaire (UNHCR / IOM / WFP / OCHA)"
+description: >
+  Modèle sémantique pour les opérations humanitaires :
+  enregistrement des bénéficiaires, distributions alimentaires,
+  déplacements de population, données de camps.
+  Compatible HXL (Humanitarian Exchange Language).
+
+metrics:
+  - name: "total_beneficiaires"
+    aliases:
+      ["bénéficiaires", "beneficiaries", "beneficiarios",
+       "nombre de bénéficiaires", "total beneficiaries", "total beneficiarios",
+       "مجموع المستفيدين", "عدد المستفيدين"]
+    sql: "SUM(nb_beneficiaires)"
+    tables: ["beneficiaires"]
+    description: "Nombre total de bénéficiaires enregistrés"
+
+  - name: "total_distributions"
+    aliases:
+      ["distributions", "rations", "livraisons alimentaires",
+       "food distributions", "distribuciones",
+       "التوزيعات", "الحصص الغذائية"]
+    sql: "COUNT(DISTINCT id_distribution)"
+    tables: ["distributions"]
+    description: "Nombre total d'opérations de distribution"
+
+  - name: "quantite_distribuee"
+    aliases:
+      ["quantité distribuée", "quantity distributed", "cantidad distribuida",
+       "الكمية الموزعة"]
+    sql: "SUM(quantite_kg)"
+    tables: ["distributions"]
+    description: "Quantité totale distribuée en kg"
+
+  - name: "taux_couverture"
+    aliases:
+      ["couverture", "coverage rate", "tasa de cobertura", "نسبة التغطية"]
+    sql: "COUNT(DISTINCT id_beneficiaire) * 1.0 / NULLIF(SUM(population_cible), 0)"
+    tables: ["beneficiaires", "sites"]
+    description: "Proportion de la population cible effectivement assistée"
+    join_required: true
+
+  - name: "deplaces_internes"
+    aliases:
+      ["PDI", "IDPs", "desplazados internos", "النازحون داخلياً",
+       "personnes déplacées internes", "internally displaced persons"]
+    sql: "SUM(nb_personnes) FILTER (WHERE type_deplacement = 'interne')"
+    tables: ["deplacements"]
+    description: "Nombre total de personnes déplacées internes (PDI)"
+
+  - name: "refugies"
+    aliases:
+      ["réfugiés", "refugees", "refugiados", "اللاجئون"]
+    sql: "SUM(nb_personnes) FILTER (WHERE statut_protection = 'refugie')"
+    tables: ["beneficiaires"]
+    description: "Nombre de personnes avec statut réfugié"
+
+tables:
+  - name: beneficiaires
+    description: "Registre des bénéficiaires enregistrés (HXL: #beneficiary)"
+    columns:
+      - {name: id_beneficiaire, type: varchar, description: "Identifiant unique HXL #beneficiary+id"}
+      - {name: nom_menage, type: varchar, description: "Nom du chef de ménage HXL #household+name"}
+      - {name: pays_origine, type: varchar, description: "Pays d'origine HXL #country+origin"}
+      - {name: pays_accueil, type: varchar, description: "Pays d'accueil HXL #country+asylum"}
+      - {name: region, type: varchar, description: "Région administrative HXL #adm1+name"}
+      - {name: site_camp, type: varchar, description: "Nom du camp ou site HXL #camp+name"}
+      - {name: statut_protection, type: varchar, description: "refugie | demandeur_asile | apatride | pdi HXL #status"}
+      - {name: date_enregistrement, type: date, description: "Date d'enregistrement HXL #date+registered"}
+      - {name: nb_adultes_hommes, type: integer, description: "Nombre d'adultes masculins HXL #population+male+adult"}
+      - {name: nb_adultes_femmes, type: integer, description: "Nombre d'adultes féminins HXL #population+female+adult"}
+      - {name: nb_enfants, type: integer, description: "Nombre d'enfants (<18 ans) HXL #population+children"}
+      - {name: nb_beneficiaires, type: integer, description: "Total personnes dans le ménage HXL #beneficiary+count"}
+      - {name: vulnerabilite, type: varchar, description: "Niveau de vulnérabilité : critique | élevé | modéré | faible"}
+      - {name: type_deplacement, type: varchar, description: "interne | transfrontalier | retour HXL #displacement+type"}
+
+  - name: distributions
+    description: "Opérations de distribution (nourriture, NFI, cash) HXL #distribution"
+    columns:
+      - {name: id_distribution, type: varchar, description: "Identifiant distribution HXL #distribution+id"}
+      - {name: id_beneficiaire, type: varchar, description: "Bénéficiaire — jointure avec beneficiaires.id_beneficiaire"}
+      - {name: date_distribution, type: date, description: "Date de la distribution HXL #date"}
+      - {name: site_camp, type: varchar, description: "Site de distribution HXL #loc+name"}
+      - {name: type_assistance, type: varchar, description: "nourriture | NFI | cash | abri | sante HXL #modality"}
+      - {name: article, type: varchar, description: "Article distribué (farine, riz, huile…) HXL #food+item"}
+      - {name: quantite_kg, type: float, description: "Quantité en kg ou en valeur HXL #quantity"}
+      - {name: unite, type: varchar, description: "Unité de mesure HXL #unit"}
+      - {name: organisation, type: varchar, description: "Organisation responsable HXL #org+name"}
+      - {name: statut_distribution, type: varchar, description: "planifie | en_cours | complete | annule"}
+
+  - name: deplacements
+    description: "Suivi des mouvements de population HXL #affected"
+    columns:
+      - {name: id_mouvement, type: varchar, description: "Identifiant du mouvement HXL #event+id"}
+      - {name: date_mouvement, type: date, description: "Date du mouvement HXL #date+occurred"}
+      - {name: pays_origine, type: varchar, description: "Pays ou région d'origine HXL #country+origin"}
+      - {name: pays_destination, type: varchar, description: "Pays ou région de destination HXL #country+dest"}
+      - {name: type_deplacement, type: varchar, description: "interne | transfrontalier | retour HXL #displacement+type"}
+      - {name: cause, type: varchar, description: "conflit | catastrophe_naturelle | persécution | autre"}
+      - {name: nb_personnes, type: integer, description: "Nombre de personnes HXL #affected+ind"}
+      - {name: nb_menages, type: integer, description: "Nombre de ménages HXL #affected+hh"}
+      - {name: source, type: varchar, description: "Source de données (UNHCR, IOM-DTM, Gouvernement…)"}
+
+  - name: sites
+    description: "Camps, sites et zones d'accueil"
+    columns:
+      - {name: id_site, type: varchar, description: "Identifiant du site"}
+      - {name: nom_site, type: varchar, description: "Nom du camp ou site HXL #camp+name"}
+      - {name: pays, type: varchar, description: "Pays HXL #country+name"}
+      - {name: region, type: varchar, description: "Région HXL #adm1+name"}
+      - {name: capacite_maximale, type: integer, description: "Capacité d'accueil maximale"}
+      - {name: population_actuelle, type: integer, description: "Population actuelle HXL #population+total"}
+      - {name: population_cible, type: integer, description: "Population cible pour l'assistance HXL #targeted"}
+      - {name: statut_site, type: varchar, description: "actif | ferme | planifie"}
+      - {name: gestionnaire, type: varchar, description: "Organisation gestionnaire HXL #org+name"}
+
+joins:
+  - from_table: distributions
+    to_table: beneficiaires
+    condition: "distributions.id_beneficiaire = beneficiaires.id_beneficiaire"
+    type: LEFT
+  - from_table: beneficiaires
+    to_table: sites
+    condition: "beneficiaires.site_camp = sites.nom_site"
+    type: LEFT
+
+rules:
+  - "Les quantités sont exprimées en kg sauf mention explicite d'une autre unité."
+  - "Pour compter des bénéficiaires uniques, utiliser COUNT(DISTINCT id_beneficiaire)."
+  - "Le statut 'refugie' est différent du statut 'demandeur_asile' — ne pas confondre."
+  - "Pour le taux de couverture, diviser COUNT(DISTINCT id_beneficiaire) par population_cible."
+  - "Les données HXL ont toujours une ligne de hashtags — le parser HXL supprime cette ligne."
+  - "PDI = Personnes Déplacées Internes = type_deplacement 'interne'."
+  - "Une distribution avec statut 'annule' ne compte pas dans les bénéficiaires assistés."
+
+glossary:
+  - terme: "bénéficiaire"
+    definition: "Personne ou ménage enregistré comme éligible à une assistance humanitaire"
+  - terme: "PDI"
+    definition: "Personne Déplacée Interne — déplacée à l'intérieur de son propre pays"
+  - terme: "NFI"
+    definition: "Non-Food Items — articles non alimentaires (couvertures, jerricanes, savon…)"
+  - terme: "HXL"
+    definition: "Humanitarian Exchange Language — standard de hashtags CSV pour l'humanitaire"
+  - terme: "DTM"
+    definition: "Displacement Tracking Matrix — système de suivi des déplacements de l'IOM"
+  - terme: "ration"
+    definition: "Quantité d'aliments allouée par personne/ménage lors d'une distribution"

@@ -35,9 +35,20 @@ def validate_env() -> list[str]:
             "valeurs acceptées : 'tfidf' (sans réseau) ou 'bge-m3' (production)"
         )
 
-    ollama_url = os.environ.get("OLLAMA_URL", "") or os.environ.get("OLLAMA_BASE_URL", "")
-    if ollama_url and not ollama_url.startswith(("http://", "https://")):
-        warnings.append(f"OLLAMA_URL={ollama_url!r} — doit commencer par http:// ou https://")
+    provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
+    if provider == "ollama":
+        ollama_url = os.environ.get("OLLAMA_URL", "") or os.environ.get("OLLAMA_BASE_URL", "")
+        if ollama_url and not ollama_url.startswith(("http://", "https://")):
+            warnings.append(f"OLLAMA_URL={ollama_url!r} — doit commencer par http:// ou https://")
+    elif provider == "kimi":
+        if not os.environ.get("KIMI_BASE_URL"):
+            warnings.append("KIMI_BASE_URL non définie — requis quand LLM_PROVIDER=kimi")
+        if not os.environ.get("KIMI_API_KEY"):
+            warnings.append("KIMI_API_KEY non définie — requis quand LLM_PROVIDER=kimi")
+    else:
+        warnings.append(
+            f"LLM_PROVIDER={provider!r} inconnu — valeurs acceptées : 'ollama' ou 'kimi'"
+        )
 
     return warnings
 

@@ -50,6 +50,30 @@ FEATURED_TEMPLATES: list[dict] = [
         "description": "Entrées/sorties de trésorerie, solde prévisionnel à 30/60/90j.",
         "tags": ["finance", "trésorerie", "prévision"],
     },
+    {
+        "template_id": "tmpl-hum-beneficiaries",
+        "title": "Tableau de bord bénéficiaires",
+        "description": "Bénéficiaires enregistrés par statut, pays d'origine et site (HXL).",
+        "tags": ["humanitaire", "bénéficiaires", "unhcr", "hxl"],
+    },
+    {
+        "template_id": "tmpl-hum-distributions",
+        "title": "Suivi des distributions humanitaires",
+        "description": "Quantités distribuées, couverture, tendance mensuelle (WFP/HXL).",
+        "tags": ["humanitaire", "distribution", "wfp", "hxl"],
+    },
+    {
+        "template_id": "tmpl-igad-economy",
+        "title": "Tableau de bord économique IGAD",
+        "description": "PIB, croissance, IDE des 9 pays de la Corne de l'Afrique (Banque mondiale).",
+        "tags": ["igad", "économie", "pib", "afrique-de-l-est"],
+    },
+    {
+        "template_id": "tmpl-igad-food-security",
+        "title": "Sécurité alimentaire IGAD (IPC)",
+        "description": "Phases IPC et population en crise alimentaire par pays IGAD.",
+        "tags": ["igad", "sécurité-alimentaire", "ipc", "wfp"],
+    },
 ]
 
 

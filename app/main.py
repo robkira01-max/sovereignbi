@@ -17,8 +17,9 @@ from app.api.middleware import (
 from app.api.v1.router import router as v1_router
 from app.startup import log_startup_warnings, validate_env
 from app.cache.query_cache import QueryCache
+from app.cache.persistent_cache import PersistentQueryCache
 from app.data.duckdb_store import DataStore
-from app.llm.ollama_client import OllamaClient
+from app.llm import get_llm_client
 from app.pipeline.graph import build_graph, load_semantic
 from app.rag.doc_store import DocStore
 from app.multitenancy.org import OrgRegistry
@@ -38,6 +39,7 @@ from app.routers.wizard import router as wizard_router
 from app.routers.template_import import router as template_import_router
 from app.routers.addin import router as addin_router
 from app.routers.sync import router as sync_router
+from app.routers.semantic import router as semantic_router
 from app.sync.scheduler import CronScheduler
 from app.monitoring.metrics import (
     active_tables,
@@ -78,8 +80,8 @@ app = FastAPI(
     title="SovereignBI",
     version="1.0.0",
     description=(
-        "Outil BI conversationnel 100% local — text-to-SQL, LLM via Ollama, DuckDB. "
-        "Aucune donnée ne quitte votre infrastructure."
+        "Outil BI conversationnel souverain — text-to-SQL, LLM local ou API, DuckDB. "
+        "Aucune donnée ne quitte votre infrastructure sans votre accord."
     ),
     openapi_tags=[
         {"name": "v1", "description": "API REST versionnée — endpoints stables"},
@@ -120,11 +122,15 @@ app.include_router(orgs_router)
 app.include_router(template_import_router)
 app.include_router(addin_router)
 app.include_router(sync_router)
+app.include_router(semantic_router)
 
 store = DataStore()
 doc_store = DocStore()
 org_registry = OrgRegistry()
-query_cache = QueryCache()
+_sqlite_path = os.environ.get("CACHE_SQLITE_PATH", "")
+query_cache: QueryCache = (
+    PersistentQueryCache() if _sqlite_path else QueryCache()
+)
 _graph = None
 
 app.state.store = store
@@ -136,7 +142,14 @@ app.state.query_cache = query_cache
 def get_graph():
     global _graph
     if _graph is None:
-        _graph = build_graph(OllamaClient(), store, load_semantic(), doc_store=doc_store)
+        active_text = getattr(app.state, "active_semantic_text", None)
+        if active_text:
+            from app.semantic.model import SemanticModel
+            sem = SemanticModel(schema_version="2")
+            sem._raw_text = active_text  # passed through if pipeline supports it
+        else:
+            sem = load_semantic()
+        _graph = build_graph(get_llm_client(), store, sem, doc_store=doc_store)
     return _graph
 
 

@@ -166,6 +166,41 @@ def load_mongodb(req: MongoDBRequest, request: Request, _: str = Depends(_EDITOR
     return {"table": table_name, "rows": len(df)}
 
 
+class HdxRequest(BaseModel):
+    query: str = ""
+    dataset_id: str | None = None
+    resource_index: int = 0
+    table_name: str | None = None
+
+
+@router.post("/hdx")
+def load_hdx(req: HdxRequest, request: Request, _: str = Depends(_EDITOR)):
+    """Search HDX for a dataset and load the first CSV resource into DuckDB."""
+    from app.data.hdx_client import HdxClient
+    store = request.app.state.store
+    client = HdxClient()
+    try:
+        if req.dataset_id:
+            url = client.get_resource_url(req.dataset_id, req.resource_index)
+        elif req.query:
+            results = client.search_datasets(req.query, limit=5)
+            if not results:
+                raise HTTPException(404, f"Aucun dataset HDX pour : {req.query!r}")
+            url = client.get_resource_url(results[0]["name"], req.resource_index)
+        else:
+            raise HTTPException(422, "Fournir 'query' ou 'dataset_id'.")
+        df = client.download_csv(url, strip_hxl=True)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(503, f"Erreur HDX : {exc}") from exc
+
+    table = req.table_name or "hdx_data"
+    table_name = store.load_dataframe(table, df)
+    _registry.append({"type": "hdx", "table": table_name, "rows": len(df)})
+    return {"table": table_name, "rows": len(df), "columns": list(df.columns)}
+
+
 @router.get("")
 def list_connectors(_: str = Depends(_VIEWER)):
     return {"connectors": _registry}
