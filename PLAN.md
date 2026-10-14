@@ -149,6 +149,18 @@ PDF/DOCX avancé, multi-tenant, alertes, API versionnée v1, connecteurs Snowfla
 ### Sprint 23 — Extracteur universel de templates ✅ (2026-10-07)
 Importation de templates depuis PDF, PNG/JPEG (OCR), Excel ou CSV : détection du secteur, extraction de KPI et sections, conversion en `DashboardTemplate` + tuiles (kpi/bar/pie/line/table), persistance JSON, routes `/user-templates` (extract/save/list/get/apply), RBAC viewer/editor. pypdf (MIT) remplace PyMuPDF (AGPL) pour rester conforme à la politique licences. **31 tests, 732/732 total.**
 
+### Sprint H1 — Kimi K3 (fournisseur LLM OpenAI-compatible) ✅ (2026-10-14)
+Pivot marché : Corne de l'Afrique, secteur humanitaire (INSTAD, OIM, UNHCR, IGAD). `KimiClient` OpenAI-compatible (`httpx`, aucune URL codée en dur), factory `get_llm_client()` (`LLM_PROVIDER=kimi|ollama`), avertissements startup. Latence CPU 4 min → ~5 s. 13 tests, 814/814 total.
+
+### Sprint H2 — i18n Arabe / Anglais / Espagnol ✅ (2026-10-14)
+Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~60 clés), hook `useLocale` (LocaleContext, localStorage, `dir=rtl` sur `<html>` pour l'arabe), sélecteur de langue dans NavBar et LoginPage. Toutes les pages et composants traduits (ChatPage, UploadPage, DashboardPage, ConfidenceBadge, SqlBlock, TileRenderer). 20 tests i18n + locale completeness. 39/39 Vitest, 814/814 Python.
+
+### Sprint H3 — Templates Corne de l'Afrique ✅ (2026-10-14)
+3 YAML sectoriels (humanitarian, igad_economic, instad_census), registre `app/semantic/sectors.py`, parseur HXL `app/data/hxl_parser.py`, client HDX CKAN `app/data/hdx_client.py`, router `GET/POST /semantic/sectors`, 6 dashboard templates (3 humanitaires + 3 IGAD), 20 questions benchmark AR/EN/ES/FR (100%), 80 tests.
+
+### Sprint H4 — Résilience terrain ✅ (2026-10-14)
+`PersistentQueryCache` SQLite write-through (survie aux redémarrages, warm reload), `FallbackLLMClient` circuit-breaker Kimi→Ollama (3 échecs / 5 min), `POST /export/pdf-offline` (données directes, sans LLM), `POST /export/pdf-cached` (réponse depuis cache, 503 si absent). 33 tests.
+
 ---
 
 ## 5. Commercialisation (hypothèses à valider avec le pilote)

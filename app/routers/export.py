@@ -65,3 +65,67 @@ def export_pdf(
         media_type=_PDF_MIME,
         headers={"Content-Disposition": "attachment; filename=export.pdf"},
     )
+
+
+class OfflinePdfRequest(BaseModel):
+    columns: list[str]
+    rows: list[list]
+    title: str = "Résultats"
+
+
+@router.post("/export/pdf-offline")
+def export_pdf_offline(
+    req: OfflinePdfRequest,
+    request: Request,
+    _: str = Depends(_VIEWER),
+):
+    """Export PDF from pre-computed data — no LLM call, works without network.
+
+    Use this endpoint when Kimi/Ollama is unavailable (field use, network outage).
+    The caller provides columns and rows directly (e.g. from cache or a previous query).
+    """
+    data = results_to_pdf(req.columns, req.rows, req.title)
+    return StreamingResponse(
+        io.BytesIO(data),
+        media_type=_PDF_MIME,
+        headers={"Content-Disposition": "attachment; filename=export.pdf"},
+    )
+
+
+class CachedExportRequest(BaseModel):
+    question: str
+    title: str = ""
+
+
+@router.post("/export/pdf-cached")
+def export_pdf_cached(
+    req: CachedExportRequest,
+    request: Request,
+    _: str = Depends(_VIEWER),
+):
+    """Return PDF from cache if available; 503 if no cache hit (no LLM call).
+
+    Designed for offline/field use: if the question was previously answered and
+    cached, return the PDF immediately without network access.
+    """
+    from fastapi import HTTPException as _HTTPException
+
+    store = request.app.state.store
+    cache = getattr(request.app.state, "query_cache", None)
+    if cache is None:
+        raise _HTTPException(503, "Cache non disponible.")
+    table_names = frozenset(store.tables)
+    cached = cache.get(req.question, table_names)
+    if cached is None:
+        raise _HTTPException(
+            503,
+            "Résultat non disponible hors ligne. "
+            "Posez la question d'abord avec une connexion active."
+        )
+    title = req.title or req.question[:60]
+    data = results_to_pdf(cached.get("columns", []), cached.get("rows", []), title)
+    return StreamingResponse(
+        io.BytesIO(data),
+        media_type=_PDF_MIME,
+        headers={"Content-Disposition": "attachment; filename=export.pdf"},
+    )
