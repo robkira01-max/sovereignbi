@@ -145,6 +145,8 @@ def test_factory_returns_ollama_when_explicit(monkeypatch):
 
 
 def test_factory_returns_kimi_when_set(monkeypatch):
+    # Since H4, LLM_PROVIDER=kimi returns FallbackLLMClient (Kimi + circuit-breaker → Ollama).
+    # The inner primary client must be a KimiClient.
     monkeypatch.setenv("LLM_PROVIDER", "kimi")
     _kimi_env(monkeypatch)
     from importlib import reload
@@ -153,8 +155,10 @@ def test_factory_returns_kimi_when_set(monkeypatch):
     import app.llm.kimi_client as km
     reload(km)
     from app.llm.kimi_client import KimiClient
+    from app.llm.fallback_client import FallbackLLMClient
     client = llm_pkg.get_llm_client()
-    assert isinstance(client, KimiClient)
+    assert isinstance(client, FallbackLLMClient), "LLM_PROVIDER=kimi doit retourner FallbackLLMClient"
+    assert isinstance(client._kimi, KimiClient), "Le client primaire doit être KimiClient"
 
 
 # ── startup warnings ──────────────────────────────────────────────────────────
