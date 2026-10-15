@@ -1,0 +1,49 @@
+Iso3,StartDate,EndDate,Area Code,Area Code (M49),Area,Item Code,Item,Element Code,Element,Year Code,Year,Release Code,Release,Unit,Value,Flag
+DJI,2017-01-01,2017-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2017,2017,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,2.93,E
+DJI,2018-01-01,2018-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2018,2018,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,3.08,E
+DJI,2019-01-01,2019-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2019,2019,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,3.31,E
+DJI,2020-01-01,2020-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2020,2020,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,3.54,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2021,2021,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,3.65,E
+DJI,2022-01-01,2022-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2022,2022,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,4.33,E
+DJI,2023-01-01,2023-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2023,2023,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,4.50,E
+DJI,2024-01-01,2024-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2024,2024,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,4.75,E
+DJI,2025-01-01,2025-12-31,72,'262,Djibouti,70040,Cost of a healthy diet (CoHD),6226,Value,2025,2025,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,4.84,E
+DJI,2017-01-01,2017-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2017,2017,7S2026,July 2026 (SOFI report),LCU/cap/d,292.05,E
+DJI,2018-01-01,2018-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2018,2018,7S2026,July 2026 (SOFI report),LCU/cap/d,292.61,E
+DJI,2019-01-01,2019-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2019,2019,7S2026,July 2026 (SOFI report),LCU/cap/d,309.21,E
+DJI,2020-01-01,2020-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2020,2020,7S2026,July 2026 (SOFI report),LCU/cap/d,324.05,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2021,2021,7S2026,July 2026 (SOFI report),LCU/cap/d,329.71,E
+DJI,2022-01-01,2022-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2022,2022,7S2026,July 2026 (SOFI report),LCU/cap/d,364.56,E
+DJI,2023-01-01,2023-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2023,2023,7S2026,July 2026 (SOFI report),LCU/cap/d,373.93,E
+DJI,2024-01-01,2024-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2024,2024,7S2026,July 2026 (SOFI report),LCU/cap/d,383.27,E
+DJI,2025-01-01,2025-12-31,72,'262,Djibouti,70041,Cost of a healthy diet (CoHD),6205,Value,2025,2025,7S2026,July 2026 (SOFI report),LCU/cap/d,377.69,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70070,Cost of starchy staples,6226,Value,2021,2021,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,0.62,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70071,Cost of starchy staples,6205,Value,2021,2021,7S2026,July 2026 (SOFI report),LCU/cap/d,56.12,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70080,Cost of animal source foods,6226,Value,2021,2021,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,1.48,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70081,Cost of animal source foods,6205,Value,2021,2021,7S2026,July 2026 (SOFI report),LCU/cap/d,133.83,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70090,"Cost of legumes, nuts and seeds",6226,Value,2021,2021,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,0.23,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70091,"Cost of legumes, nuts and seeds",6205,Value,2021,2021,7S2026,July 2026 (SOFI report),LCU/cap/d,20.77,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70100,Cost of vegetables,6226,Value,2021,2021,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,0.68,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70101,Cost of vegetables,6205,Value,2021,2021,7S2026,July 2026 (SOFI report),LCU/cap/d,61.79,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70110,Cost of fruits,6226,Value,2021,2021,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,0.49,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70111,Cost of fruits,6205,Value,2021,2021,7S2026,July 2026 (SOFI report),LCU/cap/d,44.39,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70120,Cost of oils and fats,6226,Value,2021,2021,7S2026,July 2026 (SOFI report),Int$ (PPP) per person per day,0.14,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,70121,Cost of oils and fats,6205,Value,2021,2021,7S2026,July 2026 (SOFI report),LCU/cap/d,12.81,E
+DJI,2017-01-01,2017-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2017,2017,7S2026,July 2026 (SOFI report),%,56.8,E
+DJI,2018-01-01,2018-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2018,2018,7S2026,July 2026 (SOFI report),%,55.7,E
+DJI,2019-01-01,2019-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2019,2019,7S2026,July 2026 (SOFI report),%,55.3,E
+DJI,2020-01-01,2020-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2020,2020,7S2026,July 2026 (SOFI report),%,56.5,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2021,2021,7S2026,July 2026 (SOFI report),%,55.4,E
+DJI,2022-01-01,2022-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2022,2022,7S2026,July 2026 (SOFI report),%,55.8,E
+DJI,2023-01-01,2023-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2023,2023,7S2026,July 2026 (SOFI report),%,54.2,E
+DJI,2024-01-01,2024-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2024,2024,7S2026,July 2026 (SOFI report),%,52.2,E
+DJI,2025-01-01,2025-12-31,72,'262,Djibouti,7005,Prevalence of unaffordability (PUA),6121,Value,2025,2025,7S2026,July 2026 (SOFI report),%,49.8,E
+DJI,2017-01-01,2017-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2017,2017,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2018-01-01,2018-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2018,2018,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2019-01-01,2019-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2019,2019,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2020-01-01,2020-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2020,2020,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2021-01-01,2021-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2021,2021,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2022-01-01,2022-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2022,2022,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2023-01-01,2023-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2023,2023,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2024-01-01,2024-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2024,2024,7S2026,July 2026 (SOFI report),million No,0.6,E
+DJI,2025-01-01,2025-12-31,72,'262,Djibouti,7006,Number of people unable to afford a healthy diet (NUA),6132,Value,2025,2025,7S2026,July 2026 (SOFI report),million No,0.6,E
