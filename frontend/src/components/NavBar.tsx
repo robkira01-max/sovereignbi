@@ -8,15 +8,16 @@ interface Props {
 export function NavBar({ currentPath }: Props) {
   const { t, locale, setLocale } = useLocale()
 
+  const base = import.meta.env.BASE_URL ?? '/'
   const nav = [
-    { href: '/chat', key: 'nav.chat' },
-    { href: '/dashboards', key: 'nav.dashboards' },
-    { href: '/upload', key: 'nav.import' },
+    { href: base + 'chat', key: 'nav.chat' },
+    { href: base + 'dashboards', key: 'nav.dashboards' },
+    { href: base + 'upload', key: 'nav.import' },
   ]
 
   const handleLogout = () => {
     sessionStorage.removeItem('sovereign_api_key')
-    window.location.href = '/login'
+    window.location.href = base + 'login'
   }
 
   return (

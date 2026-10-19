@@ -11,7 +11,7 @@ export function LoginPage() {
     e.preventDefault()
     if (!key.trim()) { setError(t('login.key_required')); return }
     sessionStorage.setItem('sovereign_api_key', key.trim())
-    window.location.href = '/chat'
+    window.location.href = (import.meta.env.BASE_URL ?? '/') + 'chat'
   }
 
   return (

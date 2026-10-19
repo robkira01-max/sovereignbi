@@ -6,7 +6,14 @@ import { UploadPage } from './pages/UploadPage'
 import { ApiKeyGuard } from './components/ApiKeyGuard'
 import { NavBar } from './components/NavBar'
 
-const path = typeof window !== 'undefined' ? window.location.pathname : '/chat'
+// Strip the Vite base prefix so route comparisons work regardless of mount point.
+// import.meta.env.BASE_URL is '/app/' in production, '/' in dev.
+const BASE = import.meta.env.BASE_URL ?? '/'
+const rawPath = typeof window !== 'undefined' ? window.location.pathname : BASE + 'chat'
+const path = (() => {
+  const base = BASE.endsWith('/') ? BASE.slice(0, -1) : BASE  // '/app'
+  return rawPath.startsWith(base) ? rawPath.slice(base.length) || '/' : rawPath
+})()
 
 function Inner() {
   if (path === '/login' || path === '/') {
