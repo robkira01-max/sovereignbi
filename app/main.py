@@ -261,5 +261,11 @@ if _ADDIN_DIR.exists():
 # Serve React build if dist/ exists (optional — not required for API usage)
 _REACT_DIST = Path(__file__).parent.parent / "frontend" / "dist"
 if _REACT_DIST.exists():
+    from fastapi.responses import RedirectResponse
     from fastapi.staticfiles import StaticFiles
+
+    @app.get("/", include_in_schema=False)
+    def root_redirect():
+        return RedirectResponse(url="/app/")
+
     app.mount("/app", StaticFiles(directory=str(_REACT_DIST), html=True), name="frontend")
