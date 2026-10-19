@@ -264,11 +264,19 @@ if _ADDIN_DIR.exists():
 # Serve React build if dist/ exists (optional — not required for API usage)
 _REACT_DIST = Path(__file__).parent.parent / "frontend" / "dist"
 if _REACT_DIST.exists():
-    from fastapi.responses import RedirectResponse
-    from fastapi.staticfiles import StaticFiles
+    from fastapi.responses import FileResponse, RedirectResponse
 
     @app.get("/", include_in_schema=False)
     def root_redirect():
         return RedirectResponse(url="/app/")
 
-    app.mount("/app", StaticFiles(directory=str(_REACT_DIST), html=True), name="frontend")
+    # SPA catch-all: serve the actual file if it exists, otherwise serve index.html.
+    # This must be a regular route (not a StaticFiles mount) so that /app/chat,
+    # /app/dashboards, etc. all get index.html instead of a 404.
+    @app.get("/app/{spa_path:path}", include_in_schema=False)
+    def spa_route(spa_path: str = ""):
+        if spa_path:
+            target = _REACT_DIST / spa_path
+            if target.exists() and target.is_file():
+                return FileResponse(str(target))
+        return FileResponse(str(_REACT_DIST / "index.html"))
