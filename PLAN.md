@@ -161,6 +161,12 @@ Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~
 ### Sprint H4 — Résilience terrain ✅ (2026-10-14)
 `PersistentQueryCache` SQLite write-through (survie aux redémarrages, warm reload), `FallbackLLMClient` circuit-breaker Kimi→Ollama (3 échecs / 5 min), `POST /export/pdf-offline` (données directes, sans LLM), `POST /export/pdf-cached` (réponse depuis cache, 503 si absent). 33 tests.
 
+### Sprint H5 — Chatbot universel ✅ (2026-10-19)
+`POST /api/v1/chatbot` : routeur intelligent SQL/général — détecte automatiquement si la question porte sur les données (`_DATA_PATTERNS`) ou sur un sujet général, historique de conversation (10 tours max), réponse unifiée `ChatResponse` (answer, mode, sql, columns, rows, confidence). `ChatPage.tsx` réécrite : bulles de conversation, badge mode data/général, SQL dépliable, case « Analyser les données ». 18 tests (12 Python + 6 seed). 945/945 tests.
+
+### Sprint H6 — Seed INSTAD et infrastructure Hetzner ✅ (2026-10-19)
+`SOVEREIGN_SEED_DIR` : chargement automatique de CSV/XLSX au démarrage FastAPI (lifespan), 7 tables INSTAD pilote persistées dans un volume Docker (`sovereign_uploads`). `tools/setup-oracle-server.sh` : bootstrap Oracle Cloud Ubuntu 22.04 ARM en une commande (Docker, iptables, git clone, génération `.env`, build+up). Déploiement Hetzner : `docker-compose.hetzner.yml` sur `46.225.233.135`, réseau partagé `lexbouti_default` (Ollama + Caddy mutualisés), HTTPS `bi.46-225-233-135.nip.io` via nip.io. Fix routing SPA : route catch-all `GET /app/{path:path}` remplace `StaticFiles(html=True)` (qui ne servait `index.html` que pour les répertoires). Fix navigation frontend : `vite.config.ts` `base='/app/'`, tous les liens et redirects utilisent `import.meta.env.BASE_URL`. 945/945 tests.
+
 ---
 
 ## 5. Commercialisation (hypothèses à valider avec le pilote)
