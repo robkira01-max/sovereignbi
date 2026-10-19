@@ -15,7 +15,7 @@ from app.api.middleware import (
     SecurityHeadersMiddleware,
 )
 from app.api.v1.router import router as v1_router
-from app.startup import log_startup_warnings, validate_env
+from app.startup import log_startup_warnings, seed_store, validate_env
 from app.cache.query_cache import QueryCache
 from app.cache.persistent_cache import PersistentQueryCache
 from app.data.duckdb_store import DataStore
@@ -61,6 +61,9 @@ async def lifespan(app: FastAPI):
     log_startup_warnings(warnings)
     findings = audit_configuration()
     log_audit_results(findings)
+    seed_dir = os.environ.get("SOVEREIGN_SEED_DIR", "")
+    if seed_dir:
+        seed_store(app.state.store, seed_dir)
     scheduler = CronScheduler()
     scheduler.start()
     app.state.scheduler = scheduler

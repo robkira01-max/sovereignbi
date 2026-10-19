@@ -59,3 +59,28 @@ def log_startup_warnings(warnings: list[str]) -> None:
         logger.warning("[startup] %s", w)
     if not warnings:
         logger.info("[startup] Configuration validée — aucun avertissement")
+
+
+def seed_store(store, seed_dir: str) -> None:
+    """Load every CSV/XLSX from seed_dir into store at boot.
+
+    Controlled by SOVEREIGN_SEED_DIR env var. Safe to call with an empty or
+    non-existent directory — logs a warning and returns without raising.
+    """
+    from pathlib import Path
+    p = Path(seed_dir)
+    if not p.is_dir():
+        logger.warning("[startup] SOVEREIGN_SEED_DIR=%r n'existe pas — seed ignoré", seed_dir)
+        return
+    files = sorted(p.glob("*.csv")) + sorted(p.glob("*.xlsx")) + sorted(p.glob("*.xlsm"))
+    if not files:
+        logger.info("[startup] SOVEREIGN_SEED_DIR=%r vide — aucun fichier chargé", seed_dir)
+        return
+    loaded = []
+    for f in files:
+        try:
+            tables = store.load_file(f)
+            loaded.extend(tables)
+        except Exception as exc:
+            logger.warning("[startup] seed: impossible de charger %s : %s", f.name, exc)
+    logger.info("[startup] seed: %d table(s) chargée(s) depuis %r : %s", len(loaded), seed_dir, loaded)
