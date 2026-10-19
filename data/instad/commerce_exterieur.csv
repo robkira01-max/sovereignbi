@@ -1,0 +1,70 @@
+annee,type_flux,partenaire,categorie_produit,valeur_mrd_usd,part_total_pct
+2018,exportation,Ethiopie,Transit et réexportation,1.824,48.2
+2018,exportation,Somalie,Transit et réexportation,0.824,21.8
+2018,exportation,Union Européenne,Services portuaires,0.412,10.9
+2018,exportation,Asie,Services portuaires,0.384,10.1
+2018,exportation,Autres pays,Divers,0.342,9.0
+2018,importation,Asie (Chine+Inde),Produits manufacturés,1.284,28.4
+2018,importation,France et UE,Produits alimentaires et équipements,0.984,21.8
+2018,importation,Pays du Golfe,Hydrocarbures et produits pétroliers,0.842,18.6
+2018,importation,Ethiopie,Produits agricoles,0.524,11.6
+2018,importation,Autres pays,Divers,0.884,19.5
+2019,exportation,Ethiopie,Transit et réexportation,2.012,48.9
+2019,exportation,Somalie,Transit et réexportation,0.898,21.8
+2019,exportation,Union Européenne,Services portuaires,0.448,10.9
+2019,exportation,Asie,Services portuaires,0.418,10.2
+2019,exportation,Autres pays,Divers,0.336,8.2
+2019,importation,Asie (Chine+Inde),Produits manufacturés,1.384,28.1
+2019,importation,France et UE,Produits alimentaires et équipements,1.048,21.3
+2019,importation,Pays du Golfe,Hydrocarbures et produits pétroliers,0.918,18.6
+2019,importation,Ethiopie,Produits agricoles,0.571,11.6
+2019,importation,Autres pays,Divers,1.006,20.4
+2020,exportation,Ethiopie,Transit et réexportation,1.621,46.2
+2020,exportation,Somalie,Transit et réexportation,0.784,22.3
+2020,exportation,Union Européenne,Services portuaires,0.391,11.1
+2020,exportation,Asie,Services portuaires,0.354,10.1
+2020,importation,Asie (Chine+Inde),Produits manufacturés,1.148,28.4
+2020,importation,France et UE,Produits alimentaires et équipements,0.891,22.0
+2020,importation,Pays du Golfe,Hydrocarbures et produits pétroliers,0.712,17.6
+2020,importation,Ethiopie,Produits agricoles,0.488,12.1
+2020,importation,Autres pays,Divers,0.804,19.9
+2021,exportation,Ethiopie,Transit et réexportation,2.184,48.1
+2021,exportation,Somalie,Transit et réexportation,0.984,21.7
+2021,exportation,Union Européenne,Services portuaires,0.491,10.8
+2021,exportation,Asie,Services portuaires,0.461,10.2
+2021,exportation,Autres pays,Divers,0.418,9.2
+2021,importation,Asie (Chine+Inde),Produits manufacturés,1.514,28.8
+2021,importation,France et UE,Produits alimentaires et équipements,1.124,21.4
+2021,importation,Pays du Golfe,Hydrocarbures et produits pétroliers,0.984,18.7
+2021,importation,Ethiopie,Produits agricoles,0.614,11.7
+2021,importation,Autres pays,Divers,1.014,19.3
+2022,exportation,Ethiopie,Transit et réexportation,2.484,48.4
+2022,exportation,Somalie,Transit et réexportation,1.121,21.8
+2022,exportation,Union Européenne,Services portuaires,0.558,10.9
+2022,exportation,Asie,Services portuaires,0.521,10.2
+2022,exportation,Autres pays,Divers,0.448,8.7
+2022,importation,Asie (Chine+Inde),Produits manufacturés,1.814,28.9
+2022,importation,France et UE,Produits alimentaires et équipements,1.314,20.9
+2022,importation,Pays du Golfe,Hydrocarbures et produits pétroliers,1.284,20.4
+2022,importation,Ethiopie,Produits agricoles,0.714,11.4
+2022,importation,Autres pays,Divers,1.154,18.4
+2023,exportation,Ethiopie,Transit et réexportation,2.684,48.7
+2023,exportation,Somalie,Transit et réexportation,1.214,22.0
+2023,exportation,Union Européenne,Services portuaires,0.598,10.8
+2023,exportation,Asie,Services portuaires,0.561,10.2
+2023,exportation,Autres pays,Divers,0.455,8.3
+2023,importation,Asie (Chine+Inde),Produits manufacturés,1.984,29.0
+2023,importation,France et UE,Produits alimentaires et équipements,1.414,20.7
+2023,importation,Pays du Golfe,Hydrocarbures et produits pétroliers,1.348,19.7
+2023,importation,Ethiopie,Produits agricoles,0.784,11.5
+2023,importation,Autres pays,Divers,1.314,19.2
+2024,exportation,Ethiopie,Transit et réexportation,2.924,49.1
+2024,exportation,Somalie,Transit et réexportation,1.321,22.2
+2024,exportation,Union Européenne,Services portuaires,0.641,10.8
+2024,exportation,Asie,Services portuaires,0.601,10.1
+2024,exportation,Autres pays,Divers,0.464,7.8
+2024,importation,Asie (Chine+Inde),Produits manufacturés,2.148,29.1
+2024,importation,France et UE,Produits alimentaires et équipements,1.521,20.6
+2024,importation,Pays du Golfe,Hydrocarbures et produits pétroliers,1.448,19.6
+2024,importation,Ethiopie,Produits agricoles,0.848,11.5
+2024,importation,Autres pays,Divers,1.414,19.2

@@ -1,0 +1,54 @@
+# SovereignBI — Image de production (multi-stage, non-root, ARM64 compatible)
+# ── Étape 1 : build du frontend React ────────────────────────────────────────
+FROM node:20-slim AS frontend-builder
+WORKDIR /build
+COPY frontend/package*.json ./
+RUN npm ci --silent
+COPY frontend/ ./
+RUN npm run build
+
+# ── Étape 2 : install des dépendances Python ─────────────────────────────────
+FROM python:3.11-slim AS python-builder
+WORKDIR /build
+COPY pyproject.toml .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        fastapi "uvicorn[standard]" python-multipart httpx \
+        duckdb pandas openpyxl xlrd sqlglot langgraph pyyaml \
+        scikit-learn fpdf2 pymysql pypdf python-docx qdrant-client \
+        structlog cryptography
+
+# ── Étape 3 : image runtime minimale ─────────────────────────────────────────
+FROM python:3.11-slim AS runtime
+
+RUN groupadd -r sovereign && \
+    useradd -r -g sovereign -d /srv -s /bin/false sovereign
+
+WORKDIR /srv
+
+# Packages Python
+COPY --from=python-builder \
+    /usr/local/lib/python3.11/site-packages \
+    /usr/local/lib/python3.11/site-packages
+COPY --from=python-builder /usr/local/bin /usr/local/bin
+
+# Code applicatif
+COPY app app
+COPY semantic semantic
+
+# Frontend buildé (servi sur /app/ par FastAPI)
+COPY --from=frontend-builder /build/dist frontend/dist
+
+RUN chown -R sovereign:sovereign /srv
+USER sovereign
+
+ENV SOVEREIGN_EMBEDDER=tfidf \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()" || exit 1
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

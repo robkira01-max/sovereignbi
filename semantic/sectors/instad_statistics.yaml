@@ -1,0 +1,161 @@
+schema_version: "2"
+sector: "instad_statistics"
+label: "Statistiques économiques — INSTAD Djibouti"
+description: >
+  Modèle sémantique pour les indicateurs macroéconomiques, sectoriels et
+  commerciaux de Djibouti, issus des publications de l'INSTAD (Institut
+  National de la Statistique et des Études Démographiques et Économiques)
+  et des comptes nationaux. Données fictives d'illustration — à remplacer
+  par les fichiers officiels INSTAD lors du déploiement pilote.
+
+metrics:
+  - name: "pib_total"
+    aliases:
+      ["PIB", "GDP", "PIB total", "produit intérieur brut",
+       "gross domestic product", "الناتج المحلي الإجمالي",
+       "économie djiboutienne", "taille de l'économie"]
+    sql: "SUM(pib_courant_mrd_usd)"
+    tables: ["indicateurs_macro"]
+    description: "PIB courant de Djibouti en milliards USD"
+
+  - name: "pib_par_habitant"
+    aliases:
+      ["PIB par habitant", "GDP per capita", "revenu moyen",
+       "niveau de vie", "نصيب الفرد من الناتج المحلي"]
+    sql: "AVG(pib_par_habitant_usd)"
+    tables: ["indicateurs_macro"]
+    description: "PIB par habitant en USD courants"
+
+  - name: "taux_croissance_pib"
+    aliases:
+      ["croissance", "croissance économique", "growth", "GDP growth",
+       "معدل النمو الاقتصادي"]
+    sql: "AVG(croissance_pib_pct)"
+    tables: ["indicateurs_macro"]
+    description: "Taux de croissance annuel du PIB en %"
+
+  - name: "taux_inflation"
+    aliases:
+      ["inflation", "inflation rate", "hausse des prix",
+       "معدل التضخم"]
+    sql: "AVG(inflation_pct)"
+    tables: ["indicateurs_macro"]
+    description: "Taux d'inflation annuel en %"
+
+  - name: "dette_publique"
+    aliases:
+      ["dette", "dette publique", "public debt", "endettement",
+       "الدين العام"]
+    sql: "AVG(dette_publique_pct_pib)"
+    tables: ["indicateurs_macro"]
+    description: "Dette publique en % du PIB"
+
+  - name: "valeur_ajoutee_secteur"
+    aliases:
+      ["PIB sectoriel", "secteur", "valeur ajoutée", "sectoral GDP",
+       "القطاعات الاقتصادية"]
+    sql: "SUM(valeur_ajoutee_mrd_usd)"
+    tables: ["pib_secteurs"]
+    description: "Valeur ajoutée par secteur économique en milliards USD"
+
+  - name: "part_secteur"
+    aliases:
+      ["part dans le PIB", "contribution sectorielle", "sector share",
+       "حصة القطاع في الناتج"]
+    sql: "AVG(part_pib_pct)"
+    tables: ["pib_secteurs"]
+    description: "Part du secteur dans le PIB en %"
+
+  - name: "exportations_totales"
+    aliases:
+      ["exportations", "exports", "commerce export",
+       "الصادرات"]
+    sql: "SUM(valeur_mrd_usd) FILTER (WHERE type_flux = 'exportation')"
+    tables: ["commerce_exterieur"]
+    description: "Valeur totale des exportations en milliards USD"
+
+  - name: "importations_totales"
+    aliases:
+      ["importations", "imports", "commerce import",
+       "الواردات"]
+    sql: "SUM(valeur_mrd_usd) FILTER (WHERE type_flux = 'importation')"
+    tables: ["commerce_exterieur"]
+    description: "Valeur totale des importations en milliards USD"
+
+  - name: "balance_commerciale"
+    aliases:
+      ["balance commerciale", "solde commercial", "trade balance",
+       "الميزان التجاري"]
+    sql: >
+      SUM(CASE WHEN type_flux = 'exportation' THEN valeur_mrd_usd ELSE -valeur_mrd_usd END)
+    tables: ["commerce_exterieur"]
+    description: "Balance commerciale (exportations - importations) en milliards USD"
+
+tables:
+  - name: indicateurs_macro
+    description: "Indicateurs macroéconomiques annuels de Djibouti"
+    columns:
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: pib_courant_mrd_usd, type: float, description: "PIB courant en milliards USD HXL #value+gdp"}
+      - {name: pib_par_habitant_usd, type: float, description: "PIB par habitant en USD HXL #value+gdp+percapita"}
+      - {name: croissance_pib_pct, type: float, description: "Taux de croissance du PIB en %"}
+      - {name: inflation_pct, type: float, description: "Taux d'inflation annuel en %"}
+      - {name: dette_publique_pct_pib, type: float, description: "Dette publique en % du PIB"}
+      - {name: recettes_fiscales_pct_pib, type: float, description: "Recettes fiscales en % du PIB"}
+      - {name: investissements_publics_mrd_usd, type: float, description: "Investissements publics en milliards USD"}
+      - {name: aide_publique_dev_mrd_usd, type: float, description: "Aide publique au développement reçue en milliards USD"}
+      - {name: transferts_diaspora_mrd_usd, type: float, description: "Transferts de la diaspora en milliards USD"}
+
+  - name: pib_secteurs
+    description: "Décomposition sectorielle du PIB de Djibouti"
+    columns:
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: secteur, type: varchar, description: "Secteur économique HXL #sector+name"}
+      - {name: valeur_ajoutee_mrd_usd, type: float, description: "Valeur ajoutée en milliards USD"}
+      - {name: part_pib_pct, type: float, description: "Part dans le PIB en %"}
+      - {name: croissance_pct, type: float, description: "Taux de croissance du secteur en %"}
+      - {name: emplois_secteur, type: integer, description: "Nombre d'emplois dans le secteur"}
+
+  - name: commerce_exterieur
+    description: "Flux commerciaux extérieurs de Djibouti par partenaire et catégorie"
+    columns:
+      - {name: annee, type: integer, description: "Année HXL #date+year"}
+      - {name: type_flux, type: varchar, description: "exportation | importation"}
+      - {name: partenaire, type: varchar, description: "Partenaire commercial ou zone géographique"}
+      - {name: categorie_produit, type: varchar, description: "Catégorie de produit ou service"}
+      - {name: valeur_mrd_usd, type: float, description: "Valeur en milliards USD HXL #value+trade"}
+      - {name: part_total_pct, type: float, description: "Part dans le total des échanges de ce type en %"}
+
+joins:
+  - from_table: pib_secteurs
+    to_table: indicateurs_macro
+    condition: "pib_secteurs.annee = indicateurs_macro.annee"
+    type: LEFT
+  - from_table: commerce_exterieur
+    to_table: indicateurs_macro
+    condition: "commerce_exterieur.annee = indicateurs_macro.annee"
+    type: LEFT
+
+rules:
+  - "Le PIB est en milliards USD courants. Multiplier par 1 000 pour obtenir des millions USD."
+  - "Le port de Djibouti traite ~95% du commerce extérieur de l'Éthiopie — les revenus de transit pèsent lourd dans le PIB."
+  - "La 'croissance négative' de 2020 est due à la pandémie de COVID-19 et à la fermeture partielle du port."
+  - "Les exportations incluent majoritairement les recettes de transit et les services portuaires, pas des biens produits localement."
+  - "Pour calculer la balance commerciale, soustraire les importations totales des exportations totales."
+  - "La dette publique inclut les prêts liés aux grands projets d'infrastructure (chemin de fer, ports)."
+  - "Les données sont des estimations fondées sur les publications INSTAD et Banque mondiale — toujours citer la source."
+  - "Pour les séries temporelles, filtrer par annee et trier par annee ASC."
+
+glossary:
+  - terme: "INSTAD"
+    definition: "Institut National de la Statistique et des Études Démographiques et Économiques de Djibouti"
+  - terme: "transit"
+    definition: "Marchandises en provenance ou à destination de l'Éthiopie passant par les ports djiboutiens sans transformation locale"
+  - terme: "valeur ajoutée"
+    definition: "Contribution nette d'un secteur au PIB, déduction faite des consommations intermédiaires"
+  - terme: "balance commerciale"
+    definition: "Différence entre les exportations et les importations — déficitaire à Djibouti (plus d'importations que d'exportations propres)"
+  - terme: "APD"
+    definition: "Aide Publique au Développement — financements concessionnels de bailleurs internationaux (Banque mondiale, BAD, JICA…)"
+  - terme: "IFD"
+    definition: "Institutions de Financement du Développement — principal vecteur de financement des grandes infrastructures djiboutiennes"

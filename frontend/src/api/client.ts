@@ -22,6 +22,12 @@ export const api = {
   ask: (question: string) =>
     apiFetch<AskResponse>('/ask', { method: 'POST', body: JSON.stringify({ question }) }),
 
+  chat: (question: string, history: ChatTurn[] = [], useDataPipeline = true) =>
+    apiFetch<ChatResponse>('/api/v1/chatbot', {
+      method: 'POST',
+      body: JSON.stringify({ question, history, use_data_pipeline: useDataPipeline }),
+    }),
+
   upload: (file: File): Promise<{ tables: string[] }> => {
     const form = new FormData()
     form.append('file', file)
@@ -55,6 +61,21 @@ export const api = {
     ),
 
   health: () => apiFetch<{ status: string }>('/health'),
+}
+
+export interface ChatTurn {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+export interface ChatResponse {
+  answer: string
+  mode: 'data' | 'general'
+  sql: string | null
+  columns: string[]
+  rows: unknown[][]
+  confidence: { score: number; label: string; explanation: string } | null
+  error: string | null
 }
 
 export interface AskResponse {

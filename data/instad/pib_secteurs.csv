@@ -1,0 +1,43 @@
+annee,secteur,valeur_ajoutee_mrd_usd,part_pib_pct,croissance_pct,emplois_secteur
+2018,Services et commerce,1.842,66.8,7.2,45218
+2018,Transport et logistique,0.524,19.0,9.4,18421
+2018,BTP et immobilier,0.193,7.0,11.2,8412
+2018,Industrie et manufacture,0.138,5.0,3.4,5821
+2018,Agriculture et pêche,0.083,3.0,2.1,22418
+2018,Administration publique,0.055,2.0,4.8,12840
+2019,Services et commerce,1.991,66.5,8.1,47124
+2019,Transport et logistique,0.576,19.2,9.9,19248
+2019,BTP et immobilier,0.216,7.2,12.0,8941
+2019,Industrie et manufacture,0.150,5.0,8.7,6124
+2019,Agriculture et pêche,0.087,2.9,4.8,22841
+2019,Administration publique,0.059,2.0,7.3,13218
+2020,Services et commerce,1.876,66.1,−5.8,43218
+2020,Transport et logistique,0.521,18.4,−9.5,17124
+2020,BTP et immobilier,0.198,7.0,−8.3,8012
+2020,Industrie et manufacture,0.142,5.0,−5.3,5624
+2020,Agriculture et pêche,0.091,3.2,4.6,23124
+2020,Administration publique,0.069,2.4,16.9,13841
+2021,Services et commerce,2.048,65.8,9.2,46418
+2021,Transport et logistique,0.594,19.1,14.0,19841
+2021,BTP et immobilier,0.225,7.2,13.6,9218
+2021,Industrie et manufacture,0.153,4.9,7.7,6218
+2021,Agriculture et pêche,0.093,3.0,2.2,23418
+2021,Administration publique,0.071,2.3,2.9,13948
+2022,Services et commerce,2.231,64.9,8.9,49218
+2022,Transport et logistique,0.662,19.3,11.4,21124
+2022,BTP et immobilier,0.254,7.4,12.9,9841
+2022,Industrie et manufacture,0.168,4.9,9.8,6518
+2022,Agriculture et pêche,0.098,2.9,5.4,23841
+2022,Administration publique,0.076,2.2,7.0,14218
+2023,Services et commerce,2.384,64.2,6.9,51418
+2023,Transport et logistique,0.718,19.3,8.5,22418
+2023,BTP et immobilier,0.279,7.5,9.8,10418
+2023,Industrie et manufacture,0.182,4.9,8.3,6841
+2023,Agriculture et pêche,0.104,2.8,6.1,24218
+2023,Administration publique,0.081,2.2,6.6,14618
+2024,Services et commerce,2.548,63.8,6.9,53841
+2024,Transport et logistique,0.778,19.5,8.3,23418
+2024,BTP et immobilier,0.304,7.6,8.9,10841
+2024,Industrie et manufacture,0.196,4.9,7.7,7124
+2024,Agriculture et pêche,0.111,2.8,6.7,24618
+2024,Administration publique,0.086,2.2,6.2,15018

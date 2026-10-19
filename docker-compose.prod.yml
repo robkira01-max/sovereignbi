@@ -1,0 +1,65 @@
+# SovereignBI — Production (Oracle Cloud ARM Free Tier)
+# Usage :
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Prérequis dans .env :
+#   DOMAIN, ACME_EMAIL, SOVEREIGN_ADMIN_KEY, SOVEREIGN_EDITOR_KEY,
+#   SOVEREIGN_VIEWER_KEY, KIMI_API_KEY (Groq ou Moonshot)
+#
+# Pas d'Ollama : LLM_PROVIDER=kimi utilise l'API Groq (< 1 s, gratuit 6 000 req/min).
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file: .env
+    environment:
+      LLM_PROVIDER:      ${LLM_PROVIDER:-kimi}
+      KIMI_BASE_URL:     ${KIMI_BASE_URL:-https://api.groq.com/openai/v1}
+      KIMI_API_KEY:      ${KIMI_API_KEY}
+      KIMI_MODEL:        ${KIMI_MODEL:-qwen/qwen3.8-27b}
+      SOVEREIGN_EMBEDDER: ${SOVEREIGN_EMBEDDER:-tfidf}
+      SOVEREIGN_CORS_ORIGINS: ${SOVEREIGN_CORS_ORIGINS:-https://${DOMAIN}}
+    volumes:
+      - sovereign_data:/srv/data          # datasets persistants (INSTAD, CERF…)
+      - sovereign_uploads:/srv/uploads    # fichiers Excel/CSV uploadés par les clients
+    networks: [internal]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3 QUIC
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      DOMAIN:     ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    networks: [internal, exposed]
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  internal:
+    internal: true   # pas d'accès Internet direct depuis le conteneur API
+  exposed: {}
+
+volumes:
+  sovereign_data:
+  sovereign_uploads:
+  caddy_data:
+  caddy_config:
