@@ -1,4 +1,6 @@
-const BASE = (typeof import.meta !== 'undefined' && (import.meta as { env?: { VITE_API_BASE?: string } }).env?.VITE_API_BASE) ?? ''
+type ViteEnv = { VITE_API_BASE?: string; VITE_API_URL?: string }
+const _env = (typeof import.meta !== 'undefined' && (import.meta as { env?: ViteEnv }).env) ?? {}
+const BASE = (_env.VITE_API_BASE ?? _env.VITE_API_URL ?? '').replace(/\/$/, '')
 
 export function getKey(): string {
   if (typeof sessionStorage === 'undefined') return ''
