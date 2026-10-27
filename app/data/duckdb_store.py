@@ -1,4 +1,5 @@
-"""Stockage de données local : DuckDB en mémoire, accès externe désactivé."""
+"""Stockage de données local : DuckDB sur fichier persistant, accès externe désactivé."""
+import os
 import re
 from pathlib import Path
 
@@ -13,9 +14,16 @@ def _safe_name(stem: str) -> str:
 
 class DataStore:
     def __init__(self):
-        # Pas d'accès aux fichiers/réseau depuis le SQL : les données entrent via pandas.
-        self.con = duckdb.connect(":memory:", config={"enable_external_access": False})
-        self.tables: set[str] = set()
+        # Fichier persistant si SOVEREIGN_DB_PATH est défini, sinon mémoire (tests).
+        db_path = os.environ.get("SOVEREIGN_DB_PATH", ":memory:")
+        if db_path != ":memory:":
+            Path(db_path).parent.mkdir(parents=True, exist_ok=True)
+        self.con = duckdb.connect(db_path, config={"enable_external_access": False})
+        # Reconstituer la liste des tables depuis le fichier si existant.
+        existing = self.con.execute(
+            "SELECT table_name FROM information_schema.tables WHERE table_schema='main'"
+        ).fetchall()
+        self.tables: set[str] = {row[0] for row in existing}
 
     def load_dataframe(self, name: str, df: pd.DataFrame) -> str:
         name = _safe_name(name)
