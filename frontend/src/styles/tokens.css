@@ -23,3 +23,17 @@ body {
   color: var(--text);
   margin: 0;
 }
+
+/* Layout */
+:root {
+  --sidebar-w: 220px;
+  --sidebar-w-collapsed: 56px;
+  --topbar-h: 56px;
+  --sidebar-bg: #0f172a;
+  --sidebar-text: #94a3b8;
+  --sidebar-text-active: #ffffff;
+  --sidebar-active: oklch(42% 0.14 220);
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --radius-card: 12px;
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+}

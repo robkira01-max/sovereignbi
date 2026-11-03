@@ -3,8 +3,8 @@ const _env = (typeof import.meta !== 'undefined' && (import.meta as { env?: Vite
 const BASE = (_env.VITE_API_BASE ?? _env.VITE_API_URL ?? '').replace(/\/$/, '')
 
 export function getKey(): string {
-  if (typeof sessionStorage === 'undefined') return ''
-  return sessionStorage.getItem('sovereign_api_key') ?? ''
+  if (typeof localStorage === 'undefined') return ''
+  return localStorage.getItem('sovereign_api_key') ?? ''
 }
 
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {

@@ -1,38 +1,51 @@
+import { useState, useEffect } from 'react'
 import { LocaleProvider } from './hooks/useLocale'
 import { LoginPage } from './pages/LoginPage'
 import { ChatPage } from './pages/ChatPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { UploadPage } from './pages/UploadPage'
-import { ApiKeyGuard } from './components/ApiKeyGuard'
-import { NavBar } from './components/NavBar'
+import { HomePage } from './pages/HomePage'
+import { AppShell, type Page } from './components/AppShell'
 
-// Strip the Vite base prefix so route comparisons work regardless of mount point.
-// import.meta.env.BASE_URL is '/app/' in production, '/' in dev.
-const BASE = import.meta.env.BASE_URL ?? '/'
-const rawPath = typeof window !== 'undefined' ? window.location.pathname : BASE + 'chat'
-const path = (() => {
-  const base = BASE.endsWith('/') ? BASE.slice(0, -1) : BASE  // '/app'
-  return rawPath.startsWith(base) ? rawPath.slice(base.length) || '/' : rawPath
-})()
+function getApiKey(): string {
+  if (typeof localStorage === 'undefined') return ''
+  return localStorage.getItem('sovereign_api_key') ?? ''
+}
 
 function Inner() {
-  if (path === '/login' || path === '/') {
-    return <LoginPage />
+  const [apiKey, setApiKey] = useState(getApiKey)
+  const [page, setPage] = useState<Page>('home')
+
+  useEffect(() => {
+    const onStorage = () => setApiKey(getApiKey())
+    window.addEventListener('storage', onStorage)
+    const interval = setInterval(() => setApiKey(getApiKey()), 300)
+    return () => {
+      window.removeEventListener('storage', onStorage)
+      clearInterval(interval)
+    }
+  }, [])
+
+  if (!apiKey) {
+    return <LoginPage onLogin={() => setApiKey(getApiKey())} />
   }
 
-  let page
-  if (path === '/chat') page = <ChatPage />
-  else if (path === '/dashboards') page = <DashboardPage />
-  else if (path === '/upload') page = <UploadPage />
-  else page = <ChatPage />
+  const handleLogout = () => {
+    localStorage.removeItem('sovereign_api_key')
+    setApiKey('')
+  }
+
+  let content: React.ReactNode
+  if (page === 'home')            content = <HomePage onNavigate={setPage} />
+  else if (page === 'chat')       content = <ChatPage />
+  else if (page === 'dashboards') content = <DashboardPage />
+  else if (page === 'data')       content = <UploadPage />
+  else                            content = <HomePage onNavigate={setPage} />
 
   return (
-    <ApiKeyGuard>
-      <div style={{ minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }}>
-        <NavBar currentPath={path} />
-        {page}
-      </div>
-    </ApiKeyGuard>
+    <AppShell current={page} onNavigate={setPage} onLogout={handleLogout}>
+      {content}
+    </AppShell>
   )
 }
 

@@ -9,14 +9,15 @@ import {
 } from '../i18n'
 
 describe('SUPPORTED_LOCALES', () => {
-  it('contains ar, en, es', () => {
+  it('contains fr, ar, en, es', () => {
+    expect(SUPPORTED_LOCALES).toContain('fr')
     expect(SUPPORTED_LOCALES).toContain('ar')
     expect(SUPPORTED_LOCALES).toContain('en')
     expect(SUPPORTED_LOCALES).toContain('es')
   })
 
-  it('has exactly 3 locales', () => {
-    expect(SUPPORTED_LOCALES).toHaveLength(3)
+  it('has exactly 4 locales', () => {
+    expect(SUPPORTED_LOCALES).toHaveLength(4)
   })
 })
 
@@ -28,7 +29,7 @@ describe('DEFAULT_LOCALE', () => {
 
 describe('getTranslation', () => {
   it('resolves a nested key for English', () => {
-    expect(getTranslation('en', 'nav.dashboards')).toBe('Dashboards')
+    expect(getTranslation('en', 'nav.dashboards')).toBe('Reports')
   })
 
   it('resolves a nested key for Arabic', () => {

@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { useLocale, SUPPORTED_LOCALES, type Locale } from '../hooks/useLocale'
 import { LOCALE_LABELS } from '../i18n'
 
-export function LoginPage() {
+interface LoginPageProps {
+  onLogin?: () => void
+}
+
+export function LoginPage({ onLogin }: LoginPageProps = {}) {
   const { t, locale, setLocale } = useLocale()
   const [key, setKey] = useState('')
   const [error, setError] = useState('')
@@ -10,8 +14,9 @@ export function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!key.trim()) { setError(t('login.key_required')); return }
-    sessionStorage.setItem('sovereign_api_key', key.trim())
-    window.location.href = (import.meta.env.BASE_URL ?? '/') + 'chat'
+    localStorage.setItem('sovereign_api_key', key.trim())
+    if (onLogin) onLogin()
+    else window.location.href = (import.meta.env.BASE_URL ?? '/') + 'chat'
   }
 
   return (

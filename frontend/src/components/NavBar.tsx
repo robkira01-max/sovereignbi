@@ -16,7 +16,7 @@ export function NavBar({ currentPath }: Props) {
   ]
 
   const handleLogout = () => {
-    sessionStorage.removeItem('sovereign_api_key')
+    localStorage.removeItem('sovereign_api_key')
     window.location.href = base + 'login'
   }
 
