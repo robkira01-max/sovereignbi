@@ -1,0 +1,25 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --brand:        oklch(42% 0.14 220);
+  --brand-hover:  oklch(36% 0.13 220);
+  --accent:       oklch(56% 0.16 175);
+  --bg:           oklch(97% 0.006 220);
+  --surface:      #ffffff;
+  --surface-alt:  oklch(96% 0.008 220);
+  --text:         oklch(18% 0.02 220);
+  --muted:        oklch(55% 0.01 220);
+  --border:       oklch(88% 0.008 220);
+  --success:      oklch(52% 0.16 145);
+  --warning:      oklch(68% 0.18 75);
+  --danger:       oklch(52% 0.20 25);
+}
+
+body {
+  font-family: 'Figtree', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+}

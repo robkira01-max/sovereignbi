@@ -4,7 +4,8 @@ import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
@@ -109,6 +110,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["X-Api-Key", "Content-Type", "Accept"],
 )
+# 14 — GZip outermost : compresse les réponses JSON/HTML > 512 octets
+app.add_middleware(GZipMiddleware, minimum_size=512)
 app.include_router(v1_router)
 app.include_router(admin_router)
 app.include_router(dashboards_router)
@@ -176,14 +179,25 @@ def health():
     return {"status": "ok", "tables": sorted(store.tables)}
 
 
+_MAX_UPLOAD_BYTES = int(os.environ.get("SOVEREIGN_MAX_UPLOAD_MB", "50")) * 1024 * 1024
+
+
 @app.post("/upload")
 async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
     suffix = Path(file.filename or "").suffix.lower()
     if suffix not in {".csv", ".xlsx", ".xlsm"}:
         raise HTTPException(400, "Formats acceptés : CSV, XLSX, XLSM")
+    # 15 — Limite le poids des fichiers envoyés (défaut 50 Mo, configurable via SOVEREIGN_MAX_UPLOAD_MB)
+    data = await file.read()
+    if len(data) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            413,
+            f"Fichier trop volumineux : {len(data) // 1024 // 1024} Mo reçu, "
+            f"limite {_MAX_UPLOAD_BYTES // 1024 // 1024} Mo.",
+        )
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / Path(file.filename).name
-        p.write_bytes(await file.read())
+        p.write_bytes(data)
         tables = store.load_file(p)
     query_cache.invalidate()
     uploads_total.inc()

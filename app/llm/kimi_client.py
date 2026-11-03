@@ -8,11 +8,41 @@ Required env vars when LLM_PROVIDER=kimi:
 
 No URL is hardcoded here — the caller must set KIMI_BASE_URL.
 """
+import datetime
 import os
+import threading
 
 import httpx
 
 from app.llm.ollama_client import LLM  # re-use the Protocol
+
+# 02/03 — Plafond de dépenses quotidien (en mémoire, RAZ chaque jour UTC).
+_COST_PER_1K_TOKENS = float(os.environ.get("KIMI_COST_PER_1K_TOKENS", "0.012"))
+_DAILY_BUDGET_USD = float(os.environ.get("KIMI_DAILY_BUDGET_USD", "5.0"))
+_cost_lock = threading.Lock()
+_daily_spend: float = 0.0
+_spend_day: int = -1
+
+
+class KimiBudgetExceededError(RuntimeError):
+    """Raised when the daily API spend cap (KIMI_DAILY_BUDGET_USD) is reached."""
+
+
+def _check_and_record_cost(prompt: str, response: str) -> None:
+    global _daily_spend, _spend_day
+    today = datetime.datetime.now(datetime.timezone.utc).day
+    tokens = max(1, len(prompt) // 4) + max(1, len(response) // 4)
+    cost = tokens * _COST_PER_1K_TOKENS / 1000
+    with _cost_lock:
+        if today != _spend_day:
+            _daily_spend = 0.0
+            _spend_day = today
+        if _daily_spend + cost > _DAILY_BUDGET_USD:
+            raise KimiBudgetExceededError(
+                f"Plafond quotidien API atteint ({_DAILY_BUDGET_USD:.2f} USD/j). "
+                "Réessayez demain ou augmentez KIMI_DAILY_BUDGET_USD."
+            )
+        _daily_spend += cost
 
 
 class KimiClient:
@@ -61,7 +91,9 @@ class KimiClient:
             timeout=self.timeout,
         )
         r.raise_for_status()
-        return r.json()["choices"][0]["message"]["content"]
+        text = r.json()["choices"][0]["message"]["content"]
+        _check_and_record_cost(system + user, text)
+        return text
 
 
 # satisfy the type checker

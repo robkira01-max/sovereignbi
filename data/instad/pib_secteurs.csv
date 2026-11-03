@@ -11,10 +11,10 @@ annee,secteur,valeur_ajoutee_mrd_usd,part_pib_pct,croissance_pct,emplois_secteur
 2019,Industrie et manufacture,0.150,5.0,8.7,6124
 2019,Agriculture et pêche,0.087,2.9,4.8,22841
 2019,Administration publique,0.059,2.0,7.3,13218
-2020,Services et commerce,1.876,66.1,−5.8,43218
-2020,Transport et logistique,0.521,18.4,−9.5,17124
-2020,BTP et immobilier,0.198,7.0,−8.3,8012
-2020,Industrie et manufacture,0.142,5.0,−5.3,5624
+2020,Services et commerce,1.876,66.1,-5.8,43218
+2020,Transport et logistique,0.521,18.4,-9.5,17124
+2020,BTP et immobilier,0.198,7.0,-8.3,8012
+2020,Industrie et manufacture,0.142,5.0,-5.3,5624
 2020,Agriculture et pêche,0.091,3.2,4.6,23124
 2020,Administration publique,0.069,2.4,16.9,13841
 2021,Services et commerce,2.048,65.8,9.2,46418

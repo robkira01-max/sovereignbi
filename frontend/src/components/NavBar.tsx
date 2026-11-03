@@ -26,22 +26,25 @@ export function NavBar({ currentPath }: Props) {
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '16px',
-        padding: '10px 20px',
-        background: '#1e40af',
+        gap: '24px',
+        padding: '0 24px',
+        height: '56px',
+        background: 'var(--brand)',
         color: '#fff',
         flexWrap: 'wrap',
       }}
     >
-      <strong style={{ marginInlineEnd: '16px' }}>SovereignBI</strong>
+      <strong style={{ marginInlineEnd: '8px', fontSize: '1rem', letterSpacing: '-0.01em' }}>SovereignBI</strong>
       {nav.map(({ href, key }) => (
         <a
           key={href}
           href={href}
           style={{
-            color: currentPath === href ? '#bfdbfe' : '#fff',
+            color: currentPath === href ? '#fff' : 'rgba(255,255,255,0.72)',
             textDecoration: 'none',
-            fontWeight: currentPath === href ? 700 : 400,
+            fontWeight: currentPath === href ? 600 : 400,
+            fontSize: '0.9375rem',
+            transition: 'color 0.15s',
           }}
         >
           {t(key)}
@@ -56,14 +59,16 @@ export function NavBar({ currentPath }: Props) {
             onClick={() => setLocale(l)}
             aria-pressed={locale === l}
             style={{
-              background: locale === l ? '#fff' : 'transparent',
-              color: locale === l ? '#1e40af' : '#fff',
-              border: '1px solid #93c5fd',
-              borderRadius: '4px',
-              padding: '2px 7px',
+              background: locale === l ? 'rgba(255,255,255,0.15)' : 'transparent',
+              color: '#fff',
+              border: locale === l ? '1px solid rgba(255,255,255,0.6)' : '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '999px',
+              padding: '2px 10px',
               cursor: 'pointer',
               fontSize: '0.75rem',
-              fontWeight: locale === l ? 700 : 400,
+              fontWeight: locale === l ? 600 : 400,
+              fontFamily: 'inherit',
+              transition: 'background 0.15s, border-color 0.15s',
             }}
           >
             {LOCALE_LABELS[l]}
@@ -74,11 +79,13 @@ export function NavBar({ currentPath }: Props) {
           style={{
             marginInlineStart: '8px',
             background: 'transparent',
-            color: '#fff',
-            border: '1px solid #93c5fd',
-            borderRadius: '4px',
-            padding: '4px 10px',
+            color: 'rgba(255,255,255,0.85)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            borderRadius: '8px',
+            padding: '5px 12px',
             cursor: 'pointer',
+            fontSize: '0.8125rem',
+            fontFamily: 'inherit',
           }}
         >
           {t('nav.logout')}

@@ -13,20 +13,21 @@ When LLM_PROVIDER=kimi:
 from __future__ import annotations
 
 import os
-import sys
 import threading
 import time
 
+import structlog
+
 from app.llm.ollama_client import LLM, OllamaClient
 
+_logger = structlog.get_logger(__name__)
 
 _MAX_FAILURES = int(os.environ.get("KIMI_CB_MAX_FAILURES", "3"))
 _RESET_SECONDS = float(os.environ.get("KIMI_CB_RESET_SECONDS", "300"))
 
 
 def _log(event: str, **kwargs) -> None:
-    parts = " ".join(f"{k}={v}" for k, v in kwargs.items())
-    print(f"[fallback_llm] event={event} {parts}", file=sys.stderr, flush=True)
+    _logger.info(event, **kwargs)
 
 
 class FallbackLLMClient:

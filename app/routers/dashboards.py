@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
 
 from app.dashboards.models import (
     Dashboard,
@@ -40,7 +40,12 @@ def _now() -> str:
 # ─── Dashboards ───────────────────────────────────────────────────────────────
 
 @router.get("/dashboards")
-def list_dashboards(_: str = Depends(_VIEWER)):
+def list_dashboards(
+    _: str = Depends(_VIEWER),
+    skip: int = Query(0, ge=0, description="Nombre d'éléments à sauter"),
+    limit: int = Query(50, ge=1, le=200, description="Nombre d'éléments à retourner"),
+):
+    # 13 — Pagination pour éviter de charger des centaines de dashboards d'un coup.
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     items = []
     for p in sorted(_DASHBOARDS_DIR.glob("*.yaml")):
@@ -49,7 +54,8 @@ def list_dashboards(_: str = Depends(_VIEWER)):
             items.append({"id": d.id, "title": d.title, "scope": d.scope, "updated_at": d.updated_at})
         except Exception:
             continue
-    return {"dashboards": items}
+    total = len(items)
+    return {"dashboards": items[skip: skip + limit], "total": total, "skip": skip, "limit": limit}
 
 
 @router.get("/dashboards/{dashboard_id}")

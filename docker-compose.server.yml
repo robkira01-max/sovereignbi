@@ -1,0 +1,26 @@
+services:
+  sbi-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - sbi_data:/srv/uploads
+    networks:
+      - caddy_net
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  caddy_net:
+    external: true
+    name: code-route-dj_default
+
+volumes:
+  sbi_data:

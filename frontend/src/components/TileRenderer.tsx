@@ -16,7 +16,14 @@ interface Props {
   data: TileData
 }
 
-const COLORS = ['#2563eb', '#16a34a', '#d97706', '#dc2626', '#7c3aed', '#0891b2']
+const CHART_COLORS = [
+  'oklch(42% 0.14 220)',
+  'oklch(56% 0.16 175)',
+  'oklch(52% 0.16 145)',
+  'oklch(68% 0.18 75)',
+  'oklch(52% 0.20 25)',
+  'oklch(48% 0.15 290)',
+]
 
 function toChartData(data: TileData): Record<string, unknown>[] {
   return data.rows.map(row =>
@@ -35,9 +42,31 @@ export function TileRenderer({ type, title, data }: Props) {
     case 'kpi': {
       const val = data.rows[0]?.[0] ?? '—'
       return (
-        <div data-testid="tile-kpi" style={{ textAlign: 'center', padding: '16px' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 700 }}>{String(val)}</div>
-          <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>{title}</div>
+        <div data-testid="tile-kpi" style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '12px',
+          padding: '20px',
+        }}>
+          <div style={{
+            fontSize: '0.7rem',
+            fontWeight: 500,
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            color: 'var(--muted)',
+            marginBottom: '8px',
+          }}>
+            {title}
+          </div>
+          <div style={{
+            fontSize: '2rem',
+            fontWeight: 700,
+            fontVariantNumeric: 'tabular-nums',
+            color: 'var(--brand)',
+            lineHeight: 1,
+          }}>
+            {String(val)}
+          </div>
         </div>
       )
     }
@@ -49,7 +78,7 @@ export function TileRenderer({ type, title, data }: Props) {
               <XAxis dataKey={xKey} />
               <YAxis />
               <Tooltip />
-              <Bar dataKey={yKey} fill={COLORS[0]} />
+              <Bar dataKey={yKey} fill={CHART_COLORS[0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -62,7 +91,7 @@ export function TileRenderer({ type, title, data }: Props) {
               <XAxis dataKey={xKey} />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey={yKey} stroke={COLORS[0]} />
+              <Line type="monotone" dataKey={yKey} stroke={CHART_COLORS[0]} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -73,7 +102,7 @@ export function TileRenderer({ type, title, data }: Props) {
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={chartData} dataKey={yKey} nameKey={xKey}>
-                {chartData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                {chartData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
               </Pie>
               <Tooltip />
             </PieChart>
@@ -87,7 +116,7 @@ export function TileRenderer({ type, title, data }: Props) {
             <thead>
               <tr>
                 {data.columns.map(c => (
-                  <th key={c} style={{ border: '1px solid #e5e7eb', padding: '4px 8px', background: '#f9fafb' }}>
+                  <th key={c} style={{ border: '1px solid var(--border)', padding: '6px 10px', background: 'var(--surface-alt)', color: 'var(--text)', fontWeight: 600, textAlign: 'start' }}>
                     {c}
                   </th>
                 ))}
@@ -95,9 +124,9 @@ export function TileRenderer({ type, title, data }: Props) {
             </thead>
             <tbody>
               {data.rows.map((row, i) => (
-                <tr key={i}>
+                <tr key={i} style={{ background: i % 2 === 1 ? 'var(--surface-alt)' : 'var(--surface)' }}>
                   {(row as unknown[]).map((cell, j) => (
-                    <td key={j} style={{ border: '1px solid #e5e7eb', padding: '4px 8px' }}>
+                    <td key={j} style={{ border: '1px solid var(--border)', padding: '6px 10px', color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>
                       {String(cell ?? '')}
                     </td>
                   ))}

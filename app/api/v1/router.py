@@ -1,6 +1,7 @@
 """REST API v1 — versioned endpoints mirroring core app routes."""
 from __future__ import annotations
 
+import os
 import tempfile
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from app.security.rbac import RequireRole
 router = APIRouter(prefix="/api/v1", tags=["v1"])
 
 _VIEWER = RequireRole("viewer")
+_MAX_UPLOAD_BYTES = int(os.environ.get("SOVEREIGN_MAX_UPLOAD_MB", "50")) * 1024 * 1024
 
 
 @router.get(
@@ -81,8 +83,14 @@ async def upload_v1(
     suffix = Path(file.filename or "").suffix.lower()
     if suffix not in {".csv", ".xlsx", ".xlsm"}:
         raise HTTPException(400, "Formats acceptés : CSV, XLSX, XLSM")
+    data = await file.read()
+    if len(data) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            413,
+            f"Fichier trop volumineux — limite {_MAX_UPLOAD_BYTES // 1024 // 1024} Mo.",
+        )
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / Path(file.filename).name
-        p.write_bytes(await file.read())
+        p.write_bytes(data)
         tables = store.load_file(p)
     return UploadResponse(tables=tables)

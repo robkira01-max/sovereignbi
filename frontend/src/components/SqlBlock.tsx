@@ -21,13 +21,15 @@ export function SqlBlock({ sql }: Props) {
       <pre
         data-testid="sql-block"
         style={{
-          background: '#f3f4f6',
-          borderRadius: '6px',
-          padding: '12px',
+          background: 'oklch(20% 0.02 220)',
+          color: 'oklch(88% 0.02 220)',
+          borderRadius: '10px',
+          padding: '16px',
           overflowX: 'auto',
-          fontSize: '0.85rem',
-          fontFamily: 'monospace',
+          fontSize: '0.825rem',
+          fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
           margin: 0,
+          lineHeight: 1.6,
         }}
       >
         <code>{sql}</code>
@@ -40,8 +42,13 @@ export function SqlBlock({ sql }: Props) {
           top: '8px',
           insetInlineEnd: '8px',
           fontSize: '0.7rem',
-          padding: '2px 6px',
+          padding: '3px 8px',
           cursor: 'pointer',
+          background: 'oklch(30% 0.02 220)',
+          color: 'oklch(80% 0.02 220)',
+          border: '1px solid oklch(38% 0.02 220)',
+          borderRadius: '6px',
+          fontFamily: 'inherit',
         }}
       >
         {copied ? t('sql.copied') : t('sql.copy')}
