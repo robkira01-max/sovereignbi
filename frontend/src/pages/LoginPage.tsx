@@ -14,7 +14,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   const [loading, setLoading]   = useState(false)
 
   const _env = (typeof import.meta !== 'undefined' && (import.meta as { env?: Record<string,string> }).env) ?? {}
-  const API = (_env['VITE_API_BASE'] ?? _env['VITE_API_URL'] ?? '').replace(/\/$/, '')
+  const _prodApi = 'https://sovereignbi-api.147-5-126-188.sslip.io'
+  const API = (_env['VITE_API_BASE'] ?? _env['VITE_API_URL'] ?? (typeof window !== 'undefined' && window.location.hostname !== 'localhost' ? _prodApi : '')).replace(/\/$/, '')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

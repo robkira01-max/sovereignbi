@@ -1,6 +1,7 @@
 type ViteEnv = { VITE_API_BASE?: string; VITE_API_URL?: string }
 const _env = (typeof import.meta !== 'undefined' && (import.meta as { env?: ViteEnv }).env) ?? {}
-const BASE = (_env.VITE_API_BASE ?? _env.VITE_API_URL ?? '').replace(/\/$/, '')
+const _PROD_API = 'https://sovereignbi-api.147-5-126-188.sslip.io'
+const BASE = (_env.VITE_API_BASE ?? _env.VITE_API_URL ?? (typeof window !== 'undefined' && window.location.hostname !== 'localhost' ? _PROD_API : '')).replace(/\/$/, '')
 
 export function getKey(): string {
   if (typeof localStorage === 'undefined') return ''
