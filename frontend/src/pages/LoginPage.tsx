@@ -34,7 +34,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         return
       }
       const { token } = await res.json() as { token: string }
-      localStorage.setItem('sovereign_api_key', token)
+      localStorage.setItem('mizan_api_key', token)
       onLogin?.()
     } catch { setError(t('login.error')) }
     finally { setLoading(false) }
@@ -89,7 +89,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               fontSize: '1.3rem', fontWeight: 700, margin: '0 0 6px',
               background: 'linear-gradient(135deg, #f0f0fa, oklch(75% 0.15 265))',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            }}>SovereignBI</h1>
+            }}>MizanBI</h1>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
               {t('login.subtitle')}
             </p>

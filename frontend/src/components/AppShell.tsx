@@ -67,7 +67,7 @@ export function AppShell({ current, children, onNavigate, onLogout }: AppShellPr
         {/* Logo */}
         <div
           onClick={() => onNavigate('home')}
-          title="SovereignBI"
+          title="MizanBI"
           style={{
             width: 36, height: 36, borderRadius: 10,
             background: 'linear-gradient(135deg, var(--brand), oklch(55% 0.2 290))',
@@ -163,7 +163,7 @@ export function AppShell({ current, children, onNavigate, onLogout }: AppShellPr
       }}>
         {/* Breadcrumb */}
         <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
-          SovereignBI{' '}
+          MizanBI{' '}
           <span style={{ color: 'oklch(70% 0.02 265)', fontWeight: 500 }}>
             / {PAGE_LABEL[current]}
           </span>

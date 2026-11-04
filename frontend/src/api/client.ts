@@ -5,7 +5,7 @@ const BASE = (_env.VITE_API_BASE ?? _env.VITE_API_URL ?? (typeof window !== 'und
 
 export function getKey(): string {
   if (typeof localStorage === 'undefined') return ''
-  return localStorage.getItem('sovereign_api_key') ?? ''
+  return localStorage.getItem('mizan_api_key') ?? ''
 }
 
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {

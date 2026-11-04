@@ -21,7 +21,7 @@ const translations: Record<Locale, DeepRecord> = {
       logout: 'Déconnexion',
     },
     login: {
-      title: 'SovereignBI — Connexion',
+      title: 'MizanBI — Connexion',
       subtitle: 'BI conversationnelle souveraine',
       email: 'Email',
       password: 'Mot de passe',
@@ -107,7 +107,7 @@ const translations: Record<Locale, DeepRecord> = {
       logout: 'تسجيل الخروج',
     },
     login: {
-      title: 'SovereignBI — تسجيل الدخول',
+      title: 'MizanBI — تسجيل الدخول',
       subtitle: 'تحليل بيانات ذكي وسيادي',
       email: 'البريد الإلكتروني',
       password: 'كلمة المرور',
@@ -193,7 +193,7 @@ const translations: Record<Locale, DeepRecord> = {
       logout: 'Logout',
     },
     login: {
-      title: 'SovereignBI — Login',
+      title: 'MizanBI — Login',
       subtitle: 'Sovereign conversational BI',
       email: 'Email',
       password: 'Password',
@@ -279,7 +279,7 @@ const translations: Record<Locale, DeepRecord> = {
       logout: 'Cerrar sesión',
     },
     login: {
-      title: 'SovereignBI — Inicio de sesión',
+      title: 'MizanBI — Inicio de sesión',
       subtitle: 'BI conversacional soberana',
       email: 'Correo electrónico',
       password: 'Contraseña',

@@ -21,7 +21,7 @@ interface LocaleContextValue {
   tpl: TplFunc
 }
 
-const STORAGE_KEY = 'sovereign_locale'
+const STORAGE_KEY = 'mizan_locale'
 
 function makeT(locale: Locale): TFunc {
   return (key: string) => getTranslation(locale, key)

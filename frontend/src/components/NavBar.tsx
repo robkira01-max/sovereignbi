@@ -16,7 +16,7 @@ export function NavBar({ currentPath }: Props) {
   ]
 
   const handleLogout = () => {
-    localStorage.removeItem('sovereign_api_key')
+    localStorage.removeItem('mizan_api_key')
     window.location.href = base + 'login'
   }
 
@@ -34,7 +34,7 @@ export function NavBar({ currentPath }: Props) {
         flexWrap: 'wrap',
       }}
     >
-      <strong style={{ marginInlineEnd: '8px', fontSize: '1rem', letterSpacing: '-0.01em' }}>SovereignBI</strong>
+      <strong style={{ marginInlineEnd: '8px', fontSize: '1rem', letterSpacing: '-0.01em' }}>MizanBI</strong>
       {nav.map(({ href, key }) => (
         <a
           key={href}

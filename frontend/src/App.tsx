@@ -9,7 +9,7 @@ import { AppShell, type Page } from './components/AppShell'
 
 function getApiKey(): string {
   if (typeof localStorage === 'undefined') return ''
-  return localStorage.getItem('sovereign_api_key') ?? ''
+  return localStorage.getItem('mizan_api_key') ?? ''
 }
 
 function Inner() {
@@ -31,7 +31,7 @@ function Inner() {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('sovereign_api_key')
+    localStorage.removeItem('mizan_api_key')
     setApiKey('')
   }
 

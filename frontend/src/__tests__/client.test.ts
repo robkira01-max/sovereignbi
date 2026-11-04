@@ -15,14 +15,14 @@ describe('getKey', () => {
   })
 
   it('returns stored key', () => {
-    localStorage.setItem('sovereign_api_key', 'test-key-123')
+    localStorage.setItem('mizan_api_key', 'test-key-123')
     expect(getKey()).toBe('test-key-123')
   })
 })
 
 describe('apiFetch', () => {
   it('adds X-Api-Key header from localStorage', async () => {
-    localStorage.setItem('sovereign_api_key', 'my-key')
+    localStorage.setItem('mizan_api_key', 'my-key')
     mockFetch.mockResolvedValueOnce({ ok: true, json: async () => ({ ok: true }) })
     await apiFetch('/test')
     const callArgs = mockFetch.mock.calls[0][1] as RequestInit
