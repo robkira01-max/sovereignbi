@@ -8,10 +8,12 @@ export function getKey(): string {
 }
 
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const key = getKey()
   const res = await fetch(BASE + path, {
     ...init,
     headers: {
-      'X-Api-Key': getKey(),
+      'X-Api-Key': key,
+      'Authorization': key ? `Bearer ${key}` : '',
       'Content-Type': 'application/json',
       ...(init.headers as Record<string, string> ?? {})
     }
@@ -31,11 +33,12 @@ export const api = {
     }),
 
   upload: (file: File): Promise<{ tables: string[] }> => {
+    const key = getKey()
     const form = new FormData()
     form.append('file', file)
     return fetch(BASE + '/upload', {
       method: 'POST',
-      headers: { 'X-Api-Key': getKey() },
+      headers: { 'X-Api-Key': key, 'Authorization': key ? `Bearer ${key}` : '' },
       body: form
     }).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json() })
   },

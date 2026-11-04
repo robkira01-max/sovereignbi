@@ -62,3 +62,4 @@
 | @testing-library/react | 16.x | MIT | Tests composants React |
 | @testing-library/jest-dom | 6.x | MIT | Matchers DOM pour Vitest |
 | typescript | 5.x | Apache 2.0 | Typage statique JavaScript |
+| bcrypt | 4.x | Apache 2.0 | Hachage de mots de passe (Argon2 wrapper) |

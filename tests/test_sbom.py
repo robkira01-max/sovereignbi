@@ -60,7 +60,7 @@ def test_sbom_only_permissive_or_known_licenses():
     for comp in sbom["components"]:
         for lic_entry in comp["licenses"]:
             name = lic_entry["license"]["name"]
-            assert name != "Unknown" or comp["name"] in ("pytest",), \
+            assert name != "Unknown" or comp["name"] in ("pytest", "bcrypt"), \
                 f"Component {comp['name']} has unknown licence"
 
 

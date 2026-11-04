@@ -54,10 +54,14 @@ from app.monitoring.metrics import (
 )
 from app.security.rbac import RequireRole
 from app.security.audit import audit_configuration, log_audit_results
+from app.auth.security import init_auth_db, seed_admin
+from app.auth.router import router as auth_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    init_auth_db()
+    seed_admin()
     warnings = validate_env()
     log_startup_warnings(warnings)
     findings = audit_configuration()
@@ -108,10 +112,11 @@ app.add_middleware(
     allow_origins=_cors_origins(),
     allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["X-Api-Key", "Content-Type", "Accept"],
+    allow_headers=["X-Api-Key", "Authorization", "Content-Type", "Accept"],
 )
 # 14 — GZip outermost : compresse les réponses JSON/HTML > 512 octets
 app.add_middleware(GZipMiddleware, minimum_size=512)
+app.include_router(auth_router)
 app.include_router(v1_router)
 app.include_router(admin_router)
 app.include_router(dashboards_router)
