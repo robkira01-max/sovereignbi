@@ -1,4 +1,4 @@
-"""Routes de chargement de tables depuis MySQL, SQL Server, Snowflake, BigQuery, MongoDB."""
+"""Routes de chargement de tables depuis MySQL, SQL Server, Snowflake, BigQuery, MongoDB, Supabase."""
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -9,6 +9,7 @@ from app.data.mssql_store import load_mssql_table
 from app.data.snowflake_store import load_snowflake_table
 from app.data.bigquery_store import load_bigquery_table
 from app.data.mongodb_store import load_mongodb_collection
+from app.data.supabase_connector import SupabaseConnector
 from app.security.rbac import RequireRole
 
 router = APIRouter(prefix="/connectors", tags=["connectors"])
@@ -198,6 +199,49 @@ def load_hdx(req: HdxRequest, request: Request, _: str = Depends(_EDITOR)):
     table = req.table_name or "hdx_data"
     table_name = store.load_dataframe(table, df)
     _registry.append({"type": "hdx", "table": table_name, "rows": len(df)})
+    return {"table": table_name, "rows": len(df), "columns": list(df.columns)}
+
+
+class SupabaseRequest(BaseModel):
+    table: str
+    url: str | None = None
+    anon_key: str | None = None
+    limit: int = 5_000
+
+
+class SupabaseTablesRequest(BaseModel):
+    url: str | None = None
+    anon_key: str | None = None
+
+
+@router.post("/supabase/tables")
+def list_supabase_tables(req: SupabaseTablesRequest, _: str = Depends(_EDITOR)):
+    """Découvre les tables exposées par un projet Supabase via PostgREST."""
+    try:
+        client = SupabaseConnector(url=req.url, anon_key=req.anon_key)
+        tables = client.list_tables()
+    except (EnvironmentError, ValueError) as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(503, f"Erreur Supabase : {exc}") from exc
+    return {"tables": tables}
+
+
+@router.post("/supabase")
+def load_supabase(req: SupabaseRequest, request: Request, _: str = Depends(_EDITOR)):
+    """Charge une table Supabase dans DuckDB via PostgREST."""
+    store = request.app.state.store
+    try:
+        client = SupabaseConnector(url=req.url, anon_key=req.anon_key)
+        df = client.load_table(req.table, limit=req.limit)
+    except (EnvironmentError, ValueError) as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(503, f"Erreur Supabase : {exc}") from exc
+    if df.empty:
+        raise HTTPException(404, f"La table {req.table!r} est vide ou introuvable.")
+    table_name = store.load_dataframe(req.table, df)
+    _registry.append({"type": "supabase", "table": table_name, "rows": len(df), "columns": list(df.columns)})
     return {"table": table_name, "rows": len(df), "columns": list(df.columns)}
 
 
