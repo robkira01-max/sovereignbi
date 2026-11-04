@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
         fastapi "uvicorn[standard]" python-multipart httpx \
         duckdb pandas openpyxl xlrd sqlglot langgraph pyyaml \
         scikit-learn fpdf2 pymysql pypdf python-docx qdrant-client \
-        structlog cryptography
+        structlog cryptography bcrypt
 
 # ── Étape 3 : image runtime minimale ─────────────────────────────────────────
 FROM python:3.11-slim AS runtime
