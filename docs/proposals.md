@@ -4,10 +4,10 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 
 ---
 
-## P-001 — Small multiples (tile type `grid`)
+## P-001 — Small multiples (tile type `grid`) ✅
 **Raison :** Pour les 6 régions de Djibouti, afficher 6 mini-graphiques côte à côte est plus lisible qu'un seul barplot. Standard ONS UK, INSEE, KNBS.  
 **Impact :** Moyen — pur frontend, 2-3 jours. Idéal pour les dashboards INSTAD.  
-**Statut :** Proposé
+**Statut :** Livré 2026-11-06 (commit 5617e1a). `options.facet_by` + `options.chart_type` (bar|line).
 
 ## P-002 — Evidence.dev export (bulletin narratif)
 **Raison :** Le benchmark montre que les INS (ONS UK, Statistics Canada) remplacent leurs PDF par des bulletins web narratifs (markdown+SQL). MizanBI peut générer ce type de rapport depuis les YAML de dashboard.  
@@ -53,3 +53,4 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 | **Choroplèthes ADM1** | ECharts + GeoJSON Djibouti, 4 palettes, 4 tiles INSTAD | f58fdf9 |
 | **Tile data endpoint** | GET /dashboards/{id}/tiles/{id}/data — SQL exécuté côté serveur | 1fbf6e4 |
 | **Insight IA** | GET /dashboards/{id}/tiles/{id}/insight — phrase LLM + badge IA | 1fbf6e4 |
+| **P-001 Small multiples grid** | type: grid — mini-charts par facette, 2 tiles INSTAD | 5617e1a |
