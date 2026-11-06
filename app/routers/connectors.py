@@ -1,4 +1,4 @@
-"""Routes de chargement de tables depuis MySQL, SQL Server, Snowflake, BigQuery, MongoDB, Supabase."""
+"""Routes de chargement de tables depuis MySQL, SQL Server, Snowflake, BigQuery, MongoDB, Supabase, KNBS, NISR."""
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -10,6 +10,8 @@ from app.data.snowflake_store import load_snowflake_table
 from app.data.bigquery_store import load_bigquery_table
 from app.data.mongodb_store import load_mongodb_collection
 from app.data.supabase_connector import SupabaseConnector
+from app.data.knbs_client import KNBSClient
+from app.data.nisr_client import NISRClient
 from app.security.rbac import RequireRole
 
 router = APIRouter(prefix="/connectors", tags=["connectors"])
@@ -243,6 +245,124 @@ def load_supabase(req: SupabaseRequest, request: Request, _: str = Depends(_EDIT
     table_name = store.load_dataframe(req.table, df)
     _registry.append({"type": "supabase", "table": table_name, "rows": len(df), "columns": list(df.columns)})
     return {"table": table_name, "rows": len(df), "columns": list(df.columns)}
+
+
+# ── KNBS — Kenya National Bureau of Statistics ───────────────────────────────
+
+class KNBSSearchRequest(BaseModel):
+    q: str
+    rows: int = 20
+
+
+class KNBSFetchRequest(BaseModel):
+    dataset_id: str
+    table_name: str | None = None
+    max_rows: int = 50_000
+
+
+@router.post("/knbs/search")
+def search_knbs(req: KNBSSearchRequest, _: str = Depends(_VIEWER)):
+    """Cherche des datasets KNBS (Kenya Open Data) par mot-clé."""
+    try:
+        client = KNBSClient()
+        datasets = client.search_datasets(req.q, rows=req.rows)
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(503, f"KNBS indisponible : {exc}") from exc
+    return {
+        "results": [
+            {
+                "id": d.id, "name": d.name, "title": d.title,
+                "license_id": d.license_id, "is_permitted": d.is_permitted,
+                "resources": len(d.resources),
+            }
+            for d in datasets
+        ]
+    }
+
+
+@router.post("/knbs")
+def load_knbs(req: KNBSFetchRequest, request: Request, _: str = Depends(_EDITOR)):
+    """Charge le premier CSV d'un dataset KNBS dans DuckDB (après vérification licence)."""
+    store = request.app.state.store
+    try:
+        client = KNBSClient()
+        ds, df = client.fetch_dataset_first_csv(req.dataset_id, max_rows=req.max_rows)
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(503, f"KNBS indisponible : {exc}") from exc
+    if df.empty:
+        raise HTTPException(404, f"Dataset KNBS '{req.dataset_id}' vide.")
+    tname = req.table_name or ds.name.replace("-", "_")[:64]
+    table_name = store.load_dataframe(tname, df)
+    _registry.append({
+        "type": "knbs", "table": table_name,
+        "rows": len(df), "columns": list(df.columns),
+        "dataset_id": ds.id, "license_id": ds.license_id,
+    })
+    return {
+        "table": table_name, "rows": len(df),
+        "columns": list(df.columns), "license_id": ds.license_id,
+    }
+
+
+# ── NISR — National Institute of Statistics of Rwanda ────────────────────────
+
+class NISRSearchRequest(BaseModel):
+    q: str
+    rows: int = 20
+
+
+class NISRFetchRequest(BaseModel):
+    dataset_id: str
+    table_name: str | None = None
+    max_rows: int = 50_000
+
+
+@router.post("/nisr/search")
+def search_nisr(req: NISRSearchRequest, _: str = Depends(_VIEWER)):
+    """Cherche des datasets NISR (Rwanda statistics) par mot-clé."""
+    try:
+        client = NISRClient()
+        datasets = client.search_datasets(req.q, rows=req.rows)
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(503, f"NISR indisponible : {exc}") from exc
+    return {
+        "results": [
+            {
+                "id": d.id, "name": d.name, "title": d.title,
+                "license_id": d.license_id, "is_permitted": d.is_permitted,
+                "resources": len(d.resources),
+            }
+            for d in datasets
+        ]
+    }
+
+
+@router.post("/nisr")
+def load_nisr(req: NISRFetchRequest, request: Request, _: str = Depends(_EDITOR)):
+    """Charge le premier CSV d'un dataset NISR dans DuckDB (après vérification licence)."""
+    store = request.app.state.store
+    try:
+        client = NISRClient()
+        ds, df = client.fetch_dataset_first_csv(req.dataset_id, max_rows=req.max_rows)
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(503, f"NISR indisponible : {exc}") from exc
+    if df.empty:
+        raise HTTPException(404, f"Dataset NISR '{req.dataset_id}' vide.")
+    tname = req.table_name or ds.name.replace("-", "_")[:64]
+    table_name = store.load_dataframe(tname, df)
+    _registry.append({
+        "type": "nisr", "table": table_name,
+        "rows": len(df), "columns": list(df.columns),
+        "dataset_id": ds.id, "license_id": ds.license_id,
+    })
+    return {
+        "table": table_name, "rows": len(df),
+        "columns": list(df.columns), "license_id": ds.license_id,
+    }
 
 
 @router.get("")

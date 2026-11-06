@@ -29,10 +29,10 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Faible en pilote, élevé en phase expansion. Kepler.gl MIT, s'intègre en iframe.  
 **Statut :** Proposé
 
-## P-006 — Connecteurs KNBS Kenya / NISR Rwanda
+## P-006 — Connecteurs KNBS Kenya / NISR Rwanda ✅
 **Raison :** APIs ouvertes disponibles gratuitement, données téléchargeables directement. Stratégique pour l'expansion Afrique de l'Est.  
 **Impact :** Moyen — 2-3 jours par connecteur. À faire après le pilote Djibouti.  
-**Statut :** Proposé
+**Statut :** Livré 2026-11-06. `KNBSClient` + `NISRClient` (CKAN, SSRF guard, circuit breaker, licence check), 4 routes (`/connectors/knbs/search`, `/connectors/knbs`, `/connectors/nisr/search`, `/connectors/nisr`), CLIs `tools/ingest_knbs.py` + `tools/ingest_nisr.py`. 33 tests. 1015/1017 pytest (2 pre-existing).
 
 ## P-007 — Template narratif ONS (scrollytelling)
 **Raison :** `ONSvisual/svelte-scrolly` est open source (MIT), utilisé par l'ONS UK pour les bulletins web. Adapter en React pour les rapports INSTAD.  

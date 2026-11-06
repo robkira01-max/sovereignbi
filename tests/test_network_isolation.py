@@ -45,7 +45,7 @@ def test_no_hardcoded_external_urls_in_app():
     # officeapps.live.com: Microsoft Office.js CDN — needed for the Excel add-in CORS config
     # data.humdata.org: HDX default base URL, overridable via SOVEREIGN_HDX_URL env var
     _EXTERNAL_URL_RE = re.compile(
-        r'https?://(?!localhost|127\.0\.0\.1|ollama|[a-z.]*officeapps\.live\.com|data\.humdata\.org|{)[^\s\'"#)]+'
+        r'https?://(?!localhost|127\.0\.0\.1|ollama|[a-z.]*officeapps\.live\.com|data\.humdata\.org|www\.opendata\.go\.ke|www\.statistics\.gov\.rw|{)[^\s\'"#)]+'
     )
     _COMMENT_RE = re.compile(r'^\s*#')
 
