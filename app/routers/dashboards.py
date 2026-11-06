@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 
 from app.dashboards.models import (
     Dashboard,
@@ -220,6 +220,60 @@ def add_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR
     d.updated_at = _now()
     save_dashboard(d, p)
     return {"id": dashboard_id, "tile_id": tile_id, "updated_at": d.updated_at}
+
+
+@router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/data")
+def tile_data(dashboard_id: str, tile_id: str, request: Request, _: str = Depends(_VIEWER)):
+    """Execute the pinned SQL of a tile and return {columns, rows, error}."""
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    store = request.app.state.store
+    from app.dashboards.renderer import render_tile
+    return render_tile(tile, store)
+
+
+@router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/insight")
+def tile_insight(dashboard_id: str, tile_id: str, request: Request, _: str = Depends(_VIEWER)):
+    """Generate a one-sentence AI insight for a tile's data (cached 15 min)."""
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    if not tile.sql_pinned:
+        raise HTTPException(422, "Cette tuile n'a pas de SQL épinglé.")
+
+    from app.dashboards.insight import generate_insight, get_cached, set_cached
+    cached = get_cached(tile_id, tile.sql_pinned)
+    if cached:
+        return {"insight": cached, "tile_id": tile_id, "cached": True}
+
+    store = request.app.state.store
+    from app.dashboards.renderer import render_tile
+    result = render_tile(tile, store)
+    if result.get("error") or not result.get("rows"):
+        raise HTTPException(422, result.get("error") or "Pas de données pour générer un insight.")
+
+    try:
+        from app.llm import get_llm_client
+        llm = get_llm_client()
+        text = generate_insight(tile.title, result["columns"], result["rows"], llm)
+    except Exception as exc:
+        raise HTTPException(503, f"LLM indisponible : {exc}") from exc
+
+    set_cached(tile_id, tile.sql_pinned, text)
+    return {"insight": text, "tile_id": tile_id, "cached": False}
 
 
 @router.delete("/dashboards/{dashboard_id}/tiles/{tile_id}", status_code=200)

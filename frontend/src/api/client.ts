@@ -117,4 +117,5 @@ export interface Tile {
   sql_pinned?: string
   dimensions?: string[]
   position?: number
+  options?: Record<string, unknown>
 }

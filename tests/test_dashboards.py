@@ -447,6 +447,143 @@ def test_path_traversal_dot_400(client):
     assert r.status_code == 400
 
 
+# ─── Tile data endpoint ───────────────────────────────────────────────────────
+
+def _create_dash_with_sql(client, dash_id: str) -> None:
+    body = {
+        "id": dash_id,
+        "title": "Dashboard SQL Test",
+        "scope": "personal",
+        "tiles": [
+            {
+                "id": "t_sql",
+                "type": "bar",
+                "title": "CA par région",
+                "sql_pinned": "SELECT region, SUM(montant_ht) AS ca FROM ventes GROUP BY region",
+            },
+            {"id": "t_no_sql", "type": "kpi", "title": "KPI sans SQL"},
+        ],
+    }
+    r = client.post("/dashboards", json=body)
+    assert r.status_code == 200
+
+
+def test_tile_data_returns_columns_rows(tmp_path, monkeypatch):
+    """tile_data executes sql_pinned and returns columns/rows."""
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    from app.main import app
+    store = _store_with_data()
+    app.state.store = store
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "td_data")
+
+    r = client.get("/dashboards/td_data/tiles/t_sql/data")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["error"] is None
+    assert "region" in body["columns"]
+    assert len(body["rows"]) == 3
+
+
+def test_tile_data_no_sql_returns_error(tmp_path, monkeypatch):
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    from app.main import app
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "td_nosql")
+
+    r = client.get("/dashboards/td_nosql/tiles/t_no_sql/data")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["error"] is not None
+
+
+def test_tile_data_not_found(tmp_path, monkeypatch):
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    from app.main import app
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "td_404")
+
+    r = client.get("/dashboards/td_404/tiles/no_tile/data")
+    assert r.status_code == 404
+
+
+# ─── Tile insight endpoint ────────────────────────────────────────────────────
+
+def test_tile_insight_returns_text(tmp_path, monkeypatch):
+    """tile_insight calls LLM and returns a sentence."""
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    # Invalidate the in-memory cache between tests
+    import app.dashboards.insight as ins_mod
+    ins_mod._CACHE.clear()
+
+    from app.main import app
+    store = _store_with_data()
+    app.state.store = store
+
+    # Mock LLM
+    class FakeLLM:
+        def complete(self, system: str, user: str) -> str:
+            return "Le taux de chômage à Djibouti-ville atteint 25,3 %, le plus élevé de la région."
+
+    import app.llm as llm_mod
+    monkeypatch.setattr(llm_mod, "get_llm_client", FakeLLM)
+
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "ti_ok")
+
+    r = client.get("/dashboards/ti_ok/tiles/t_sql/insight")
+    assert r.status_code == 200
+    body = r.json()
+    assert "insight" in body
+    assert len(body["insight"]) > 10
+    assert body["tile_id"] == "t_sql"
+
+
+def test_tile_insight_no_sql_422(tmp_path, monkeypatch):
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    from app.main import app
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "ti_nosql")
+
+    r = client.get("/dashboards/ti_nosql/tiles/t_no_sql/insight")
+    assert r.status_code == 422
+
+
+def test_tile_insight_cached(tmp_path, monkeypatch):
+    """Second call returns cached=True."""
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    import app.dashboards.insight as ins_mod
+    ins_mod._CACHE.clear()
+
+    from app.main import app
+    store = _store_with_data()
+    app.state.store = store
+
+    call_count = {"n": 0}
+
+    class CountingLLM:
+        def complete(self, system: str, user: str) -> str:
+            call_count["n"] += 1
+            return "Observation test."
+
+    import app.llm as llm_mod
+    monkeypatch.setattr(llm_mod, "get_llm_client", CountingLLM)
+
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "ti_cache")
+
+    client.get("/dashboards/ti_cache/tiles/t_sql/insight")
+    r2 = client.get("/dashboards/ti_cache/tiles/t_sql/insight")
+    assert r2.json()["cached"] is True
+    assert call_count["n"] == 1  # LLM called only once
+
+
 def test_path_traversal_slash_400(client):
     r = client.get("/dashboards/foo%2Fbar")
     assert r.status_code in (400, 404)

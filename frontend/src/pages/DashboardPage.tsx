@@ -1,16 +1,25 @@
-import { useEffect, useRef, useState } from 'react'
-import { api } from '../api/client'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { api, apiFetch } from '../api/client'
+
+type InsightResponse = { insight: string; tile_id: string; cached: boolean }
 import type { Dashboard, DashboardSummary, Tile } from '../api/client'
 import { TileRenderer } from '../components/TileRenderer'
 import { useLocale } from '../hooks/useLocale'
 
 const TILE_TYPES = ['kpi', 'bar', 'line', 'pie', 'table', 'map']
 
+type TileData = { columns: string[]; rows: unknown[][] }
+type TileDataMap = Record<string, TileData>
+type InsightMap = Record<string, string>
+
 export function DashboardPage() {
   const { t } = useLocale()
   const [summaries, setSummaries] = useState<DashboardSummary[]>([])
   const [selected, setSelected] = useState<Dashboard | null>(null)
   const [tiles, setTiles] = useState<Tile[]>([])
+  const [tileData, setTileData] = useState<TileDataMap>({})
+  const [insights, setInsights] = useState<InsightMap>({})
+  const [loadingInsights, setLoadingInsights] = useState<Record<string, boolean>>({})
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
@@ -23,13 +32,57 @@ export function DashboardPage() {
       .catch(e => setError(e.message))
   }, [])
 
+  const byPosition = (a: Tile, b: Tile) => (a.position ?? 999) - (b.position ?? 999)
+
+  // Load all tile data in parallel
+  const loadTileData = useCallback(async (dashId: string, tileList: Tile[]) => {
+    const results = await Promise.allSettled(
+      tileList.map(async tile => {
+        const data = await apiFetch<TileData>(`/dashboards/${dashId}/tiles/${tile.id}/data`)
+        return { id: tile.id, data }
+      })
+    )
+    const map: TileDataMap = {}
+    for (const res of results) {
+      if (res.status === 'fulfilled') {
+        map[res.value.id] = res.value.data
+      }
+    }
+    setTileData(map)
+  }, [])
+
+  // Load insights sequentially to avoid LLM overload (non-blocking)
+  const loadInsights = useCallback(async (dashId: string, tileList: Tile[]) => {
+    for (const tile of tileList) {
+      if (tile.type === 'kpi') continue // number speaks for itself
+      setLoadingInsights(prev => ({ ...prev, [tile.id]: true }))
+      try {
+        const json = await apiFetch<InsightResponse>(`/dashboards/${dashId}/tiles/${tile.id}/insight`)
+        if (json.insight) {
+          setInsights(prev => ({ ...prev, [tile.id]: json.insight }))
+        }
+      } catch {
+        // LLM unavailable — skip silently
+      } finally {
+        setLoadingInsights(prev => ({ ...prev, [tile.id]: false }))
+      }
+    }
+  }, [])
+
   const openDashboard = (id: string) => {
     api.getDashboard(id)
-      .then(d => { setSelected(d); setTiles([...d.tiles].sort(byPosition)) })
+      .then(d => {
+        const sorted = [...d.tiles].sort(byPosition)
+        setSelected(d)
+        setTiles(sorted)
+        setTileData({})
+        setInsights({})
+        loadTileData(id, sorted)
+        // Start insight loading after data is fetched (small delay)
+        setTimeout(() => loadInsights(id, sorted), 300)
+      })
       .catch(e => setError(e.message))
   }
-
-  const byPosition = (a: Tile, b: Tile) => (a.position ?? 999) - (b.position ?? 999)
 
   const onDragStart = (i: number) => { dragIdx.current = i }
 
@@ -42,7 +95,6 @@ export function DashboardPage() {
     const reordered = next.map((tile, idx) => ({ ...tile, position: idx }))
     setTiles(reordered)
     dragIdx.current = null
-
     if (!selected) return
     setSaving(true)
     api.patchLayout(selected.id, reordered.map((tile, idx) => ({ id: tile.id, position: idx })))
@@ -54,7 +106,11 @@ export function DashboardPage() {
     if (!selected) return
     setSaving(true)
     api.removeTile(selected.id, tileId)
-      .then(() => setTiles(prev => prev.filter(tile => tile.id !== tileId)))
+      .then(() => {
+        setTiles(prev => prev.filter(tile => tile.id !== tileId))
+        setTileData(prev => { const n = { ...prev }; delete n[tileId]; return n })
+        setInsights(prev => { const n = { ...prev }; delete n[tileId]; return n })
+      })
       .catch(e => setError(e.message))
       .finally(() => setSaving(false))
   }
@@ -64,7 +120,8 @@ export function DashboardPage() {
     setSaving(true)
     api.addTile(selected.id, { ...newTile, position: tiles.length })
       .then(() => {
-        setTiles(prev => [...prev, { ...newTile, position: prev.length }])
+        const added = { ...newTile, position: tiles.length }
+        setTiles(prev => [...prev, added])
         setNewTile({ id: '', type: 'kpi', title: '' })
         setShowAdd(false)
       })
@@ -82,22 +139,20 @@ export function DashboardPage() {
       )}
 
       {!selected ? (
-        <>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {summaries.length === 0 && <li style={{ color: '#6b7280' }}>{t('dashboard.no_dashboards')}</li>}
-            {summaries.map(d => (
-              <li key={d.id} style={{ marginBottom: '8px' }}>
-                <button
-                  onClick={() => openDashboard(d.id)}
-                  style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', width: '100%', textAlign: 'start' }}
-                >
-                  <strong>{d.title}</strong>
-                  <span style={{ marginInlineStart: '8px', fontSize: '0.8rem', color: '#6b7280' }}>{d.scope}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {summaries.length === 0 && <li style={{ color: '#6b7280' }}>{t('dashboard.no_dashboards')}</li>}
+          {summaries.map(d => (
+            <li key={d.id} style={{ marginBottom: '8px' }}>
+              <button
+                onClick={() => openDashboard(d.id)}
+                style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', width: '100%', textAlign: 'start' }}
+              >
+                <strong>{d.title}</strong>
+                <span style={{ marginInlineStart: '8px', fontSize: '0.8rem', color: '#6b7280' }}>{d.scope}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       ) : (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
@@ -143,44 +198,57 @@ export function DashboardPage() {
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-            {tiles.map((tile, i) => (
-              <div
-                key={tile.id}
-                draggable
-                onDragStart={() => onDragStart(i)}
-                onDragOver={e => e.preventDefault()}
-                onDrop={() => onDrop(i)}
-                data-tile-id={tile.id}
-                style={{
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  background: '#fff',
-                  cursor: 'grab',
-                  position: 'relative',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                  <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#374151', flex: 1 }}>{tile.title}</h4>
-                  <button
-                    onClick={() => removeTile(tile.id)}
-                    title={t('dashboard.delete_tile')}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '1rem', padding: '0 4px', lineHeight: 1 }}
-                    aria-label={`${t('dashboard.delete_tile')} ${tile.title}`}
-                  >
-                    ×
-                  </button>
+            {tiles.map((tile, i) => {
+              const data = tileData[tile.id] ?? { columns: [], rows: [] }
+              const insight = insights[tile.id]
+              const insightLoading = loadingInsights[tile.id]
+              return (
+                <div
+                  key={tile.id}
+                  draggable
+                  onDragStart={() => onDragStart(i)}
+                  onDragOver={e => e.preventDefault()}
+                  onDrop={() => onDrop(i)}
+                  data-tile-id={tile.id}
+                  style={{
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    background: '#fff',
+                    cursor: 'grab',
+                    position: 'relative',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                    <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#374151', flex: 1 }}>{tile.title}</h4>
+                    <button
+                      onClick={() => removeTile(tile.id)}
+                      title={t('dashboard.delete_tile')}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '1rem', padding: '0 4px', lineHeight: 1 }}
+                      aria-label={`${t('dashboard.delete_tile')} ${tile.title}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: '#9ca3af', marginBottom: '8px' }}>
+                    {tile.type}{tile.position != null ? ` · pos ${tile.position}` : ''}
+                  </div>
+                  <TileRenderer
+                    type={tile.type}
+                    title={tile.title}
+                    data={data}
+                    options={tile.options}
+                  />
+                  {/* AI insight badge */}
+                  {insightLoading && tile.type !== 'kpi' && (
+                    <div style={insightLoadingStyle}>✦ …</div>
+                  )}
+                  {insight && (
+                    <div style={insightStyle}><span style={insightBadge}>IA</span> {insight}</div>
+                  )}
                 </div>
-                <div style={{ fontSize: '0.7rem', color: '#9ca3af', marginBottom: '8px' }}>
-                  {tile.type}{tile.position != null ? ` · pos ${tile.position}` : ''}
-                </div>
-                <TileRenderer
-                  type={tile.type}
-                  title={tile.title}
-                  data={{ columns: [], rows: [] }}
-                />
-              </div>
-            ))}
+              )
+            })}
             {tiles.length === 0 && (
               <p style={{ color: '#6b7280', gridColumn: '1/-1' }}>{t('dashboard.no_tiles')}</p>
             )}
@@ -196,4 +264,33 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #d1d5db',
   borderRadius: '4px',
   fontSize: '0.85rem',
+}
+
+const insightStyle: React.CSSProperties = {
+  marginTop: '10px',
+  fontSize: '0.75rem',
+  color: '#374151',
+  lineHeight: 1.5,
+  borderTop: '1px solid #f3f4f6',
+  paddingTop: '8px',
+}
+
+const insightBadge: React.CSSProperties = {
+  display: 'inline-block',
+  background: '#ede9fe',
+  color: '#7c3aed',
+  borderRadius: '4px',
+  padding: '1px 5px',
+  fontSize: '0.65rem',
+  fontWeight: 700,
+  marginInlineEnd: '5px',
+  letterSpacing: '0.03em',
+}
+
+const insightLoadingStyle: React.CSSProperties = {
+  marginTop: '10px',
+  fontSize: '0.75rem',
+  color: '#9ca3af',
+  borderTop: '1px solid #f3f4f6',
+  paddingTop: '8px',
 }
