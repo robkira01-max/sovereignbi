@@ -106,4 +106,46 @@ describe('TileRenderer', () => {
     render(<TileRenderer type="map" title="Chômage par région" data={mapData} options={{ unit: '%', colorScheme: 'red' }} />)
     expect(screen.getByTestId('tile-map')).toBeInTheDocument()
   })
+
+  it('renders map-bivariate tile with data-testid', () => {
+    const bivData = {
+      columns: ['region', 'taux_pauvrete_pct', 'taux_chomage_pct'],
+      rows: [
+        ['Djibouti-ville', 18.2, 25.3],
+        ['Ali Sabieh',     42.1, 31.1],
+        ['Arta',           35.0, 28.0],
+        ['Dikhil',         48.5, 33.4],
+        ['Tadjourah',      38.2, 29.5],
+        ['Obock',          40.1, 27.8],
+      ],
+    }
+    render(
+      <TileRenderer
+        type="map-bivariate"
+        title="Pauvreté × Chômage"
+        data={bivData}
+        options={{ unit: '%', x1_label: 'Pauvreté', x2_label: 'Chômage', colorScheme: 'classic' }}
+      />
+    )
+    expect(screen.getByTestId('tile-map-bivariate')).toBeInTheDocument()
+  })
+
+  it('renders map-bivariate with teal-orange palette', () => {
+    const bivData = {
+      columns: ['region', 'var1', 'var2'],
+      rows: [
+        ['Djibouti-ville', 10, 20],
+        ['Ali Sabieh', 30, 40],
+        ['Arta', 50, 60],
+        ['Dikhil', 70, 80],
+        ['Tadjourah', 90, 10],
+        ['Obock', 20, 50],
+      ],
+    }
+    render(
+      <TileRenderer type="map-bivariate" title="Test bivariée" data={bivData}
+        options={{ colorScheme: 'teal-orange' }} />
+    )
+    expect(screen.getByTestId('tile-map-bivariate')).toBeInTheDocument()
+  })
 })

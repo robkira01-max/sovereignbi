@@ -5,6 +5,7 @@ import {
 } from 'recharts'
 import { useLocale } from '../hooks/useLocale'
 import { MapLibreMap } from './MapLibreMap'
+import { BivariateChoropleth } from './BivariateChoropleth'
 
 interface TileData {
   columns: string[]
@@ -18,9 +19,11 @@ interface TileOptions {
   y?: string | string[]
   name?: string
   value?: string
-  colorScheme?: 'blue' | 'green' | 'red' | 'orange'
+  colorScheme?: 'blue' | 'green' | 'red' | 'orange' | 'classic' | 'teal-orange'
   facet_by?: string
   chart_type?: 'bar' | 'line'
+  x1_label?: string
+  x2_label?: string
 }
 
 interface Props {
@@ -259,6 +262,21 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
           title={title}
           unit={unit}
           colorScheme={options.colorScheme ?? 'blue'}
+        />
+      )
+
+    // ── Bivariate choropleth (2 variables, 3×3 colour matrix) ────────────────
+    case 'map-bivariate':
+      return (
+        <BivariateChoropleth
+          data={data}
+          title={title}
+          unit={unit}
+          x1_label={options.x1_label}
+          x2_label={options.x2_label}
+          colorScheme={
+            (options.colorScheme as 'classic' | 'teal-orange' | undefined) ?? 'classic'
+          }
         />
       )
 
