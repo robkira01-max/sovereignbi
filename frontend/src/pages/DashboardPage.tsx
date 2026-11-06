@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { api, apiFetch } from '../api/client'
+import { api, apiFetch, getApiBase, getKey } from '../api/client'
 
 type InsightResponse = { insight: string; tile_id: string; cached: boolean }
 import type { Dashboard, DashboardSummary, Tile } from '../api/client'
@@ -22,6 +22,7 @@ export function DashboardPage() {
   const [loadingInsights, setLoadingInsights] = useState<Record<string, boolean>>({})
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
   const [newTile, setNewTile] = useState({ id: '', type: 'kpi', title: '' })
   const dragIdx = useRef<number | null>(null)
@@ -68,6 +69,31 @@ export function DashboardPage() {
       }
     }
   }, [])
+
+  const exportBulletin = async () => {
+    if (!selected) return
+    setExporting(true)
+    try {
+      const key = getKey()
+      const res = await fetch(
+        `${getApiBase()}/dashboards/${selected.id}/export/bulletin`,
+        { headers: { 'X-Api-Key': key, 'Authorization': key ? `Bearer ${key}` : '' } }
+      )
+      if (!res.ok) throw new Error(`${res.status}`)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.download = `${selected.id}-bulletin.html`
+      a.click()
+      setTimeout(() => URL.revokeObjectURL(url), 10000)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur export bulletin')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   const openDashboard = (id: string) => {
     api.getDashboard(id)
@@ -159,6 +185,13 @@ export function DashboardPage() {
             <button onClick={() => { setSelected(null); setShowAdd(false) }} style={{ cursor: 'pointer' }}>{t('dashboard.back')}</button>
             <h3 style={{ margin: 0, flex: 1 }}>{selected.title}</h3>
             {saving && <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>{t('dashboard.saving')}</span>}
+            <button
+              onClick={exportBulletin}
+              disabled={exporting}
+              style={{ padding: '6px 14px', background: '#065f46', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', opacity: exporting ? 0.6 : 1 }}
+            >
+              {exporting ? '…' : t('dashboard.export_bulletin')}
+            </button>
             <button
               onClick={() => setShowAdd(v => !v)}
               style={{ padding: '6px 14px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}

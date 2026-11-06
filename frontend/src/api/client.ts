@@ -8,6 +8,10 @@ export function getKey(): string {
   return localStorage.getItem('mizan_api_key') ?? ''
 }
 
+export function getApiBase(): string {
+  return BASE
+}
+
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const key = getKey()
   const res = await fetch(BASE + path, {

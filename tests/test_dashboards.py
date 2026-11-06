@@ -605,3 +605,83 @@ def test_tile_position_persisted(client):
     d = client.get("/dashboards/s26_pos").json()
     ids = [t["id"] for t in d["tiles"]]
     assert ids == ["t3", "t2", "t1"]
+
+
+# ─── Bulletin export endpoint ─────────────────────────────────────────────────
+
+def test_bulletin_returns_html(tmp_path, monkeypatch):
+    """export/bulletin returns a valid HTML document with dashboard title."""
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    from app.main import app
+    store = _store_with_data()
+    app.state.store = store
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "bul_html")
+
+    r = client.get("/dashboards/bul_html/export/bulletin")
+    assert r.status_code == 200
+    assert "text/html" in r.headers["content-type"]
+    body = r.text
+    assert "<!DOCTYPE html>" in body
+    assert "Dashboard SQL Test" in body
+
+
+def test_bulletin_contains_tile_data(tmp_path, monkeypatch):
+    """Bulletin includes tile titles and data rows as an HTML table."""
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    from app.main import app
+    store = _store_with_data()
+    app.state.store = store
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "bul_data")
+
+    r = client.get("/dashboards/bul_data/export/bulletin")
+    assert r.status_code == 200
+    body = r.text
+    assert "CA par région" in body
+    assert "<table>" in body
+    assert "<td>" in body
+
+
+def test_bulletin_includes_disclaimer(tmp_path, monkeypatch):
+    """Bulletin contains a mandatory disclaimer."""
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    from app.main import app
+    store = _store_with_data()
+    app.state.store = store
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "bul_disc")
+
+    r = client.get("/dashboards/bul_disc/export/bulletin")
+    assert r.status_code == 200
+    assert "Avertissement" in r.text
+
+
+def test_bulletin_includes_cached_insight(tmp_path, monkeypatch):
+    """If an insight is cached, it appears in the bulletin."""
+    import app.routers.dashboards as dr
+    monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
+    import app.dashboards.insight as ins_mod
+    ins_mod._CACHE.clear()
+
+    from app.main import app
+    store = _store_with_data()
+    app.state.store = store
+    client = TestClient(app, headers=_EDITOR_HEADERS)
+    _create_dash_with_sql(client, "bul_ins")
+
+    # Manually seed the insight cache
+    sql = "SELECT region, SUM(montant_ht) AS ca FROM ventes GROUP BY region"
+    ins_mod.set_cached("t_sql", sql, "Le secteur Nord domine les ventes avec 35 %.")
+
+    r = client.get("/dashboards/bul_ins/export/bulletin")
+    assert r.status_code == 200
+    assert "Le secteur Nord domine les ventes" in r.text
+
+
+def test_bulletin_404_for_missing_dashboard(client):
+    r = client.get("/dashboards/nonexistent_bul/export/bulletin")
+    assert r.status_code == 404

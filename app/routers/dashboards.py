@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse
 
 from app.dashboards.models import (
     Dashboard,
@@ -274,6 +275,32 @@ def tile_insight(dashboard_id: str, tile_id: str, request: Request, _: str = Dep
 
     set_cached(tile_id, tile.sql_pinned, text)
     return {"insight": text, "tile_id": tile_id, "cached": False}
+
+
+@router.get("/dashboards/{dashboard_id}/export/bulletin", response_class=HTMLResponse)
+def export_bulletin(dashboard_id: str, request: Request, _: str = Depends(_VIEWER)):
+    """Generate a self-contained HTML narrative bulletin for the dashboard."""
+    _validate_id(dashboard_id, "dashboard_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    try:
+        d = load_dashboard(p)
+    except Exception as e:
+        raise HTTPException(500, str(e)) from e
+
+    from app.dashboards.insight import get_cached
+    cached_insights: dict[str, str] = {}
+    for tile in d.tiles:
+        if tile.sql_pinned:
+            text = get_cached(tile.id, tile.sql_pinned)
+            if text:
+                cached_insights[tile.id] = text
+
+    store = request.app.state.store
+    from app.dashboards.bulletin import generate_bulletin_html
+    html_content = generate_bulletin_html(d, store, cached_insights)
+    return HTMLResponse(content=html_content, media_type="text/html; charset=utf-8")
 
 
 @router.delete("/dashboards/{dashboard_id}/tiles/{tile_id}", status_code=200)
