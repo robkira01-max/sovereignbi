@@ -25,3 +25,9 @@ data/templates/
 data/sync/
 frontend/node_modules/
 frontend/dist/
+node_modules/
+=1.0
+auth.db-shm
+auth.db-wal
+*.db-shm
+*.db-wal
