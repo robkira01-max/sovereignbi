@@ -7,6 +7,8 @@ services:
     restart: unless-stopped
     volumes:
       - sbi_data:/srv/uploads
+      - ./data/dashboards:/srv/data/dashboards
+      - ./data/instad:/srv/data/instad:ro
     networks:
       - caddy_net
     healthcheck:
