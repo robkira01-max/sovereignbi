@@ -1,4 +1,4 @@
-# Ligne de base — SovereignBI Sprint 1
+# Ligne de base — MizanBI Sprint 1
 
 Date : 2026-10-06  
 Modèle testé : `llama3.2:latest` (2,0 Go, CPU uniquement)  

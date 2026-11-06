@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-sovereignbi-pvc
+  name: {{ .Release.Name }}-mizanbi-pvc
   labels:
-    app: sovereignbi
+    app: mizanbi
     release: {{ .Release.Name }}
 spec:
   accessModes:

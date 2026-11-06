@@ -1,4 +1,4 @@
-# SovereignBI — consignes pour Claude Code
+# MizanBI — consignes pour Claude Code
 
 Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchmark, dashboards, sprints, politique DeepSeek).
 

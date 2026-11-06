@@ -8,7 +8,7 @@ import warnings
 from cryptography.fernet import Fernet
 
 VAULT_KEY_ENV = "SOVEREIGN_VAULT_KEY"
-_DEV_KEY_BYTES = b"sovereignbi-dev-vault-key-32byt"
+_DEV_KEY_BYTES = b"mizanbi-dev-vault-key-32byt"
 
 
 def _get_fernet() -> Fernet:

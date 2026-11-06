@@ -1,4 +1,4 @@
-# SovereignBI — Plan de développement et de commercialisation
+# MizanBI — Plan de développement et de commercialisation
 
 > **Pour Claude Code** : lis ce fichier en entier avant d'agir, puis `CLAUDE.md`. Travaille sprint par sprint, valide chaque sprint par ses critères de succès, et ne passe au suivant qu'avec l'accord de Robleh.
 

@@ -93,7 +93,7 @@ def generate_sbom(pyproject_path: Path | None = None) -> dict:
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "component": {
                 "type": "application",
-                "name": "sovereignbi",
+                "name": "mizanbi",
                 "version": "0.1.0",
             },
         },

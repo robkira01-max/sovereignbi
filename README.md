@@ -1,4 +1,4 @@
-# SovereignBI
+# MizanBI
 
 **Outil BI conversationnel 100 % local — souveraineté des données garantie.**
 
@@ -35,7 +35,7 @@ Posez vos questions en français (ou anglais), obtenez du SQL validé, des résu
 # 1. Prérequis : Python 3.11+, Ollama installé et démarré
 # 2. Cloner et installer
 git clone <repo_url>
-cd sovereignbi
+cd mizanbi
 make install
 
 # 3. Configurer
@@ -86,7 +86,7 @@ make lint               # ruff check + format
 ## Architecture
 
 ```
-sovereignbi/
+mizanbi/
 ├── app/
 │   ├── api/            middleware (rate limit, sécurité, version)
 │   ├── alerts/         règles d'alerte SQL
@@ -119,7 +119,7 @@ sovereignbi/
 
 Voir [docs/SECURITY.md](docs/SECURITY.md).
 
-**Principe fondamental** : SovereignBI ne fait aucun appel réseau externe par défaut.
+**Principe fondamental** : MizanBI ne fait aucun appel réseau externe par défaut.
 `app/` n'importe jamais `tools/` et ne contient aucun appel à un service tiers.
 
 ---
@@ -136,4 +136,4 @@ Voir [docs/SECURITY.md](docs/SECURITY.md).
 
 MIT — voir [LICENSE](LICENSE).
 
-SovereignBI est un outil d'aide à la décision. Il ne remplace pas un analyste de données ni un responsable de la conformité. Vérifiez toujours les résultats avant toute décision critique.
+MizanBI est un outil d'aide à la décision. Il ne remplace pas un analyste de données ni un responsable de la conformité. Vérifiez toujours les résultats avant toute décision critique.

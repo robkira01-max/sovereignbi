@@ -1,5 +1,5 @@
 """
-Test pipeline SovereignBI avec données réelles Djibouti (HDX OCHA).
+Test pipeline MizanBI avec données réelles Djibouti (HDX OCHA).
 Usage : python tools/test_real_data.py [--ollama]
 """
 import os, sys, time, argparse

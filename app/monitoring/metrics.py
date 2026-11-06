@@ -84,12 +84,12 @@ class Histogram:
 
 
 # Global registry
-asks_total = Counter("sovereignbi_asks_total", "Total /ask requests", labels=["status"])
-uploads_total = Counter("sovereignbi_uploads_total", "Total /upload requests")
-cache_hits_total = Counter("sovereignbi_cache_hits_total", "Cache hits")
-cache_misses_total = Counter("sovereignbi_cache_misses_total", "Cache misses")
-active_tables = Gauge("sovereignbi_active_tables", "Number of tables loaded")
-ask_duration_seconds = Histogram("sovereignbi_ask_duration_seconds", "Duration of /ask calls")
+asks_total = Counter("mizanbi_asks_total", "Total /ask requests", labels=["status"])
+uploads_total = Counter("mizanbi_uploads_total", "Total /upload requests")
+cache_hits_total = Counter("mizanbi_cache_hits_total", "Cache hits")
+cache_misses_total = Counter("mizanbi_cache_misses_total", "Cache misses")
+active_tables = Gauge("mizanbi_active_tables", "Number of tables loaded")
+ask_duration_seconds = Histogram("mizanbi_ask_duration_seconds", "Duration of /ask calls")
 
 _ALL_METRICS = [
     asks_total, uploads_total, cache_hits_total, cache_misses_total,

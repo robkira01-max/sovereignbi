@@ -78,7 +78,7 @@ def test_openapi_schema_accessible(client):
     r = client.get("/openapi.json")
     assert r.status_code == 200
     schema = r.json()
-    assert schema["info"]["title"] == "SovereignBI"
+    assert schema["info"]["title"] == "MizanBI"
     assert schema["info"]["version"] == "1.0.0"
 
 

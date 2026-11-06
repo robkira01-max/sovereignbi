@@ -1,8 +1,8 @@
-# Politique de sécurité SovereignBI
+# Politique de sécurité MizanBI
 
 ## 1. Modèle de menace
 
-SovereignBI est conçu pour être déployé **en réseau local ou en cloud privé**. Les données analytiques de l'entreprise ne quittent jamais le périmètre contrôlé.
+MizanBI est conçu pour être déployé **en réseau local ou en cloud privé**. Les données analytiques de l'entreprise ne quittent jamais le périmètre contrôlé.
 
 Menaces principales :
 - Exfiltration de données via injection SQL dans les requêtes IA

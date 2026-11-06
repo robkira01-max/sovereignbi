@@ -67,7 +67,7 @@ def test_chatbot_invalid_history_role(client):
 def test_chatbot_general_mode_no_tables(client):
     store.tables.clear()
     mock_llm = MagicMock()
-    mock_llm.complete.return_value = "Bonjour ! Je suis l'assistant SovereignBI."
+    mock_llm.complete.return_value = "Bonjour ! Je suis l'assistant MizanBI."
 
     with patch("app.routers.chatbot.get_llm_client", return_value=mock_llm):
         r = client.post(

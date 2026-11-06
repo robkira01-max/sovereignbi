@@ -1,4 +1,4 @@
-# Changelog — SovereignBI
+# Changelog — MizanBI
 
 Toutes les modifications notables sont documentées ici.
 Format : [Unreleased] / [version] — date / types : Added, Changed, Fixed, Security, Removed.
@@ -15,7 +15,7 @@ Format : [Unreleased] / [version] — date / types : Added, Changed, Fixed, Secu
 - `docs/CHANGELOG.md`, `docs/SECURITY.md`, `README.md`, `LICENSE` (MIT)
 
 ### Added — Sprint 21
-- Helm chart `helm/sovereignbi/` avec probes Kubernetes liveness/readiness
+- Helm chart `helm/mizanbi/` avec probes Kubernetes liveness/readiness
 - Intégration Prometheus — métriques `/metrics`
 - `docs/grafana-dashboard.json` tableau de bord prêt à l'emploi
 

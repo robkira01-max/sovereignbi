@@ -1,8 +1,8 @@
-# Politique de sécurité — SovereignBI
+# Politique de sécurité — MizanBI
 
 ## Signalement d'une vulnérabilité
 
-Si vous découvrez une vulnérabilité de sécurité dans SovereignBI, merci de **ne pas** ouvrir une issue publique.
+Si vous découvrez une vulnérabilité de sécurité dans MizanBI, merci de **ne pas** ouvrir une issue publique.
 
 Envoyez un rapport privé à : **roblehassanabdi@gmail.com**
 
@@ -20,7 +20,7 @@ Vous recevrez un accusé de réception sous 48 heures. Les vulnérabilités crit
 
 ### Principe directeur : souveraineté des données
 
-SovereignBI est conçu pour fonctionner **100 % en local**. Aucune donnée ne quitte votre infrastructure, sauf si vous configurez explicitement un connecteur externe (Snowflake, BigQuery).
+MizanBI est conçu pour fonctionner **100 % en local**. Aucune donnée ne quitte votre infrastructure, sauf si vous configurez explicitement un connecteur externe (Snowflake, BigQuery).
 
 ### Contrôle d'accès (RBAC)
 
@@ -57,7 +57,7 @@ DuckDB exécuté avec `enable_external_access: False` — aucun accès réseau n
 
 ### Audit de configuration
 
-À chaque démarrage, SovereignBI vérifie :
+À chaque démarrage, MizanBI vérifie :
 - **SEC-001 (critique)** — `SOVEREIGN_ADMIN_KEY` non par défaut
 - **SEC-002 (critique)** — `SOVEREIGN_EMBED_SECRET` ≥ 32 caractères
 - **SEC-003 (élevé)** — Rate limit raisonnable en production

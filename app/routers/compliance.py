@@ -134,10 +134,10 @@ def get_data_inventory(_: str = Depends(_VIEWER)):
 def privacy_notice(_: str = Depends(_VIEWER)):
     """Retourne l'avis de confidentialité en JSON (Loi 25 / PIPEDA)."""
     return {
-        "title": "Avis de confidentialité — SovereignBI",
+        "title": "Avis de confidentialité — MizanBI",
         "version": "1.0",
         "applicable_laws": ["Loi 25 (Québec)", "PIPEDA (Canada)"],
-        "data_controller": "Opérateur de SovereignBI",
+        "data_controller": "Opérateur de MizanBI",
         "data_location": "Infrastructure locale de l'opérateur — aucune donnée transmise à des tiers",
         "purposes": [
             {"id": "analytics", "description": "Analyse des données chargées par l'utilisateur"},
@@ -145,6 +145,6 @@ def privacy_notice(_: str = Depends(_VIEWER)):
         ],
         "retention": "Selon la politique de rétention configurée par l'opérateur",
         "rights": ["accès", "rectification", "suppression", "exportation", "retrait du consentement"],
-        "contact": "Adressez vos demandes à l'opérateur de l'instance SovereignBI",
+        "contact": "Adressez vos demandes à l'opérateur de l'instance MizanBI",
         "disclaimer": "Cet outil est réservé à un usage professionnel. Il ne constitue pas un conseil juridique.",
     }

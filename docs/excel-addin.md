@@ -1,11 +1,11 @@
-# SovereignBI — Add-in Excel
+# MizanBI — Add-in Excel
 
 Analysez vos données Excel directement depuis un panneau latéral, sans quitter Excel.
 
 ## Prérequis
 
 - Excel 2016+ (Windows/Mac) ou Excel Online (Microsoft 365)
-- SovereignBI en cours d'exécution (`uvicorn app.main:app --port 9000`)
+- MizanBI en cours d'exécution (`uvicorn app.main:app --port 9000`)
 - Une clé API (viewer ou editor)
 
 ## Installation du complément
@@ -36,7 +36,7 @@ Analysez vos données Excel directement depuis un panneau latéral, sans quitter
 
 ```
 ┌─────────────────────────────┐
-│ ⚡ SovereignBI              │
+│ ⚡ MizanBI              │
 │ IA locale · vos données...  │
 ├─────────────────────────────┤
 │ 1. DONNÉES                  │
@@ -102,5 +102,5 @@ Exemples de questions :
 |---|---|
 | "Clé API manquante" | Vérifier les paramètres → clé API |
 | "Aucune donnée chargée" | Cliquer "Envoyer la feuille active" d'abord |
-| "Erreur réseau" | Vérifier que SovereignBI tourne sur le bon port |
+| "Erreur réseau" | Vérifier que MizanBI tourne sur le bon port |
 | "Le pipeline LLM n'est pas disponible" | Lancer Ollama : `ollama serve` |

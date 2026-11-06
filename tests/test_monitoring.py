@@ -81,11 +81,11 @@ def test_histogram_buckets():
 
 def test_render_all_contains_all_metrics():
     text = render_all()
-    assert "sovereignbi_asks_total" in text
-    assert "sovereignbi_uploads_total" in text
-    assert "sovereignbi_cache_hits_total" in text
-    assert "sovereignbi_active_tables" in text
-    assert "sovereignbi_ask_duration_seconds" in text
+    assert "mizanbi_asks_total" in text
+    assert "mizanbi_uploads_total" in text
+    assert "mizanbi_cache_hits_total" in text
+    assert "mizanbi_active_tables" in text
+    assert "mizanbi_ask_duration_seconds" in text
 
 
 # --- Route tests ---
@@ -94,14 +94,14 @@ def test_metrics_endpoint(client):
     r = client.get("/metrics")
     assert r.status_code == 200
     assert "text/plain" in r.headers["content-type"]
-    assert "sovereignbi_asks_total" in r.text
+    assert "mizanbi_asks_total" in r.text
 
 
 def test_metrics_contains_active_tables(client):
     import io, pandas as pd
     store.load_dataframe("metrics_test", pd.DataFrame({"x": [1]}))
     r = client.get("/metrics")
-    assert "sovereignbi_active_tables" in r.text
+    assert "mizanbi_active_tables" in r.text
 
 
 def test_liveness_probe(client):
@@ -122,18 +122,18 @@ def test_readiness_probe(client):
 
 def test_helm_chart_exists():
     from pathlib import Path
-    chart = Path("helm/sovereignbi/Chart.yaml")
+    chart = Path("helm/mizanbi/Chart.yaml")
     assert chart.exists()
     import yaml
     with chart.open() as f:
         content = yaml.safe_load(f)
-    assert content["name"] == "sovereignbi"
+    assert content["name"] == "mizanbi"
     assert "version" in content
 
 
 def test_helm_values_exists():
     from pathlib import Path
-    values = Path("helm/sovereignbi/values.yaml")
+    values = Path("helm/mizanbi/values.yaml")
     assert values.exists()
     import yaml
     with values.open() as f:
@@ -149,5 +149,5 @@ def test_grafana_dashboard_exists():
     assert dashboard.exists()
     with dashboard.open() as f:
         data = json.load(f)
-    assert data["title"] == "SovereignBI — Monitoring"
+    assert data["title"] == "MizanBI — Monitoring"
     assert len(data["panels"]) >= 4

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""19 — Test de charge SovereignBI : simule N visiteurs simultanés.
+"""19 — Test de charge MizanBI : simule N visiteurs simultanés.
 
 Usage:
     python tools/load_test.py --url http://localhost:9001 --users 10 --duration 30

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: sovereignbi
+  repository: mizanbi
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -12,7 +12,7 @@ service:
 ingress:
   enabled: false
   className: ""
-  host: sovereignbi.local
+  host: mizanbi.local
   tls: []
 
 resources:

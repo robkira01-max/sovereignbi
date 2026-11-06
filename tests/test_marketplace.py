@@ -59,7 +59,7 @@ def test_get_trending(cat):
 def test_export_template_package(cat):
     register_template("t1", "Test", "desc", ["tag"], catalogue_path=cat)
     pkg = export_template_package("t1", catalogue_path=cat)
-    assert pkg["format"] == "sovereignbi-template/v1"
+    assert pkg["format"] == "mizanbi-template/v1"
     assert pkg["template"]["template_id"] == "t1"
     assert "exported_at" in pkg
 
@@ -133,7 +133,7 @@ def test_marketplace_rate_and_export(client):
     export = client.get("/marketplace/templates/tmpl-kpi-dashboard/export", headers=VIEWER)
     assert export.status_code == 200
     pkg = export.json()
-    assert pkg["format"] == "sovereignbi-template/v1"
+    assert pkg["format"] == "mizanbi-template/v1"
 
 
 def test_marketplace_import_route(client):

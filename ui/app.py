@@ -1,4 +1,4 @@
-"""SovereignBI — interface Streamlit.
+"""MizanBI — interface Streamlit.
 
 Tabs: Chat | Dashboards | Journal d'audit | Admin
 Communication with the FastAPI backend via httpx.
@@ -24,8 +24,8 @@ def _api(method: str, path: str, **kwargs):
 def _main():
     import streamlit as st
 
-    st.set_page_config(page_title="SovereignBI", layout="wide")
-    st.title("SovereignBI — BI conversationnelle souveraine")
+    st.set_page_config(page_title="MizanBI", layout="wide")
+    st.title("MizanBI — BI conversationnelle souveraine")
 
     # ── Sidebar ─────────────────────────────────────────────────────────────
     with st.sidebar:

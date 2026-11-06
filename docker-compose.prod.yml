@@ -1,4 +1,4 @@
-# SovereignBI — Production (Oracle Cloud ARM Free Tier)
+# MizanBI — Production (Oracle Cloud ARM Free Tier)
 # Usage :
 #   docker compose -f docker-compose.prod.yml up -d
 #

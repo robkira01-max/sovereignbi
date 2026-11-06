@@ -23,7 +23,7 @@ def test_sbom_metadata():
     sbom = generate_sbom()
     meta = sbom["metadata"]
     assert "timestamp" in meta
-    assert meta["component"]["name"] == "sovereignbi"
+    assert meta["component"]["name"] == "mizanbi"
     assert meta["component"]["type"] == "application"
 
 

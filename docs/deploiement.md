@@ -1,4 +1,4 @@
-# Déploiement SovereignBI
+# Déploiement MizanBI
 
 ## Prérequis
 
@@ -69,14 +69,14 @@ sudo ufw deny out from <ip_container_api> to any
 sudo ufw allow out from <ip_container_api> to <ip_container_ollama>
 
 # Vérifier en temps réel
-sudo ss -tnp | grep $(docker inspect --format '{{.State.Pid}}' sovereignbi-api-1)
+sudo ss -tnp | grep $(docker inspect --format '{{.State.Pid}}' mizanbi-api-1)
 ```
 
 ### Vérification sans pare-feu
 
 ```bash
 # 24 h de monitoring : aucune connexion sortante ne doit apparaître
-docker run --rm --network container:sovereignbi-api-1 nicolaka/netshoot \
+docker run --rm --network container:mizanbi-api-1 nicolaka/netshoot \
   tcpdump -n 'not dst net 172.16.0.0/12 and not dst net 10.0.0.0/8'
 ```
 

@@ -86,7 +86,7 @@ def _cors_origins() -> list[str]:
 
 
 app = FastAPI(
-    title="SovereignBI",
+    title="MizanBI",
     version="1.0.0",
     description=(
         "Outil BI conversationnel souverain — text-to-SQL, LLM local ou API, DuckDB. "

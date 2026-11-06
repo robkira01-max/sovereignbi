@@ -2,7 +2,7 @@
 """Démo pilote INSTAD — 10 questions types sur les données djiboutiennes.
 
 Charge les CSV INSTAD dans un DuckDB en mémoire et répond aux questions
-avec le pipeline SQL de SovereignBI.
+avec le pipeline SQL de MizanBI.
 
 Usage:
   .venv/bin/python tools/demo_instad.py

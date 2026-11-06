@@ -49,7 +49,7 @@ def reset_sandbox(store: DataStore) -> list[str]:
 
 
 def sandbox_questions() -> list[dict]:
-    """Example questions demonstrating SovereignBI capabilities."""
+    """Example questions demonstrating MizanBI capabilities."""
     return [
         {"question": "Quel est le total des ventes par produit ?", "table": "ventes"},
         {"question": "Quelle région a le plus de ventes ?", "table": "ventes"},

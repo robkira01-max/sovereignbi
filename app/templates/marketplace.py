@@ -109,7 +109,7 @@ def export_template_package(
         raise KeyError(template_id)
     entry = entries[template_id]
     return {
-        "format": "sovereignbi-template/v1",
+        "format": "mizanbi-template/v1",
         "exported_at": datetime.now(tz=timezone.utc).isoformat(),
         "template": asdict(entry),
     }
@@ -121,8 +121,8 @@ def import_template_package(
     force_new_id: bool = True,
 ) -> CatalogueEntry:
     """Import a template from a JSON package. Creates a new ID if force_new_id."""
-    if package.get("format") != "sovereignbi-template/v1":
-        raise ValueError("Format de paquet non reconnu. Attendu : 'sovereignbi-template/v1'")
+    if package.get("format") != "mizanbi-template/v1":
+        raise ValueError("Format de paquet non reconnu. Attendu : 'mizanbi-template/v1'")
     tmpl = package["template"]
     template_id = str(uuid.uuid4()) if force_new_id else tmpl["template_id"]
     return register_template(
