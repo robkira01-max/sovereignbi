@@ -63,3 +63,5 @@
 | @testing-library/jest-dom | 6.x | MIT | Matchers DOM pour Vitest |
 | typescript | 5.x | Apache 2.0 | Typage statique JavaScript |
 | bcrypt | 4.x | Apache 2.0 | Hachage de mots de passe (Argon2 wrapper) |
+| maplibre-gl | 6.x | BSD-3-Clause | Rendu cartographique WebGL (basemap PMTiles) |
+| pmtiles | 4.x | Apache 2.0 | Protocol PMTiles pour MapLibre GL |

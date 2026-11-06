@@ -21,3 +21,37 @@ vi.mock('echarts', () => ({
   registerMap: vi.fn(),
   getMap: vi.fn(() => null),
 }))
+
+// MapLibre GL uses WebGL/workers — mock for jsdom
+vi.mock('maplibre-gl', () => {
+  const mockMap = {
+    on: vi.fn(),
+    addControl: vi.fn(),
+    addSource: vi.fn(),
+    addLayer: vi.fn(),
+    getSource: vi.fn(() => null),
+    getCanvas: vi.fn(() => ({ style: {} })),
+    isStyleLoaded: vi.fn(() => false),
+    setPaintProperty: vi.fn(),
+    remove: vi.fn(),
+  }
+  return {
+    default: {
+      Map: vi.fn(() => mockMap),
+      NavigationControl: vi.fn(),
+      AttributionControl: vi.fn(),
+      Popup: vi.fn(() => ({ setLngLat: vi.fn().mockReturnThis(), setHTML: vi.fn().mockReturnThis(), addTo: vi.fn(), remove: vi.fn() })),
+      addProtocol: vi.fn(),
+    },
+    Map: vi.fn(() => mockMap),
+    NavigationControl: vi.fn(),
+    AttributionControl: vi.fn(),
+    Popup: vi.fn(() => ({ setLngLat: vi.fn().mockReturnThis(), setHTML: vi.fn().mockReturnThis(), addTo: vi.fn(), remove: vi.fn() })),
+    addProtocol: vi.fn(),
+  }
+})
+
+// PMTiles Protocol — mock for jsdom
+vi.mock('pmtiles', () => ({
+  Protocol: vi.fn(() => ({ tile: vi.fn() })),
+}))

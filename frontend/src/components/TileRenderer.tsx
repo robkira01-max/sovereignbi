@@ -4,7 +4,7 @@ import {
   PieChart, Pie, Cell,
 } from 'recharts'
 import { useLocale } from '../hooks/useLocale'
-import { ChoroplethMap } from './ChoroplethMap'
+import { MapLibreMap } from './MapLibreMap'
 
 interface TileData {
   columns: string[]
@@ -254,7 +254,7 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
     // ── Choropleth map (Djibouti ADM1) ────────────────────────────────────────
     case 'map':
       return (
-        <ChoroplethMap
+        <MapLibreMap
           data={data}
           title={title}
           unit={unit}

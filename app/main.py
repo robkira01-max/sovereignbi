@@ -280,6 +280,29 @@ if _ADDIN_DIR.exists():
     from fastapi.staticfiles import StaticFiles as _StaticFiles
     app.mount("/addin/excel", _StaticFiles(directory=str(_ADDIN_DIR)), name="excel-addin")
 
+# Serve PMTiles basemap for offline use (GET /tiles/djibouti.pmtiles)
+_TILES_DIR = Path(__file__).parent.parent / "data" / "tiles"
+_TILES_DIR.mkdir(parents=True, exist_ok=True)
+
+@app.get("/tiles/{filename}", include_in_schema=False)
+def serve_tile(filename: str):
+    from fastapi.responses import FileResponse, Response
+    # Only serve .pmtiles files from the tiles directory
+    if not filename.endswith(".pmtiles"):
+        return Response(status_code=404)
+    tile_path = _TILES_DIR / filename
+    if not tile_path.exists():
+        return Response(
+            content=f"PMTiles file '{filename}' not found. Run: python tools/download_pmtiles.py",
+            status_code=404,
+            media_type="text/plain",
+        )
+    return FileResponse(
+        str(tile_path),
+        media_type="application/vnd.pmtiles",
+        headers={"Cache-Control": "public, max-age=86400", "Access-Control-Allow-Origin": "*"},
+    )
+
 # Serve React build if dist/ exists (optional — not required for API usage)
 _REACT_DIST = Path(__file__).parent.parent / "frontend" / "dist"
 if _REACT_DIST.exists():

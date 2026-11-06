@@ -14,10 +14,10 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Élevé — artefact distribuable sans accès à la plateforme, ouvrable offline.  
 **Statut :** Livré 2026-11-06 (commit 8061c6d). `GET /dashboards/{id}/export/bulletin` + bouton "↓ Bulletin" i18n.
 
-## P-003 — Offline tiles Protomaps PMTiles (BSD)
+## P-003 — Offline tiles Protomaps PMTiles ✅
 **Raison :** Pour la démo terrain Djibouti (connectivité limitée), ajouter une carte de base offline (rues, bâtiments) en plus du choroplèthe ADM1 déjà livré.  
-**Impact :** Moyen — bbox DJ : `41.7,10.9,43.6,12.8`, environ 50 Mo. 1-2 jours d'intégration.  
-**Statut :** Proposé
+**Impact :** Moyen — bbox DJ : `41.7,10.9,43.6,12.8`, environ 10-30 Mo. 1-2 jours d'intégration.  
+**Statut :** Livré 2026-11-06. `MapLibreMap.tsx` (MapLibre GL BSD-3 + pmtiles Apache-2), basemap PMTiles + couche choroplèthe auto-update, `GET /tiles/{file}.pmtiles`, `tools/download_pmtiles.py`. 982/984 pytest + 44/44 Vitest.
 
 ## P-004 — Choroplèthe bivariée
 **Raison :** 2 variables sur la même carte (pauvreté × chômage, 3×3 classes) est un standard des INS modernes. ECharts visualMap double ou D3 piecemeal.  
