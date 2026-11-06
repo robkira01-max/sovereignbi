@@ -19,6 +19,8 @@ interface TileOptions {
   name?: string
   value?: string
   colorScheme?: 'blue' | 'green' | 'red' | 'orange'
+  facet_by?: string
+  chart_type?: 'bar' | 'line'
 }
 
 interface Props {
@@ -259,6 +261,79 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
           colorScheme={options.colorScheme ?? 'blue'}
         />
       )
+
+    // ── Small multiples grid (one mini-chart per facet value) ─────────────────
+    case 'grid': {
+      const facetKey = options.facet_by ?? data.columns[0] ?? ''
+      const facetIdx = data.columns.indexOf(facetKey)
+      const xColKey = options.x ?? data.columns.find(c => c !== facetKey) ?? ''
+      const xColIdx = data.columns.indexOf(xColKey)
+      const rawYGrid = options.y
+      const yColKey = !Array.isArray(rawYGrid) && rawYGrid
+        ? rawYGrid
+        : data.columns.find(c => c !== facetKey && c !== xColKey) ?? ''
+      const yColIdx = data.columns.indexOf(yColKey)
+      const subType = options.chart_type ?? 'bar'
+
+      const facets = [...new Set(data.rows.map(r => r[facetIdx]))]
+
+      return (
+        <div
+          data-testid="tile-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+            gap: '8px',
+          }}
+        >
+          {facets.map((facetVal, fi) => {
+            const facetRows = data.rows.filter(r => r[facetIdx] === facetVal)
+            const facetData = facetRows.map(r => ({
+              [xColKey]: r[xColIdx],
+              [yColKey]: r[yColIdx],
+            }))
+            const color = CHART_COLORS[fi % CHART_COLORS.length]
+            return (
+              <div
+                key={String(facetVal)}
+                style={{
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 6,
+                  padding: '4px 6px 2px',
+                }}
+              >
+                <div style={{
+                  fontSize: '0.6rem',
+                  fontWeight: 600,
+                  color: 'var(--muted)',
+                  marginBottom: 2,
+                  textAlign: 'center',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {shortLabel(facetVal)}
+                </div>
+                <ResponsiveContainer width="100%" height={70}>
+                  {subType === 'line' ? (
+                    <LineChart data={facetData} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+                      <Line type="monotone" dataKey={yColKey} stroke={color} strokeWidth={1.5} dot={{ r: 2 }} isAnimationActive={false} />
+                      <Tooltip formatter={tooltipFormatter} />
+                    </LineChart>
+                  ) : (
+                    <BarChart data={facetData} margin={{ top: 2, right: 2, bottom: 0, left: 2 }}>
+                      <Bar dataKey={yColKey} fill={color} radius={[2, 2, 0, 0]} isAnimationActive={false} />
+                      <Tooltip formatter={tooltipFormatter} />
+                    </BarChart>
+                  )}
+                </ResponsiveContainer>
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
 
     default:
       return <div data-testid="tile-unknown">{t('tile.unknown')} {type}</div>
