@@ -9,10 +9,10 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Moyen — pur frontend, 2-3 jours. Idéal pour les dashboards INSTAD.  
 **Statut :** Livré 2026-11-06 (commit 5617e1a). `options.facet_by` + `options.chart_type` (bar|line).
 
-## P-002 — Evidence.dev export (bulletin narratif)
-**Raison :** Le benchmark montre que les INS (ONS UK, Statistics Canada) remplacent leurs PDF par des bulletins web narratifs (markdown+SQL). MizanBI peut générer ce type de rapport depuis les YAML de dashboard.  
-**Impact :** Élevé — crée un artefact distribuable sans accès à la plateforme. 4-5 jours (Evidence.dev ou template React SSG).  
-**Statut :** Proposé
+## P-002 — Bulletin narratif HTML ✅
+**Raison :** Le benchmark montre que les INS (ONS UK, Statistics Canada) remplacent leurs PDF par des bulletins web narratifs. MizanBI génère un HTML auto-suffisant depuis les YAML de dashboard.  
+**Impact :** Élevé — artefact distribuable sans accès à la plateforme, ouvrable offline.  
+**Statut :** Livré 2026-11-06 (commit 8061c6d). `GET /dashboards/{id}/export/bulletin` + bouton "↓ Bulletin" i18n.
 
 ## P-003 — Offline tiles Protomaps PMTiles (BSD)
 **Raison :** Pour la démo terrain Djibouti (connectivité limitée), ajouter une carte de base offline (rues, bâtiments) en plus du choroplèthe ADM1 déjà livré.  
@@ -54,3 +54,4 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 | **Tile data endpoint** | GET /dashboards/{id}/tiles/{id}/data — SQL exécuté côté serveur | 1fbf6e4 |
 | **Insight IA** | GET /dashboards/{id}/tiles/{id}/insight — phrase LLM + badge IA | 1fbf6e4 |
 | **P-001 Small multiples grid** | type: grid — mini-charts par facette, 2 tiles INSTAD | 5617e1a |
+| **P-002 Bulletin HTML** | GET /export/bulletin — HTML auto-suffisant, tables, insights, disclaimer | 8061c6d |
