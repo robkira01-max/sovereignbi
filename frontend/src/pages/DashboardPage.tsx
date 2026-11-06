@@ -4,7 +4,7 @@ import type { Dashboard, DashboardSummary, Tile } from '../api/client'
 import { TileRenderer } from '../components/TileRenderer'
 import { useLocale } from '../hooks/useLocale'
 
-const TILE_TYPES = ['kpi', 'bar', 'line', 'pie', 'table']
+const TILE_TYPES = ['kpi', 'bar', 'line', 'pie', 'table', 'map']
 
 export function DashboardPage() {
   const { t } = useLocale()

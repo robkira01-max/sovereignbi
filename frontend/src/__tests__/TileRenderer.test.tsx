@@ -10,7 +10,8 @@ describe('TileRenderer', () => {
   it('renders KPI tile with value', () => {
     render(<TileRenderer type="kpi" title="CA total" data={kpiData} />)
     expect(screen.getByTestId('tile-kpi')).toBeInTheDocument()
-    expect(screen.getByTestId('tile-kpi').textContent).toContain('42000')
+    // fr-FR locale formats 42000 as "42 000" (narrow non-breaking space)
+    expect(screen.getByTestId('tile-kpi').textContent).toMatch(/42[^\d]*000/)
   })
 
   it('renders table tile with column headers', () => {
@@ -35,5 +36,21 @@ describe('TileRenderer', () => {
   it('renders KPI with dash when no data', () => {
     render(<TileRenderer type="kpi" title="Vide" data={emptyData} />)
     expect(screen.getByTestId('tile-kpi').textContent).toContain('—')
+  })
+
+  it('renders map tile (choropleth) with data-testid', () => {
+    const mapData = {
+      columns: ['region', 'taux_chomage_pct'],
+      rows: [
+        ['Djibouti-ville', 25.3],
+        ['Ali Sabieh', 31.1],
+        ['Arta', 28.0],
+        ['Dikhil', 33.4],
+        ['Tadjourah', 29.5],
+        ['Obock', 27.8],
+      ],
+    }
+    render(<TileRenderer type="map" title="Chômage par région" data={mapData} options={{ unit: '%', colorScheme: 'red' }} />)
+    expect(screen.getByTestId('tile-map')).toBeInTheDocument()
   })
 })
