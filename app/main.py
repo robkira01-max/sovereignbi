@@ -43,6 +43,7 @@ from app.routers.sync import router as sync_router
 from app.routers.semantic import router as semantic_router
 from app.routers.chatbot import router as chatbot_router
 from app.routers.trade_flows import router as trade_flows_router
+from app.routers.mcp import router as mcp_router
 from app.sync.scheduler import CronScheduler
 from app.monitoring.metrics import (
     active_tables,
@@ -138,6 +139,7 @@ app.include_router(sync_router)
 app.include_router(semantic_router)
 app.include_router(chatbot_router)
 app.include_router(trade_flows_router)
+app.include_router(mcp_router)
 
 store = DataStore()
 doc_store = DocStore()
