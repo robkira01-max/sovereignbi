@@ -21,6 +21,8 @@ export function DashboardPage() {
   const [insights, setInsights] = useState<InsightMap>({})
   const [loadingInsights, setLoadingInsights] = useState<Record<string, boolean>>({})
   const [freshness, setFreshness] = useState<Record<string, { age_seconds: number | null; stale: boolean }>>({})
+  const [noteEditing, setNoteEditing] = useState<Record<string, boolean>>({})
+  const [noteText, setNoteText] = useState<Record<string, string>>({})
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [exporting, setExporting] = useState(false)
@@ -236,6 +238,22 @@ export function DashboardPage() {
       .finally(() => setSaving(false))
   }
 
+  const startNoteEdit = (tileId: string, currentNote: string | null | undefined) => {
+    setNoteText(prev => ({ ...prev, [tileId]: currentNote ?? '' }))
+    setNoteEditing(prev => ({ ...prev, [tileId]: true }))
+  }
+
+  const saveTileNote = (tileId: string) => {
+    if (!selected) return
+    const note = noteText[tileId] ?? ''
+    api.setTileNote(selected.id, tileId, note)
+      .then(res => {
+        setTiles(prev => prev.map(t => t.id === tileId ? { ...t, note: res.note } : t))
+        setNoteEditing(prev => ({ ...prev, [tileId]: false }))
+      })
+      .catch(e => setError(e instanceof Error ? e.message : 'Erreur note'))
+  }
+
   return (
     <div style={{ maxWidth: '960px', margin: '32px auto', padding: '0 16px' }}>
       <h2>{t('dashboard.title')}</h2>
@@ -405,6 +423,44 @@ export function DashboardPage() {
                   )}
                   {insight && (
                     <div style={insightStyle}><span style={insightBadge}>IA</span> {insight}</div>
+                  )}
+                  {/* Analyst note */}
+                  {noteEditing[tile.id] ? (
+                    <div data-testid={`note-editor-${tile.id}`} style={{ marginTop: '8px' }}>
+                      <textarea
+                        data-testid={`note-textarea-${tile.id}`}
+                        value={noteText[tile.id] ?? ''}
+                        onChange={e => setNoteText(prev => ({ ...prev, [tile.id]: e.target.value }))}
+                        placeholder={t('dashboard.tile_note_placeholder')}
+                        maxLength={1000}
+                        rows={3}
+                        style={{ width: '100%', fontSize: '0.75rem', borderRadius: '4px', border: '1px solid #d1d5db', padding: '4px 6px', resize: 'vertical', boxSizing: 'border-box' }}
+                      />
+                      <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                        <button onClick={() => saveTileNote(tile.id)} style={{ fontSize: '0.75rem', padding: '2px 8px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                          {t('dashboard.add')}
+                        </button>
+                        <button onClick={() => setNoteEditing(prev => ({ ...prev, [tile.id]: false }))} style={{ fontSize: '0.75rem', padding: '2px 8px', cursor: 'pointer' }}>
+                          {t('dashboard.cancel')}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ marginTop: '6px' }}>
+                      {tile.note && (
+                        <p data-testid={`tile-note-${tile.id}`} style={{ fontSize: '0.72rem', color: '#6b7280', margin: 0, lineHeight: 1.4, fontStyle: 'italic' }}>
+                          {tile.note}
+                        </p>
+                      )}
+                      <button
+                        data-testid={`note-edit-btn-${tile.id}`}
+                        onClick={() => startNoteEdit(tile.id, tile.note)}
+                        title={t('dashboard.tile_note_edit')}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '0.65rem', padding: '2px 0', marginTop: '2px' }}
+                      >
+                        ✎ {t('dashboard.tile_note')}
+                      </button>
+                    </div>
                   )}
                 </div>
               )

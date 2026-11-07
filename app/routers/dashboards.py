@@ -475,6 +475,35 @@ def tile_export_csv(dashboard_id: str, tile_id: str, request: Request, _: str = 
     )
 
 
+@router.put("/dashboards/{dashboard_id}/tiles/{tile_id}/note", status_code=200)
+def set_tile_note(
+    dashboard_id: str,
+    tile_id: str,
+    body: dict = Body(default={}),
+    _: str = Depends(_EDITOR),
+):
+    """Add or update an analyst annotation on a tile (max 1 000 chars).
+
+    Body: {"note": "Source : INSTAD, Recensement 2023."} — empty string clears.
+    """
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    note_text = str(body.get("note", "")).strip()
+    if len(note_text) > 1000:
+        raise HTTPException(422, "note dépasse 1 000 caractères.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    tile.note = note_text or None
+    d.updated_at = _now()
+    save_dashboard(d, p)
+    return {"dashboard_id": dashboard_id, "tile_id": tile_id, "note": tile.note, "updated_at": d.updated_at}
+
+
 @router.delete("/dashboards/{dashboard_id}/tiles/{tile_id}", status_code=200)
 def remove_tile(dashboard_id: str, tile_id: str, _: str = Depends(_EDITOR)):
     """Supprime une tuile d'un dashboard."""

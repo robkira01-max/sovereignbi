@@ -90,6 +90,9 @@ const translations: Record<Locale, DeepRecord> = {
       no_tiles: 'Aucune tuile. Cliquez sur « + Tuile » pour en ajouter une.',
       tile_id_placeholder: 'ex. : kpi_total',
       tile_title_placeholder: 'ex. : Total des ventes',
+      tile_note: 'Note',
+      tile_note_placeholder: 'Source, méthodologie, avertissement…',
+      tile_note_edit: 'Modifier la note',
     },
     confidence: {
       label: 'Confiance :',
@@ -184,6 +187,9 @@ const translations: Record<Locale, DeepRecord> = {
       no_tiles: 'لا بطاقات. انقر على «+ بطاقة» لإضافة واحدة.',
       tile_id_placeholder: 'مثال: kpi_total',
       tile_title_placeholder: 'مثال: إجمالي المبيعات',
+      tile_note: 'ملاحظة',
+      tile_note_placeholder: 'المصدر، المنهجية، تنبيه…',
+      tile_note_edit: 'تعديل الملاحظة',
     },
     confidence: {
       label: 'الثقة:',
@@ -278,6 +284,9 @@ const translations: Record<Locale, DeepRecord> = {
       no_tiles: 'No tiles. Click "+ Tile" to add one.',
       tile_id_placeholder: 'e.g.: kpi_total',
       tile_title_placeholder: 'e.g.: Total sales',
+      tile_note: 'Note',
+      tile_note_placeholder: 'Source, methodology, caveat…',
+      tile_note_edit: 'Edit note',
     },
     confidence: {
       label: 'Confidence:',
@@ -372,6 +381,9 @@ const translations: Record<Locale, DeepRecord> = {
       no_tiles: 'No hay mosaicos. Haga clic en "+ Mosaico" para agregar uno.',
       tile_id_placeholder: 'p.ej.: kpi_total',
       tile_title_placeholder: 'p.ej.: Total ventas',
+      tile_note: 'Nota',
+      tile_note_placeholder: 'Fuente, metodología, advertencia…',
+      tile_note_edit: 'Editar nota',
     },
     confidence: {
       label: 'Confianza:',

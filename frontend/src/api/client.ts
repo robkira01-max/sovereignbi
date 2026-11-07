@@ -76,6 +76,12 @@ export const api = {
       { method: 'POST' }
     ),
 
+  setTileNote: (dashboardId: string, tileId: string, note: string) =>
+    apiFetch<{ dashboard_id: string; tile_id: string; note: string | null; updated_at: string }>(
+      `/dashboards/${dashboardId}/tiles/${tileId}/note`,
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ note }) }
+    ),
+
   health: () => apiFetch<{ status: string }>('/health'),
 }
 
@@ -129,4 +135,5 @@ export interface Tile {
   dimensions?: string[]
   position?: number
   options?: Record<string, unknown>
+  note?: string | null
 }
