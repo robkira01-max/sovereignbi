@@ -23,6 +23,9 @@ export function DashboardPage() {
   const [freshness, setFreshness] = useState<Record<string, { age_seconds: number | null; stale: boolean }>>({})
   const [noteEditing, setNoteEditing] = useState<Record<string, boolean>>({})
   const [noteText, setNoteText] = useState<Record<string, string>>({})
+  const [tagFilter, setTagFilter] = useState('')
+  const [tagEditing, setTagEditing] = useState(false)
+  const [tagInput, setTagInput] = useState('')
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [exporting, setExporting] = useState(false)
@@ -254,6 +257,22 @@ export function DashboardPage() {
       .catch(e => setError(e instanceof Error ? e.message : 'Erreur note'))
   }
 
+  const saveTags = () => {
+    if (!selected) return
+    const tags = tagInput.split(',').map(s => s.trim()).filter(Boolean)
+    api.setDashboardTags(selected.id, tags)
+      .then(res => {
+        setSelected(prev => prev ? { ...prev } : null)
+        setSummaries(prev => prev.map(s => s.id === selected.id ? { ...s, tags: res.tags } : s))
+        setTagEditing(false)
+      })
+      .catch(e => setError(e instanceof Error ? e.message : 'Erreur tags'))
+  }
+
+  const filteredSummaries = tagFilter
+    ? summaries.filter(d => (d.tags ?? []).includes(tagFilter.trim()))
+    : summaries
+
   return (
     <div style={{ maxWidth: '960px', margin: '32px auto', padding: '0 16px' }}>
       <h2>{t('dashboard.title')}</h2>
@@ -264,34 +283,94 @@ export function DashboardPage() {
       )}
 
       {!selected ? (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {summaries.length === 0 && <li style={{ color: '#6b7280' }}>{t('dashboard.no_dashboards')}</li>}
-          {summaries.map(d => (
-            <li key={d.id} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <button
-                onClick={() => openDashboard(d.id)}
-                style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', flex: 1, textAlign: 'start' }}
-              >
-                <strong>{d.title}</strong>
-                <span style={{ marginInlineStart: '8px', fontSize: '0.8rem', color: '#6b7280' }}>{d.scope}</span>
-              </button>
-              <button
-                data-testid={`fav-${d.id}`}
-                onClick={() => api.toggleFavorite(d.id).then(res => setSummaries(prev => prev.map(s => s.id === d.id ? { ...s, is_favorite: res.is_favorite } : s)))}
-                title={d.is_favorite ? t('dashboard.unfavorite') : t('dashboard.favorite')}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px', lineHeight: 1, color: d.is_favorite ? '#f59e0b' : '#d1d5db' }}
-                aria-label={`${d.is_favorite ? t('dashboard.unfavorite') : t('dashboard.favorite')} ${d.title}`}
-              >
-                ★
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div>
+          {/* Tag filter */}
+          <input
+            data-testid="tag-filter-input"
+            type="text"
+            value={tagFilter}
+            onChange={e => setTagFilter(e.target.value)}
+            placeholder={t('dashboard.tags_filter_placeholder')}
+            style={{ width: '100%', marginBottom: '12px', padding: '6px 10px', fontSize: '0.85rem', border: '1px solid #d1d5db', borderRadius: '6px', boxSizing: 'border-box' }}
+          />
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {filteredSummaries.length === 0 && <li style={{ color: '#6b7280' }}>{t('dashboard.no_dashboards')}</li>}
+            {filteredSummaries.map(d => (
+              <li key={d.id} style={{ marginBottom: '8px', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                <button
+                  onClick={() => openDashboard(d.id)}
+                  style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', flex: 1, textAlign: 'start' }}
+                >
+                  <strong>{d.title}</strong>
+                  <span style={{ marginInlineStart: '8px', fontSize: '0.8rem', color: '#6b7280' }}>{d.scope}</span>
+                  {(d.tags ?? []).length > 0 && (
+                    <span style={{ marginInlineStart: '8px' }}>
+                      {(d.tags ?? []).map(tag => (
+                        <span
+                          key={tag}
+                          data-testid={`tag-chip-${d.id}-${tag}`}
+                          onClick={e => { e.stopPropagation(); setTagFilter(tag) }}
+                          style={{ marginInlineEnd: '4px', padding: '1px 6px', background: '#eff6ff', color: '#1d4ed8', borderRadius: '12px', fontSize: '0.7rem', cursor: 'pointer', display: 'inline-block' }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </button>
+                <button
+                  data-testid={`fav-${d.id}`}
+                  onClick={() => api.toggleFavorite(d.id).then(res => setSummaries(prev => prev.map(s => s.id === d.id ? { ...s, is_favorite: res.is_favorite } : s)))}
+                  title={d.is_favorite ? t('dashboard.unfavorite') : t('dashboard.favorite')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px', lineHeight: 1, color: d.is_favorite ? '#f59e0b' : '#d1d5db' }}
+                  aria-label={`${d.is_favorite ? t('dashboard.unfavorite') : t('dashboard.favorite')} ${d.title}`}
+                >
+                  ★
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
             <button onClick={() => { setSelected(null); setShowAdd(false) }} style={{ cursor: 'pointer' }}>{t('dashboard.back')}</button>
-            <h3 style={{ margin: 0, flex: 1 }}>{selected.title}</h3>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ margin: 0 }}>{selected.title}</h3>
+              {/* Tags display + edit */}
+              {tagEditing ? (
+                <div style={{ display: 'flex', gap: '6px', marginTop: '4px', alignItems: 'center' }}>
+                  <input
+                    data-testid="tag-edit-input"
+                    value={tagInput}
+                    onChange={e => setTagInput(e.target.value)}
+                    placeholder={t('dashboard.tags_placeholder')}
+                    style={{ fontSize: '0.78rem', padding: '2px 8px', border: '1px solid #d1d5db', borderRadius: '4px', flex: 1 }}
+                  />
+                  <button onClick={saveTags} style={{ fontSize: '0.75rem', padding: '2px 8px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                    {t('dashboard.add')}
+                  </button>
+                  <button onClick={() => setTagEditing(false)} style={{ fontSize: '0.75rem', padding: '2px 6px', cursor: 'pointer' }}>{t('dashboard.cancel')}</button>
+                </div>
+              ) : (
+                <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                  {summaries.find(s => s.id === selected.id)?.tags?.map(tag => (
+                    <span key={tag} style={{ padding: '1px 6px', background: '#eff6ff', color: '#1d4ed8', borderRadius: '12px', fontSize: '0.7rem' }}>{tag}</span>
+                  ))}
+                  <button
+                    data-testid="tag-edit-btn"
+                    onClick={() => {
+                      const tags = summaries.find(s => s.id === selected.id)?.tags ?? []
+                      setTagInput(tags.join(', '))
+                      setTagEditing(true)
+                    }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '0.65rem', padding: '2px 0' }}
+                  >
+                    ✎ {t('dashboard.tags_label')}
+                  </button>
+                </div>
+              )}
+            </div>
             {saving && <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>{t('dashboard.saving')}</span>}
             <button
               onClick={exportBulletin}

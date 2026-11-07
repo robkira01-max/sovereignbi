@@ -37,6 +37,7 @@ class Dashboard:
     scope: str  # "personal" | "team" | "company"
     tiles: list[Tile]
     theme: DashboardTheme
+    tags: list[str] = field(default_factory=list)
     created_at: str = ""
     updated_at: str = ""
 
@@ -99,6 +100,7 @@ def load_dashboard(path: Path) -> Dashboard:
         scope=data.get("scope", "personal"),
         tiles=tiles,
         theme=theme,
+        tags=data.get("tags", []),
         created_at=data.get("created_at", ""),
         updated_at=data.get("updated_at", ""),
     )

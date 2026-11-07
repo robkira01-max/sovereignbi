@@ -82,6 +82,12 @@ export const api = {
       { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ note }) }
     ),
 
+  setDashboardTags: (dashboardId: string, tags: string[]) =>
+    apiFetch<{ dashboard_id: string; tags: string[]; updated_at: string }>(
+      `/dashboards/${dashboardId}/tags`,
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tags }) }
+    ),
+
   health: () => apiFetch<{ status: string }>('/health'),
 }
 
@@ -116,6 +122,7 @@ export interface DashboardSummary {
   scope: string
   updated_at: string
   is_favorite?: boolean
+  tags?: string[]
 }
 
 export interface Dashboard {

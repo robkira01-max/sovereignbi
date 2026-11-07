@@ -93,6 +93,10 @@ const translations: Record<Locale, DeepRecord> = {
       tile_note: 'Note',
       tile_note_placeholder: 'Source, méthodologie, avertissement…',
       tile_note_edit: 'Modifier la note',
+      tags_label: 'Étiquettes',
+      tags_filter_placeholder: 'Filtrer par étiquette…',
+      tags_edit: 'Modifier les étiquettes',
+      tags_placeholder: 'emploi, population, commerce…',
     },
     confidence: {
       label: 'Confiance :',
@@ -191,6 +195,10 @@ const translations: Record<Locale, DeepRecord> = {
       tile_note: 'ملاحظة',
       tile_note_placeholder: 'المصدر، المنهجية، تنبيه…',
       tile_note_edit: 'تعديل الملاحظة',
+      tags_label: 'التسميات',
+      tags_filter_placeholder: 'تصفية بالتسمية…',
+      tags_edit: 'تعديل التسميات',
+      tags_placeholder: 'عمالة، سكان، تجارة…',
     },
     confidence: {
       label: 'الثقة:',
@@ -289,6 +297,10 @@ const translations: Record<Locale, DeepRecord> = {
       tile_note: 'Note',
       tile_note_placeholder: 'Source, methodology, caveat…',
       tile_note_edit: 'Edit note',
+      tags_label: 'Tags',
+      tags_filter_placeholder: 'Filter by tag…',
+      tags_edit: 'Edit tags',
+      tags_placeholder: 'employment, population, trade…',
     },
     confidence: {
       label: 'Confidence:',
@@ -387,6 +399,10 @@ const translations: Record<Locale, DeepRecord> = {
       tile_note: 'Nota',
       tile_note_placeholder: 'Fuente, metodología, advertencia…',
       tile_note_edit: 'Editar nota',
+      tags_label: 'Etiquetas',
+      tags_filter_placeholder: 'Filtrar por etiqueta…',
+      tags_edit: 'Editar etiquetas',
+      tags_placeholder: 'empleo, población, comercio…',
     },
     confidence: {
       label: 'Confianza:',

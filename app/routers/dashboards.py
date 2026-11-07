@@ -46,8 +46,8 @@ def list_dashboards(
     _: str = Depends(_VIEWER),
     skip: int = Query(0, ge=0, description="Nombre d'éléments à sauter"),
     limit: int = Query(50, ge=1, le=200, description="Nombre d'éléments à retourner"),
+    tag: str | None = Query(None, description="Filtrer par étiquette (exact match)"),
 ):
-    # 13 — Pagination pour éviter de charger des centaines de dashboards d'un coup.
     from app.dashboards.favorites import get_favorites
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     api_key = request.headers.get("x-api-key", "")
@@ -56,9 +56,12 @@ def list_dashboards(
     for p in sorted(_DASHBOARDS_DIR.glob("*.yaml")):
         try:
             d = load_dashboard(p)
+            if tag and tag not in d.tags:
+                continue
             items.append({
                 "id": d.id, "title": d.title, "scope": d.scope,
                 "updated_at": d.updated_at, "is_favorite": d.id in favs,
+                "tags": d.tags,
             })
         except Exception:
             continue
@@ -79,6 +82,39 @@ def get_dashboard(dashboard_id: str, _: str = Depends(_VIEWER)):
         raise HTTPException(500, str(e)) from e
     from dataclasses import asdict
     return asdict(d)
+
+
+@router.put("/dashboards/{dashboard_id}/tags", status_code=200)
+def set_dashboard_tags(
+    dashboard_id: str,
+    body: dict = Body(default={}),
+    _: str = Depends(_EDITOR),
+):
+    """Replace the tag list on a dashboard (max 20 tags, each max 50 chars).
+
+    Body: {"tags": ["emploi", "pilote"]}
+    """
+    _validate_id(dashboard_id, "dashboard_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    raw = body.get("tags", [])
+    if not isinstance(raw, list):
+        raise HTTPException(422, "tags doit être une liste.")
+    if len(raw) > 20:
+        raise HTTPException(422, "Maximum 20 étiquettes.")
+    tags = []
+    for t in raw:
+        t_clean = str(t).strip()
+        if len(t_clean) > 50:
+            raise HTTPException(422, f"Étiquette trop longue (max 50 chars) : {t_clean[:20]}…")
+        if t_clean:
+            tags.append(t_clean)
+    d = load_dashboard(p)
+    d.tags = tags
+    d.updated_at = _now()
+    save_dashboard(d, p)
+    return {"dashboard_id": dashboard_id, "tags": d.tags, "updated_at": d.updated_at}
 
 
 @router.post("/dashboards")
