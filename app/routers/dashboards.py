@@ -495,6 +495,66 @@ def remove_tile(dashboard_id: str, tile_id: str, _: str = Depends(_EDITOR)):
     return {"id": dashboard_id, "tile_id": tile_id, "updated_at": d.updated_at}
 
 
+@router.post("/dashboards/{dashboard_id}/share", status_code=201)
+def create_share_link(
+    dashboard_id: str,
+    body: dict = Body(default={}),
+    _: str = Depends(_EDITOR),
+):
+    """Generate a time-limited public share token for a dashboard (default 7 days).
+
+    Optional body: {"ttl_seconds": 3600}.
+    Returns {token, dashboard_id, expires_at, url_path}.
+    """
+    _validate_id(dashboard_id, "dashboard_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    ttl = int(body.get("ttl_seconds", 7 * 24 * 3600))
+    if ttl < 60 or ttl > 90 * 24 * 3600:
+        raise HTTPException(422, "ttl_seconds must be between 60 and 7 776 000.")
+    from app.dashboards.share import generate_share_token
+    result = generate_share_token(dashboard_id, ttl=ttl)
+    result["url_path"] = f"/dashboards/shared/{result['token']}"
+    return result
+
+
+@router.get("/dashboards/shared/{token}")
+def get_shared_dashboard(token: str):
+    """Public endpoint — no authentication required. Returns dashboard if token is valid."""
+    from app.dashboards.share import validate_share_token
+    dashboard_id = validate_share_token(token)
+    if dashboard_id is None:
+        raise HTTPException(403, "Lien de partage invalide ou expiré.")
+    _validate_id(dashboard_id, "dashboard_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, "Dashboard introuvable.")
+    d = load_dashboard(p)
+    return {"id": d.id, "title": d.title, "tiles": [{"id": t.id, "type": t.type, "title": t.title} for t in d.tiles]}
+
+
+@router.get("/dashboards/shared/{token}/tiles/{tile_id}/data")
+def get_shared_tile_data(token: str, tile_id: str, request: Request):
+    """Public endpoint — no authentication required. Returns tile data if token is valid."""
+    from app.dashboards.share import validate_share_token
+    dashboard_id = validate_share_token(token)
+    if dashboard_id is None:
+        raise HTTPException(403, "Lien de partage invalide ou expiré.")
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, "Dashboard introuvable.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    store = request.app.state.store
+    from app.dashboards.renderer import render_tile
+    return render_tile(tile, store)
+
+
 @router.post("/dashboards/{dashboard_id}/clone", status_code=201)
 def clone_dashboard(
     dashboard_id: str,

@@ -79,6 +79,11 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Faible — UX immédiat, zéro dépendance externe.  
 **Statut :** Livré 2026-11-07. `app/dashboards/tile_cache.py` (`record_execution`, `age_seconds`), `GET /dashboards/{id}/tiles/{id}/freshness`, badge `data-testid="freshness-dot-{id}"` dans DashboardPage, i18n fr/en/ar/es. 6 pytest.
 
+## P-016 — Partage public de dashboard (lien en lecture seule) ✅
+**Raison :** Permettre à INSTAD de partager un dashboard avec une agence externe (IGAD, Banque mondiale) sans compte. Token HMAC-SHA256 avec TTL, révocable. Routes publiques `/shared/{token}` sans authentification.  
+**Impact :** Moyen — fonctionnalité de collaboration externe, zéro dépendance.  
+**Statut :** Livré 2026-11-07. `app/dashboards/share.py` (`generate_share_token`, `validate_share_token`, `revoke_share_token`), `POST /dashboards/{id}/share` (editor, TTL configurable), `GET /dashboards/shared/{token}` + `/tiles/{id}/data` (public). 9 pytest.
+
 ---
 
 ## Livrées cette session
