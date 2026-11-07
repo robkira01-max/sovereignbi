@@ -65,3 +65,4 @@
 | bcrypt | 4.x | Apache 2.0 | Hachage de mots de passe (Argon2 wrapper) |
 | maplibre-gl | 6.x | BSD-3-Clause | Rendu cartographique WebGL (basemap PMTiles) |
 | pmtiles | 4.x | Apache 2.0 | Protocol PMTiles pour MapLibre GL |
+| CARTO Basemaps (CDN) | — | Libre usage avec attribution | Fond de carte raster dark pour TradeFlowMap — © OpenStreetMap contributors © CARTO. Remplacer par tuiles auto-hébergées en production hors ligne. |

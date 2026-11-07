@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../api/client'
 import type { Page } from '../components/AppShell'
 import geoData from '../data/dji_adm1.geojson'
+import { TradeFlowMap } from '../components/TradeFlowMap'
 
 interface HomePageProps {
   onNavigate: (page: Exclude<Page, 'home'>) => void
@@ -222,6 +223,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div dir="ltr" style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'oklch(68% 0.03 265)' }}>
             <span>2009</span><span>2024</span><span>2030</span>
           </div>
+        </div>
+
+        {/* ── Flux commerciaux (span 4) ── */}
+        <div style={{ ...tile, gridColumn: 'span 4' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
+            <span style={{ fontWeight: 600 }}>Flux commerciaux — Port de Djibouti</span>
+            <span style={{ fontSize: 12, color: 'oklch(72% 0.03 265)' }}>Corridor DJ → Éthiopie</span>
+          </div>
+          <TradeFlowMap />
         </div>
 
         {/* ── Tables chargées (span 4) ── */}
