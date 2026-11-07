@@ -106,6 +106,7 @@ const translations: Record<Locale, DeepRecord> = {
     },
     tile: {
       unknown: 'Type de tuile inconnu :',
+      table_filter_placeholder: 'Filtrer les lignes…',
     },
   },
 
@@ -203,6 +204,7 @@ const translations: Record<Locale, DeepRecord> = {
     },
     tile: {
       unknown: 'نوع بطاقة غير معروف:',
+      table_filter_placeholder: 'تصفية الصفوف…',
     },
   },
 
@@ -300,6 +302,7 @@ const translations: Record<Locale, DeepRecord> = {
     },
     tile: {
       unknown: 'Unknown tile type:',
+      table_filter_placeholder: 'Filter rows…',
     },
   },
 
@@ -397,6 +400,7 @@ const translations: Record<Locale, DeepRecord> = {
     },
     tile: {
       unknown: 'Tipo de mosaico desconocido:',
+      table_filter_placeholder: 'Filtrar filas…',
     },
   },
 }

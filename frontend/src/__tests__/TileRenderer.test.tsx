@@ -17,8 +17,9 @@ describe('TileRenderer', () => {
   it('renders table tile with column headers', () => {
     render(<TileRenderer type="table" title="CA par région" data={tableData} />)
     expect(screen.getByTestId('tile-table')).toBeInTheDocument()
-    expect(screen.getByText('région')).toBeInTheDocument()
-    expect(screen.getByText('ca')).toBeInTheDocument()
+    // Headers now include a sort icon — match by testid
+    expect(screen.getByTestId('table-col-header-région')).toBeInTheDocument()
+    expect(screen.getByTestId('table-col-header-ca')).toBeInTheDocument()
   })
 
   it('renders table data rows', () => {

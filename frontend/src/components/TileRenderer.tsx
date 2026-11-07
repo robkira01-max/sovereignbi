@@ -7,6 +7,7 @@ import { useLocale } from '../hooks/useLocale'
 import { MapLibreMap } from './MapLibreMap'
 import { BivariateChoropleth } from './BivariateChoropleth'
 import { SparklineKpi } from './SparklineKpi'
+import { TableTile } from './TableTile'
 
 interface TileData {
   columns: string[]
@@ -270,47 +271,9 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
       )
     }
 
-    // ── Table ─────────────────────────────────────────────────────────────────
+    // ── Table (sortable + filterable) ────────────────────────────────────────
     case 'table':
-      return (
-        <div data-testid="tile-table" style={{ overflowX: 'auto' }}>
-          <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.82rem' }}>
-            <thead>
-              <tr>
-                {data.columns.map(c => (
-                  <th key={c} style={{
-                    border: '1px solid var(--border)',
-                    padding: '7px 11px',
-                    background: 'var(--surface-alt)',
-                    color: 'var(--text)',
-                    fontWeight: 600,
-                    textAlign: 'start',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {c.replace(/_/g, ' ')}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.rows.map((row, i) => (
-                <tr key={i} style={{ background: i % 2 === 1 ? 'var(--surface-alt)' : 'var(--surface)' }}>
-                  {(row as unknown[]).map((cell, j) => (
-                    <td key={j} style={{
-                      border: '1px solid var(--border)',
-                      padding: '6px 11px',
-                      color: 'var(--text)',
-                      fontVariantNumeric: 'tabular-nums',
-                    }}>
-                      {cell === null || cell === undefined ? '—' : String(cell)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )
+      return <TableTile data={data} />
 
     // ── Choropleth map (Djibouti ADM1) ────────────────────────────────────────
     case 'map':
