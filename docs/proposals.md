@@ -34,10 +34,10 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Moyen — 2-3 jours par connecteur. À faire après le pilote Djibouti.  
 **Statut :** Livré 2026-11-06. `KNBSClient` + `NISRClient` (CKAN, SSRF guard, circuit breaker, licence check), 4 routes (`/connectors/knbs/search`, `/connectors/knbs`, `/connectors/nisr/search`, `/connectors/nisr`), CLIs `tools/ingest_knbs.py` + `tools/ingest_nisr.py`. 33 tests. 1015/1017 pytest (2 pre-existing).
 
-## P-007 — Template narratif ONS (scrollytelling)
+## P-007 — Template narratif ONS (scrollytelling) ✅
 **Raison :** `ONSvisual/svelte-scrolly` est open source (MIT), utilisé par l'ONS UK pour les bulletins web. Adapter en React pour les rapports INSTAD.  
 **Impact :** Élevé pour les publications officielles INSTAD, neutre pour le pilote.  
-**Statut :** Proposé
+**Statut :** Livré 2026-11-07. `ScrollySection` (IntersectionObserver, sticky figure + scrolling steps), `ScrollyPage` rapport Djibouti chômage 5 étapes (trend/choropleth/barh/youth/forecast), lien "Lire l'analyse →" dans HomePage. `employment_dj.ts` module partagé. 12 Vitest. 66/66 tests.
 
 ## P-008 — MCP server MizanBI
 **Raison :** Exposer les dashboards comme outils pour agents LLM (pattern Rill Data). Permettrait à Claude Code ou tout agent MCP de lire et créer des dashboards programmatiquement.  

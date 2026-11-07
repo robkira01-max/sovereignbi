@@ -5,6 +5,7 @@ import { ChatPage } from './pages/ChatPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { UploadPage } from './pages/UploadPage'
 import { HomePage } from './pages/HomePage'
+import { ScrollyPage } from './pages/ScrollyPage'
 import { AppShell, type Page } from './components/AppShell'
 
 function getToken(): string {
@@ -45,6 +46,7 @@ function Inner() {
   else if (page === 'chat')       content = <ChatPage />
   else if (page === 'dashboards') content = <DashboardPage />
   else if (page === 'data')       content = <UploadPage />
+  else if (page === 'scrolly')    content = <ScrollyPage onNavigate={setPage} />
   else                            content = <HomePage onNavigate={setPage} />
 
   return (

@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react'
 import { useLocale } from '../hooks/useLocale'
 import { SUPPORTED_LOCALES, type Locale } from '../i18n'
 
-export type Page = 'home' | 'chat' | 'dashboards' | 'data'
+export type Page = 'home' | 'chat' | 'dashboards' | 'data' | 'scrolly'
 
 interface AppShellProps {
   current: Page
@@ -28,6 +28,7 @@ const PAGE_LABEL: Record<Page, string> = {
   chat:       'Q&A',
   dashboards: 'Rapports',
   data:       'Données',
+  scrolly:    'Rapport narratif',
 }
 
 export function AppShell({ current, children, onNavigate, onLogout, userEmail }: AppShellProps) {
