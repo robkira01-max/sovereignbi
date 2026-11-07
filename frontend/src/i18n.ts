@@ -112,6 +112,11 @@ const translations: Record<Locale, DeepRecord> = {
       unknown: 'Type de tuile inconnu :',
       table_filter_placeholder: 'Filtrer les lignes…',
     },
+    map: {
+      level_adm2: 'Districts',
+      level_quartiers: 'Quartiers DJ',
+      quartiers_disclaimer: 'Délimitations approximatives',
+    },
   },
 
   ar: {
@@ -213,6 +218,11 @@ const translations: Record<Locale, DeepRecord> = {
     tile: {
       unknown: 'نوع بطاقة غير معروف:',
       table_filter_placeholder: 'تصفية الصفوف…',
+    },
+    map: {
+      level_adm2: 'المناطق',
+      level_quartiers: 'أحياء جيبوتي',
+      quartiers_disclaimer: 'حدود تقريبية',
     },
   },
 
@@ -316,6 +326,11 @@ const translations: Record<Locale, DeepRecord> = {
       unknown: 'Unknown tile type:',
       table_filter_placeholder: 'Filter rows…',
     },
+    map: {
+      level_adm2: 'Districts',
+      level_quartiers: 'DJ Neighbourhoods',
+      quartiers_disclaimer: 'Approximate boundaries',
+    },
   },
 
   es: {
@@ -417,6 +432,11 @@ const translations: Record<Locale, DeepRecord> = {
     tile: {
       unknown: 'Tipo de mosaico desconocido:',
       table_filter_placeholder: 'Filtrar filas…',
+    },
+    map: {
+      level_adm2: 'Distritos',
+      level_quartiers: 'Barrios DJ',
+      quartiers_disclaimer: 'Delimitaciones aproximadas',
     },
   },
 }

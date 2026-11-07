@@ -5,6 +5,7 @@ import {
 } from 'recharts'
 import { useLocale } from '../hooks/useLocale'
 import { MapLibreMap } from './MapLibreMap'
+import { MapAdm2 } from './MapAdm2'
 import { BivariateChoropleth } from './BivariateChoropleth'
 import { SparklineKpi } from './SparklineKpi'
 import { TableTile } from './TableTile'
@@ -283,6 +284,21 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
           title={title}
           unit={unit}
           colorScheme={options.colorScheme ?? 'blue'}
+        />
+      )
+
+    // ── ADM2 + Quartiers choropleth (Djibouti districts / quartiers) ─────────
+    case 'map-adm2':
+      return (
+        <MapAdm2
+          data={data}
+          title={title}
+          unit={unit}
+          colorScheme={options.colorScheme ?? 'blue'}
+          options={{
+            level: (options.level as 'adm2' | 'quartiers') ?? 'adm2',
+            showLevelToggle: options.showLevelToggle !== false,
+          }}
         />
       )
 

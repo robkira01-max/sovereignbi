@@ -26,13 +26,18 @@ vi.mock('echarts', () => ({
 vi.mock('maplibre-gl', () => {
   const mockMap = {
     on: vi.fn(),
+    once: vi.fn(),
     addControl: vi.fn(),
     addSource: vi.fn(),
     addLayer: vi.fn(),
+    removeLayer: vi.fn(),
+    removeSource: vi.fn(),
     getSource: vi.fn(() => null),
+    getLayer: vi.fn(() => null),
     getCanvas: vi.fn(() => ({ style: {} })),
     isStyleLoaded: vi.fn(() => false),
     setPaintProperty: vi.fn(),
+    flyTo: vi.fn(),
     remove: vi.fn(),
   }
   return {
