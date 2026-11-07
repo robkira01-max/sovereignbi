@@ -20,6 +20,7 @@ export function DashboardPage() {
   const [tileData, setTileData] = useState<TileDataMap>({})
   const [insights, setInsights] = useState<InsightMap>({})
   const [loadingInsights, setLoadingInsights] = useState<Record<string, boolean>>({})
+  const [freshness, setFreshness] = useState<Record<string, { age_seconds: number | null; stale: boolean }>>({})
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [exporting, setExporting] = useState(false)
@@ -50,6 +51,19 @@ export function DashboardPage() {
       }
     }
     setTileData(map)
+    // Fetch freshness after data loads (best-effort, non-blocking)
+    Promise.allSettled(
+      tileList.map(async tile => {
+        const f = await apiFetch<{ age_seconds: number | null; stale: boolean }>(`/dashboards/${dashId}/tiles/${tile.id}/freshness`)
+        return { id: tile.id, f }
+      })
+    ).then(results => {
+      const fm: Record<string, { age_seconds: number | null; stale: boolean }> = {}
+      for (const res of results) {
+        if (res.status === 'fulfilled') fm[res.value.id] = res.value.f
+      }
+      setFreshness(fm)
+    }).catch(() => undefined)
   }, [])
 
   // Load insights sequentially to avoid LLM overload (non-blocking)
@@ -326,6 +340,14 @@ export function DashboardPage() {
               const data = tileData[tile.id] ?? { columns: [], rows: [] }
               const insight = insights[tile.id]
               const insightLoading = loadingInsights[tile.id]
+              const tileAge = freshness[tile.id]
+              const freshnessColor = !tileAge ? '#9ca3af'
+                : tileAge.stale ? '#ef4444'
+                : (tileAge.age_seconds ?? 9999) < 300 ? '#22c55e'
+                : '#f59e0b'
+              const freshnessTitle = !tileAge ? t('dashboard.freshness_unknown')
+                : tileAge.stale ? t('dashboard.freshness_stale')
+                : `${Math.round(tileAge.age_seconds ?? 0)}s`
               return (
                 <div
                   key={tile.id}
@@ -345,6 +367,11 @@ export function DashboardPage() {
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                     <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#374151', flex: 1 }}>{tile.title}</h4>
+                    <span
+                      data-testid={`freshness-dot-${tile.id}`}
+                      title={freshnessTitle}
+                      style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: freshnessColor, margin: '4px 2px 0', flexShrink: 0 }}
+                    />
                     <button
                       data-testid={`export-csv-${tile.id}`}
                       onClick={() => exportTileCsv(tile.id)}

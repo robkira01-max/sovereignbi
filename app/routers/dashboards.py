@@ -244,7 +244,33 @@ def tile_data(dashboard_id: str, tile_id: str, request: Request, _: str = Depend
         raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
     store = request.app.state.store
     from app.dashboards.renderer import render_tile
-    return render_tile(tile, store)
+    result = render_tile(tile, store)
+    from app.dashboards.tile_cache import record_execution
+    record_execution(dashboard_id, tile_id)
+    return result
+
+
+@router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/freshness")
+def tile_freshness(dashboard_id: str, tile_id: str, _: str = Depends(_VIEWER)):
+    """Return data age for a tile: {age_seconds, stale, ttl_default}.
+
+    stale = True if never executed or age > ttl_default (300 s).
+    """
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    from app.dashboards.tile_cache import age_seconds as _age
+    TTL = 300
+    age = _age(dashboard_id, tile_id)
+    return {
+        "dashboard_id": dashboard_id,
+        "tile_id": tile_id,
+        "age_seconds": age,
+        "ttl_default": TTL,
+        "stale": age is None or age > TTL,
+    }
 
 
 @router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/insight")
