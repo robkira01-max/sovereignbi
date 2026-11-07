@@ -140,6 +140,28 @@ export function DashboardPage() {
     }
   }
 
+  const cloneDashboard = async () => {
+    if (!selected) return
+    try {
+      const key = getKey()
+      const res = await fetch(
+        `${getApiBase()}/dashboards/${selected.id}/clone`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Api-Key': key, 'Authorization': key ? `Bearer ${key}` : '' },
+          body: JSON.stringify({}),
+        }
+      )
+      if (!res.ok) throw new Error(`${res.status}`)
+      const data = await res.json()
+      // Refresh summary list so the clone appears
+      api.dashboards().then(setSummaries).catch(() => undefined)
+      alert(`Dashboard cloné : ${data.id}`)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur clonage')
+    }
+  }
+
   const openDashboard = (id: string) => {
     api.getDashboard(id)
       .then(d => {
@@ -236,6 +258,13 @@ export function DashboardPage() {
               style={{ padding: '6px 14px', background: '#065f46', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', opacity: exporting ? 0.6 : 1 }}
             >
               {exporting ? '…' : t('dashboard.export_bulletin')}
+            </button>
+            <button
+              data-testid="clone-dashboard-btn"
+              onClick={cloneDashboard}
+              style={{ padding: '6px 14px', background: '#0891b2', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+            >
+              {t('dashboard.clone')}
             </button>
             <button
               data-testid="export-pptx-btn"

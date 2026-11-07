@@ -462,6 +462,45 @@ def remove_tile(dashboard_id: str, tile_id: str, _: str = Depends(_EDITOR)):
     return {"id": dashboard_id, "tile_id": tile_id, "updated_at": d.updated_at}
 
 
+@router.post("/dashboards/{dashboard_id}/clone", status_code=201)
+def clone_dashboard(
+    dashboard_id: str,
+    body: dict = Body(default={}),
+    _: str = Depends(_EDITOR),
+):
+    """Clone a dashboard: copies all tiles to a new YAML with a fresh id/title.
+
+    Optional body: {"new_id": "...", "title": "..."}.
+    If new_id is omitted, it defaults to '{source_id}-copy'.
+    If title is omitted, it defaults to '{source_title} (copie)'.
+    """
+    import copy
+    _validate_id(dashboard_id, "dashboard_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+
+    new_id = str(body.get("new_id", f"{dashboard_id}-copy")).strip()
+    if not _ID_RE.fullmatch(new_id):
+        raise HTTPException(422, "new_id invalide : [A-Za-z0-9_\\-]{1,128}.")
+
+    dest = _DASHBOARDS_DIR / f"{new_id}.yaml"
+    if dest.exists():
+        raise HTTPException(409, f"Un dashboard avec l'id '{new_id}' existe déjà.")
+
+    src = load_dashboard(p)
+    now = _now()
+    clone = copy.deepcopy(src)
+    clone.id = new_id
+    clone.title = str(body.get("title", f"{src.title} (copie)"))
+    clone.created_at = now
+    clone.updated_at = now
+
+    _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
+    save_dashboard(clone, dest)
+    return {"id": clone.id, "title": clone.title, "created_at": clone.created_at}
+
+
 # ─── Templates ────────────────────────────────────────────────────────────────
 
 @router.get("/templates")
