@@ -29,6 +29,7 @@ dependencies = [
   "structlog>=24.0",           # logs structurés (MIT/Apache 2.0)
   "cryptography>=42.0",        # Fernet AES-128-CBC+HMAC pour le coffre credentials (Apache 2.0)
   "bcrypt>=4.0",               # hachage de mots de passe (Apache 2.0)
+  "python-pptx>=1.0",          # export dashboards PowerPoint (MIT)
 ]
 
 [project.optional-dependencies]

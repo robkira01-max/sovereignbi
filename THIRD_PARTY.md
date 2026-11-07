@@ -26,6 +26,7 @@
 | pymssql | 2.3 | LGPL v2.1 (FreeTDS) | Connecteur SQL Server — usage dynamique uniquement (driver), non embarqué dans le produit livré. Même raisonnement que psycopg2. |
 | pypdf | 4.0 | MIT | Extraction texte PDF (RAG documentaire) |
 | python-docx | 1.1 | MIT | Extraction texte DOCX (RAG documentaire) |
+| python-pptx | 1.0 | MIT | Export dashboards PowerPoint (P-010) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
 | playwright | 1.44 | Apache 2.0 | Tests E2E navigateur (dev uniquement) |
 

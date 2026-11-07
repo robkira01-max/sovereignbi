@@ -95,6 +95,30 @@ export function DashboardPage() {
     }
   }
 
+  const exportPptx = async () => {
+    if (!selected) return
+    setExporting(true)
+    try {
+      const key = getKey()
+      const res = await fetch(
+        `${getApiBase()}/dashboards/${selected.id}/export/pptx`,
+        { headers: { 'X-Api-Key': key, 'Authorization': key ? `Bearer ${key}` : '' } }
+      )
+      if (!res.ok) throw new Error(`${res.status}`)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${selected.id}.pptx`
+      a.click()
+      setTimeout(() => URL.revokeObjectURL(url), 10000)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur export PPTX')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   const openDashboard = (id: string) => {
     api.getDashboard(id)
       .then(d => {
@@ -191,6 +215,14 @@ export function DashboardPage() {
               style={{ padding: '6px 14px', background: '#065f46', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', opacity: exporting ? 0.6 : 1 }}
             >
               {exporting ? '…' : t('dashboard.export_bulletin')}
+            </button>
+            <button
+              data-testid="export-pptx-btn"
+              onClick={exportPptx}
+              disabled={exporting}
+              style={{ padding: '6px 14px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', opacity: exporting ? 0.6 : 1 }}
+            >
+              {exporting ? '…' : t('dashboard.export_pptx')}
             </button>
             <button
               onClick={() => setShowAdd(v => !v)}

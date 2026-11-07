@@ -49,6 +49,11 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Élevé pour les dashboards institutionnels, immédiat.  
 **Statut :** Livré 2026-11-07. `app/dashboards/delta.py` (détection colonne date, agrégation MoM/YoY/WoW, 12/5/10 points), `GET /dashboards/{id}/tiles/{id}/delta`, `SparklineKpi.tsx` (SVG pur + badge ↑↓→), opt-in via `options.sparkline=true` dans TileRenderer. 12 pytest + 8 Vitest. 1054/1056 pytest, 74/74 Vitest.
 
+## P-010 — Export PowerPoint (PPTX) ✅
+**Raison :** Les institutions (INSTAD, IGAD, OIM) font leurs rapports en PowerPoint. `python-pptx` (MIT) permet de générer des slides depuis les YAML de dashboard — titre sur fond coloré, KPI centré géant, tableau ou liste, disclaimer de conformité sur chaque slide.  
+**Impact :** Élevé pour les institutions, complémentaire au bulletin HTML (P-002).  
+**Statut :** Livré 2026-11-07. `app/dashboards/pptx_export.py`, `GET /dashboards/{id}/export/pptx`, bouton "↓ PPTX" i18n (fr/en/ar/es). 11 pytest. 1065/1067.
+
 ---
 
 ## Livrées cette session

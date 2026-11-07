@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 
 from app.dashboards.models import (
     Dashboard,
@@ -335,6 +335,29 @@ def export_bulletin(dashboard_id: str, request: Request, _: str = Depends(_VIEWE
     from app.dashboards.bulletin import generate_bulletin_html
     html_content = generate_bulletin_html(d, store, cached_insights)
     return HTMLResponse(content=html_content, media_type="text/html; charset=utf-8")
+
+
+@router.get("/dashboards/{dashboard_id}/export/pptx")
+def export_pptx(dashboard_id: str, request: Request, _: str = Depends(_VIEWER)):
+    """Generate a PowerPoint (.pptx) presentation for the dashboard (one slide per tile)."""
+    _validate_id(dashboard_id, "dashboard_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    try:
+        d = load_dashboard(p)
+    except Exception as exc:
+        raise HTTPException(500, str(exc)) from exc
+
+    store = request.app.state.store
+    from app.dashboards.pptx_export import generate_pptx
+    pptx_bytes = generate_pptx(d, store)
+    filename = f"{dashboard_id}.pptx"
+    return Response(
+        content=pptx_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.delete("/dashboards/{dashboard_id}/tiles/{tile_id}", status_code=200)
