@@ -277,6 +277,40 @@ def tile_insight(dashboard_id: str, tile_id: str, request: Request, _: str = Dep
     return {"insight": text, "tile_id": tile_id, "cached": False}
 
 
+@router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/delta")
+def tile_delta(
+    dashboard_id: str,
+    tile_id: str,
+    request: Request,
+    period: str = "mom",
+    _: str = Depends(_VIEWER),
+):
+    """Return sparkline_points + period-over-period delta for a KPI tile.
+
+    period: mom (month-over-month, 12 pts) | yoy (year-over-year, 5 pts) |
+            wow (week-over-week, 10 pts).
+    """
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    sql = (tile.sql_pinned or tile.metric or "").strip()
+    if not sql:
+        raise HTTPException(422, "Cette tuile n'a pas de SQL exécutable.")
+
+    from app.dashboards.delta import compute_delta
+    store = request.app.state.store
+    result = compute_delta(sql, store, period=period)
+    if "error" in result:
+        raise HTTPException(422, result["error"])
+    return result
+
+
 @router.get("/dashboards/{dashboard_id}/export/bulletin", response_class=HTMLResponse)
 def export_bulletin(dashboard_id: str, request: Request, _: str = Depends(_VIEWER)):
     """Generate a self-contained HTML narrative bulletin for the dashboard."""

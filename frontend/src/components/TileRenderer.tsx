@@ -6,6 +6,7 @@ import {
 import { useLocale } from '../hooks/useLocale'
 import { MapLibreMap } from './MapLibreMap'
 import { BivariateChoropleth } from './BivariateChoropleth'
+import { SparklineKpi } from './SparklineKpi'
 
 interface TileData {
   columns: string[]
@@ -24,6 +25,12 @@ interface TileOptions {
   chart_type?: 'bar' | 'line'
   x1_label?: string
   x2_label?: string
+  /** Enable sparkline + delta badge on KPI tiles */
+  sparkline?: boolean
+  sparkline_points?: number[]
+  sparkline_delta_pct?: number | null
+  sparkline_direction?: 'up' | 'down' | 'flat' | null
+  sparkline_previous?: number | null
 }
 
 interface Props {
@@ -94,6 +101,12 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
         : unit
           ? `${labelFormatter(val, decimals ?? 0)} ${unit}`
           : labelFormatter(val, decimals ?? 0)
+
+      const hasSparkline =
+        options.sparkline &&
+        Array.isArray(options.sparkline_points) &&
+        (options.sparkline_points as number[]).length >= 2
+
       return (
         <div data-testid="tile-kpi" style={{
           background: 'var(--surface)',
@@ -114,15 +127,26 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
           }}>
             {title}
           </div>
-          <div style={{
-            fontSize: '1.9rem',
-            fontWeight: 700,
-            fontVariantNumeric: 'tabular-nums',
-            color: 'var(--brand)',
-            lineHeight: 1.1,
-          }}>
-            {formatted}
-          </div>
+          {hasSparkline ? (
+            <SparklineKpi
+              points={options.sparkline_points as number[]}
+              current={typeof val === 'number' ? val : Number(val ?? 0)}
+              previous={options.sparkline_previous ?? null}
+              deltaPct={options.sparkline_delta_pct ?? null}
+              direction={options.sparkline_direction ?? null}
+              label={title}
+            />
+          ) : (
+            <div style={{
+              fontSize: '1.9rem',
+              fontWeight: 700,
+              fontVariantNumeric: 'tabular-nums',
+              color: 'var(--brand)',
+              lineHeight: 1.1,
+            }}>
+              {formatted}
+            </div>
+          )}
         </div>
       )
     }
