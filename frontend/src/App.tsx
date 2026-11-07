@@ -7,32 +7,37 @@ import { UploadPage } from './pages/UploadPage'
 import { HomePage } from './pages/HomePage'
 import { AppShell, type Page } from './components/AppShell'
 
-function getApiKey(): string {
+function getToken(): string {
   if (typeof localStorage === 'undefined') return ''
-  return localStorage.getItem('mizan_api_key') ?? ''
+  return localStorage.getItem('mizan_token') ?? ''
+}
+
+function getEmail(): string {
+  if (typeof localStorage === 'undefined') return ''
+  return localStorage.getItem('mizan_email') ?? ''
 }
 
 function Inner() {
-  const [apiKey, setApiKey] = useState(getApiKey)
-  const [page, setPage] = useState<Page>('home')
+  const [token, setToken]       = useState(getToken)
+  const [userEmail, setUserEmail] = useState(getEmail)
+  const [page, setPage]         = useState<Page>('home')
 
   useEffect(() => {
-    const onStorage = () => setApiKey(getApiKey())
-    window.addEventListener('storage', onStorage)
-    const interval = setInterval(() => setApiKey(getApiKey()), 300)
-    return () => {
-      window.removeEventListener('storage', onStorage)
-      clearInterval(interval)
-    }
+    const sync = () => { setToken(getToken()); setUserEmail(getEmail()) }
+    window.addEventListener('storage', sync)
+    const interval = setInterval(sync, 300)
+    return () => { window.removeEventListener('storage', sync); clearInterval(interval) }
   }, [])
 
-  if (!apiKey) {
-    return <LoginPage onLogin={() => setApiKey(getApiKey())} />
+  if (!token) {
+    return <LoginPage onLogin={(email) => { setToken(getToken()); setUserEmail(email) }} />
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('mizan_api_key')
-    setApiKey('')
+    localStorage.removeItem('mizan_token')
+    localStorage.removeItem('mizan_email')
+    setToken('')
+    setUserEmail('')
   }
 
   let content: React.ReactNode
@@ -43,7 +48,7 @@ function Inner() {
   else                            content = <HomePage onNavigate={setPage} />
 
   return (
-    <AppShell current={page} onNavigate={setPage} onLogout={handleLogout}>
+    <AppShell current={page} onNavigate={setPage} onLogout={handleLogout} userEmail={userEmail}>
       {content}
     </AppShell>
   )

@@ -3,7 +3,7 @@ import { useLocale } from '../hooks/useLocale'
 import { SUPPORTED_LOCALES, LOCALE_LABELS, type Locale } from '../i18n'
 
 interface LoginPageProps {
-  onLogin?: () => void
+  onLogin?: (email: string) => void
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
@@ -34,8 +34,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         return
       }
       const { token } = await res.json() as { token: string }
-      localStorage.setItem('mizan_api_key', token)
-      onLogin?.()
+      localStorage.setItem('mizan_token', token)
+      localStorage.setItem('mizan_email', email.trim())
+      onLogin?.(email.trim())
     } catch { setError(t('login.error')) }
     finally { setLoading(false) }
   }
@@ -80,11 +81,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <div style={{
               width: 48, height: 48, borderRadius: 14, margin: '0 auto 16px',
-              background: 'linear-gradient(135deg, var(--brand), oklch(55% 0.2 290))',
+              background: 'linear-gradient(135deg, oklch(65% 0.22 265), oklch(68% 0.18 155))',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 22, boxShadow: '0 0 24px var(--brand-glow)',
-              color: '#fff',
-            }}>⬡</div>
+              fontSize: 22, fontWeight: 700, boxShadow: '0 0 24px var(--brand-glow)',
+              color: '#070711',
+            }}>M</div>
             <h1 style={{
               fontSize: '1.3rem', fontWeight: 700, margin: '0 0 6px',
               background: 'linear-gradient(135deg, #f0f0fa, oklch(75% 0.15 265))',
@@ -142,6 +143,28 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               boxShadow: loading ? 'none' : '0 0 20px var(--brand-glow)',
               transition: 'all 0.15s',
             }}>{loading ? '…' : t('login.submit')}</button>
+
+            <button
+              type="button"
+              onClick={() => {
+                localStorage.setItem('mizan_token', 'demo')
+                localStorage.setItem('mizan_email', 'demo@instad.dj')
+                onLogin?.('demo@instad.dj')
+              }}
+              style={{
+                display: 'block', width: '100%', padding: '10px',
+                background: 'transparent',
+                color: 'oklch(78% 0.03 265)',
+                border: '1px solid oklch(25% 0.04 265 / 0.8)',
+                borderRadius: 12, fontSize: '0.875rem', fontWeight: 500,
+                cursor: 'pointer', fontFamily: 'inherit',
+                marginTop: 8, transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { const b = e.currentTarget as HTMLElement; b.style.borderColor = 'oklch(68% 0.18 155)'; b.style.color = 'oklch(78% 0.18 155)' }}
+              onMouseLeave={e => { const b = e.currentTarget as HTMLElement; b.style.borderColor = 'oklch(25% 0.04 265 / 0.8)'; b.style.color = 'oklch(78% 0.03 265)' }}
+            >
+              Explorer en mode démo
+            </button>
           </form>
         </div>
 

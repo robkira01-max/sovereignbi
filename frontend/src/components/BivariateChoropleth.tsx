@@ -8,7 +8,7 @@
  * Colour matrix: row = var1 class (0–2), col = var2 class (0–2).
  */
 import { useEffect, useRef } from 'react'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
 import { Protocol } from 'pmtiles'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import djiGeojson from '../data/dji_adm1.geojson'

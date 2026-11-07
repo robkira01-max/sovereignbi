@@ -9,13 +9,18 @@ interface AppShellProps {
   children: ReactNode
   onNavigate: (page: Page) => void
   onLogout: () => void
+  userEmail?: string
 }
 
-const NAV_ITEMS: { id: Page; icon: string; labelKey: string }[] = [
-  { id: 'home',       icon: '⊞',  labelKey: 'nav.home' },
-  { id: 'chat',       icon: '◎',  labelKey: 'nav.chat' },
-  { id: 'dashboards', icon: '▦',  labelKey: 'nav.dashboards' },
-  { id: 'data',       icon: '⬆',  labelKey: 'nav.import' },
+const HOME_ICON  = 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
+const DASH_ICON  = 'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM14 5a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM14 11a1 1 0 011-1h4a1 1 0 011 1v8a1 1 0 01-1 1h-4a1 1 0 01-1-1v-8z'
+const DATA_ICON  = 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12'
+const CHAT_ICON  = 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'
+
+const NAV_ITEMS: { id: Page; icon: string; label: string }[] = [
+  { id: 'home',       icon: HOME_ICON, label: 'Accueil' },
+  { id: 'dashboards', icon: DASH_ICON, label: 'Rapports' },
+  { id: 'data',       icon: DATA_ICON, label: 'Données' },
 ]
 
 const PAGE_LABEL: Record<Page, string> = {
@@ -25,7 +30,7 @@ const PAGE_LABEL: Record<Page, string> = {
   data:       'Données',
 }
 
-export function AppShell({ current, children, onNavigate, onLogout }: AppShellProps) {
+export function AppShell({ current, children, onNavigate, onLogout, userEmail }: AppShellProps) {
   const { locale, setLocale } = useLocale()
   const isRtl = locale === 'ar'
   const [cmdK, setCmdK] = useState(false)
@@ -39,44 +44,42 @@ export function AppShell({ current, children, onNavigate, onLogout }: AppShellPr
       background: 'var(--bg)',
       position: 'relative',
     }}>
-      {/* ── Mesh background ── */}
+      {/* ── Background ── */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 0,
         background: 'var(--mesh-bg)',
         pointerEvents: 'none',
       }} />
 
-      {/* ── Neural Sidebar ── */}
+      {/* ── Sidebar 60px ── */}
       <aside style={{
         position: 'fixed',
         [isRtl ? 'right' : 'left']: 0,
         top: 0, bottom: 0,
-        width: 'var(--sidebar-w)',
+        width: '60px',
         zIndex: 20,
-        background: 'oklch(12% 0.02 265 / 0.92)',
-        borderRight: isRtl ? 'none' : '1px solid var(--border-subtle)',
-        borderLeft: isRtl ? '1px solid var(--border-subtle)' : 'none',
-        backdropFilter: 'blur(20px)',
+        background: 'oklch(10% 0.025 265 / 0.8)',
+        borderRight: isRtl ? 'none' : '1px solid oklch(25% 0.04 265 / 0.6)',
+        borderLeft: isRtl ? '1px solid oklch(25% 0.04 265 / 0.6)' : 'none',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '20px 0',
-        gap: 4,
+        padding: '12px 0',
+        gap: 6,
         userSelect: 'none',
       }}>
-        {/* Logo */}
+        {/* Logo "M" */}
         <div
           onClick={() => onNavigate('home')}
           title="MizanBI"
           style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: 'linear-gradient(135deg, var(--brand), oklch(55% 0.2 290))',
+            width: 34, height: 34, borderRadius: 10,
+            background: 'linear-gradient(135deg, oklch(65% 0.22 265), oklch(68% 0.18 155))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 16, cursor: 'pointer', marginBottom: 24,
-            boxShadow: '0 0 20px var(--brand-glow)',
-            color: '#fff', fontWeight: 700,
+            fontSize: 16, fontWeight: 700, cursor: 'pointer', marginBottom: 14,
+            color: '#070711',
           }}
-        >⬡</div>
+        >M</div>
 
         {/* Nav items */}
         {NAV_ITEMS.map(item => {
@@ -85,170 +88,147 @@ export function AppShell({ current, children, onNavigate, onLogout }: AppShellPr
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
-              title={PAGE_LABEL[item.id]}
+              title={item.label}
+              aria-label={item.label}
               style={{
-                width: 44, height: 44, borderRadius: 12,
+                width: 42, height: 42, borderRadius: 12,
                 border: 'none', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 18, position: 'relative',
-                background: active ? 'var(--brand-dim)' : 'transparent',
-                color: active ? 'var(--brand)' : 'var(--text-dim)',
-                boxShadow: active ? '0 0 12px var(--brand-glow)' : 'none',
+                background: active ? 'oklch(25% 0.09 265)' : 'transparent',
+                color: active ? 'oklch(75% 0.22 265)' : 'oklch(65% 0.03 265)',
                 transition: 'all 0.15s',
                 fontFamily: 'inherit',
               }}
-              onMouseEnter={e => {
-                if (!active) (e.currentTarget as HTMLElement).style.background = 'oklch(20% 0.03 265 / 0.6)'
-              }}
-              onMouseLeave={e => {
-                if (!active) (e.currentTarget as HTMLElement).style.background = 'transparent'
-              }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = 'oklch(22% 0.06 265)' }}
+              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
             >
-              {item.icon}
-              {/* Active pulse dot */}
-              {active && (
-                <span style={{
-                  position: 'absolute', top: 8, right: 8,
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: 'var(--accent)',
-                  boxShadow: '0 0 6px var(--accent)',
-                }} />
-              )}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="1.8"
+                strokeLinecap="round" strokeLinejoin="round">
+                <path d={item.icon} />
+              </svg>
             </button>
           )
         })}
-
-        <div style={{ flex: 1 }} />
-
-        {/* Settings */}
-        <button
-          title="Paramètres"
-          style={{
-            width: 44, height: 44, borderRadius: 12, border: 'none',
-            background: 'transparent', color: 'var(--text-dim)',
-            cursor: 'pointer', fontSize: 17, fontFamily: 'inherit',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >⚙</button>
-
-        {/* Avatar / logout */}
-        <button
-          onClick={onLogout}
-          title="Déconnexion"
-          style={{
-            width: 36, height: 36, borderRadius: 10, border: 'none',
-            background: 'oklch(25% 0.05 265)',
-            color: 'var(--text)',
-            cursor: 'pointer', fontSize: 13, fontWeight: 700,
-            fontFamily: 'inherit', marginTop: 4,
-          }}
-        >R</button>
       </aside>
 
-      {/* ── Topbar ── */}
+      {/* ── Topbar 56px ── */}
       <header style={{
         position: 'fixed',
-        [isRtl ? 'right' : 'left']: 'var(--sidebar-w)',
-        right: isRtl ? 'var(--sidebar-w)' : 0,
+        [isRtl ? 'right' : 'left']: '60px',
+        [isRtl ? 'left' : 'right']: 0,
         top: 0,
-        height: 'var(--topbar-h)',
+        height: '56px',
         zIndex: 15,
-        background: 'oklch(10% 0.02 265 / 0.75)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--border-subtle)',
+        background: 'oklch(10% 0.025 265 / 0.6)',
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid oklch(25% 0.04 265 / 0.6)',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 28px',
-        gap: 16,
+        padding: '0 24px',
+        gap: 14,
       }}>
-        {/* Breadcrumb */}
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
-          MizanBI{' '}
-          <span style={{ color: 'oklch(70% 0.02 265)', fontWeight: 500 }}>
-            / {PAGE_LABEL[current]}
+        {/* Page title */}
+        <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--text)', flex: 1 }}>
+          {PAGE_LABEL[current]}
+        </div>
+
+        {/* Locale switcher */}
+        <div style={{ display: 'flex', gap: 4 }}>
+          {SUPPORTED_LOCALES.map((l: Locale) => (
+            <button
+              key={l}
+              onClick={() => setLocale(l)}
+              style={{
+                padding: '5px 10px', borderRadius: 8, border: 'none',
+                background: locale === l ? 'oklch(25% 0.08 265)' : 'transparent',
+                color: '#f0f0fa',
+                fontSize: 12, fontWeight: locale === l ? 600 : 400,
+                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+              }}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        {/* Email */}
+        {userEmail && (
+          <span style={{ color: 'oklch(68% 0.03 265)', fontSize: 12 }}>
+            {userEmail}
           </span>
-        </div>
+        )}
 
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* ⌘K */}
-          <button
-            onClick={() => setCmdK(v => !v)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              background: 'oklch(16% 0.03 265 / 0.8)',
-              border: '1px solid var(--border)',
-              borderRadius: 8, padding: '6px 14px',
-              fontSize: 12, color: 'var(--text-muted)',
-              cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace",
-            }}
-          >
-            ⌘K{' '}
-            <kbd style={{
-              background: 'oklch(22% 0.04 265)', borderRadius: 4,
-              padding: '1px 5px', fontSize: 11,
-            }}>Commande</kbd>
-          </button>
+        {/* ⌘K */}
+        <button
+          onClick={() => setCmdK(v => !v)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: 'oklch(16% 0.03 265 / 0.8)',
+            border: '1px solid var(--border)',
+            borderRadius: 8, padding: '5px 12px',
+            fontSize: 12, color: 'var(--text-muted)',
+            cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace",
+          }}
+        >⌘K</button>
 
-          {/* Locale switcher */}
-          <div style={{ display: 'flex', gap: 4 }}>
-            {SUPPORTED_LOCALES.map((l: Locale) => (
-              <button
-                key={l}
-                onClick={() => setLocale(l)}
-                style={{
-                  padding: '4px 10px', borderRadius: 6,
-                  border: '1px solid var(--border)',
-                  background: locale === l ? 'var(--brand-dim)' : 'transparent',
-                  color: locale === l ? 'oklch(75% 0.2 265)' : 'var(--text-dim)',
-                  fontSize: 12, fontWeight: locale === l ? 600 : 400,
-                  cursor: 'pointer', fontFamily: 'inherit',
-                  transition: 'all 0.15s',
-                }}
-              >
-                {l.toUpperCase()}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Logout */}
+        <button
+          onClick={onLogout}
+          style={{
+            cursor: 'pointer', border: '1px solid oklch(25% 0.04 265 / 0.8)',
+            background: 'transparent', color: '#f0f0fa',
+            borderRadius: 8, padding: '5px 12px',
+            fontSize: 12, fontWeight: 500, fontFamily: 'inherit',
+            transition: 'border-color 0.15s',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'oklch(58% 0.22 25)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'oklch(25% 0.04 265 / 0.8)' }}
+        >Déconnexion</button>
       </header>
 
       {/* ── Main content ── */}
       <main style={{
         position: 'fixed',
-        [isRtl ? 'right' : 'left']: 'var(--sidebar-w)',
-        right: isRtl ? 'var(--sidebar-w)' : 0,
-        top: 'var(--topbar-h)',
+        [isRtl ? 'right' : 'left']: '60px',
+        [isRtl ? 'left' : 'right']: 0,
+        top: '56px',
         bottom: 0,
         overflow: 'auto',
         zIndex: 1,
-        padding: '32px',
+        padding: '28px',
       }}>
         {children}
       </main>
 
-      {/* ── Sovereign badge ── */}
-      <div style={{
-        position: 'fixed', bottom: 20, right: 24, zIndex: 30,
-        background: 'oklch(13% 0.025 265 / 0.9)',
-        border: '1px solid oklch(68% 0.18 155 / 0.3)',
-        borderRadius: 10, padding: '7px 14px',
-        display: 'flex', alignItems: 'center', gap: 8,
-        backdropFilter: 'blur(16px)',
-        fontSize: 11,
-        boxShadow: '0 0 20px oklch(68% 0.18 155 / 0.1)',
-      }}>
-        <span style={{
-          width: 7, height: 7, borderRadius: '50%',
-          background: 'var(--accent)',
-          boxShadow: '0 0 8px var(--accent)',
-          display: 'inline-block',
-        }} />
-        <span style={{ color: 'var(--accent)', fontWeight: 500 }}>Données locales</span>
-        <span style={{ color: 'var(--text-dim)' }}>·</span>
-        <span style={{ color: 'var(--text-muted)' }}>Oracle ARM · Djibouti</span>
-      </div>
+      {/* ── Floating chat bubble (all pages except chat) ── */}
+      {current !== 'chat' && (
+        <button
+          onClick={() => onNavigate('chat')}
+          title="Q&A"
+          aria-label="Ouvrir Q&A"
+          style={{
+            position: 'fixed', bottom: 24,
+            [isRtl ? 'left' : 'right']: 24,
+            zIndex: 30,
+            width: 56, height: 56, borderRadius: '50%',
+            border: 'none', cursor: 'pointer',
+            background: 'linear-gradient(135deg, oklch(65% 0.22 265), oklch(55% 0.22 290))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 8px 24px oklch(40% 0.2 265 / 0.55)',
+            transition: 'transform 0.15s, box-shadow 0.15s',
+          }}
+          onMouseEnter={e => { const b = e.currentTarget as HTMLElement; b.style.transform = 'scale(1.08)'; b.style.boxShadow = '0 12px 32px oklch(40% 0.2 265 / 0.65)' }}
+          onMouseLeave={e => { const b = e.currentTarget as HTMLElement; b.style.transform = 'scale(1)'; b.style.boxShadow = '0 8px 24px oklch(40% 0.2 265 / 0.55)' }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d={CHAT_ICON} />
+          </svg>
+        </button>
+      )}
 
-      {/* ── ⌘K modal overlay ── */}
+      {/* ── ⌘K modal ── */}
       {cmdK && (
         <div
           onClick={() => setCmdK(false)}
@@ -265,20 +245,19 @@ export function AppShell({ current, children, onNavigate, onLogout }: AppShellPr
               width: 560,
               background: 'oklch(14% 0.03 265)',
               border: '1px solid var(--border)',
-              borderRadius: 16,
-              overflow: 'hidden',
+              borderRadius: 16, overflow: 'hidden',
               boxShadow: '0 24px 80px rgba(0,0,0,0.6)',
             }}
           >
             <div style={{
               display: 'flex', alignItems: 'center', gap: 12,
-              padding: '14px 20px', borderBottom: '1px solid var(--border-subtle)',
+              padding: '14px 20px', borderBottom: '1px solid oklch(25% 0.04 265 / 0.6)',
             }}>
               <span style={{ color: 'var(--text-muted)', fontSize: 16 }}>⌘</span>
               <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>Navigation rapide…</span>
             </div>
             <div style={{ padding: '8px 0' }}>
-              {NAV_ITEMS.map(item => (
+              {([...NAV_ITEMS, { id: 'chat' as Page, icon: CHAT_ICON, label: 'Q&A' }]).map((item, i) => (
                 <button
                   key={item.id}
                   onClick={() => { onNavigate(item.id); setCmdK(false) }}
@@ -292,10 +271,14 @@ export function AppShell({ current, children, onNavigate, onLogout }: AppShellPr
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'oklch(20% 0.03 265 / 0.6)' }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                 >
-                  <span style={{ fontSize: 18, width: 24, textAlign: 'center' }}>{item.icon}</span>
-                  <span>{PAGE_LABEL[item.id]}</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="1.8"
+                    strokeLinecap="round" strokeLinejoin="round">
+                    <path d={item.icon} />
+                  </svg>
+                  <span>{item.label}</span>
                   <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-dim)', fontFamily: "'JetBrains Mono', monospace" }}>
-                    {item.id === 'home' ? '⌘1' : item.id === 'chat' ? '⌘2' : item.id === 'dashboards' ? '⌘3' : '⌘4'}
+                    ⌘{i + 1}
                   </span>
                 </button>
               ))}
