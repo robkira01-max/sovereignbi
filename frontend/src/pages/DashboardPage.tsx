@@ -235,13 +235,22 @@ export function DashboardPage() {
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {summaries.length === 0 && <li style={{ color: '#6b7280' }}>{t('dashboard.no_dashboards')}</li>}
           {summaries.map(d => (
-            <li key={d.id} style={{ marginBottom: '8px' }}>
+            <li key={d.id} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <button
                 onClick={() => openDashboard(d.id)}
-                style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', width: '100%', textAlign: 'start' }}
+                style={{ background: 'none', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', flex: 1, textAlign: 'start' }}
               >
                 <strong>{d.title}</strong>
                 <span style={{ marginInlineStart: '8px', fontSize: '0.8rem', color: '#6b7280' }}>{d.scope}</span>
+              </button>
+              <button
+                data-testid={`fav-${d.id}`}
+                onClick={() => api.toggleFavorite(d.id).then(res => setSummaries(prev => prev.map(s => s.id === d.id ? { ...s, is_favorite: res.is_favorite } : s)))}
+                title={d.is_favorite ? t('dashboard.unfavorite') : t('dashboard.favorite')}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '4px', lineHeight: 1, color: d.is_favorite ? '#f59e0b' : '#d1d5db' }}
+                aria-label={`${d.is_favorite ? t('dashboard.unfavorite') : t('dashboard.favorite')} ${d.title}`}
+              >
+                ★
               </button>
             </li>
           ))}

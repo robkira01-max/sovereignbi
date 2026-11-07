@@ -42,17 +42,24 @@ def _now() -> str:
 
 @router.get("/dashboards")
 def list_dashboards(
+    request: Request,
     _: str = Depends(_VIEWER),
     skip: int = Query(0, ge=0, description="Nombre d'éléments à sauter"),
     limit: int = Query(50, ge=1, le=200, description="Nombre d'éléments à retourner"),
 ):
     # 13 — Pagination pour éviter de charger des centaines de dashboards d'un coup.
+    from app.dashboards.favorites import get_favorites
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
+    api_key = request.headers.get("x-api-key", "")
+    favs = set(get_favorites(api_key))
     items = []
     for p in sorted(_DASHBOARDS_DIR.glob("*.yaml")):
         try:
             d = load_dashboard(p)
-            items.append({"id": d.id, "title": d.title, "scope": d.scope, "updated_at": d.updated_at})
+            items.append({
+                "id": d.id, "title": d.title, "scope": d.scope,
+                "updated_at": d.updated_at, "is_favorite": d.id in favs,
+            })
         except Exception:
             continue
     total = len(items)
@@ -499,6 +506,22 @@ def clone_dashboard(
     _DASHBOARDS_DIR.mkdir(parents=True, exist_ok=True)
     save_dashboard(clone, dest)
     return {"id": clone.id, "title": clone.title, "created_at": clone.created_at}
+
+
+@router.post("/dashboards/{dashboard_id}/favorite", status_code=200)
+def toggle_favorite(dashboard_id: str, request: Request, _: str = Depends(_VIEWER)):
+    """Toggle the favorite status of a dashboard for the current user.
+
+    Returns {"dashboard_id": str, "is_favorite": bool}.
+    """
+    _validate_id(dashboard_id, "dashboard_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    from app.dashboards.favorites import toggle_favorite as _toggle
+    api_key = request.headers.get("x-api-key", "")
+    is_fav = _toggle(api_key, dashboard_id)
+    return {"dashboard_id": dashboard_id, "is_favorite": is_fav}
 
 
 # ─── Templates ────────────────────────────────────────────────────────────────

@@ -70,6 +70,12 @@ export const api = {
       { method: 'DELETE' }
     ),
 
+  toggleFavorite: (id: string) =>
+    apiFetch<{ dashboard_id: string; is_favorite: boolean }>(
+      `/dashboards/${id}/favorite`,
+      { method: 'POST' }
+    ),
+
   health: () => apiFetch<{ status: string }>('/health'),
 }
 
@@ -103,6 +109,7 @@ export interface DashboardSummary {
   title: string
   scope: string
   updated_at: string
+  is_favorite?: boolean
 }
 
 export interface Dashboard {
