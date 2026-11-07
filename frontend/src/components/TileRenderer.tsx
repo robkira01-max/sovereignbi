@@ -31,6 +31,8 @@ interface TileOptions {
   sparkline_delta_pct?: number | null
   sparkline_direction?: 'up' | 'down' | 'flat' | null
   sparkline_previous?: number | null
+  /** Traffic-light thresholds for KPI: [{op:">=",value:30,color:"#ef4444",label:"Critique"}, ...] */
+  thresholds?: Array<{ op?: string; value?: number; color?: string; label?: string }>
 }
 
 interface Props {
@@ -51,6 +53,31 @@ const CHART_COLORS = [
   '#f97316', // orange
   '#84cc16', // lime
 ]
+
+const _OPS: Record<string, (v: number, t: number) => boolean> = {
+  '>':  (v, t) => v > t,
+  '>=': (v, t) => v >= t,
+  '<':  (v, t) => v < t,
+  '<=': (v, t) => v <= t,
+  '==': (v, t) => v === t,
+  '!=': (v, t) => v !== t,
+}
+
+function evalThreshold(
+  value: number,
+  thresholds: TileOptions['thresholds'],
+): string | undefined {
+  if (!thresholds?.length) return undefined
+  for (const t of thresholds) {
+    if (t.op && t.value !== undefined) {
+      const fn = _OPS[t.op]
+      if (fn && fn(value, t.value)) return t.color ?? undefined
+    } else {
+      return t.color ?? undefined  // default fallback
+    }
+  }
+  return undefined
+}
 
 function toChartData(data: TileData): Record<string, unknown>[] {
   return data.rows.map(row =>
@@ -102,6 +129,10 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
           ? `${labelFormatter(val, decimals ?? 0)} ${unit}`
           : labelFormatter(val, decimals ?? 0)
 
+      const thresholdColor = (val !== null && val !== undefined && options.thresholds?.length)
+        ? evalThreshold(Number(val), options.thresholds)
+        : undefined
+
       const hasSparkline =
         options.sparkline &&
         Array.isArray(options.sparkline_points) &&
@@ -137,13 +168,16 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
               label={title}
             />
           ) : (
-            <div style={{
-              fontSize: '1.9rem',
-              fontWeight: 700,
-              fontVariantNumeric: 'tabular-nums',
-              color: 'var(--brand)',
-              lineHeight: 1.1,
-            }}>
+            <div
+              data-testid="tile-kpi-value"
+              style={{
+                fontSize: '1.9rem',
+                fontWeight: 700,
+                fontVariantNumeric: 'tabular-nums',
+                color: thresholdColor ?? 'var(--brand)',
+                lineHeight: 1.1,
+              }}
+            >
               {formatted}
             </div>
           )}

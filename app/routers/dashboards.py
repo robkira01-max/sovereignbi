@@ -277,6 +277,50 @@ def tile_insight(dashboard_id: str, tile_id: str, request: Request, _: str = Dep
     return {"insight": text, "tile_id": tile_id, "cached": False}
 
 
+@router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/status")
+def tile_status(dashboard_id: str, tile_id: str, request: Request, _: str = Depends(_VIEWER)):
+    """Evaluate threshold rules for a KPI tile and return traffic-light status.
+
+    Returns {value, color, label, matched, thresholds_count}.
+    Requires Tile.options.thresholds to be defined; 422 otherwise.
+    """
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    thresholds = tile.options.get("thresholds")
+    if not thresholds:
+        raise HTTPException(422, "Cette tuile n'a pas de seuils définis (options.thresholds).")
+    sql = (tile.sql_pinned or tile.metric or "").strip()
+    if not sql:
+        raise HTTPException(422, "Cette tuile n'a pas de SQL exécutable.")
+
+    store = request.app.state.store
+    from app.dashboards.renderer import render_tile
+    result = render_tile(tile, store)
+    if result.get("error") or not result.get("rows"):
+        raise HTTPException(422, result.get("error") or "Pas de données.")
+    try:
+        value = float(result["rows"][0][0])
+    except (TypeError, ValueError, IndexError) as exc:
+        raise HTTPException(422, f"Valeur non numérique : {exc}") from exc
+
+    from app.dashboards.threshold import evaluate_threshold
+    status = evaluate_threshold(value, thresholds)
+    return {
+        "value": value,
+        "color": status["color"],
+        "label": status["label"],
+        "matched": status["matched"],
+        "thresholds_count": len(thresholds),
+    }
+
+
 @router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/delta")
 def tile_delta(
     dashboard_id: str,
