@@ -404,6 +404,44 @@ def export_pptx(dashboard_id: str, request: Request, _: str = Depends(_VIEWER)):
     )
 
 
+@router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/export/csv")
+def tile_export_csv(dashboard_id: str, tile_id: str, request: Request, _: str = Depends(_VIEWER)):
+    """Export tile SQL result as a UTF-8 CSV with BOM (Excel-compatible)."""
+    import csv
+    import io
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    sql = (tile.sql_pinned or tile.metric or "").strip()
+    if not sql:
+        raise HTTPException(422, "Cette tuile n'a pas de SQL exécutable.")
+
+    store = request.app.state.store
+    try:
+        columns, rows = store.execute(sql)
+    except Exception as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+    buf = io.StringIO()
+    buf.write("﻿")  # UTF-8 BOM for Excel
+    writer = csv.writer(buf)
+    writer.writerow(columns)
+    for row in rows:
+        writer.writerow(row)
+    filename = f"{dashboard_id}-{tile_id}.csv"
+    return Response(
+        content=buf.getvalue().encode("utf-8"),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
 @router.delete("/dashboards/{dashboard_id}/tiles/{tile_id}", status_code=200)
 def remove_tile(dashboard_id: str, tile_id: str, _: str = Depends(_EDITOR)):
     """Supprime une tuile d'un dashboard."""

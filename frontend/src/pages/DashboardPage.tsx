@@ -119,6 +119,27 @@ export function DashboardPage() {
     }
   }
 
+  const exportTileCsv = async (tileId: string) => {
+    if (!selected) return
+    try {
+      const key = getKey()
+      const res = await fetch(
+        `${getApiBase()}/dashboards/${selected.id}/tiles/${tileId}/export/csv`,
+        { headers: { 'X-Api-Key': key, 'Authorization': key ? `Bearer ${key}` : '' } }
+      )
+      if (!res.ok) throw new Error(`${res.status}`)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${selected.id}-${tileId}.csv`
+      a.click()
+      setTimeout(() => URL.revokeObjectURL(url), 10000)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur export CSV')
+    }
+  }
+
   const openDashboard = (id: string) => {
     api.getDashboard(id)
       .then(d => {
@@ -286,6 +307,15 @@ export function DashboardPage() {
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                     <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#374151', flex: 1 }}>{tile.title}</h4>
+                    <button
+                      data-testid={`export-csv-${tile.id}`}
+                      onClick={() => exportTileCsv(tile.id)}
+                      title={t('dashboard.export_csv')}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: '0.7rem', padding: '0 4px', lineHeight: 1 }}
+                      aria-label={`${t('dashboard.export_csv')} ${tile.title}`}
+                    >
+                      ↓ CSV
+                    </button>
                     <button
                       onClick={() => removeTile(tile.id)}
                       title={t('dashboard.delete_tile')}
