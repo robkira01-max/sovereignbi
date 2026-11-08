@@ -164,6 +164,9 @@ Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~
 ### Sprint H5 — Chatbot universel ✅ (2026-10-19)
 `POST /api/v1/chatbot` : routeur intelligent SQL/général — détecte automatiquement si la question porte sur les données (`_DATA_PATTERNS`) ou sur un sujet général, historique de conversation (10 tours max), réponse unifiée `ChatResponse` (answer, mode, sql, columns, rows, confidence). `ChatPage.tsx` réécrite : bulles de conversation, badge mode data/général, SQL dépliable, case « Analyser les données ». 18 tests (12 Python + 6 seed). 945/945 tests.
 
+### Sprint H10 — P-024 Import GeoJSON/GeoPackage/GeoParquet ✅ (2026-11-08)
+Pipeline d'import géographique : `app/geo_catalog/importer.py` (validation DuckDB Spatial, extraction feature_count/geometry_type/bbox/name_col, sanitisation nom, enregistrement catalog.yaml en status:draft). `POST /api/v1/geo/import` (multipart, editor-only, 50 Mo, extension allowlist, guard path traversal). `GeoImport.tsx` drag-and-drop + champs métadonnées + callback `onImported`. i18n `geo_import.*` 4 locales (fr/en/ar/es). Fixture `monkeypatch` pour isolation tests (catalog.yaml non pollué). 1225/1227 pytest · 124/124 Vitest.
+
 ### Sprint H9 — P-023 Moteur d'analyse spatiale DuckDB Spatial ✅ (2026-11-08)
 SpatialEngine DuckDB 1.5.6 : 5 analyses (area/centroid/bbox/nearest/summary), `ST_Area_Spheroid`, `ST_Distance`, path guard projet root. `file_path`+`name_column` dans catalog.yaml. `GET /api/v1/geo/analyze/types`, `POST /api/v1/geo/analyze`. 23 pytest. 1201/1203 tests.
 

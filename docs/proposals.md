@@ -22,11 +22,11 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Élevé — analyse spatiale native sans PostGIS (DuckDB 1.5.6, `ST_Area_Spheroid`, `ST_Centroid`, `ST_Distance`).
 **Statut :** Livré 2026-11-08. `app/geo_catalog/spatial_engine.py` (SpatialEngine, 5 analyses : area/centroid/bbox/nearest/summary, path guard projet root), `GET /api/v1/geo/analyze/types`, `POST /api/v1/geo/analyze`. `file_path` + `name_column` ajoutés à catalog.yaml + GeoLayer model. 23 pytest. 1201/1203 tests.
 
-## P-024 — Import GeoJSON / GeoPackage / GeoParquet
+## P-024 — Import GeoJSON / GeoPackage / GeoParquet ✅ (2026-11-08)
 
 **Raison :** Permettre à INSTAD d'importer ses propres données géographiques dans le catalogue.
 **Impact :** Élevé pour l'autonomie utilisateur.
-**Statut :** Proposé. Dépend de P-023 (validation par analyse spatiale).
+**Livré :** `importer.py` + `POST /api/v1/geo/import` + `GeoImport.tsx` + i18n 4 locales. 24 pytest + 10 Vitest. Formats : `.geojson/.json/.gpkg/.parquet`, 50 Mo max, enregistrement catalog.yaml en draft.
 
 ## P-025 — Analyses spatiales : buffers, proximité, intersections, densité
 

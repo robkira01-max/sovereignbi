@@ -28,9 +28,9 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1201/1203 pytest + 114/114 Vitest
-- **Dernière proposal** : P-023 Moteur d'analyse spatiale DuckDB Spatial
-- **Commit** : (voir git log)
+- **Tests** : 1225/1227 pytest + 124/124 Vitest
+- **Dernière proposal** : P-024 Import GeoJSON/GeoPackage/GeoParquet
+- **Commit** : 463d2a6
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack
@@ -64,6 +64,14 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - `GET /api/v1/geo/catalog/{id}` — métadonnées d'une couche
 - `PUT /api/v1/geo/catalog/{id}/toggle` — activer/désactiver (editor)
 - Règle : toute nouvelle couche géographique doit être enregistrée dans `catalog.yaml` avec licence vérifiée avant usage.
+
+## Import géographique (P-024)
+
+- `app/geo_catalog/importer.py` — `import_layer()` : validation DuckDB Spatial, extraction métadonnées, sanitisation nom, enregistrement `catalog.yaml` en `status: draft`
+- `POST /api/v1/geo/import` — multipart, editor only, 50 Mo max, liste d'extensions, guard path traversal
+- `GeoImport.tsx` — formulaire drag-and-drop, champs métadonnées, callback `onImported`
+- Formats supportés : `.geojson`, `.json`, `.gpkg`, `.parquet`
+- Isolation tests : fixture `monkeypatch` sur `_CATALOG_PATH` + `_IMPORTS_DIR` pour ne pas polluer `catalog.yaml`
 
 ## Moteur spatial (P-023)
 
