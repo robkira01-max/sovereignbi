@@ -28,8 +28,8 @@ vi.mock('../data/dji_adm1.geojson', () => ({
 }))
 
 beforeAll(() => {
-  global.requestAnimationFrame = vi.fn(cb => { cb(0); return 0 })
-  global.cancelAnimationFrame  = vi.fn()
+  globalThis.requestAnimationFrame = vi.fn(cb => { cb(0); return 0 })
+  globalThis.cancelAnimationFrame  = vi.fn()
 })
 
 const STEPS = [

@@ -36,8 +36,8 @@ vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}))
 
 beforeAll(() => {
   // jsdom doesn't implement requestAnimationFrame — provide stub
-  global.requestAnimationFrame = vi.fn(cb => { cb(0); return 0 })
-  global.cancelAnimationFrame  = vi.fn()
+  globalThis.requestAnimationFrame = vi.fn(cb => { cb(0); return 0 })
+  globalThis.cancelAnimationFrame  = vi.fn()
 })
 
 describe('TRADE_FLOWS data', () => {

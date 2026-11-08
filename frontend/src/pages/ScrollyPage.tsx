@@ -26,7 +26,7 @@ function FigureTrend() {
       <div style={{ fontSize: 12, color: 'oklch(72% 0.03 265)', marginBottom: 10 }}>
         Taux de chômage national (%)
       </div>
-      <svg dir="ltr" viewBox="0 0 300 120" style={{ width: '100%', height: 150 }} preserveAspectRatio="none">
+      <svg viewBox="0 0 300 120" style={{ direction: 'ltr', width: '100%', height: 150 }} preserveAspectRatio="none">
         <polygon points={areaPts} fill="oklch(68% 0.18 155 / 0.2)" />
         <polyline points={trendPts} fill="none" stroke="oklch(68% 0.18 155)" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
       </svg>
@@ -170,7 +170,7 @@ function FigureForecast() {
         </div>
         <div style={{ fontSize: 12, color: 'oklch(72% 0.03 265)' }}>IC 20,5 – 26 %</div>
       </div>
-      <svg dir="ltr" viewBox="0 0 400 100" preserveAspectRatio="none" style={{ width: '100%', height: 100 }}>
+      <svg viewBox="0 0 400 100" preserveAspectRatio="none" style={{ direction: 'ltr', width: '100%', height: 100 }}>
         <polygon points="285,55 400,45 400,88" fill="oklch(72% 0.19 55 / 0.22)" />
         <line x1="285" y1="0" x2="285" y2="100" stroke="oklch(45% 0.05 265)" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
         <polyline points="0,20 57,30 133,39 209,32 247,45 285,55" fill="none" stroke="oklch(68% 0.18 155)" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />

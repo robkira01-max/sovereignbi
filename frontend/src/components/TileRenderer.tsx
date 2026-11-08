@@ -16,6 +16,12 @@ interface TileData {
   rows: unknown[][]
 }
 
+type SequentialScheme = 'blue' | 'green' | 'red' | 'orange'
+/** Bivariate palettes ('classic', 'teal-orange') are meaningless for single-hue tiles. */
+function sequentialScheme(s: TileOptions['colorScheme']): SequentialScheme {
+  return s === 'green' || s === 'red' || s === 'orange' ? s : 'blue'
+}
+
 interface TileOptions {
   unit?: string
   decimals?: number
@@ -24,6 +30,9 @@ interface TileOptions {
   name?: string
   value?: string
   colorScheme?: 'blue' | 'green' | 'red' | 'orange' | 'classic' | 'teal-orange'
+  showValues?: boolean
+  level?: 'adm2' | 'quartiers'
+  showLevelToggle?: boolean
   facet_by?: string
   chart_type?: 'bar' | 'line'
   x1_label?: string
@@ -287,7 +296,7 @@ export function TileRenderer({ type, title, data, options = {}, onRegionSelect, 
           title={title}
           unit={unit}
           options={{
-            colorScheme: options.colorScheme ?? 'blue',
+            colorScheme: sequentialScheme(options.colorScheme),
             showValues:  options.showValues === true,
           }}
         />
@@ -300,7 +309,7 @@ export function TileRenderer({ type, title, data, options = {}, onRegionSelect, 
           data={data}
           title={title}
           unit={unit}
-          colorScheme={options.colorScheme ?? 'blue'}
+          colorScheme={sequentialScheme(options.colorScheme)}
           onRegionSelect={onRegionSelect}
           selectedRegion={selectedRegion}
         />
@@ -313,9 +322,9 @@ export function TileRenderer({ type, title, data, options = {}, onRegionSelect, 
           data={data}
           title={title}
           unit={unit}
-          colorScheme={options.colorScheme ?? 'blue'}
+          colorScheme={sequentialScheme(options.colorScheme)}
           options={{
-            level: (options.level as 'adm2' | 'quartiers') ?? 'adm2',
+            level: options.level ?? 'adm2',
             showLevelToggle: options.showLevelToggle !== false,
           }}
           onRegionSelect={onRegionSelect}

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { I18N, LANGS, dirOf, type Lang } from './lib/i18n'
 import { DEMO_USER } from './data/demo'
+import { isApiConfigured } from './lib/api'
 import { THEME_LIST, THEME_MODE_KEY, applyTheme, loadThemeMode, resolveTheme, type IndicatorId, type ThemeId, type ThemeMode } from './lib/theme'
 import LoginPage from './pages/Login'
 import HomePage from './pages/Home'
@@ -38,7 +39,11 @@ const NAV: { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string
 
 export default function App() {
   const [lang, setLang] = useState<Lang>('fr')
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('mizan_token'))
+  const [token, setToken] = useState<string | null>(() => {
+    const tk = localStorage.getItem('mizan_token')
+    // Un token « demo » périmé n'ouvre pas de session quand l'API est configurée.
+    return tk === 'demo' && isApiConfigured() ? null : tk
+  })
   const [email, setEmail] = useState<string>(() => localStorage.getItem('mizan_email') || '')
   // P-032 — Nom affiché : Robleh Hassan en mode démo (DEMO_USER), sinon l'email de connexion.
   const [userName, setUserName] = useState<string>(() => localStorage.getItem('mizan_user_name') || '')

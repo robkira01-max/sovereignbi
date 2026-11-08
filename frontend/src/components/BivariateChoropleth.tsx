@@ -198,13 +198,13 @@ export function BivariateChoropleth({
       map.addSource('biv-regions', { type: 'geojson', data: geojson })
 
       // Build fill-color match expression: class → color
-      const matchExpr: maplibregl.ExpressionSpecification = [
+      const matchExpr = [
         'match', ['get', '_bivClass'],
         ...palette.flatMap((row, r) =>
           row.map((color, c) => [r * 3 + c, color] as [number, string])
         ).flat(),
         '#888888',
-      ]
+      ] as unknown as maplibregl.ExpressionSpecification
 
       map.addLayer({
         id: 'biv-fill', type: 'fill', source: 'biv-regions',

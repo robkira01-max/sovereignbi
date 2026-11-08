@@ -24,7 +24,7 @@ export default function ImportPage({ t }: { t: Dict }) {
     try {
       const fd = new FormData()
       fd.append('file', f)
-      const res = await apiFetch('/upload', { method: 'POST', body: fd }, true)
+      const res = await apiFetch('/upload', { method: 'POST', body: fd })
       const j = (await res.json()) as { tables?: string[] }
       setCreated(j.tables || [])
       setMsg(`✓ ${f.name}`)

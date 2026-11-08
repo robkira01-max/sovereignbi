@@ -23,6 +23,8 @@ data/wizard_sessions.jsonl
 data/template_catalogue.jsonl
 data/templates/
 data/sync/
+data/favorites.json
+*.tsbuildinfo
 frontend/node_modules/
 frontend/dist/
 node_modules/

@@ -63,7 +63,9 @@
 | @testing-library/react | 16.x | MIT | Tests composants React |
 | @testing-library/jest-dom | 6.x | MIT | Matchers DOM pour Vitest |
 | typescript | 5.x | Apache 2.0 | Typage statique JavaScript |
-| bcrypt | 4.x | Apache 2.0 | Hachage de mots de passe (Argon2 wrapper) |
+| @tanstack/react-query | 5.x | MIT | Cache et requêtes de données (mizanbi-client) |
+| pdfjs-dist | 4.x | Apache 2.0 | Lecture des PDF de cartes anciennes (mizanbi-client) |
+| bcrypt | 5.x | Apache 2.0 | Hachage bcrypt des mots de passe (backend, 12 tours ; refuse > 72 octets) |
 | maplibre-gl | 6.x | BSD-3-Clause | Rendu cartographique WebGL (basemap PMTiles) |
 | pmtiles | 4.x | Apache 2.0 | Protocol PMTiles pour MapLibre GL |
 | CARTO Basemaps (CDN) | — | Libre usage avec attribution | Fond de carte raster dark pour TradeFlowMap — © OpenStreetMap contributors © CARTO. Remplacer par tuiles auto-hébergées en production hors ligne. |

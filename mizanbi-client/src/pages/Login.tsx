@@ -63,8 +63,12 @@ export default function LoginPage({ t, lang, setLang, onEnter }: Props) {
         </label>
         {err && <div style={{ color: 'oklch(75% 0.17 25)', fontSize: 13 }}>{err}</div>}
         <button type="submit" className="btn" disabled={busy}>{busy ? '…' : t.login}</button>
-        <button type="button" className="btn-ghost" onClick={() => onEnter('demo', 'demo@instad.dj')}>{t.demo}</button>
-        <div className="muted" style={{ fontSize: 13, textAlign: 'center' }}>{t.demoAccount} · {DEMO_USER.initials}</div>
+        {!isApiConfigured() && (
+          <>
+            <button type="button" className="btn-ghost" onClick={() => onEnter('demo', 'demo@instad.dj')}>{t.demo}</button>
+            <div className="muted" style={{ fontSize: 13, textAlign: 'center' }}>{t.demoAccount} · {DEMO_USER.initials}</div>
+          </>
+        )}
         <div className="muted">{t.loi25} · {t.demoBadge} · {!isApiConfigured() ? t.off : t.live}</div>
       </form>
     </div>

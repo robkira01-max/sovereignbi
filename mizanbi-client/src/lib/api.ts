@@ -2,36 +2,35 @@
 // VITE_API_BASE vide (par défaut) => mode démo, aucune requête réseau.
 // Aucune clé API, aucun token, aucun mot de passe en dur ici : l'authentification
 // se fait par POST /auth/login, le token est stocké en localStorage (mizan_token),
-// et les en-têtes X-Api-Key viewer/editor sont fournis au runtime par l'administrateur.
+// ou, à défaut, une clé d'API injectée au runtime (window.__MIZAN_API_KEY__).
 
 export const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, '') || ''
 
 export const isApiConfigured = (): boolean => API_BASE.length > 0
 
-export function authHeaders(write = false): Record<string, string> {
-  // La clé API n'est jamais codée en dur : elle peut être injectée au runtime
-  // via une variable globale (par ex. window.__MIZAN_API_KEY__), sinon les
-  // appels authentifiés passent par le token de session (Bearer).
-  const runtimeKey = (typeof window !== 'undefined' && (window as unknown as { __MIZAN_API_KEY__?: string }).__MIZAN_API_KEY__) || ''
-  const headers: Record<string, string> = {}
-  if (runtimeKey) headers['X-Api-Key'] = write ? 'editor' : 'viewer'
+export function authHeaders(): Record<string, string> {
+  // Le token de session (Bearer) a priorité : le backend rejette en 401 une requête
+  // portant une X-Api-Key invalide même si le Bearer est valide, donc on n'envoie
+  // jamais les deux. La clé runtime n'est jamais codée en dur ; son rôle
+  // (viewer/editor) est celui de la clé fournie par l'administrateur.
   const token = typeof localStorage !== 'undefined' ? localStorage.getItem('mizan_token') : null
-  if (token && token !== 'demo') headers['Authorization'] = `Bearer ${token}`
-  return headers
+  if (token && token !== 'demo') return { Authorization: `Bearer ${token}` }
+  const runtimeKey = (typeof window !== 'undefined' && (window as unknown as { __MIZAN_API_KEY__?: string }).__MIZAN_API_KEY__) || ''
+  return runtimeKey ? { 'X-Api-Key': runtimeKey } : {}
 }
 
-export async function apiFetch(path: string, init: RequestInit = {}, write = false): Promise<Response> {
+export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
   if (!isApiConfigured()) throw new Error('API non configurée (VITE_API_BASE vide)')
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,
-    headers: { ...authHeaders(write), ...(init.headers as Record<string, string> | undefined) },
+    headers: { ...authHeaders(), ...(init.headers as Record<string, string> | undefined) },
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res
 }
 
-export async function apiJson<T>(path: string, init: RequestInit = {}, write = false): Promise<T> {
-  const res = await apiFetch(path, init, write)
+export async function apiJson<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const res = await apiFetch(path, init)
   return (await res.json()) as T
 }
 
@@ -70,5 +69,7 @@ export async function login(email: string, password: string): Promise<{ token: s
   })
   if (!res.ok) throw new Error('login failed')
   const j = (await res.json()) as { token?: string; access_token?: string; email?: string }
-  return { token: j.token || j.access_token || '', email: j.email || email }
+  const token = j.token || j.access_token
+  if (!token) throw new Error('login failed')
+  return { token, email: j.email || email }
 }

@@ -94,7 +94,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <span style={{ fontWeight: 600 }}>Évolution du chômage</span>
             <span style={{ color: 'oklch(78% 0.17 155)', fontWeight: 600 }}>▼ 4,5 pt</span>
           </div>
-          <svg dir="ltr" viewBox="0 0 300 120" style={{ flex: 1, width: '100%', minHeight: 120 }} preserveAspectRatio="none">
+          <svg viewBox="0 0 300 120" style={{ direction: 'ltr', flex: 1, width: '100%', minHeight: 120 }} preserveAspectRatio="none">
             <polygon points={areaPts} fill="oklch(68% 0.18 155 / 0.2)" />
             <polyline points={trendPts} fill="none" stroke="oklch(68% 0.18 155)" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
           </svg>
@@ -144,7 +144,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: '-0.02em', color: 'oklch(82% 0.15 65)' }}>23,1 %</div>
               <div style={{ fontSize: 12, color: 'oklch(72% 0.03 265)' }}>IC 20,5 – 26</div>
             </div>
-            <svg dir="ltr" viewBox="0 0 600 120" preserveAspectRatio="none" style={{ flex: 1, minWidth: 240, height: 120 }}>
+            <svg viewBox="0 0 600 120" preserveAspectRatio="none" style={{ direction: 'ltr', flex: 1, minWidth: 240, height: 120 }}>
               {/* Uncertainty cone */}
               <polygon points="428.6,65.5 600,55.5 600,105.5" fill="oklch(72% 0.19 55 / 0.22)" />
               {/* Dashed separator */}

@@ -40,7 +40,7 @@ const MOCK_FC = {
 
 describe('MapAdm2', () => {
   beforeEach(() => {
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(MOCK_FC),
     })
@@ -66,16 +66,16 @@ describe('MapAdm2', () => {
     render(<MapAdm2 data={MOCK_DATA} title="Pop" />)
     const btn = screen.getByTestId('map-level-btn-quartiers')
     fireEvent.click(btn)
-    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('quartiers'))
+    expect(globalThis.fetch).toHaveBeenCalledWith(expect.stringContaining('quartiers'))
   })
 
   it('fetches adm2 geo on mount', () => {
     render(<MapAdm2 data={MOCK_DATA} title="Pop" />)
-    expect(global.fetch).toHaveBeenCalledWith('/api/v1/geo/dj/adm2')
+    expect(globalThis.fetch).toHaveBeenCalledWith('/api/v1/geo/dj/adm2')
   })
 
   it('shows error message when fetch fails', async () => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('network error'))
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('network error'))
     render(<MapAdm2 data={MOCK_DATA} title="Pop" />)
     await new Promise(r => setTimeout(r, 10))
     expect(screen.getByTestId('map-geo-error')).toBeDefined()

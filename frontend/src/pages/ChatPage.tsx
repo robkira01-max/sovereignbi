@@ -58,11 +58,11 @@ export function ChatPage() {
         res = {
           answer: `Réponse démo pour : « ${text} »\n\nCette instance est en mode démo — les vraies données nécessitent une connexion à l'API MizanBI.`,
           mode: 'general',
-          confidence: 'medium',
-          sql: undefined,
+          confidence: null,
+          sql: null,
           columns: [],
           rows: [],
-          error: undefined,
+          error: null,
         }
       } else {
         const history = buildHistory(messages)

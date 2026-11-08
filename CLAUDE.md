@@ -18,7 +18,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## Règles techniques
 
-- **Tests** : `pytest` depuis la racine avec `.venv/bin/python` (Python 3.14 système n'a pas duckdb). 2 échecs pré-existants tolérés : `test_alert_crud_flow` + `test_embed_ask_with_valid_token_no_data`.
+- **Tests** : `pytest` depuis la racine avec `.venv/bin/python` (Python 3.14 système n'a pas duckdb). Suite verte, aucun échec toléré. Un test qui modifie `app.state.store` doit passer par `monkeypatch.setattr` (jamais d'affectation directe : elle fuit vers les tests suivants).
+- **Auth** : rôle par utilisateur (`users.role` : viewer|editor|admin, défaut viewer) ; tout accès Bearer passe par `RequireRole`. Les nouvelles routes doivent déclarer une dépendance `RequireRole` (aucune route de mutation publique). `X-Forwarded-For` n'est lu que depuis `SOVEREIGN_TRUSTED_PROXIES` (défaut `private` ; `none` si le port est publié sans proxy). Sessions stockées hachées (SHA-256).
 - **Vitest** : `cd frontend && npx vitest run`. `vi.mock()` factory : ne jamais référencer de variables module-level (hoisté avant initialisation) — inliner les données.
 - **py_compile** : valider chaque fichier Python avant commit.
 - **External URLs** dans `app/` : toute nouvelle URL base doit être ajoutée au lookahead regex de `tests/test_network_isolation.py`.
@@ -28,8 +29,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1274/1276 pytest + 152/152 Vitest (backend+frontend) + 37/37 Vitest mizanbi-client
-- **Dernière proposal** : P-035 Page GeoAI dans mizanbi-client
+- **Tests** : 1338/1338 pytest + 152/152 Vitest (frontend) + 47/47 Vitest mizanbi-client · `tsc --noEmit` propre (frontend et mizanbi-client)
+- **Dernière proposal** : P-035 Page GeoAI dans mizanbi-client · revue complète 2026-11-08 (sécurité auth, tests hermétiques, tsc)
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
 - **Commit** : (voir git log)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
