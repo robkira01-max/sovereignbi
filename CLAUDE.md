@@ -28,8 +28,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1178/1180 pytest + 114/114 Vitest
-- **Dernière proposal** : P-022 Catalogue géospatial centralisé MizanGeo + HeatmapTile (bonus)
+- **Tests** : 1201/1203 pytest + 114/114 Vitest
+- **Dernière proposal** : P-023 Moteur d'analyse spatiale DuckDB Spatial
 - **Commit** : (voir git log)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
@@ -64,6 +64,14 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - `GET /api/v1/geo/catalog/{id}` — métadonnées d'une couche
 - `PUT /api/v1/geo/catalog/{id}/toggle` — activer/désactiver (editor)
 - Règle : toute nouvelle couche géographique doit être enregistrée dans `catalog.yaml` avec licence vérifiée avant usage.
+
+## Moteur spatial (P-023)
+
+- `app/geo_catalog/spatial_engine.py` — `SpatialEngine` (DuckDB Spatial 1.5.6)
+- Analyses : `area` (km² spheroid), `centroid` (lon/lat), `bbox`, `nearest` (lon/lat, limit), `summary`
+- `GET /api/v1/geo/analyze/types` — liste des analyses disponibles
+- `POST /api/v1/geo/analyze` — `{layer_id, analysis, params}` → `{results}`
+- Sécurité : `layer_id` alphanumérique uniquement ; `file_path` lu du catalog uniquement (jamais de l'utilisateur) ; path guard = résolution sous `_PROJECT_ROOT`.
 
 ## Données géographiques
 

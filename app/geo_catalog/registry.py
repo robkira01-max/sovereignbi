@@ -35,6 +35,8 @@ def _parse_layer(raw: dict) -> GeoLayer:
         warnings=warnings,
         api_endpoint=raw["api_endpoint"],
         enabled=bool(raw.get("enabled", True)),
+        file_path=raw.get("file_path"),
+        name_column=raw.get("name_column", "name"),
     )
 
 

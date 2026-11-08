@@ -30,6 +30,8 @@ class GeoLayer:
     warnings: list[LayerWarning]
     api_endpoint: str
     enabled: bool
+    file_path: str | None = None      # relative path from project root (spatial engine)
+    name_column: str = "name"         # column holding the feature label
 
 
 @dataclass

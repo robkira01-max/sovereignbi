@@ -23,6 +23,8 @@ layers:
     status: validated
     warnings: []
     api_endpoint: "/api/v1/geo/dj/adm1"
+    file_path: "frontend/src/data/dji_adm1.geojson"
+    name_column: "shapeName"
     enabled: true
 
   - id: dj_adm2
@@ -41,6 +43,8 @@ layers:
     status: validated
     warnings: []
     api_endpoint: "/api/v1/geo/dj/adm2"
+    file_path: "data/geo/dj_adm2.geojson"
+    name_column: "name"
     enabled: true
 
   - id: dj_quartiers
@@ -61,4 +65,6 @@ layers:
       - fr: "Délimitations approximatives — à valider avec la mairie de Djibouti avant toute utilisation institutionnelle."
         en: "Approximate boundaries — must be validated with the Municipality of Djibouti before institutional use."
     api_endpoint: "/api/v1/geo/dj/quartiers"
+    file_path: "data/geo/dj_quartiers.geojson"
+    name_column: "name"
     enabled: true

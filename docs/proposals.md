@@ -16,11 +16,11 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Faible/Moyen — nouveau type de tile utile pour séries temporelles.
 **Statut :** Livré 2026-11-08. `HeatmapTile.tsx` (SVG, 4 palettes, 5 niveaux, mode 1D/2D), tile type `heatmap`, i18n `heatmap.*` (fr/en/ar/es). 3 pytest + 8 Vitest.
 
-## P-023 — Moteur d'analyse spatiale (DuckDB Spatial)
+## P-023 — Moteur d'analyse spatiale DuckDB Spatial ✅
 
-**Raison :** Après le catalogue, l'étape suivante est d'exécuter des requêtes spatiales sur les couches géographiques — buffers, proximité, intersections, densité de points.
-**Impact :** Élevé — permet l'analyse spatiale native sans PostGIS.
-**Statut :** Proposé. À vérifier : disponibilité de l'extension DuckDB Spatial dans `.venv`.
+**Raison :** Après le catalogue, l'étape suivante est d'exécuter des requêtes spatiales sur les couches géographiques — aires, centroides, bounding boxes, proximité.
+**Impact :** Élevé — analyse spatiale native sans PostGIS (DuckDB 1.5.6, `ST_Area_Spheroid`, `ST_Centroid`, `ST_Distance`).
+**Statut :** Livré 2026-11-08. `app/geo_catalog/spatial_engine.py` (SpatialEngine, 5 analyses : area/centroid/bbox/nearest/summary, path guard projet root), `GET /api/v1/geo/analyze/types`, `POST /api/v1/geo/analyze`. `file_path` + `name_column` ajoutés à catalog.yaml + GeoLayer model. 23 pytest. 1201/1203 tests.
 
 ## P-024 — Import GeoJSON / GeoPackage / GeoParquet
 
