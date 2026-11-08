@@ -15,8 +15,9 @@ import CanadaNationalPage from './pages/CanadaNational'
 import AncientMapsPage from './pages/AncientMaps'
 import BiePage from './pages/Bie'
 import BcdPage from './pages/Bcd'
+import GeoAIPage from './pages/GeoAI'
 
-export type Page = 'home' | 'chat' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd'
+export type Page = 'home' | 'chat' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai'
 export type View = 'all' | 'bi' | 'sig'
 
 const NAV: { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string }[] = [
@@ -32,6 +33,7 @@ const NAV: { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string
   { page: 'canadanat', label: (t) => t.canadaNational, icon: 'M3 3h18v18H3zM3 9h18M9 21V9' },
   { page: 'bie', label: (t) => t.bie, icon: 'M3 21h18M6 21V11M11 21V4M16 21v-8M21 21V8' },
   { page: 'bcd', label: (t) => t.bcd, icon: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' },
+  { page: 'geoai', label: () => 'GeoAI', icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z' },
 ]
 
 export default function App() {
@@ -82,7 +84,7 @@ export default function App() {
     setPage(p as Page)
     if (p === 'sig') setView('sig')
     if (p === 'ancient') setView('sig')
-    if (p === 'home' || p === 'chat' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd') setView((v) => (v === 'sig' ? 'bi' : v))
+    if (p === 'home' || p === 'chat' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd' || p === 'geoai') setView((v) => (v === 'sig' ? 'bi' : v))
     window.scrollTo(0, 0)
   }
 
@@ -115,7 +117,7 @@ export default function App() {
     )
   }
 
-  const pageTitle: Record<Page, string> = { home: t.home, chat: t.chat, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd }
+  const pageTitle: Record<Page, string> = { home: t.home, chat: t.chat, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: 'GeoAI' }
   const showBi = view !== 'sig'
   const showSig = view !== 'bi'
 
@@ -196,6 +198,7 @@ export default function App() {
         {page === 'canadanat' && showBi && <CanadaNationalPage t={t} />}
         {page === 'bie' && showBi && <BiePage t={t} />}
         {page === 'bcd' && showBi && <BcdPage t={t} />}
+        {page === 'geoai' && showBi && <GeoAIPage t={t} go={go} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
         {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
         {page === 'chat' && !showBi && <p className="muted">ChatBI — {t.voletBi}. {t.overview}.</p>}

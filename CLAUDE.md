@@ -28,8 +28,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1274/1276 pytest + 152/152 Vitest (backend+frontend) + 21/21 Vitest mizanbi-client
-- **Dernière proposal** : P-034 Bulletins enrichis multi-sources (mizanbi-client)
+- **Tests** : 1274/1276 pytest + 152/152 Vitest (backend+frontend) + 37/37 Vitest mizanbi-client
+- **Dernière proposal** : P-035 Page GeoAI dans mizanbi-client
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
 - **Commit** : (voir git log)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)

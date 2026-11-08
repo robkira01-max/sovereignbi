@@ -95,6 +95,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Élevé — bulletin de synthèse prêt à distribuer aux institutionnels.
 **Statut :** ✅ Livré 2026-11-08. `src/lib/bulletins.ts` (fonctions pures : `bieBulletinSection`, `bcdBulletinSection`, `statcanBulletinSection`, `renderBulletinHtml`). `Bulletins.tsx` refactorisé : 4 onglets (Hebdomadaire/Économie DJ/Banques DJ/Canada), export HTML auto-suffisant multi-sections. Vitest setup (`vitest.config.ts`, `package.json test`). 21/21 tests.
 
+## P-035 — Page GeoAI dans mizanbi-client ✅ (livré 2026-11-08)
+
+**Raison :** Bridger le backend GeoAI (P-027 `POST /api/v1/geo/ai-query`) avec l'interface standalone mizanbi-client. Mode démo précalculé depuis REGIONS (3 questions : chômage / population+densité / pauvreté > 30 %).
+**Impact :** Élevé — IA géospatiale accessible dans l'app standalone, sans MapLibre.
+**Statut :** ✅ Livré 2026-11-08. `src/lib/geoai.ts` (types, `guardInjection` 10 patterns, `parseGeoAIResult`, 3 démos depuis REGIONS). `src/pages/GeoAI.tsx` (questions rapides, textarea 500 chars, mode démo/connecté, prose card, MapHint + lien SIG, table résultats, raisonnement collapsible). Route `geoai` dans `App.tsx`. 16 tests Vitest. 37/37 tests total mizanbi-client.
+
 ---
 
 ## P-001 — Small multiples (tile type `grid`) ✅
