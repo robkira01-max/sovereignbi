@@ -16,6 +16,8 @@ interface Props {
   title: string
   unit?: string
   colorScheme?: 'blue' | 'green' | 'red' | 'orange'
+  onRegionSelect?: (regionName: string) => void
+  selectedRegion?: string | null
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -132,10 +134,12 @@ function buildGeoJSON(data: TileData): GeoJSON.FeatureCollection {
 
 let _pmtilsRegistered = false
 
-export function MapLibreMap({ data, title, unit = '', colorScheme = 'blue' }: Props) {
+export function MapLibreMap({ data, title, unit = '', colorScheme = 'blue', onRegionSelect, selectedRegion }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef       = useRef<maplibregl.Map | null>(null)
   const popupRef     = useRef<maplibregl.Popup | null>(null)
+  const onRegionSelectRef = useRef(onRegionSelect)
+  onRegionSelectRef.current = onRegionSelect
 
   const [colorLow, colorHigh] = PALETTES[colorScheme] ?? PALETTES.blue
   const valueLabel = data.columns[1]?.replace(/_/g, ' ') ?? ''
@@ -200,6 +204,19 @@ export function MapLibreMap({ data, title, unit = '', colorScheme = 'blue' }: Pr
         },
       })
 
+      // Selection highlight layer (initially hidden)
+      map.addLayer({
+        id:     'regions-selected',
+        type:   'line',
+        source: 'regions',
+        filter: ['==', '_instadName', ''],
+        paint:  {
+          'line-color': '#ffffff',
+          'line-width': 3,
+          'line-opacity': 0,
+        },
+      })
+
       map.addLayer({
         id:     'regions-label',
         type:   'symbol',
@@ -237,6 +254,13 @@ export function MapLibreMap({ data, title, unit = '', colorScheme = 'blue' }: Pr
         map.getCanvas().style.cursor = ''
         popupRef.current?.remove()
       })
+
+      map.on('click', 'regions-fill', (e) => {
+        const feat = e.features?.[0]
+        if (!feat) return
+        const instadName = String((feat.properties as Record<string, unknown>)._instadName ?? '')
+        onRegionSelectRef.current?.(instadName)
+      })
     })
 
     return () => {
@@ -247,7 +271,7 @@ export function MapLibreMap({ data, title, unit = '', colorScheme = 'blue' }: Pr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Auto-update choropleth when data changes (without re-creating the map)
+  // Auto-update choropleth + selected region highlight
   useEffect(() => {
     const map = mapRef.current
     if (!map || !map.isStyleLoaded()) return
@@ -262,7 +286,13 @@ export function MapLibreMap({ data, title, unit = '', colorScheme = 'blue' }: Pr
       0, colorLow,
       1, colorHigh,
     ])
-  }, [data, colorLow, colorHigh])
+
+    // Show selection outline: thick white border on selected region
+    if (map.getLayer('regions-selected')) {
+      map.setPaintProperty('regions-selected', 'line-opacity', selectedRegion ? 1 : 0)
+      map.setFilter('regions-selected', ['==', '_instadName', selectedRegion ?? ''])
+    }
+  }, [data, colorLow, colorHigh, selectedRegion])
 
   return (
     <div data-testid="tile-map" style={{ width: '100%', position: 'relative' }}>

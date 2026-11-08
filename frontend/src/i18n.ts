@@ -117,6 +117,11 @@ const translations: Record<Locale, DeepRecord> = {
       level_quartiers: 'Quartiers DJ',
       quartiers_disclaimer: 'Délimitations approximatives',
     },
+    map_filter: {
+      selected: 'Région : {region}',
+      clear: 'Effacer le filtre région',
+      hint: 'Cliquez sur une région pour filtrer le dashboard',
+    },
     heatmap: {
       low: 'bas',
       high: 'élevé',
@@ -295,6 +300,11 @@ const translations: Record<Locale, DeepRecord> = {
       level_adm2: 'المناطق',
       level_quartiers: 'أحياء جيبوتي',
       quartiers_disclaimer: 'حدود تقريبية',
+    },
+    map_filter: {
+      selected: 'المنطقة : {region}',
+      clear: 'مسح تصفية المنطقة',
+      hint: 'انقر على منطقة لتصفية لوحة المعلومات',
     },
     heatmap: {
       low: 'منخفض',
@@ -475,6 +485,11 @@ const translations: Record<Locale, DeepRecord> = {
       level_quartiers: 'DJ Neighbourhoods',
       quartiers_disclaimer: 'Approximate boundaries',
     },
+    map_filter: {
+      selected: 'Region: {region}',
+      clear: 'Clear region filter',
+      hint: 'Click a region to filter the dashboard',
+    },
     heatmap: {
       low: 'low',
       high: 'high',
@@ -653,6 +668,11 @@ const translations: Record<Locale, DeepRecord> = {
       level_adm2: 'Distritos',
       level_quartiers: 'Barrios DJ',
       quartiers_disclaimer: 'Delimitaciones aproximadas',
+    },
+    map_filter: {
+      selected: 'Región: {region}',
+      clear: 'Borrar filtro de región',
+      hint: 'Haz clic en una región para filtrar el dashboard',
     },
     heatmap: {
       low: 'bajo',

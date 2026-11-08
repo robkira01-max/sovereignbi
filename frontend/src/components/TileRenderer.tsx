@@ -43,6 +43,8 @@ interface Props {
   title: string
   data: TileData
   options?: TileOptions
+  onRegionSelect?: (regionName: string) => void
+  selectedRegion?: string | null
 }
 
 // OKLCH palette — readable on both dark and light backgrounds
@@ -100,7 +102,7 @@ function shortLabel(val: unknown): string {
   return s.length > 14 ? s.slice(0, 13) + '…' : s
 }
 
-export function TileRenderer({ type, title, data, options = {} }: Props) {
+export function TileRenderer({ type, title, data, options = {}, onRegionSelect, selectedRegion }: Props) {
   const { t } = useLocale()
   const chartData = toChartData(data)
 
@@ -299,6 +301,8 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
           title={title}
           unit={unit}
           colorScheme={options.colorScheme ?? 'blue'}
+          onRegionSelect={onRegionSelect}
+          selectedRegion={selectedRegion}
         />
       )
 
@@ -314,6 +318,8 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
             level: (options.level as 'adm2' | 'quartiers') ?? 'adm2',
             showLevelToggle: options.showLevelToggle !== false,
           }}
+          onRegionSelect={onRegionSelect}
+          selectedRegion={selectedRegion}
         />
       )
 

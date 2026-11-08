@@ -13,7 +13,7 @@ type TileDataMap = Record<string, TileData>
 type InsightMap = Record<string, string>
 
 export function DashboardPage() {
-  const { t } = useLocale()
+  const { t, tpl } = useLocale()
   const [summaries, setSummaries] = useState<DashboardSummary[]>([])
   const [selected, setSelected] = useState<Dashboard | null>(null)
   const [tiles, setTiles] = useState<Tile[]>([])
@@ -26,6 +26,7 @@ export function DashboardPage() {
   const [tagFilter, setTagFilter] = useState('')
   const [tagEditing, setTagEditing] = useState(false)
   const [tagInput, setTagInput] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [exporting, setExporting] = useState(false)
@@ -41,11 +42,14 @@ export function DashboardPage() {
 
   const byPosition = (a: Tile, b: Tile) => (a.position ?? 999) - (b.position ?? 999)
 
-  // Load all tile data in parallel
-  const loadTileData = useCallback(async (dashId: string, tileList: Tile[]) => {
+  // Load all tile data in parallel, with optional region filter for non-map tiles
+  const loadTileData = useCallback(async (dashId: string, tileList: Tile[], region?: string | null) => {
+    const MAP_TYPES = new Set(['map', 'map-adm2', 'map-bivariate', 'trade-flow-map'])
     const results = await Promise.allSettled(
       tileList.map(async tile => {
-        const data = await apiFetch<TileData>(`/dashboards/${dashId}/tiles/${tile.id}/data`)
+        const isMapTile = MAP_TYPES.has(tile.type)
+        const qs = region && !isMapTile ? `?region=${encodeURIComponent(region)}` : ''
+        const data = await apiFetch<TileData>(`/dashboards/${dashId}/tiles/${tile.id}/data${qs}`)
         return { id: tile.id, data }
       })
     )
@@ -181,6 +185,18 @@ export function DashboardPage() {
     }
   }
 
+  // Reload non-map tile data when region filter changes
+  useEffect(() => {
+    if (!selected || tiles.length === 0) return
+    loadTileData(selected.id, tiles, selectedRegion)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRegion])
+
+  const handleRegionSelect = useCallback((name: string) => {
+    // Toggle: click same region again to deselect
+    setSelectedRegion(prev => prev === name ? null : name)
+  }, [])
+
   const openDashboard = (id: string) => {
     api.getDashboard(id)
       .then(d => {
@@ -189,6 +205,7 @@ export function DashboardPage() {
         setTiles(sorted)
         setTileData({})
         setInsights({})
+        setSelectedRegion(null)
         loadTileData(id, sorted)
         // Start insight loading after data is fetched (small delay)
         setTimeout(() => loadInsights(id, sorted), 300)
@@ -428,6 +445,44 @@ export function DashboardPage() {
             </div>
           )}
 
+          {/* Region filter badge */}
+          {selectedRegion && (
+            <div
+              data-testid="region-filter-badge"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '4px 10px 4px 12px',
+                background: '#eff6ff',
+                border: '1px solid #93c5fd',
+                borderRadius: '20px',
+                fontSize: '0.78rem',
+                color: '#1d4ed8',
+                marginBottom: '12px',
+              }}
+            >
+              <span>📍 {tpl('map_filter.selected', { region: selectedRegion! })}</span>
+              <button
+                data-testid="region-filter-clear"
+                onClick={() => setSelectedRegion(null)}
+                title={t('map_filter.clear')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#1d4ed8',
+                  padding: 0,
+                  lineHeight: 1,
+                  fontSize: '0.9rem',
+                }}
+                aria-label={t('map_filter.clear')}
+              >
+                ×
+              </button>
+            </div>
+          )}
+
           <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '8px' }}>
             {t('dashboard.drag_hint')}
           </p>
@@ -495,6 +550,8 @@ export function DashboardPage() {
                     title={tile.title}
                     data={data}
                     options={tile.options}
+                    onRegionSelect={handleRegionSelect}
+                    selectedRegion={selectedRegion}
                   />
                   {/* AI insight badge */}
                   {insightLoading && tile.type !== 'kpi' && (

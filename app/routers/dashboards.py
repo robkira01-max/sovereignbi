@@ -267,10 +267,28 @@ def add_tile(dashboard_id: str, body: dict = Body(...), _: str = Depends(_EDITOR
 
 
 @router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/data")
-def tile_data(dashboard_id: str, tile_id: str, request: Request, _: str = Depends(_VIEWER)):
-    """Execute the pinned SQL of a tile and return {columns, rows, error}."""
+def tile_data(
+    dashboard_id: str,
+    tile_id: str,
+    request: Request,
+    _: str = Depends(_VIEWER),
+    region: str | None = None,
+    region_col: str | None = None,
+):
+    """Execute the pinned SQL of a tile and return {columns, rows, error}.
+
+    Optional ?region=<name> filters rows where the region column equals <name>.
+    Optional ?region_col=<col> overrides the column name (default: "region").
+    """
     _validate_id(dashboard_id, "dashboard_id")
     _validate_id(tile_id, "tile_id")
+    # Validate region query params to prevent injection
+    _SAFE_REGION = re.compile(r"^[\w\s\-'\.]{1,120}$")
+    _SAFE_COL    = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]{0,59}$")
+    if region is not None and not _SAFE_REGION.match(region):
+        raise HTTPException(400, "Paramètre 'region' invalide.")
+    if region_col is not None and not _SAFE_COL.match(region_col):
+        raise HTTPException(400, "Paramètre 'region_col' invalide.")
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
     if not p.exists():
         raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
@@ -280,7 +298,7 @@ def tile_data(dashboard_id: str, tile_id: str, request: Request, _: str = Depend
         raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
     store = request.app.state.store
     from app.dashboards.renderer import render_tile
-    result = render_tile(tile, store)
+    result = render_tile(tile, store, region=region, region_col=region_col)
     from app.dashboards.tile_cache import record_execution
     record_execution(dashboard_id, tile_id)
     return result

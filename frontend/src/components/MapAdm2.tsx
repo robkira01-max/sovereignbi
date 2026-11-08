@@ -20,6 +20,8 @@ interface Props {
     level?: 'adm2' | 'quartiers'
     showLevelToggle?: boolean
   }
+  onRegionSelect?: (regionName: string) => void
+  selectedRegion?: string | null
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -101,9 +103,11 @@ function joinData(
 
 let _pmtilsRegistered = false
 
-export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options = {} }: Props) {
+export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options = {}, onRegionSelect, selectedRegion }: Props) {
   const { t } = useLocale()
   const { showLevelToggle = true } = options
+  const onRegionSelectRef = useRef(onRegionSelect)
+  onRegionSelectRef.current = onRegionSelect
 
   const [level, setLevel]       = useState<'adm2' | 'quartiers'>(options.level ?? 'adm2')
   const [geoData, setGeoData]   = useState<GeoJSON.FeatureCollection | null>(null)
@@ -218,6 +222,13 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
       map.on('mouseleave', 'adm2-fill', () => {
         map.getCanvas().style.cursor = ''
         popupRef.current?.remove()
+      })
+
+      map.on('click', 'adm2-fill', (e) => {
+        const feat = e.features?.[0]
+        if (!feat) return
+        const name = String((feat.properties as Record<string, unknown>)._label ?? '')
+        onRegionSelectRef.current?.(name)
       })
     }
 
