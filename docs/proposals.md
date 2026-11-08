@@ -44,7 +44,7 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 
 **Raison :** « Affiche les régions où la densité est la plus élevée et compare avec le chômage » — interprété par le LLM, carte + KPIs générés.
 **Impact :** Très élevé — différenciateur marché.
-**Statut :** Proposé. Dépend de P-025 + P-026.
+**Statut :** ✅ Livré 2026-11-08 (commit 7677a8e). `app/geo_catalog/geo_ai.py` + `app/routers/geo_ai.py` + `GeoAI.tsx`. 22 pytest + 8 Vitest. 1274/1276 pytest + 152/152 Vitest.
 
 ---
 
