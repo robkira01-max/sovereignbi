@@ -34,11 +34,11 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Élevé — différenciateur BI+SIG.
 **Livré :** `spatial_engine.py` +3 analyses (buffer/intersection/density), `layer_id_b` dans router. `SpatialAnalysis.tsx` (sélecteur analyse + couche, params contextuels : lon/lat/rayon, couche B, colonne valeur). i18n 4 locales. 16 nouveaux pytest (39 total spatial) + 11 Vitest. 1241/1243 pytest + 135/135 Vitest.
 
-## P-026 — Interaction carte ↔ dashboards BI
+## P-026 — Interaction carte ↔ dashboards BI ✅ (2026-11-08)
 
 **Raison :** Sélectionner une région sur la carte filtre automatiquement les KPIs et graphiques du dashboard.
 **Impact :** Très élevé — expérience BI géospatiale unifiée.
-**Statut :** Proposé. Dépend de P-022 + P-023.
+**Livré :** `render_tile()` wrapping subquery avec WHERE clause + fallback gracieux si colonne absente. `?region=`/`?region_col=` validés (regex). `onRegionSelect`/`selectedRegion` props dans TileRenderer→MapLibreMap/MapAdm2. Badge région + bouton clear. `loadTileData` recharge sur changement région. MAP_TYPES exclus du filtre. i18n `map_filter.*` fr/en/ar/es. 11 pytest + 8 Vitest. 1252/1254 pytest · 143/143 Vitest.
 
 ## P-027 — Assistant GeoAI en langage naturel
 

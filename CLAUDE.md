@@ -28,8 +28,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1241/1243 pytest + 135/135 Vitest
-- **Dernière proposal** : P-025 Analyses spatiales (buffer/intersection/density)
+- **Tests** : 1252/1254 pytest + 143/143 Vitest
+- **Dernière proposal** : P-026 Interaction carte ↔ dashboards BI
 - **Commit** : (voir git log)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
