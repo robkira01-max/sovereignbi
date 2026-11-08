@@ -1,9 +1,17 @@
 """Feedback and audit journal — JSONL files, chained SHA-256 hashes for audit."""
 import hashlib
 import json
+import threading
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
+
+try:
+    import fcntl  # POSIX only; the thread lock below still applies elsewhere
+except ImportError:  # pragma: no cover
+    fcntl = None  # type: ignore[assignment]
+
+_audit_lock = threading.Lock()
 
 FEEDBACK_PATH = Path("data/feedback.jsonl")
 AUDIT_PATH = Path("data/audit.jsonl")
@@ -83,16 +91,22 @@ def record_audit(
 ) -> None:
     p = path or AUDIT_PATH
     _ensure_dir(p)
-    prev_hash = _last_hash(p)
-    entry_dict = {
-        "timestamp": _now(),
-        "action": action,
-        "details": details,
-    }
-    content = json.dumps(entry_dict, ensure_ascii=False, sort_keys=True)
-    entry_dict["hash"] = _sha256(prev_hash + content)
-    with p.open("a", encoding="utf-8") as f:
+    # Reading the previous hash and appending must be one atomic step, otherwise two
+    # concurrent callers chain from the same predecessor and fork the log. The thread
+    # lock covers the threadpool; flock covers several worker processes.
+    with _audit_lock, p.open("a", encoding="utf-8") as f:
+        if fcntl is not None:
+            fcntl.flock(f, fcntl.LOCK_EX)
+        prev_hash = _last_hash(p)
+        entry_dict = {
+            "timestamp": _now(),
+            "action": action,
+            "details": details,
+        }
+        content = json.dumps(entry_dict, ensure_ascii=False, sort_keys=True)
+        entry_dict["hash"] = _sha256(prev_hash + content)
         f.write(json.dumps(entry_dict, ensure_ascii=False) + "\n")
+        f.flush()
 
 
 def load_feedback(path: Path | None = None) -> list[FeedbackEntry]:

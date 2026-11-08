@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from app.api.middleware import RateLimitMiddleware, bucket_key
 
-from .security import login_user, logout_user, verify_session
+from .security import login_user, logout_user, normalize_email, verify_session
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -45,12 +45,14 @@ class LoginThrottle:
         for k in list(self._attempts):
             self._count(k, now)
 
-    def reserve(self, email: str, client: str) -> bool:
+    def reserve(self, email: str, client: str, ns: str = "login") -> bool:
         now = time.monotonic()
         with self._lock:
             if len(self._attempts) > self.max_keys:
                 self._sweep(now)
-            by_client, by_email = ("c", email, client), ("e", email)
+            # `ns` keeps unrelated uses apart: a login attempt for the "email" 'pwchange:7'
+            # must never count against user 7's password-change budget.
+            by_client, by_email = ("c", ns, email, client), ("e", ns, email)
             if self._count(by_client, now) >= self.max_per_client:
                 return False
             if self._count(by_email, now) >= self.max_per_email:
@@ -59,10 +61,10 @@ class LoginThrottle:
             self._attempts.setdefault(by_email, []).append(now)
             return True
 
-    def clear(self, email: str, client: str) -> None:
+    def clear(self, email: str, client: str, ns: str = "login") -> None:
         with self._lock:
-            self._attempts.pop(("c", email, client), None)
-            self._attempts.pop(("e", email), None)
+            self._attempts.pop(("c", ns, email, client), None)
+            self._attempts.pop(("e", ns, email), None)
 
     def reset(self) -> None:
         with self._lock:
@@ -85,7 +87,7 @@ class LoginResponse(BaseModel):
 @router.post("/login", response_model=LoginResponse)
 def auth_login(body: LoginRequest, request: Request) -> LoginResponse:
     # users.email is COLLATE NOCASE, so the throttle key must ignore case too.
-    email = body.email.strip().lower()
+    email = normalize_email(body.email)
     client = bucket_key(RateLimitMiddleware._client_ip(request))
     if not _throttle.reserve(email, client):
         raise HTTPException(429, "Trop de tentatives. Réessayez dans 15 minutes.")
