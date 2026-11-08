@@ -24,7 +24,8 @@ type PolygonCoords = Ring[]
 
 function polys(geometry: { type: string; coordinates: unknown }): PolygonCoords[] {
   const coords = geometry.coordinates as number[][][] | number[][][][]
-  if (geometry.type === 'Polygon') return coords as PolygonCoords[]
+  // A Polygon is one list of rings; a MultiPolygon is a list of polygons.
+  if (geometry.type === 'Polygon') return [coords as PolygonCoords]
   return coords as PolygonCoords[]
 }
 

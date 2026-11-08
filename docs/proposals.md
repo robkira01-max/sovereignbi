@@ -89,6 +89,18 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Très élevé — données bancaires et démographiques nationales vérifiées.
 **Statut :** ✅ Livré 2026-11-08. `src/lib/bcd.ts` + `src/data/bcd/bcd_2024.json` + `src/data/instad/rgph3.json`. Page `BcdPage` : KPI cards, graphiques recharts.
 
+## P-037 — Gestion des comptes par rôle ✅ (livré 2026-11-08)
+
+**Raison :** Après la revue (rôle par utilisateur), il n'existait aucun moyen de créer un compte autre qu'`admin` (seul `seed_admin`).
+**Impact :** Élevé — prérequis multi-utilisateurs du pilote INSTAD.
+**Statut :** ✅ Livré 2026-11-08. `app/auth/users_router.py` (`GET/POST /auth/users`, `PATCH /auth/users/{id}`, `PUT /auth/users/{id}/password`, `POST /auth/password`), garde dernier admin atomique, révocation de sessions, audit chaîné, `tools/create_user.py`. Relu security-reviewer (0 critique/élevé ; 2 moyens + 8 faibles corrigés). 100+ tests dédiés. **Reste hors périmètre :** interface d'administration des comptes (proposition ouverte).
+
+## P-036 — i18n GeoAI (fr/en/ar) ✅ (livré 2026-11-08)
+
+**Raison :** Les textes de la page GeoAI et ses réponses de démonstration étaient codés en français.
+**Impact :** Moyen — cohérence trilingue de l'app standalone (Arabe/RTL pour l'INSTAD).
+**Statut :** ✅ Livré 2026-11-08. Section `geoai` dans `i18n.ts` (fr/en/ar), démos localisées (nombres par langue, chiffres latins en arabe), détection des questions en 3 langues, garde anti-injection fr/ar, langue transmise au backend. Prose « pauvreté » corrigée (une affirmation non vérifiée retirée). **Bug préexistant corrigé en vérifiant dans le navigateur :** `buildDjiboutiMap` plantait l'app entière (Polygon traité comme MultiPolygon). **À faire relire par un arabophone** avant diffusion (traductions ar rédigées sans relecture humaine).
+
 ## P-034 — Bulletins enrichis multi-sources ✅ (livré 2026-11-08)
 
 **Raison :** La page Bulletins n'utilisait que les données démo. Intégration des données réelles BIE (macro DJ), BCD 2024 (système bancaire DJ) et StatCan (emploi Canada) en 3 onglets analytiques avec export HTML multi-sections.

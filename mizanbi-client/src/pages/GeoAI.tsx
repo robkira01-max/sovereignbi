@@ -1,17 +1,17 @@
 import { useState } from 'react'
-import type { Dict } from '../lib/i18n'
+import type { Dict, Lang } from '../lib/i18n'
 import { apiJson, isApiConfigured } from '../lib/api'
 import {
-  DEMO_QUESTIONS, QUESTION_MAX,
-  demoAnswer, guardInjection, parseGeoAIResult,
+  QUESTION_MAX, demoAnswer, demoQuestions, fmt, guardInjection, numberLocale, parseGeoAIResult,
   type GeoAIResult,
 } from '../lib/geoai'
 
 // P-035 — Page GeoAI dans mizanbi-client.
 // Mode connecté : POST /api/v1/geo/ai-query (backend SovereignBI P-027).
 // Mode démo (VITE_API_BASE vide) : réponses précalculées depuis data/demo.ts.
+// Textes : t.geoai (fr/en/ar) ; la langue courante est aussi transmise au backend.
 
-function ResultTable({ columns, rows }: { columns: string[]; rows: (string | number | null)[][] }) {
+function ResultTable({ columns, rows, locale }: { columns: string[]; rows: (string | number | null)[][]; locale: string }) {
   if (!columns.length || !rows.length) return null
   return (
     <div className="table-wrap">
@@ -22,7 +22,7 @@ function ResultTable({ columns, rows }: { columns: string[]; rows: (string | num
             <tr key={i}>
               {row.map((cell, j) => (
                 <td key={j} dir="ltr">
-                  {cell == null ? '—' : typeof cell === 'number' ? cell.toLocaleString('fr-FR') : String(cell)}
+                  {cell == null ? '—' : typeof cell === 'number' ? cell.toLocaleString(locale) : String(cell)}
                 </td>
               ))}
             </tr>
@@ -33,21 +33,22 @@ function ResultTable({ columns, rows }: { columns: string[]; rows: (string | num
   )
 }
 
-function MapHint({ config }: { config: NonNullable<GeoAIResult['map_config']> }) {
+function MapHint({ config, t }: { config: NonNullable<GeoAIResult['map_config']>; t: Dict['geoai'] }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10, background: 'oklch(26% 0.06 265 / .6)', fontSize: 13 }}>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="oklch(68% 0.18 265)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M9 20l-5.5-2.5v-13L9 7l6-2.5L20.5 7v13L15 17.5 9 20zM9 7v13M15 4.5v13" />
       </svg>
       <span>
-        Visualisable sur la carte SIG — couche <code style={{ fontSize: 12 }}>{config.layer_id}</code>
-        {config.value_col && <>, colonne <code style={{ fontSize: 12 }}>{config.value_col}</code></>}
+        {t.mapHintLayer.split('{layer}')[0]}<code style={{ fontSize: 12 }}>{config.layer_id}</code>{t.mapHintLayer.split('{layer}')[1]}
+        {config.value_col && <>{t.mapHintColumn.split('{col}')[0]}<code style={{ fontSize: 12 }}>{config.value_col}</code></>}
       </span>
     </div>
   )
 }
 
-export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void }) {
+export default function GeoAIPage({ t, lang, go }: { t: Dict; lang: Lang; go: (p: string) => void }) {
+  const g = t.geoai
   const [question, setQuestion] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<GeoAIResult | null>(null)
@@ -58,25 +59,25 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
   const ask = async (q: string) => {
     const trimmed = q.trim()
     if (!trimmed) return
-    if (trimmed.length > QUESTION_MAX) { setError(`Question trop longue (max ${QUESTION_MAX} caractères).`); return }
-    if (guardInjection(trimmed)) { setError('Question non autorisée.'); return }
+    if (trimmed.length > QUESTION_MAX) { setError(fmt(g.tooLong, { max: QUESTION_MAX })); return }
+    if (guardInjection(trimmed)) { setError(g.notAllowed); return }
     setLoading(true); setError(null); setResult(null); setShowReasoning(false)
     try {
       if (demo) {
         await new Promise((r) => setTimeout(r, 400))
-        setResult(demoAnswer(trimmed))
+        setResult(demoAnswer(trimmed, lang))
       } else {
         const raw = await apiJson('/api/v1/geo/ai-query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: trimmed, locale: 'fr' }),
+          body: JSON.stringify({ question: trimmed, locale: lang }),
         })
         const r = parseGeoAIResult(raw)
         if (r.error) setError(r.error)
         else setResult(r)
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur réseau')
+      setError(e instanceof Error ? e.message : g.networkError)
     } finally {
       setLoading(false)
     }
@@ -87,15 +88,15 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
   return (
     <div style={{ maxWidth: 820, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: '-.02em' }}>GeoAI</h1>
+        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: '-.02em' }}>{g.title}</h1>
         <p style={{ margin: '4px 0 0', color: 'var(--muted)', fontSize: 13 }}>
-          Analyse géospatiale en langage naturel · {demo ? <span style={{ color: 'oklch(72% 0.18 55)' }}>Mode démo</span> : <span style={{ color: 'oklch(72% 0.17 155)' }}>Connecté</span>}
+          {g.subtitle} · {demo ? <span style={{ color: 'oklch(72% 0.18 55)' }}>{g.modeDemo}</span> : <span style={{ color: 'oklch(72% 0.17 155)' }}>{g.modeLive}</span>}
         </p>
       </div>
 
       {/* Quick examples */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-        {DEMO_QUESTIONS.map((dq) => (
+        {demoQuestions(lang).map((dq) => (
           <button key={dq.q} className="btn-ghost" style={{ fontSize: 12, padding: '4px 12px' }}
             onClick={() => { setQuestion(dq.q); ask(dq.q) }}>
             {dq.label}
@@ -109,7 +110,7 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           maxLength={QUESTION_MAX}
-          placeholder="Ex : Quelle région a le taux de chômage le plus élevé ?"
+          placeholder={g.placeholder}
           disabled={loading}
           rows={3}
           style={{
@@ -121,7 +122,7 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: 11, color: 'var(--muted)' }}>{question.length} / {QUESTION_MAX}</span>
           <button className="btn" type="submit" disabled={loading || !question.trim()}>
-            {loading ? '…' : 'Analyser'}
+            {loading ? '…' : g.analyze}
           </button>
         </div>
       </form>
@@ -144,9 +145,9 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
           {/* Map hint */}
           {result.map_config && (
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <MapHint config={result.map_config} />
+              <MapHint config={result.map_config} t={g} />
               <button className="btn-ghost" style={{ fontSize: 12, whiteSpace: 'nowrap' }} onClick={() => go('sig')}>
-                → Ouvrir carte SIG
+                {g.openMap}
               </button>
             </div>
           )}
@@ -155,9 +156,9 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
           {result.columns.length > 0 && result.rows.length > 0 && (
             <div className="card-solid" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ fontSize: 13, fontWeight: 600 }}>
-                Données ({result.rows.length} entrées)
+                {fmt(g.dataTitle, { n: result.rows.length })}
               </div>
-              <ResultTable columns={result.columns} rows={result.rows} />
+              <ResultTable columns={result.columns} rows={result.rows} locale={numberLocale(lang)} />
             </div>
           )}
 
@@ -166,11 +167,11 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
             <div>
               <button className="btn-ghost" style={{ fontSize: 12 }}
                 onClick={() => setShowReasoning((v) => !v)}>
-                {showReasoning ? '▲' : '▼'} Raisonnement du modèle
+                {showReasoning ? '▲' : '▼'} {g.reasoning}
               </button>
               {showReasoning && (
                 <div style={{ marginTop: 8, padding: '10px 14px', borderRadius: 10, background: 'oklch(22% 0.04 265 / .6)', fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>
-                  <div><strong>Analyse :</strong> {result.intent.analysis} · <strong>Couche :</strong> {result.intent.layer_id}</div>
+                  <div><strong>{g.analysis}:</strong> {result.intent.analysis} · <strong>{g.layer}:</strong> {result.intent.layer_id}</div>
                   <div style={{ marginTop: 4 }}>{result.intent.reasoning}</div>
                 </div>
               )}
@@ -179,7 +180,7 @@ export default function GeoAIPage({ t, go }: { t: Dict; go: (p: string) => void 
 
           {demo && (
             <p style={{ fontSize: 11, color: 'var(--muted)', margin: 0 }}>
-              Mode démo — données fictives. Configurez <code>VITE_API_BASE</code> pour requêtes réelles.
+              {g.demoNote}
             </p>
           )}
         </div>

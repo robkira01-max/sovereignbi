@@ -1,9 +1,10 @@
-// P-035 — Types et helpers GeoAI pour mizanbi-client.
+// P-035/P-036 — Types et helpers GeoAI pour mizanbi-client (fr/en/ar).
 // L'API backend est POST /api/v1/geo/ai-query (P-027, sovereignbi).
 // En mode démo (VITE_API_BASE vide) : réponses précalculées depuis data/demo.ts.
 // Aucun appel réseau sans VITE_API_BASE configuré.
 
 import { REGIONS } from '../data/demo'
+import { I18N, type Lang } from './i18n'
 
 export interface GeoAIIntent {
   analysis: string
@@ -28,7 +29,21 @@ export interface GeoAIRequest {
 
 export const QUESTION_MAX = 500
 
-const INJECTION_RE = /ignore\s+(previous|prior|all)\s+instructions?|jailbreak|system\s*prompt|\[INST\]|act\s+as\s+|you\s+are\s+now\s+|forget\s+everything|disregard\s+|override\s+(your\s+)?instructions?/i
+// Garde côté client (confort d'usage) : le backend applique son propre contrôle.
+const INJECTION_RE = new RegExp(
+  [
+    // en
+    'ignore\\s+(previous|prior|all)\\s+instructions?', 'jailbreak', 'system\\s*prompt', '\\[INST\\]',
+    'act\\s+as\\s+', 'you\\s+are\\s+now\\s+', 'forget\\s+everything', 'disregard\\s+',
+    'override\\s+(your\\s+)?instructions?',
+    // fr
+    'ignore[rz]?\\s+(toutes?\\s+)?(les\\s+)?(instructions|consignes)', 'oublie[rz]?\\s+tout',
+    'prompt\\s+syst[eè]me', 'fais\\s+comme\\s+si', 'tu\\s+es\\s+maintenant', 'ne\\s+tiens\\s+pas\\s+compte',
+    // ar
+    'تجاهل\\s+(كل\\s+)?(ال)?(تعليمات|أوامر)', 'انس\\s+(كل|جميع)', 'موجه\\s+النظام',
+  ].join('|'),
+  'i',
+)
 
 export function guardInjection(q: string): boolean {
   return INJECTION_RE.test(q)
@@ -47,54 +62,94 @@ export function parseGeoAIResult(raw: unknown): GeoAIResult {
   }
 }
 
-// Demo responses for offline / no-backend mode
-export const DEMO_QUESTIONS: { label: string; q: string }[] = [
-  { label: 'Chômage par région', q: 'Quelle région a le taux de chômage le plus élevé ?' },
-  { label: 'Population et densité', q: 'Compare la population et la densité des régions' },
-  { label: 'Pauvreté', q: 'Quelles régions ont un taux de pauvreté supérieur à 30 % ?' },
-]
+// ── Localisation ─────────────────────────────────────────────────────────────
 
-function demoChomage(): GeoAIResult {
+// Chiffres latins pour l'arabe, comme le reste de l'application.
+const NUM_LOCALE: Record<Lang, string> = { fr: 'fr-FR', en: 'en-US', ar: 'ar-u-nu-latn' }
+
+export const numberLocale = (lang: Lang): string => NUM_LOCALE[lang]
+
+const num = (lang: Lang, v: number, digits = 0): string =>
+  new Intl.NumberFormat(NUM_LOCALE[lang], { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v)
+
+const pct = (lang: Lang, v: number): string => `${num(lang, v, 1)}${lang === 'fr' ? ' %' : '%'}`
+
+export function fmt(template: string, vars: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m))
+}
+
+export function demoQuestions(lang: Lang): { label: string; q: string }[] {
+  const g = I18N[lang].geoai
+  return [
+    { label: g.exUnemploymentLabel, q: g.exUnemploymentQ },
+    { label: g.exPopulationLabel, q: g.exPopulationQ },
+    { label: g.exPovertyLabel, q: g.exPovertyQ },
+  ]
+}
+
+export const DEMO_QUESTIONS = demoQuestions('fr')
+
+// ── Réponses de démonstration ────────────────────────────────────────────────
+
+function demoChomage(lang: Lang): GeoAIResult {
+  const g = I18N[lang].geoai
   const sorted = [...REGIONS].sort((a, b) => b.unemployment - a.unemployment)
   const top = sorted[0]
   const bottom = sorted[sorted.length - 1]
   return {
-    intent: { analysis: 'summary', layer_id: 'dj_adm1', params: {}, reasoning: 'Question sur le chômage régional' },
-    columns: ['Région', 'Chômage (%)', 'Population'],
+    intent: { analysis: 'summary', layer_id: 'dj_adm1', params: {}, reasoning: g.reasonUnemployment },
+    columns: [g.colRegion, g.colUnemployment, g.colPopulation],
     rows: sorted.map((r) => [r.name, r.unemployment, r.population]),
     map_config: { type: 'map', layer_id: 'dj_adm1', value_col: 'unemployment' },
-    prose: `${top.name} enregistre le taux de chômage le plus élevé avec ${top.unemployment} % (données démo 2024). La région la moins touchée est ${bottom.name} avec ${bottom.unemployment} %. L'écart entre les deux extrêmes est de ${(top.unemployment - bottom.unemployment).toFixed(1)} points de pourcentage.`,
+    prose: fmt(g.proseUnemployment, {
+      top: top.name, topRate: num(lang, top.unemployment, 1),
+      bottom: bottom.name, bottomRate: num(lang, bottom.unemployment, 1),
+      gap: num(lang, top.unemployment - bottom.unemployment, 1),
+    }),
     error: null,
   }
 }
 
-function demoPop(): GeoAIResult {
+function demoPop(lang: Lang): GeoAIResult {
+  const g = I18N[lang].geoai
   const sorted = [...REGIONS].sort((a, b) => b.population - a.population)
+  const city = sorted[0]
+  const total = REGIONS.reduce((s, r) => s + r.population, 0)
+  const maxOther = Math.max(...sorted.slice(1).map((r) => r.density ?? 0))
   return {
-    intent: { analysis: 'density', layer_id: 'dj_adm1', params: {}, reasoning: 'Question population/densité' },
-    columns: ['Région', 'Population', 'Densité (hab/km²)'],
+    intent: { analysis: 'density', layer_id: 'dj_adm1', params: {}, reasoning: g.reasonPopulation },
+    columns: [g.colRegion, g.colPopulation, g.colDensity],
     rows: sorted.map((r) => [r.name, r.population, r.density ?? '—']),
     map_config: { type: 'map', layer_id: 'dj_adm1', value_col: 'density' },
-    prose: `Djibouti-ville concentre ${sorted[0].population.toLocaleString('fr-FR')} habitants sur une superficie très réduite (densité ${sorted[0].density} hab/km²), soit ${((sorted[0].population / REGIONS.reduce((s, r) => s + r.population, 0)) * 100).toFixed(1)} % de la population totale. Les régions de l'intérieur ont des densités inférieures à 50 hab/km².`,
+    prose: fmt(g.prosePopulation, {
+      city: city.name, pop: num(lang, city.population), density: num(lang, city.density ?? 0),
+      share: num(lang, (city.population / total) * 100, 1), maxOther: num(lang, maxOther),
+    }),
     error: null,
   }
 }
 
-function demoPauvrete(): GeoAIResult {
+function demoPauvrete(lang: Lang): GeoAIResult {
+  const g = I18N[lang].geoai
   const above30 = REGIONS.filter((r) => (r.poverty ?? 0) > 30).sort((a, b) => (b.poverty ?? 0) - (a.poverty ?? 0))
   return {
-    intent: { analysis: 'summary', layer_id: 'dj_adm1', params: {}, reasoning: 'Filtre pauvreté > 30 %' },
-    columns: ['Région', 'Pauvreté (%)', 'Chômage (%)'],
+    intent: { analysis: 'summary', layer_id: 'dj_adm1', params: {}, reasoning: g.reasonPoverty },
+    columns: [g.colRegion, g.colPoverty, g.colUnemployment],
     rows: above30.map((r) => [r.name, r.poverty ?? '—', r.unemployment]),
     map_config: { type: 'map', layer_id: 'dj_adm1', value_col: 'poverty' },
-    prose: `${above30.length} régions dépassent le seuil de 30 % de pauvreté (données démo 2024) : ${above30.map((r) => `${r.name} (${r.poverty} %)`).join(', ')}. Ces régions sont aussi parmi celles avec les taux de chômage les plus élevés.`,
+    prose: fmt(g.prosePoverty, {
+      list: above30.map((r) => `${r.name} (${pct(lang, r.poverty ?? 0)})`).join(lang === 'ar' ? '، ' : ', ') || '—',
+      n: above30.length,
+    }),
     error: null,
   }
 }
 
-export function demoAnswer(q: string): GeoAIResult {
-  const lq = q.toLowerCase()
-  if (lq.includes('densit') || lq.includes('popul')) return demoPop()
-  if (lq.includes('pauv')) return demoPauvrete()
-  return demoChomage()
+const POPULATION_RE = /densit|popul|كثاف|سكان/i
+const POVERTY_RE = /pauv|poverty|فقر/i
+
+export function demoAnswer(q: string, lang: Lang = 'fr'): GeoAIResult {
+  if (POPULATION_RE.test(q)) return demoPop(lang)
+  if (POVERTY_RE.test(q)) return demoPauvrete(lang)
+  return demoChomage(lang)
 }
