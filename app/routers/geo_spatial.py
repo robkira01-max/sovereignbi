@@ -19,6 +19,7 @@ class AnalyzeRequest(BaseModel):
     layer_id: str
     analysis: str
     params: dict[str, Any] = {}
+    layer_id_b: str | None = None  # second layer for intersection analysis
 
 
 # ── GET /api/v1/geo/analyze/types ────────────────────────────────────────────
@@ -44,14 +45,17 @@ async def run_analysis(req: AnalyzeRequest, _user=Depends(_VIEWER)):
             detail=f"Unknown analysis '{req.analysis}'. "
                    f"Supported: {list(SUPPORTED_ANALYSES)}",
         )
-    # Validate layer_id is a simple identifier (no path chars)
+    # Validate layer_id(s) are simple identifiers (no path chars)
     import re
-    if not re.fullmatch(r"[a-zA-Z0-9_-]+", req.layer_id):
+    _ID_RE = re.compile(r"^[a-zA-Z0-9_-]+$")
+    if not _ID_RE.match(req.layer_id):
         raise HTTPException(status_code=400, detail="Invalid layer_id format")
+    if req.layer_id_b is not None and not _ID_RE.match(req.layer_id_b):
+        raise HTTPException(status_code=400, detail="Invalid layer_id_b format")
 
     try:
         engine = SpatialEngine()
-        results = engine.analyze(req.layer_id, req.analysis, req.params)
+        results = engine.analyze(req.layer_id, req.analysis, req.params, req.layer_id_b)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     except FileNotFoundError as exc:
@@ -59,9 +63,12 @@ async def run_analysis(req: AnalyzeRequest, _user=Depends(_VIEWER)):
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Spatial analysis failed: {exc}")
 
-    return JSONResponse({
+    response: dict = {
         "layer_id":  req.layer_id,
         "analysis":  req.analysis,
         "row_count": len(results),
         "results":   results,
-    })
+    }
+    if req.layer_id_b is not None:
+        response["layer_id_b"] = req.layer_id_b
+    return JSONResponse(response)

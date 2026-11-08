@@ -216,3 +216,154 @@ def test_run_quartiers_area(client):
     }, headers=VIEWER)
     assert r.status_code == 200
     assert r.json()["row_count"] == 11
+
+
+# ── P-025 — buffer, intersection, density ────────────────────────────────────
+
+# Port de Djibouti approx: 43.145°E, 11.589°N
+_PORT_DJ = {"lon": 43.145, "lat": 11.589}
+
+
+class TestBuffer:
+    """Buffer: features within radius of a reference point."""
+
+    def test_buffer_adm2_50km(self):
+        """District 'Djibouti' (port area) must be within 50 km of its own port."""
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "buffer", {**_PORT_DJ, "radius_km": 50})
+        names = [r["name"] for r in results]
+        assert "Djibouti" in names
+
+    def test_buffer_includes_dist_m(self):
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "buffer", {**_PORT_DJ, "radius_km": 500})
+        for r in results:
+            assert "name" in r
+            assert "dist_m" in r
+            assert r["dist_m"] >= 0
+
+    def test_buffer_sorted_by_distance(self):
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "buffer", {**_PORT_DJ, "radius_km": 500})
+        dists = [r["dist_m"] for r in results]
+        assert dists == sorted(dists)
+
+    def test_buffer_small_radius_excludes_far_districts(self):
+        """With a 1 km radius around the port, only the Djibouti district (or zero) is returned."""
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "buffer", {**_PORT_DJ, "radius_km": 1})
+        # May be 0 or 1 — but definitely not 6 (all districts)
+        assert len(results) < 6
+
+    def test_buffer_missing_params_raises(self):
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        with pytest.raises(ValueError, match="buffer requires"):
+            engine.analyze("dj_adm2", "buffer", {})
+
+    def test_buffer_http(self, client):
+        r = client.post("/api/v1/geo/analyze", json={
+            "layer_id": "dj_adm2",
+            "analysis": "buffer",
+            "params": {"lon": 43.145, "lat": 11.589, "radius_km": 500},
+        }, headers=VIEWER)
+        assert r.status_code == 200
+        assert r.json()["row_count"] == 6  # 500 km covers all Djibouti
+
+
+class TestIntersection:
+    """Intersection: feature pairs that overlap between two layers."""
+
+    def test_intersection_adm2_quartiers(self):
+        """ADM2 districts should intersect with some quartiers."""
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "intersection", {}, layer_id_b="dj_quartiers")
+        assert len(results) >= 1
+        assert all("feature_a" in r and "feature_b" in r for r in results)
+        assert all("overlap_km2" in r for r in results)
+
+    def test_intersection_overlap_non_negative(self):
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "intersection", {}, layer_id_b="dj_quartiers")
+        for r in results:
+            assert r["overlap_km2"] >= 0
+
+    def test_intersection_requires_layer_id_b(self):
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        with pytest.raises(ValueError, match="layer_id_b"):
+            engine.analyze("dj_adm2", "intersection", {})
+
+    def test_intersection_unknown_layer_b_raises(self):
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        with pytest.raises(ValueError, match="Unknown layer"):
+            engine.analyze("dj_adm2", "intersection", {}, layer_id_b="nonexistent")
+
+    def test_intersection_http(self, client):
+        r = client.post("/api/v1/geo/analyze", json={
+            "layer_id": "dj_adm2",
+            "analysis": "intersection",
+            "params": {},
+            "layer_id_b": "dj_quartiers",
+        }, headers=VIEWER)
+        assert r.status_code == 200
+        body = r.json()
+        assert body["row_count"] >= 1
+        assert body["layer_id_b"] == "dj_quartiers"
+
+    def test_intersection_invalid_layer_id_b_400(self, client):
+        r = client.post("/api/v1/geo/analyze", json={
+            "layer_id": "dj_adm2",
+            "analysis": "intersection",
+            "params": {},
+            "layer_id_b": "../../etc/passwd",
+        }, headers=VIEWER)
+        assert r.status_code == 400
+
+
+class TestDensity:
+    """Density: value-per-area stats for polygon layers."""
+
+    def test_density_no_col_adm2(self):
+        """Without value_col, should return area_km2 per feature."""
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "density", {})
+        assert len(results) == 6
+        for r in results:
+            assert "name" in r
+            assert "area_km2" in r
+
+    def test_density_with_pop_col(self):
+        """dj_adm2 has population_est column — density should compute persons/km²."""
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        results = engine.analyze("dj_adm2", "density", {"value_col": "population_est"})
+        assert len(results) >= 1
+        for r in results:
+            assert "density_per_km2" in r
+            assert r["density_per_km2"] >= 0
+        # Djibouti district is by far the most dense
+        assert results[0]["name"] == "Djibouti"
+
+    def test_density_invalid_col_name_raises(self):
+        from app.geo_catalog.spatial_engine import SpatialEngine
+        engine = SpatialEngine()
+        with pytest.raises(ValueError, match="invalid characters"):
+            engine.analyze("dj_adm2", "density", {"value_col": "pop; DROP TABLE"})
+
+    def test_density_http(self, client):
+        r = client.post("/api/v1/geo/analyze", json={
+            "layer_id": "dj_adm2",
+            "analysis": "density",
+            "params": {"value_col": "population_est"},
+        }, headers=VIEWER)
+        assert r.status_code == 200
+        assert r.json()["row_count"] >= 1

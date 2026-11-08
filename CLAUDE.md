@@ -28,9 +28,9 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1225/1227 pytest + 124/124 Vitest
-- **Dernière proposal** : P-024 Import GeoJSON/GeoPackage/GeoParquet
-- **Commit** : 463d2a6
+- **Tests** : 1241/1243 pytest + 135/135 Vitest
+- **Dernière proposal** : P-025 Analyses spatiales (buffer/intersection/density)
+- **Commit** : (voir git log)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack
@@ -72,6 +72,12 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - `GeoImport.tsx` — formulaire drag-and-drop, champs métadonnées, callback `onImported`
 - Formats supportés : `.geojson`, `.json`, `.gpkg`, `.parquet`
 - Isolation tests : fixture `monkeypatch` sur `_CATALOG_PATH` + `_IMPORTS_DIR` pour ne pas polluer `catalog.yaml`
+
+## Analyses spatiales avancées (P-025)
+
+- Analyses ajoutées à `spatial_engine.py` : `buffer` (lon/lat/radius_km → features + dist_m triés), `intersection` (deux couches → paires feature_a/feature_b/overlap_km2), `density` (area_km2 par polygone, ou density_per_km2 si value_col)
+- `AnalyzeRequest.layer_id_b` (str|None) dans `geo_spatial.py` — validé alphanumérique comme `layer_id`
+- `SpatialAnalysis.tsx` — UI d'analyse spatiale : sélecteur type + couche A, params contextuels (buffer: lon/lat/rayon ; intersection: couche B ; density: colonne valeur), tableau résultats dynamique
 
 ## Moteur spatial (P-023)
 

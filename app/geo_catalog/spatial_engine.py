@@ -27,12 +27,18 @@ def _safe_table_name(layer_id: str) -> str:
 
 
 SUPPORTED_ANALYSES = {
-    "area":     "Area in km² of each polygon feature (ST_Area_Spheroid).",
-    "centroid": "Centroid coordinates (lon, lat) of each feature.",
-    "bbox":     "Bounding box (min_lon, min_lat, max_lon, max_lat) of each feature.",
-    "nearest":  "Feature(s) nearest to a query point (lon, lat). Requires params: lon, lat, limit=5.",
-    "summary":  "Layer summary: feature count, total area km², geographic extent.",
+    "area":         "Area in km² of each polygon feature (ST_Area_Spheroid).",
+    "centroid":     "Centroid coordinates (lon, lat) of each feature.",
+    "bbox":         "Bounding box (min_lon, min_lat, max_lon, max_lat) of each feature.",
+    "nearest":      "Feature(s) nearest to a query point. Requires params: lon, lat, limit=5.",
+    "summary":      "Layer summary: feature count, total area km², geographic extent.",
+    # P-025
+    "buffer":       "Features within radius_km of a reference point. Params: lon, lat, radius_km, limit=50.",
+    "intersection": "Features from this layer that intersect features from another layer. Params: layer_id_b.",
+    "density":      "Value-per-area for each polygon. Params: value_col (numeric column, e.g. pop_estimated).",
 }
+
+_SAFE_COL_RE = re.compile(r"^[a-zA-Z0-9_]+$")
 
 
 class SpatialEngine:
@@ -59,7 +65,13 @@ class SpatialEngine:
             self._loaded.add(layer_id)
         return tname, layer.name_column
 
-    def analyze(self, layer_id: str, analysis: str, params: dict[str, Any]) -> list[dict]:
+    def analyze(
+        self,
+        layer_id: str,
+        analysis: str,
+        params: dict[str, Any],
+        layer_id_b: str | None = None,
+    ) -> list[dict]:
         if analysis not in SUPPORTED_ANALYSES:
             raise ValueError(
                 f"Unsupported analysis {analysis!r}. "
@@ -67,11 +79,14 @@ class SpatialEngine:
             )
         tname, name_col = self._load_layer(layer_id)
         dispatch = {
-            "area":     self._area,
-            "centroid": self._centroid,
-            "bbox":     self._bbox,
-            "nearest":  self._nearest,
-            "summary":  self._summary,
+            "area":         self._area,
+            "centroid":     self._centroid,
+            "bbox":         self._bbox,
+            "nearest":      self._nearest,
+            "summary":      self._summary,
+            "buffer":       self._buffer,
+            "density":      self._density,
+            "intersection": lambda t, n, p: self._intersection(t, n, p, layer_id_b),
         }
         return dispatch[analysis](tname, name_col, params)
 
@@ -144,3 +159,72 @@ class SpatialEngine:
                 "max_lon": row[4], "max_lat": row[5],
             },
         }]
+
+    # ── P-025 ────────────────────────────────────────────────────────────────
+
+    def _buffer(self, tname: str, name_col: str, params: dict) -> list[dict]:
+        """Features whose geometry is within radius_km of a reference point."""
+        try:
+            lon = float(params["lon"])
+            lat = float(params["lat"])
+            radius_km = float(params["radius_km"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("buffer requires params: lon (float), lat (float), radius_km (float)") from exc
+        limit = min(int(params.get("limit", 50)), 200)
+        radius_m = radius_km * 1000
+        rows = self._con.execute(f"""
+            SELECT {name_col} AS name,
+                   ROUND(ST_Distance(geom, ST_GeomFromText('POINT({lon} {lat})')) * 111320, 0) AS dist_m
+            FROM {tname}
+            WHERE ST_Distance(geom, ST_GeomFromText('POINT({lon} {lat})')) * 111320 <= {radius_m}
+            ORDER BY dist_m
+            LIMIT {limit}
+        """).fetchall()
+        return [{"name": r[0], "dist_m": r[1]} for r in rows]
+
+    def _intersection(
+        self, tname_a: str, name_col_a: str, _params: dict, layer_id_b: str | None
+    ) -> list[dict]:
+        """Feature pairs that intersect between two layers, with overlap area."""
+        if not layer_id_b:
+            raise ValueError("intersection requires layer_id_b (second layer identifier)")
+        tname_b, name_col_b = self._load_layer(layer_id_b)
+        rows = self._con.execute(f"""
+            SELECT a.{name_col_a} AS feature_a,
+                   b.{name_col_b} AS feature_b,
+                   ROUND(ST_Area_Spheroid(ST_Intersection(a.geom, b.geom)) / 1e6, 4) AS overlap_km2
+            FROM {tname_a} a
+            JOIN {tname_b} b ON ST_Intersects(a.geom, b.geom)
+            ORDER BY overlap_km2 DESC
+            LIMIT 200
+        """).fetchall()
+        return [{"feature_a": r[0], "feature_b": r[1], "overlap_km2": r[2]} for r in rows]
+
+    def _density(self, tname: str, name_col: str, params: dict) -> list[dict]:
+        """Value-per-area density for each polygon feature."""
+        value_col = params.get("value_col", "")
+        if value_col:
+            if not _SAFE_COL_RE.match(value_col):
+                raise ValueError(f"value_col contains invalid characters: {value_col!r}")
+            rows = self._con.execute(f"""
+                SELECT {name_col} AS name,
+                       CAST({value_col} AS DOUBLE) AS value,
+                       ROUND(ST_Area_Spheroid(geom) / 1e6, 2) AS area_km2,
+                       ROUND(CAST({value_col} AS DOUBLE) / (ST_Area_Spheroid(geom) / 1e6), 4) AS density_per_km2
+                FROM {tname}
+                WHERE {value_col} IS NOT NULL
+                ORDER BY density_per_km2 DESC
+            """).fetchall()
+            return [
+                {"name": r[0], "value": r[1], "area_km2": r[2], "density_per_km2": r[3]}
+                for r in rows
+            ]
+        # No value_col: return area distribution (smallest first → highest base density)
+        rows = self._con.execute(f"""
+            SELECT {name_col} AS name,
+                   ROUND(ST_Area_Spheroid(geom) / 1e6, 2) AS area_km2,
+                   ROUND(1.0 / (ST_Area_Spheroid(geom) / 1e6), 6) AS inv_area_per_km2
+            FROM {tname}
+            ORDER BY area_km2 ASC
+        """).fetchall()
+        return [{"name": r[0], "area_km2": r[1], "inv_area_per_km2": r[2]} for r in rows]

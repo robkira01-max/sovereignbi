@@ -28,11 +28,11 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 **Impact :** Élevé pour l'autonomie utilisateur.
 **Livré :** `importer.py` + `POST /api/v1/geo/import` + `GeoImport.tsx` + i18n 4 locales. 24 pytest + 10 Vitest. Formats : `.geojson/.json/.gpkg/.parquet`, 50 Mo max, enregistrement catalog.yaml en draft.
 
-## P-025 — Analyses spatiales : buffers, proximité, intersections, densité
+## P-025 — Analyses spatiales : buffers, proximité, intersections, densité ✅ (2026-11-08)
 
 **Raison :** Cas d'usage concret INSTAD : « Quels districts sont à moins de 50 km d'un port ? »
 **Impact :** Élevé — différenciateur BI+SIG.
-**Statut :** Proposé. Dépend de P-023.
+**Livré :** `spatial_engine.py` +3 analyses (buffer/intersection/density), `layer_id_b` dans router. `SpatialAnalysis.tsx` (sélecteur analyse + couche, params contextuels : lon/lat/rayon, couche B, colonne valeur). i18n 4 locales. 16 nouveaux pytest (39 total spatial) + 11 Vitest. 1241/1243 pytest + 135/135 Vitest.
 
 ## P-026 — Interaction carte ↔ dashboards BI
 
