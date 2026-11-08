@@ -24,6 +24,8 @@ services:
     env_file: .env
     environment:
       OLLAMA_URL: http://ollama:11434
+      # Port 8000 is published directly (no reverse proxy): never trust X-Forwarded-For.
+      SOVEREIGN_TRUSTED_PROXIES: none
     ports: ["8000:8000"]
     depends_on:
       ollama:

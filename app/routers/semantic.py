@@ -1,32 +1,39 @@
 """Semantic sector switcher — GET/POST /semantic/sectors."""
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
+from app.security.rbac import RequireRole
 from app.semantic.sectors import list_sectors, load_sector, sector_exists
 from app.semantic.model import model_to_prompt_text
 
 router = APIRouter(prefix="/semantic", tags=["semantic"])
 
+_VIEWER = RequireRole("viewer")
+_EDITOR = RequireRole("editor")
+
 
 @router.get("/sectors")
-def get_sectors():
+def get_sectors(_: str = Depends(_VIEWER)):
     """List all available sector YAML files."""
-    return {"sectors": list_sectors()}
+    return {"sectors": [{k: v for k, v in s.items() if k != "path"} for s in list_sectors()]}
 
 
 @router.get("/sectors/active")
-def get_active_sector(request: Request):
+def get_active_sector(request: Request, _: str = Depends(_VIEWER)):
     """Return the currently active sector (or 'default')."""
     active = getattr(request.app.state, "active_sector_id", None)
     return {"sector_id": active or "default"}
 
 
 @router.post("/sectors/{sector_id}/activate")
-def activate_sector(sector_id: str, request: Request):
-    """Switch to a sector-specific semantic model, invalidating the LangGraph pipeline."""
+def activate_sector(sector_id: str, request: Request, _: str = Depends(_EDITOR)):
+    """Switch to a sector-specific semantic model, invalidating the LangGraph pipeline.
+
+    The active sector is process-wide (app.state): it changes for every user, hence editor-only.
+    """
     if not sector_exists(sector_id):
-        raise HTTPException(404, f"Secteur introuvable : {sector_id!r}")
+        raise HTTPException(404, "Secteur introuvable.")
     model = load_sector(sector_id)
     request.app.state.active_sector_id = sector_id
     request.app.state.active_semantic_text = model_to_prompt_text(model)
@@ -43,7 +50,7 @@ def activate_sector(sector_id: str, request: Request):
 
 
 @router.delete("/sectors/active")
-def deactivate_sector(request: Request):
+def deactivate_sector(request: Request, _: str = Depends(_EDITOR)):
     """Revert to the default semantic model (model.yaml)."""
     request.app.state.active_sector_id = None
     request.app.state.active_semantic_text = None

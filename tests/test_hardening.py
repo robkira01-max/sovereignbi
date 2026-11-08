@@ -151,8 +151,10 @@ def test_rate_limit_forwarded_for():
     rl = RateLimitMiddleware.__new__(RateLimitMiddleware)
     rl._rpm = 10
 
+    from starlette.datastructures import Headers
+
     class FakeRequest:
-        headers = {"X-Forwarded-For": "203.0.113.5, 10.0.0.1"}
+        headers = Headers({"X-Forwarded-For": "203.0.113.5, 10.0.0.1"})
         client = type("C", (), {"host": "10.0.0.1"})()
 
     ip = RateLimitMiddleware._client_ip(FakeRequest())

@@ -14,13 +14,22 @@ Menaces principales :
 
 Trois rôles, hiérarchiques :
 
-| Rôle | Header | Routes accessibles |
+| Rôle | Clé API (`X-Api-Key`) | Routes accessibles |
 |---|---|---|
-| `viewer` | `X-Api-Key: SOVEREIGN_VIEWER_KEY` | `/health`, `/ask`, `/upload`, `/export/*`, dashboards (lecture) |
-| `editor` | `X-Api-Key: SOVEREIGN_EDITOR_KEY` | Tout viewer + dashboards (écriture), `/feedback` |
-| `admin` | `X-Admin-Key: SOVEREIGN_ADMIN_KEY` | Tout + `/admin/*` (modèle sémantique, propositions, rapport) |
+| `viewer` | `SOVEREIGN_VIEWER_KEY` | `/health`, `/ask`, `/upload`, `/export/*`, dashboards (lecture), `GET /semantic/*` |
+| `editor` | `SOVEREIGN_EDITOR_KEY` | Tout viewer + dashboards (écriture), `/feedback`, activation de secteur (`/semantic/sectors/*`) |
+| `admin` | `SOVEREIGN_ADMIN_KEY` | Tout + `/admin/*` (modèle sémantique, propositions, rapport) |
+
+Deux formes d'authentification : clé API (intégrations) ou session `Authorization: Bearer` (connexion web). Une session porte le **rôle du compte** (`users.role`, défaut `viewer`) ; il n'y a plus d'élévation automatique en `admin`. Un rôle inconnu en base est refusé (403). Les clés API sont comparées en temps constant.
 
 **Rotation des clés** : générer de nouvelles clés avec `openssl rand -hex 32`, mettre à jour `.env`, redémarrer le service.
+
+### Connexion et sessions
+
+- Mots de passe : bcrypt, 12 tours. Un mot de passe de plus de 72 octets est refusé de la même façon qu'un mauvais mot de passe (pas d'erreur 500 qui révélerait l'existence du compte). Le chemin « compte inconnu » exécute un contrôle de même coût.
+- Verrouillage : 5 échecs / 15 min par couple (e-mail, client) et 20 échecs / 15 min par e-mail, comptés avant la vérification du mot de passe (une rafale parallèle ne contourne pas la limite). L'e-mail est comparé sans tenir compte de la casse, comme en base.
+- Sessions : jeton aléatoire de 256 bits, **seul son hachage SHA-256 est stocké** ; expiration `SESSION_TTL_HOURS` (défaut 24 h), sessions expirées purgées à la connexion, session invalide dès que le compte est désactivé.
+- Limitation de débit : par IP cliente (IPv6 regroupé par /64). `X-Forwarded-For` n'est pris en compte que si l'appelant TCP est dans `SOVEREIGN_TRUSTED_PROXIES` (`private` par défaut, liste de CIDR, ou `none` si le port est publié sans proxy), lu de droite à gauche.
 
 ## 3. Isolation SQL (sql_guard)
 

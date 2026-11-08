@@ -4,6 +4,7 @@ Accepte deux formes d'authentification :
   1. X-Api-Key: <key>               (accès API direct, clés en variables d'env)
   2. Authorization: Bearer <token>  (session web email+mot de passe)
 """
+import hmac
 import os
 
 from fastapi import Header, HTTPException
@@ -12,11 +13,13 @@ ROLES: dict[str, int] = {"viewer": 0, "editor": 1, "admin": 2}
 
 
 def get_role_from_key(api_key: str) -> str | None:
-    for role in ("admin", "editor", "viewer"):
+    given = api_key.encode()
+    found: str | None = None
+    for role in ("admin", "editor", "viewer"):  # no early exit: constant work per call
         env_val = os.environ.get(f"SOVEREIGN_{role.upper()}_KEY", "")
-        if env_val and api_key == env_val:
-            return role
-    return None
+        if env_val and hmac.compare_digest(given, env_val.encode()) and found is None:
+            found = role
+    return found
 
 
 class RequireRole:
@@ -44,8 +47,13 @@ class RequireRole:
         if authorization and authorization.startswith("Bearer "):
             from app.auth.security import verify_session  # lazy to avoid circular
             user = verify_session(authorization[7:])
-            if user:
-                return "admin"  # single-tenant: all authenticated web users are admin
-            raise HTTPException(401, "Session expirée ou invalide.")
+            if not user:
+                raise HTTPException(401, "Session expirée ou invalide.")
+            role = user["role"]
+            if role not in ROLES:  # corrupted/unknown role → deny, never default upward
+                raise HTTPException(403, "Rôle utilisateur invalide.")
+            if ROLES[role] < self.min_level:
+                raise HTTPException(403, f"Rôle {self.min_role!r} requis.")
+            return role
 
         raise HTTPException(401, "Authentification requise.")

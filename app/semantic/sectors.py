@@ -1,11 +1,13 @@
 """Sector registry — loads sector-specific SemanticModel from YAML files."""
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from app.semantic.model import SemanticModel, load_model
 
 SECTORS_DIR = Path("semantic/sectors")
+_SECTOR_ID_RE = re.compile(r"[a-z0-9_]{1,64}")
 
 
 def list_sectors() -> list[dict]:
@@ -33,11 +35,12 @@ def list_sectors() -> list[dict]:
 
 def load_sector(sector_id: str) -> SemanticModel:
     """Load a SemanticModel from semantic/sectors/{sector_id}.yaml."""
-    path = SECTORS_DIR / f"{sector_id}.yaml"
-    if not path.exists():
+    if not sector_exists(sector_id):
         raise FileNotFoundError(f"Secteur introuvable : {sector_id}")
-    return load_model(path)
+    return load_model(SECTORS_DIR / f"{sector_id}.yaml")
 
 
 def sector_exists(sector_id: str) -> bool:
+    if not _SECTOR_ID_RE.fullmatch(sector_id):
+        return False
     return (SECTORS_DIR / f"{sector_id}.yaml").exists()
