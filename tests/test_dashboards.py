@@ -474,7 +474,7 @@ def test_tile_data_returns_columns_rows(tmp_path, monkeypatch):
     monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
     from app.main import app
     store = _store_with_data()
-    app.state.store = store
+    monkeypatch.setattr(app.state, "store", store)
     client = TestClient(app, headers=_EDITOR_HEADERS)
     _create_dash_with_sql(client, "td_data")
 
@@ -522,7 +522,7 @@ def test_tile_insight_returns_text(tmp_path, monkeypatch):
 
     from app.main import app
     store = _store_with_data()
-    app.state.store = store
+    monkeypatch.setattr(app.state, "store", store)
 
     # Mock LLM
     class FakeLLM:
@@ -563,7 +563,7 @@ def test_tile_insight_cached(tmp_path, monkeypatch):
 
     from app.main import app
     store = _store_with_data()
-    app.state.store = store
+    monkeypatch.setattr(app.state, "store", store)
 
     call_count = {"n": 0}
 
@@ -615,7 +615,7 @@ def test_bulletin_returns_html(tmp_path, monkeypatch):
     monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
     from app.main import app
     store = _store_with_data()
-    app.state.store = store
+    monkeypatch.setattr(app.state, "store", store)
     client = TestClient(app, headers=_EDITOR_HEADERS)
     _create_dash_with_sql(client, "bul_html")
 
@@ -633,7 +633,7 @@ def test_bulletin_contains_tile_data(tmp_path, monkeypatch):
     monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
     from app.main import app
     store = _store_with_data()
-    app.state.store = store
+    monkeypatch.setattr(app.state, "store", store)
     client = TestClient(app, headers=_EDITOR_HEADERS)
     _create_dash_with_sql(client, "bul_data")
 
@@ -651,7 +651,7 @@ def test_bulletin_includes_disclaimer(tmp_path, monkeypatch):
     monkeypatch.setattr(dr, "_DASHBOARDS_DIR", tmp_path / "dashboards")
     from app.main import app
     store = _store_with_data()
-    app.state.store = store
+    monkeypatch.setattr(app.state, "store", store)
     client = TestClient(app, headers=_EDITOR_HEADERS)
     _create_dash_with_sql(client, "bul_disc")
 
@@ -669,7 +669,7 @@ def test_bulletin_includes_cached_insight(tmp_path, monkeypatch):
 
     from app.main import app
     store = _store_with_data()
-    app.state.store = store
+    monkeypatch.setattr(app.state, "store", store)
     client = TestClient(app, headers=_EDITOR_HEADERS)
     _create_dash_with_sql(client, "bul_ins")
 

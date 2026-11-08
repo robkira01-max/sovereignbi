@@ -79,7 +79,11 @@ def test_embed_ask_with_invalid_token_401(client):
     assert r.status_code == 401
 
 
-def test_embed_ask_with_valid_token_no_data(client):
+def test_embed_ask_with_valid_token_no_data(client, monkeypatch):
+    from app.data.duckdb_store import DataStore
+    from app.main import app
+
+    monkeypatch.setattr(app.state, "store", DataStore())  # explicit empty store: no dependence on test order
     token = generate_token(dashboard_id="*", scopes=["read"], secret=_SECRET)
     r = client.get(f"/embed/ask?q=CA+total&token={token.token}")
     # No data loaded → 400
