@@ -1,0 +1,1175 @@
+{
+ "downloaded": "2026-11-08",
+ "source_page": "https://www.ministere-finances.dj/BIE.html",
+ "source_page_title": "Bulletin d'information économique — Ministère des Finances de Djibouti",
+ "method": "Dernière vintage disponible par année : quand deux bulletins donnent une valeur différente pour la même année, c'est la valeur du bulletin le plus récent qui est retenue, et l'écart est signalé. Les valeurs 2008-2010 des tableaux prospectifs du BIE 2007 sont des prévisions du ministère, pas du réalisé.",
+ "indicators": [
+  {
+   "id": "croissance_pib_reel",
+   "label_fr": "Croissance du PIB réel",
+   "unit": "%",
+   "values": [
+    {
+     "year": 2000,
+     "value": 0.4,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": "PIB réel au prix courant, taux de croissance"
+     }
+    },
+    {
+     "year": 2001,
+     "value": 2.0,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2002,
+     "value": 2.6,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2003,
+     "value": 3.2,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2004,
+     "value": 3.1,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2005,
+     "value": 3.2,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2006,
+     "value": 4.8,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Valeur révisée : le BIE 2006 donnait 4,5 % (provisoire, Tableau 3, p. 64)"
+     }
+    },
+    {
+     "year": 2007,
+     "value": 5.3,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Estimé (*)"
+     }
+    },
+    {
+     "year": 2008,
+     "value": 5.8,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 8",
+      "note": "« affichant un taux de 5,8 % en 2008, contre 5,3 % en 2007 et 3,2 % en 2005 »"
+     }
+    }
+   ]
+  },
+  {
+   "id": "pib_nominal_mfd",
+   "label_fr": "PIB nominal",
+   "unit": "millions FD",
+   "values": [
+    {
+     "year": 2000,
+     "value": 98267,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2001,
+     "value": 101731,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2002,
+     "value": 105055,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2003,
+     "value": 110550,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2004,
+     "value": 117380,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2005,
+     "value": 124770,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2005 (Bulletin d'information économique de l'année 2005, 67 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+      "page": "Tableau 1, p. 62",
+      "note": ""
+     }
+    },
+    {
+     "year": 2006,
+     "value": 136646,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 44",
+      "note": "Indicateurs de la dette : PIB"
+     }
+    },
+    {
+     "year": 2007,
+     "value": 151033,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 44",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 172886,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 44",
+      "note": "« richesse nationale créée et estimée en 2008 à 172 886 millions de FD »"
+     }
+    }
+   ]
+  },
+  {
+   "id": "inflation_ipc_moyenne",
+   "label_fr": "Inflation, IPC moyenne annuelle",
+   "unit": "%",
+   "values": [
+    {
+     "year": 2005,
+     "value": 3.1,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "Tableau 3, p. 64",
+      "note": "Indice des prix à la consommation"
+     }
+    },
+    {
+     "year": 2006,
+     "value": 3.5,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "Tableau 3, p. 64",
+      "note": ""
+     }
+    },
+    {
+     "year": 2007,
+     "value": 5.0,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 6.0,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 8",
+      "note": "« L'inflation s'est accélérée de 6 % en moyenne en 2008 contre 5 % en 2007 » ; le BIE 2007 prévoyait 6,6 %"
+     }
+    },
+    {
+     "year": 2011,
+     "value": 2.7,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2011 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+      "page": "p. 4",
+      "note": "« Le taux d'inflation moyen pour 2011 est ressorti à 2,7 % »"
+     }
+    }
+   ],
+   "missing": [
+    2009,
+    2010,
+    2012
+   ],
+   "missing_note": "Moyenne annuelle non publiée dans les notes trimestrielles consultées (seuls des glissements mensuels / déc.-déc. sont donnés)."
+  },
+  {
+   "id": "ipc_general_dec",
+   "label_fr": "IPC général, décembre",
+   "unit": "indice",
+   "values": [
+    {
+     "year": 2009,
+     "value": 141.0,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2010 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20Conjoncture4trimestre%20finale.pdf",
+      "page": "Tableau 12, p. 21",
+      "note": "Indice général, déc. 2009"
+     }
+    },
+    {
+     "year": 2010,
+     "value": 144.9,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2010 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20Conjoncture4trimestre%20finale.pdf",
+      "page": "Tableau 12, p. 21",
+      "note": "Indice général, déc. 2010 ; glissement déc./déc. +2,8 %"
+     }
+    }
+   ]
+  },
+  {
+   "id": "recettes_dons_mfd",
+   "label_fr": "Recettes et dons",
+   "unit": "millions FD",
+   "values": [
+    {
+     "year": 2005,
+     "value": 46711,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "TOFE au 31 déc. 2006, p. 48",
+      "note": "Valeur révisée : le BIE 2005 donnait 43 454 (Tableau 2, p. 63)"
+     }
+    },
+    {
+     "year": 2006,
+     "value": 47988,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "TOFE au 31 déc. 2006, p. 48",
+      "note": ""
+     }
+    },
+    {
+     "year": 2007,
+     "value": 53002,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "TOFE au 31 déc. 2007, p. 39",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 73091,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "TOFE au 31 déc. 2008, p. 33",
+      "note": "Hausse +37,9 % dont dons +205 %"
+     }
+    },
+    {
+     "year": 2010,
+     "value": 71124,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2011 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+      "page": "Tableau 18, p. 26",
+      "note": "Cumul décembre 2010"
+     }
+    },
+    {
+     "year": 2011,
+     "value": 75969,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2011 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+      "page": "Tableau 18, p. 26",
+      "note": "Cumul décembre 2011"
+     }
+    },
+    {
+     "year": 2012,
+     "value": 54012,
+     "status": "partiel_9_mois",
+     "source": {
+      "document": "Note de conjoncture, 3e trimestre 2012 (28 p.)",
+      "url": "https://www.ministere-finances.dj/NotedeconjonctureTroisiemetrimestre2012_VF.pdf",
+      "page": "p. 17",
+      "note": "Cumul à fin septembre 2012, pas un total annuel"
+     }
+    }
+   ],
+   "missing": [
+    2009
+   ],
+   "missing_note": "Total annuel 2009 non retrouvé : la note T4 2009 est absente de la page BIE ; cumul à fin septembre 2009 : 45 558 (note T3 2009)."
+  },
+  {
+   "id": "depenses_totales_mfd",
+   "label_fr": "Dépenses totales",
+   "unit": "millions FD",
+   "values": [
+    {
+     "year": 2005,
+     "value": 46378,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "TOFE au 31 déc. 2006, p. 48",
+      "note": "Valeur révisée : le BIE 2005 donnait 44 878"
+     }
+    },
+    {
+     "year": 2006,
+     "value": 51118,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "TOFE au 31 déc. 2006, p. 48",
+      "note": ""
+     }
+    },
+    {
+     "year": 2007,
+     "value": 56885,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "TOFE au 31 déc. 2007, p. 39",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 70902,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "TOFE au 31 déc. 2008, p. 33",
+      "note": ""
+     }
+    },
+    {
+     "year": 2010,
+     "value": 72141,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2011 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+      "page": "Tableau 19, p. 27",
+      "note": "Cumul décembre 2010"
+     }
+    },
+    {
+     "year": 2011,
+     "value": 77661,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2011 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+      "page": "Tableau 19, p. 27",
+      "note": "Cumul décembre 2011"
+     }
+    },
+    {
+     "year": 2012,
+     "value": 59583,
+     "status": "partiel_9_mois",
+     "source": {
+      "document": "Note de conjoncture, 3e trimestre 2012 (28 p.)",
+      "url": "https://www.ministere-finances.dj/NotedeconjonctureTroisiemetrimestre2012_VF.pdf",
+      "page": "p. 18",
+      "note": "Cumul à fin septembre 2012, pas un total annuel"
+     }
+    }
+   ],
+   "missing": [
+    2009
+   ],
+   "missing_note": "Total annuel 2009 non retrouvé (note T4 2009 absente) ; cumul à fin septembre 2009 : 54 910."
+  },
+  {
+   "id": "solde_mfd",
+   "label_fr": "Solde base ordonnancement",
+   "unit": "millions FD",
+   "values": [
+    {
+     "year": 2005,
+     "value": 333,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "TOFE au 31 déc. 2006, p. 48",
+      "note": "Le BIE 2005 donnait -1 424 base engagement"
+     }
+    },
+    {
+     "year": 2006,
+     "value": -3130,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "TOFE au 31 déc. 2006, p. 48",
+      "note": ""
+     }
+    },
+    {
+     "year": 2007,
+     "value": -3883,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "TOFE au 31 déc. 2007, p. 39",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 2189,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "TOFE au 31 déc. 2008, p. 33",
+      "note": "Excédent de 2,189 milliards FD"
+     }
+    },
+    {
+     "year": 2010,
+     "value": -1017,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2011 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+      "page": "Tableau 19, p. 27",
+      "note": ""
+     }
+    },
+    {
+     "year": 2011,
+     "value": -1692,
+     "status": "reel",
+     "source": {
+      "document": "Note de conjoncture, 4e trimestre 2011 (31 p.)",
+      "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+      "page": "Tableau 19, p. 27",
+      "note": "« déficit global base ordonnancement de 1,692 milliards de FDJ »"
+     }
+    }
+   ],
+   "missing": [
+    2009,
+    2012
+   ],
+   "missing_note": "2009 : total annuel non retrouvé. 2012 : solde à fin septembre non consolidé ici."
+  },
+  {
+   "id": "dette_exterieure_mfd",
+   "label_fr": "Dette extérieure totale (hors FMI et FMA)",
+   "unit": "millions FD",
+   "values": [
+    {
+     "year": 2001,
+     "value": 47607,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": "Évolution de l'encours de la dette extérieure"
+     }
+    },
+    {
+     "year": 2002,
+     "value": 56153,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": ""
+     }
+    },
+    {
+     "year": 2003,
+     "value": 66201,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": ""
+     }
+    },
+    {
+     "year": 2004,
+     "value": 71104,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": ""
+     }
+    },
+    {
+     "year": 2005,
+     "value": 68231,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": "Le BIE 2005 donnait 67 632 (Tableau 4, p. 64)"
+     }
+    },
+    {
+     "year": 2006,
+     "value": 71161,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": ""
+     }
+    },
+    {
+     "year": 2007,
+     "value": 84110,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 100925,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 43",
+      "note": "« passe de 84,110 milliards FD à 100,925 milliards FD »"
+     }
+    }
+   ]
+  },
+  {
+   "id": "dette_pib_pct",
+   "label_fr": "Dette extérieure / PIB",
+   "unit": "% du PIB",
+   "values": [
+    {
+     "year": 2006,
+     "value": 52,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 44",
+      "note": "Indicateurs de la dette"
+     }
+    },
+    {
+     "year": 2007,
+     "value": 55,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 44",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 57.8,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2008 (Bulletin d'information économique 2008, 87 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+      "page": "p. 44",
+      "note": "« taux de 57,8 % se rapprochant du seuil de dépendance extérieure de 60 % »"
+     }
+    }
+   ]
+  },
+  {
+   "id": "exportations_pct_pib",
+   "label_fr": "Exportations de biens et services",
+   "unit": "% du PIB",
+   "values": [
+    {
+     "year": 2005,
+     "value": 40.6,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2006 (Bulletin d'information économique de l'année 2006, 117 p.)",
+      "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+      "page": "Tableau 3, p. 64",
+      "note": ""
+     }
+    },
+    {
+     "year": 2006,
+     "value": 41.0,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Le BIE 2006 donnait 40"
+     }
+    },
+    {
+     "year": 2007,
+     "value": 43.3,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 43.0,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    },
+    {
+     "year": 2009,
+     "value": 45.4,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    },
+    {
+     "year": 2010,
+     "value": 46.4,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    }
+   ]
+  },
+  {
+   "id": "importations_pct_pib",
+   "label_fr": "Importations de biens et services",
+   "unit": "% du PIB",
+   "values": [
+    {
+     "year": 2005,
+     "value": -55,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": ""
+     }
+    },
+    {
+     "year": 2006,
+     "value": -63.6,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": ""
+     }
+    },
+    {
+     "year": 2007,
+     "value": -75.3,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": -77.6,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    },
+    {
+     "year": 2009,
+     "value": -84.0,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    },
+    {
+     "year": 2010,
+     "value": -77.6,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    }
+   ]
+  },
+  {
+   "id": "investissement_pct_pib",
+   "label_fr": "Investissement brut",
+   "unit": "% du PIB",
+   "values": [
+    {
+     "year": 2005,
+     "value": 23.2,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Le BIE 2006 donnait 19 (Tableau 3, p. 64)"
+     }
+    },
+    {
+     "year": 2006,
+     "value": 35.0,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Le BIE 2006 donnait 30,1"
+     }
+    },
+    {
+     "year": 2007,
+     "value": 42.1,
+     "status": "reel",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": ""
+     }
+    },
+    {
+     "year": 2008,
+     "value": 41.6,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    },
+    {
+     "year": 2009,
+     "value": 45.4,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    },
+    {
+     "year": 2010,
+     "value": 39.5,
+     "status": "prevision_ministere",
+     "source": {
+      "document": "BIE 2007 (Bulletin d'information économique de l'année 2007, 82 p.)",
+      "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+      "page": "Tableau 8, p. 51",
+      "note": "Prévision (**) du BIE 2007"
+     }
+    }
+   ]
+  }
+ ],
+ "ministry_forecasts_2008": {
+  "label": "Prévisions du ministère, BIE 2008, « Perspectives économiques 2009-2012 » (p. 45)",
+  "source": {
+   "document": "BIE 2008 (87 p.)",
+   "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+   "page": "p. 45",
+   "note": "Prévisions du ministère publiées en 2008, pas du réalisé"
+  },
+  "croissance_pib_reel": [
+   {
+    "year": 2009,
+    "value": 5.1
+   },
+   {
+    "year": 2010,
+    "value": 5.4
+   },
+   {
+    "year": 2011,
+    "value": 5.8
+   },
+   {
+    "year": 2012,
+    "value": 6.3
+   }
+  ],
+  "pib_nominal_mfd": [
+   {
+    "year": 2009,
+    "value": 193555
+   },
+   {
+    "year": 2010,
+    "value": 214256
+   },
+   {
+    "year": 2011,
+    "value": 236885
+   },
+   {
+    "year": 2012,
+    "value": 260598
+   }
+  ],
+  "inflation_fin_periode": [
+   {
+    "year": 2009,
+    "value": 5.0
+   },
+   {
+    "year": 2010,
+    "value": 4.5
+   },
+   {
+    "year": 2011,
+    "value": 3.5
+   },
+   {
+    "year": 2012,
+    "value": 3.0
+   }
+  ]
+ },
+ "forecasts_model": [
+  {
+   "indicator": "croissance_pib_reel",
+   "label_fr": "Croissance du PIB réel",
+   "unit": "%",
+   "method": "Tendance linéaire par moindres carrés ordinaires sur 2000-2008 (9 points). Intervalle : ±1,96 × écart-type résiduel (0,48 point). Modèle MizanBI, pas une donnée du ministère.",
+   "horizon": "2009-2012",
+   "residual_sd": 0.48,
+   "values": [
+    {
+     "year": 2009,
+     "central": 6.37,
+     "low": 5.43,
+     "high": 7.31
+    },
+    {
+     "year": 2010,
+     "central": 6.97,
+     "low": 6.03,
+     "high": 7.91
+    },
+    {
+     "year": 2011,
+     "central": 7.57,
+     "low": 6.62,
+     "high": 8.51
+    },
+    {
+     "year": 2012,
+     "central": 8.16,
+     "low": 7.22,
+     "high": 9.11
+    }
+   ],
+   "warning": "La tendance prolonge l'accélération 2005-2008 et ignore la crise mondiale de 2009 : elle dépasse les prévisions du ministère (5,1 à 6,3 %). À lire comme une borne haute naïve, pas comme une attente."
+  },
+  {
+   "indicator": "dette_exterieure_mfd",
+   "label_fr": "Dette extérieure totale",
+   "unit": "millions FD",
+   "method": "Tendance linéaire par moindres carrés ordinaires sur 2001-2008 (8 points). Intervalle : ±1,96 × écart-type résiduel (6,11 milliards FD). Modèle MizanBI, pas une donnée du ministère.",
+   "horizon": "2009-2012",
+   "residual_sd": 6114,
+   "values": [
+    {
+     "year": 2009,
+     "central": 98810,
+     "low": 86830,
+     "high": 110800
+    },
+    {
+     "year": 2010,
+     "central": 105060,
+     "low": 93080,
+     "high": 117050
+    },
+    {
+     "year": 2011,
+     "central": 111310,
+     "low": 99330,
+     "high": 123300
+    },
+    {
+     "year": 2012,
+     "central": 117560,
+     "low": 105580,
+     "high": 129550
+    }
+   ],
+   "warning": "La dette a crû de 112 % entre 2001 et 2008 ; la tendance suppose que ce rythme se poursuit, sans tenir compte des allègements ou des nouveaux prêts."
+  },
+  {
+   "indicator": "pib_nominal_mfd",
+   "label_fr": "PIB nominal",
+   "unit": "millions FD",
+   "method": "Tendance linéaire par moindres carrés ordinaires sur 2000-2008 (9 points). Intervalle : ±1,96 × écart-type résiduel (8,02 milliards FD). Modèle MizanBI, pas une donnée du ministère.",
+   "horizon": "2009-2012",
+   "residual_sd": 8016,
+   "values": [
+    {
+     "year": 2009,
+     "central": 167910,
+     "low": 152200,
+     "high": 183620
+    },
+    {
+     "year": 2010,
+     "central": 176640,
+     "low": 160920,
+     "high": 192350
+    },
+    {
+     "year": 2011,
+     "central": 185370,
+     "low": 169650,
+     "high": 201080
+    },
+    {
+     "year": 2012,
+     "central": 194100,
+     "low": 178380,
+     "high": 209810
+    }
+   ],
+   "warning": "La tendance linéaire sous-estime l'accélération nominale : les prévisions du ministère (193,6 à 260,6 milliards FD) sont au-dessus de l'intervalle dès 2010. Le PIB nominal n'est pas linéaire."
+  }
+ ],
+ "no_forecast": [
+  {
+   "indicator": "inflation_ipc_moyenne",
+   "reason": "Série trop courte et trouée : 5 points seulement (2005-2008, 2011), années 2009, 2010 et 2012 manquantes en moyenne annuelle."
+  },
+  {
+   "indicator": "recettes_dons_mfd",
+   "reason": "Série trouée (2009 manquant) et choc 2008 : les dons ont bondi de +205 % en 2008, la tendance serait trompeuse."
+  },
+  {
+   "indicator": "depenses_totales_mfd",
+   "reason": "Même raison : trou 2009 et saut 2008 (+24,6 %), notamment les investissements +43,4 %."
+  },
+  {
+   "indicator": "exportations_pct_pib",
+   "reason": "Les valeurs 2008-2010 sont déjà des prévisions du ministère, pas du réalisé : on ne prévoit pas sur des prévisions."
+  }
+ ],
+ "coverage": [
+  {
+   "year": 2001,
+   "status": "inaccessible",
+   "detail": "3 liens .htm : pages à cadres (frameset), contenu non récupérable."
+  },
+  {
+   "year": 2002,
+   "status": "inaccessible",
+   "detail": "3 liens .htm : 1 fichier vide (0 octet), 2 pages à cadres, contenu non récupérable."
+  },
+  {
+   "year": 2003,
+   "status": "inaccessible",
+   "detail": "3 liens .htm : pages à cadres, contenu non récupérable."
+  },
+  {
+   "year": 2004,
+   "status": "inaccessible",
+   "detail": "3 liens .htm : 2 fichiers vides (0 octet), 1 page à cadres (T4), contenu non récupérable."
+  },
+  {
+   "year": 2005,
+   "status": "accessible",
+   "detail": "BIE 2005 def.pdf, 67 p., OK. Le .mht « LR 2005 » est une loi rectificative, pas un BIE."
+  },
+  {
+   "year": 2006,
+   "status": "accessible",
+   "detail": "BIE 2006.pdf, 117 p., OK. Un second fichier « BIE version finale.pdf » (102 p.) reprend le même contenu 2006, non retenu comme source principale."
+  },
+  {
+   "year": 2007,
+   "status": "accessible",
+   "detail": "BIE 2007 avec graphiques1 definitif 2.pdf, 82 p., OK. Le lien « BIE 2007.pdf » renvoie 404."
+  },
+  {
+   "year": 2008,
+   "status": "accessible",
+   "detail": "BIE 2008 Finale.pdf, 87 p., OK (lien en double, même fichier)."
+  },
+  {
+   "year": 2009,
+   "status": "partiel",
+   "detail": "Notes T1 (18 p.), T2 (27 p.), T3 (23 p.) OK ; note T4 absente de la page — pas de total annuel."
+  },
+  {
+   "year": 2010,
+   "status": "accessible",
+   "detail": "Notes T1 (26 p.), T2 (26 p.), T3 (29 p.), T4 (31 p.) OK."
+  },
+  {
+   "year": 2011,
+   "status": "accessible",
+   "detail": "Notes T1 (30 p.), T2 (37 p.), T3 (32 p.), T4 (31 p.) OK."
+  },
+  {
+   "year": 2012,
+   "status": "partiel",
+   "detail": "Notes T1 (31 p.), T2 (32 p.), T3 (28 p.) OK ; note T4 absente (lien « trimestre 2012 _VF.PDF » inaccessible) — pas de total annuel."
+  }
+ ]
+}

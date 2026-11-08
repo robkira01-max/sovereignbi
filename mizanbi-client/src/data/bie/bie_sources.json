@@ -1,0 +1,303 @@
+{
+ "downloaded": "2026-11-08",
+ "source_page": "https://www.ministere-finances.dj/BIE.html",
+ "documents": [
+  {
+   "year": 2012,
+   "quarter": "T1",
+   "file": "2012.pdf",
+   "url": "https://www.ministere-finances.dj/2012.pdf",
+   "pages": 31,
+   "status": "ok"
+  },
+  {
+   "year": 2012,
+   "quarter": "T2",
+   "file": "20122.pdf",
+   "url": "https://www.ministere-finances.dj/20122.pdf",
+   "pages": 32,
+   "status": "ok"
+  },
+  {
+   "year": 2012,
+   "quarter": "T3",
+   "file": "NotedeconjonctureTroisiemetrimestre2012_VF.pdf",
+   "url": "https://www.ministere-finances.dj/NotedeconjonctureTroisiemetrimestre2012_VF.pdf",
+   "pages": 28,
+   "status": "ok"
+  },
+  {
+   "year": 2012,
+   "quarter": "T4",
+   "file": "trimestre 2012 _VF.PDF",
+   "url": "https://www.ministere-finances.dj/trimestre%202012%20_VF.PDF",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Timeout puis page HTML d'erreur à la nouvelle tentative"
+  },
+  {
+   "year": 2011,
+   "quarter": "T1",
+   "file": "Note de conjoncture12011.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture12011.pdf",
+   "pages": 30,
+   "status": "ok"
+  },
+  {
+   "year": 2011,
+   "quarter": "T2",
+   "file": "Note de Conjoncture 22011.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20Conjoncture%2022011.pdf",
+   "pages": 37,
+   "status": "ok"
+  },
+  {
+   "year": 2011,
+   "quarter": "T3",
+   "file": "Notedeconjoncture32011.pdf",
+   "url": "https://www.ministere-finances.dj/Notedeconjoncture32011.pdf",
+   "pages": 32,
+   "status": "ok"
+  },
+  {
+   "year": 2011,
+   "quarter": "T4",
+   "file": "Note de conjoncture.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture.pdf",
+   "pages": 31,
+   "status": "ok"
+  },
+  {
+   "year": 2010,
+   "quarter": "T1",
+   "file": "1er trimestre 2010.pdf",
+   "url": "https://www.ministere-finances.dj/1er%20trimestre%202010.pdf",
+   "pages": 26,
+   "status": "ok"
+  },
+  {
+   "year": 2010,
+   "quarter": "T2",
+   "file": "NC-Version finale juin 2010.pdf",
+   "url": "https://www.ministere-finances.dj/NC-Version%20finale%20juin%202010.pdf",
+   "pages": 26,
+   "status": "ok"
+  },
+  {
+   "year": 2010,
+   "quarter": "T3",
+   "file": "Note de conjoncture version finale du 11 janvier 2011.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture%20version%20finale%20du%2011%20janvier%202011.pdf",
+   "pages": 29,
+   "status": "ok"
+  },
+  {
+   "year": 2010,
+   "quarter": "T4",
+   "file": "Note de Conjoncture4trimestre finale.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20Conjoncture4trimestre%20finale.pdf",
+   "pages": 31,
+   "status": "ok"
+  },
+  {
+   "year": 2009,
+   "quarter": "T1",
+   "file": "Note de Conjoncture 1er TRIM2009.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20Conjoncture%201er%20TRIM2009.pdf",
+   "pages": 18,
+   "status": "ok"
+  },
+  {
+   "year": 2009,
+   "quarter": "T2",
+   "file": "Note de conjoncture 2EME TRIMESTRE 2009 VERSION DEFINITIVE.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture%202EME%20TRIMESTRE%202009%20VERSION%20DEFINITIVE.pdf",
+   "pages": 27,
+   "status": "ok"
+  },
+  {
+   "year": 2009,
+   "quarter": "T3",
+   "file": "Note de conjoncture 3eme trimestre 2009 version definitive.pdf",
+   "url": "https://www.ministere-finances.dj/Note%20de%20conjoncture%203eme%20trimestre%202009%20version%20definitive.pdf",
+   "pages": 23,
+   "status": "ok"
+  },
+  {
+   "year": 2009,
+   "quarter": "T4",
+   "file": null,
+   "url": null,
+   "pages": null,
+   "status": "absent",
+   "detail": "Aucun lien T4 2009 sur la page BIE"
+  },
+  {
+   "year": 2008,
+   "quarter": "annuel",
+   "file": "BIE 2008 Finale.pdf",
+   "url": "https://www.ministere-finances.dj/BIE%202008%20Finale.pdf",
+   "pages": 87,
+   "status": "ok"
+  },
+  {
+   "year": 2007,
+   "quarter": "annuel",
+   "file": "BIE 2007 avec graphiques1 definitif 2.pdf",
+   "url": "https://www.ministere-finances.dj/BIE%20%202007%20avec%20graphiques1%20definitif%202.pdf",
+   "pages": 82,
+   "status": "ok"
+  },
+  {
+   "year": 2007,
+   "quarter": "annuel",
+   "file": "BIE 2007.pdf",
+   "url": "https://www.ministere-finances.dj/BIE%20%202007%20.pdf",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "HTTP 404"
+  },
+  {
+   "year": 2006,
+   "quarter": "annuel",
+   "file": "EF/BIE 2006.pdf",
+   "url": "https://www.ministere-finances.dj/EF/BIE%202006.pdf",
+   "pages": 117,
+   "status": "ok"
+  },
+  {
+   "year": 2006,
+   "quarter": "annuel",
+   "file": "BIE version finale.pdf",
+   "url": "https://www.ministere-finances.dj/BIE%20version%20finale.pdf",
+   "pages": 102,
+   "status": "ok",
+   "detail": "Même contenu 2006, non retenu comme source principale"
+  },
+  {
+   "year": 2005,
+   "quarter": "annuel",
+   "file": "BIE 2005 def.pdf",
+   "url": "https://www.ministere-finances.dj/BIE%202005%20def.pdf",
+   "pages": 67,
+   "status": "ok"
+  },
+  {
+   "year": 2005,
+   "quarter": "annuel",
+   "file": "SITE OFFICIEL DE LA REPUBLIQUE DE DJIBOUTI.mht",
+   "url": "https://www.ministere-finances.dj/EF/TEXTES/LR%202005/SITE%20OFFICIEL%20DE%20LA%20REPUBLIQUE%20DE%20DJIBOUTI.mht",
+   "pages": null,
+   "status": "hors_sujet",
+   "detail": "Loi rectificative 2005, pas un BIE"
+  },
+  {
+   "year": 2004,
+   "quarter": "T2",
+   "file": "acmesu4_2.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesu4_2.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Fichier vide (0 octet)"
+  },
+  {
+   "year": 2004,
+   "quarter": "T3",
+   "file": "acmesu4_3.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesu4_3.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Fichier vide (0 octet)"
+  },
+  {
+   "year": 2004,
+   "quarter": "T4",
+   "file": "acmesu4_4.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/BIE04/acmesu4_4.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres (frameset), contenu non récupérable"
+  },
+  {
+   "year": 2003,
+   "quarter": "T1",
+   "file": "acmesur03_1.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur03_1.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  },
+  {
+   "year": 2003,
+   "quarter": "T2",
+   "file": "acmesur03_2.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur03_2.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  },
+  {
+   "year": 2003,
+   "quarter": "T3",
+   "file": "acmesur03_3.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur03_3.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  },
+  {
+   "year": 2002,
+   "quarter": "T1",
+   "file": "acmesur02.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur02.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Fichier vide (0 octet)"
+  },
+  {
+   "year": 2002,
+   "quarter": "T2",
+   "file": "acmesur02_2.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur02_2.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  },
+  {
+   "year": 2002,
+   "quarter": "T3",
+   "file": "acmesur02_3.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur02_3.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  },
+  {
+   "year": 2001,
+   "quarter": "T1",
+   "file": "acmesur1.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur1.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  },
+  {
+   "year": 2001,
+   "quarter": "T2",
+   "file": "ACMESUR2.HTM",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/ACMESUR2.HTM",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  },
+  {
+   "year": 2001,
+   "quarter": "T3",
+   "file": "acmesur3.htm",
+   "url": "https://www.ministere-finances.dj/EF/Economie_Finances/acmesur3.htm",
+   "pages": null,
+   "status": "inaccessible",
+   "detail": "Page à cadres, contenu non récupérable"
+  }
+ ]
+}

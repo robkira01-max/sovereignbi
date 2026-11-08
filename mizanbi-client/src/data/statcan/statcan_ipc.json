@@ -1,0 +1,66 @@
+{
+  "table": "18100004",
+  "title_en": "Consumer Price Index, monthly, not seasonally adjusted",
+  "title_fr": "Indice des prix à la consommation mensuel, non désaisonnalisé",
+  "series": "All-items, Canada, 2002=100",
+  "unit": "index (2002=100)",
+  "latest": "2026-09",
+  "previous_year": "2025-09",
+  "canada_latest": 170.0,
+  "canada_previous_year": 164.9,
+  "yoy_pct": 3.1,
+  "trend_canada": [
+    {
+      "date": "2025-09",
+      "value": 164.9
+    },
+    {
+      "date": "2025-10",
+      "value": 165.3
+    },
+    {
+      "date": "2025-11",
+      "value": 165.4
+    },
+    {
+      "date": "2025-12",
+      "value": 165.0
+    },
+    {
+      "date": "2026-01",
+      "value": 165.0
+    },
+    {
+      "date": "2026-02",
+      "value": 165.9
+    },
+    {
+      "date": "2026-03",
+      "value": 167.4
+    },
+    {
+      "date": "2026-04",
+      "value": 168.0
+    },
+    {
+      "date": "2026-05",
+      "value": 169.6
+    },
+    {
+      "date": "2026-06",
+      "value": 169.0
+    },
+    {
+      "date": "2026-07",
+      "value": 169.9
+    },
+    {
+      "date": "2026-08",
+      "value": 169.8
+    },
+    {
+      "date": "2026-09",
+      "value": 170.0
+    }
+  ]
+}

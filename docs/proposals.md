@@ -48,6 +48,55 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 
 ---
 
+## Proposals mizanbi-client (frontend standalone React)
+
+Le propriétaire a livré une version standalone React (`mizanbi-client/`) apportant les fonctionnalités P-028 à P-034.
+App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — cartes SVG inline. Stack : React 18, recharts, @tanstack/react-query, pdfjs-dist. Vitest ajouté pour P-034.
+
+## P-028 — Thèmes OKLCH dynamiques ✅ (livré dans mizanbi-client)
+
+**Raison :** 7 thèmes OKLCH (violet-green, teal-ochre, ocean, forest, sunset, plum-rose, light) + mode Auto (Djibouti→teal-ochre, Canada→violet-green) pour s'adapter à l'identité visuelle de chaque institution.
+**Impact :** Élevé — identité de marque, démo institutionnelle.
+**Statut :** ✅ Livré 2026-11-08. `src/lib/theme.ts` : `applyTheme()`, `colorForValue()`, `scaleFor()`, `textOnFill()`, `resolveTheme()`. Menu thème topbar (pastilles). `THEME_MODE_KEY` localStorage.
+
+## P-029 — Cartes anciennes géoréférencées ✅ (livré dans mizanbi-client)
+
+**Raison :** Visualiser les cartes historiques superposées aux contours administratifs modernes (utilisation pdfjs pour images raster + transformation affine).
+**Impact :** Moyen — usage archivistique et pédagogique.
+**Statut :** ✅ Livré 2026-11-08. `src/pages/AncientMaps.tsx` + `src/lib/ancientMaps.ts`. Upload PDF + contrôle de transparence + GCPs affines.
+
+## P-030 — Bulletins d'information économique BIE 2001–2012 ✅ (livré dans mizanbi-client)
+
+**Raison :** Données réelles du Ministère des Finances de Djibouti (snapshot local 8 nov. 2026). Évolution du PIB, inflation, recettes/dépenses, dette extérieure sur 12 ans.
+**Impact :** Très élevé — données économiques nationales vérifiées, différenciateur pour INSTAD.
+**Statut :** ✅ Livré 2026-11-08. `src/lib/bie.ts` + `src/data/bie/` (bie_series.json, bie_sources.json). Page `BiePage` avec graphiques ComposedChart (réel + prévisions ministère + modèle MizanBI), tableau récapitulatif annuel.
+
+## P-031 — Tableau de bord national Canada (StatCan) ✅ (livré dans mizanbi-client)
+
+**Raison :** Données StatCan (Licence ouverte, snapshot 2026-11-07) : chômage, emploi, IPC, population par province. Marché cible Canada.
+**Impact :** Élevé — cohérence marché Canada.
+**Statut :** ✅ Livré 2026-11-08. `src/lib/statcan.ts` + `src/data/statcan/` (5 JSON). Page `CanadaNationalPage` : chômage par province, variation emploi oct. 2026, IPC.
+
+## P-032 — Utilisateur de démonstration Robleh Hassan ✅ (livré dans mizanbi-client)
+
+**Raison :** Mode démo affiche "Robleh Hassan" (initiales RH) au lieu d'un placeholder générique. `DEMO_USER` exporté depuis `data/demo.ts`.
+**Impact :** Faible — cosmétique/identité pilote.
+**Statut :** ✅ Livré 2026-11-08. `DEMO_USER = { name: 'Robleh Hassan', initials: 'RH' }`. Token 'demo' → setUserName(DEMO_USER.name). localStorage `mizan_user_name`.
+
+## P-033 — BCD 2024 + INSTAD RGPH-3 ✅ (livré dans mizanbi-client)
+
+**Raison :** Données réelles : BCD Rapport Annuel 2024 (Synthèse p. 2-3) — 16 KPIs bancaires incluant crédits +35,4%, monnaie électronique ×4,3. INSTAD RGPH-3 (résultats définitifs juin 2025) — 1 066 568 habitants.
+**Impact :** Très élevé — données bancaires et démographiques nationales vérifiées.
+**Statut :** ✅ Livré 2026-11-08. `src/lib/bcd.ts` + `src/data/bcd/bcd_2024.json` + `src/data/instad/rgph3.json`. Page `BcdPage` : KPI cards, graphiques recharts.
+
+## P-034 — Bulletins enrichis multi-sources ✅ (livré 2026-11-08)
+
+**Raison :** La page Bulletins n'utilisait que les données démo. Intégration des données réelles BIE (macro DJ), BCD 2024 (système bancaire DJ) et StatCan (emploi Canada) en 3 onglets analytiques avec export HTML multi-sections.
+**Impact :** Élevé — bulletin de synthèse prêt à distribuer aux institutionnels.
+**Statut :** ✅ Livré 2026-11-08. `src/lib/bulletins.ts` (fonctions pures : `bieBulletinSection`, `bcdBulletinSection`, `statcanBulletinSection`, `renderBulletinHtml`). `Bulletins.tsx` refactorisé : 4 onglets (Hebdomadaire/Économie DJ/Banques DJ/Canada), export HTML auto-suffisant multi-sections. Vitest setup (`vitest.config.ts`, `package.json test`). 21/21 tests.
+
+---
+
 ## P-001 — Small multiples (tile type `grid`) ✅
 **Raison :** Pour les 6 régions de Djibouti, afficher 6 mini-graphiques côte à côte est plus lisible qu'un seul barplot. Standard ONS UK, INSEE, KNBS.  
 **Impact :** Moyen — pur frontend, 2-3 jours. Idéal pour les dashboards INSTAD.  

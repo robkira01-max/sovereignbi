@@ -1,0 +1,117 @@
+{
+  "table": "17100009",
+  "title_en": "Population estimates, quarterly",
+  "title_fr": "Estimations de la population, trimestrielles",
+  "series": "Population, July 1 estimates",
+  "unit": "persons",
+  "latest": "2026-07-01",
+  "previous_year": "2025-07-01",
+  "canada_latest": 41798407,
+  "canada_previous_year": 41608982,
+  "by_province_latest": [
+    {
+      "province": "Newfoundland and Labrador",
+      "value": 552462
+    },
+    {
+      "province": "Prince Edward Island",
+      "value": 182989
+    },
+    {
+      "province": "Nova Scotia",
+      "value": 1103419
+    },
+    {
+      "province": "New Brunswick",
+      "value": 883522
+    },
+    {
+      "province": "Quebec",
+      "value": 9067114
+    },
+    {
+      "province": "Ontario",
+      "value": 16262121
+    },
+    {
+      "province": "Manitoba",
+      "value": 1517379
+    },
+    {
+      "province": "Saskatchewan",
+      "value": 1278402
+    },
+    {
+      "province": "Alberta",
+      "value": 5101050
+    },
+    {
+      "province": "British Columbia",
+      "value": 5710598
+    }
+  ],
+  "by_province_previous_year": [
+    {
+      "province": "Newfoundland and Labrador",
+      "value": 550202
+    },
+    {
+      "province": "Prince Edward Island",
+      "value": 181594
+    },
+    {
+      "province": "Nova Scotia",
+      "value": 1095157
+    },
+    {
+      "province": "New Brunswick",
+      "value": 874711
+    },
+    {
+      "province": "Quebec",
+      "value": 9051022
+    },
+    {
+      "province": "Ontario",
+      "value": 16216961
+    },
+    {
+      "province": "Manitoba",
+      "value": 1508582
+    },
+    {
+      "province": "Saskatchewan",
+      "value": 1266289
+    },
+    {
+      "province": "Alberta",
+      "value": 5024631
+    },
+    {
+      "province": "British Columbia",
+      "value": 5702544
+    }
+  ],
+  "trend_canada": [
+    {
+      "date": "2022-07-01",
+      "value": 38945628
+    },
+    {
+      "date": "2023-07-01",
+      "value": 40022704
+    },
+    {
+      "date": "2024-07-01",
+      "value": 41162593
+    },
+    {
+      "date": "2025-07-01",
+      "value": 41608982
+    },
+    {
+      "date": "2026-07-01",
+      "value": 41798407
+    }
+  ]
+}

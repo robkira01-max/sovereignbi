@@ -1,0 +1,188 @@
+{
+  "table": "14100287",
+  "title_en": "Labour force characteristics, monthly, seasonally adjusted and trend-cycle",
+  "title_fr": "Caractéristiques de la population active, données mensuelles désaisonnalisées et la tendance-cycle",
+  "series": "Employment, Total - Gender, 15 years and over, Estimate, Seasonally adjusted (persons in thousands); Unemployment rate, same",
+  "unit": "emplois (variation) ; % (taux de chômage)",
+  "downloaded": "2026-11-08",
+  "reference": "2026-10",
+  "previous": "2026-09",
+  "release": "2026-11-06T08:30",
+  "wds_url": "https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/14100287/en",
+  "csv_url": "https://www150.statcan.gc.ca/n1/tbl/csv/14100287-eng.zip",
+  "canada": {
+    "employment_sep_2026": 21104800,
+    "employment_oct_2026": 21100100,
+    "change_jobs": -4700,
+    "unemployment_sep_2026": 6.5,
+    "unemployment_oct_2026": 6.7,
+    "unemployment_change_pt": 0.2
+  },
+  "by_province": [
+    {
+      "province": "Canada",
+      "employment_sep_2026": 21104800.0,
+      "employment_oct_2026": 21100100.0,
+      "change_jobs": -4700,
+      "change_thousands": -4.7,
+      "unemployment_sep_2026": 6.5,
+      "unemployment_oct_2026": 6.7,
+      "unemployment_change_pt": 0.2,
+      "vector_employment": "v2062811"
+    },
+    {
+      "province": "Newfoundland and Labrador",
+      "employment_sep_2026": 246800.0,
+      "employment_oct_2026": 249700.0,
+      "change_jobs": 2900,
+      "change_thousands": 2.9,
+      "unemployment_sep_2026": 9.1,
+      "unemployment_oct_2026": 8.7,
+      "unemployment_change_pt": -0.4,
+      "vector_employment": "v2063000"
+    },
+    {
+      "province": "Prince Edward Island",
+      "employment_sep_2026": 96600.0,
+      "employment_oct_2026": 95300.0,
+      "change_jobs": -1300,
+      "change_thousands": -1.3,
+      "unemployment_sep_2026": 7.3,
+      "unemployment_oct_2026": 7.4,
+      "unemployment_change_pt": 0.1,
+      "vector_employment": "v2063189"
+    },
+    {
+      "province": "Nova Scotia",
+      "employment_sep_2026": 540700.0,
+      "employment_oct_2026": 543000.0,
+      "change_jobs": 2300,
+      "change_thousands": 2.3,
+      "unemployment_sep_2026": 6.3,
+      "unemployment_oct_2026": 6.2,
+      "unemployment_change_pt": -0.1,
+      "vector_employment": "v2063378"
+    },
+    {
+      "province": "New Brunswick",
+      "employment_sep_2026": 407900.0,
+      "employment_oct_2026": 409100.0,
+      "change_jobs": 1200,
+      "change_thousands": 1.2,
+      "unemployment_sep_2026": 7.4,
+      "unemployment_oct_2026": 7.4,
+      "unemployment_change_pt": 0.0,
+      "vector_employment": "v2063567"
+    },
+    {
+      "province": "Quebec",
+      "employment_sep_2026": 4539300.0,
+      "employment_oct_2026": 4546800.0,
+      "change_jobs": 7500,
+      "change_thousands": 7.5,
+      "unemployment_sep_2026": 6.0,
+      "unemployment_oct_2026": 5.7,
+      "unemployment_change_pt": -0.3,
+      "vector_employment": "v2063756"
+    },
+    {
+      "province": "Ontario",
+      "employment_sep_2026": 8286500.0,
+      "employment_oct_2026": 8277900.0,
+      "change_jobs": -8600,
+      "change_thousands": -8.6,
+      "unemployment_sep_2026": 7.0,
+      "unemployment_oct_2026": 7.3,
+      "unemployment_change_pt": 0.3,
+      "vector_employment": "v2063945"
+    },
+    {
+      "province": "Manitoba",
+      "employment_sep_2026": 751700.0,
+      "employment_oct_2026": 752500.0,
+      "change_jobs": 800,
+      "change_thousands": 0.8,
+      "unemployment_sep_2026": 5.0,
+      "unemployment_oct_2026": 5.0,
+      "unemployment_change_pt": 0.0,
+      "vector_employment": "v2064134"
+    },
+    {
+      "province": "Saskatchewan",
+      "employment_sep_2026": 622100.0,
+      "employment_oct_2026": 624600.0,
+      "change_jobs": 2500,
+      "change_thousands": 2.5,
+      "unemployment_sep_2026": 5.4,
+      "unemployment_oct_2026": 5.9,
+      "unemployment_change_pt": 0.5,
+      "vector_employment": "v2064323"
+    },
+    {
+      "province": "Alberta",
+      "employment_sep_2026": 2684200.0,
+      "employment_oct_2026": 2659900.0,
+      "change_jobs": -24300,
+      "change_thousands": -24.3,
+      "unemployment_sep_2026": 6.4,
+      "unemployment_oct_2026": 7.3,
+      "unemployment_change_pt": 0.9,
+      "vector_employment": "v2064512"
+    },
+    {
+      "province": "British Columbia",
+      "employment_sep_2026": 2929000.0,
+      "employment_oct_2026": 2941300.0,
+      "change_jobs": 12300,
+      "change_thousands": 12.3,
+      "unemployment_sep_2026": 6.4,
+      "unemployment_oct_2026": 6.3,
+      "unemployment_change_pt": -0.1,
+      "vector_employment": "v2064701"
+    }
+  ],
+  "by_age_oct_2026": [
+    {
+      "age": "15 to 24 years",
+      "label_fr": "15-24 ans",
+      "employment": 2665300,
+      "share_pct": 12.6,
+      "unemployment_rate": 13.7,
+      "vector_employment": "v2062838"
+    },
+    {
+      "age": "25 to 54 years",
+      "label_fr": "25-54 ans",
+      "employment": 14100000,
+      "share_pct": 66.8,
+      "unemployment_rate": 5.6,
+      "vector_employment": "v2062946"
+    },
+    {
+      "age": "55 years and over",
+      "label_fr": "55 ans et plus",
+      "employment": 4334700,
+      "share_pct": 20.5,
+      "unemployment_rate": 5.5,
+      "vector_employment": "v2062973"
+    }
+  ],
+  "by_age_sep_2026": [
+    {
+      "age": "15 to 24 years",
+      "employment": 2676000,
+      "unemployment_rate": 13.0
+    },
+    {
+      "age": "25 to 54 years",
+      "employment": 14079700,
+      "unemployment_rate": 5.6
+    },
+    {
+      "age": "55 years and over",
+      "employment": 4349100,
+      "unemployment_rate": 5.3
+    }
+  ],
+  "method": "Valeurs extraites du CSV complet de la table 14-10-0287-01 (WDS, 8 nov. 2026), filtrées : Estimate, données désaisonnalisées, Total - Gender. Emploi en milliers de personnes, converti en emplois (x 1 000). Parts par âge calculées sur l'emploi total d'octobre 2026 (21 100 100) : 2 665 300 / 14 100 000 / 4 334 700, total 21 100 000 (écart d'arrondi 100)."
+}

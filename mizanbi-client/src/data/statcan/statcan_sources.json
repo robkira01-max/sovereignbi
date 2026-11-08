@@ -1,0 +1,51 @@
+{
+  "downloaded": "2026-11-07",
+  "downloaded_emploi": "2026-11-08",
+  "licence": "Statistics Canada Open Licence / Licence ouverte de Statistique Canada (https://www.statcan.gc.ca/en/terms-conditions/open-licence)",
+  "attribution": "Source: Statistics Canada, {title}, {reference_date}",
+  "wds_base": "https://www150.statcan.gc.ca/t1/wds/rest",
+  "tables": [
+    {
+      "product_id": "14100287",
+      "table": "14-10-0287-01",
+      "title_en": "Labour force characteristics, monthly, seasonally adjusted and trend-cycle",
+      "title_fr": "Caractéristiques de la population active, données mensuelles désaisonnalisées et la tendance-cycle",
+      "reference_date": "2026-10",
+      "release": "2026-11-06T08:30",
+      "wds_url": "https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/14100287/en",
+      "csv_url": "https://www150.statcan.gc.ca/n1/tbl/csv/14100287-eng.zip"
+    },
+    {
+      "product_id": "14100287",
+      "table": "14-10-0287-01",
+      "title_en": "Labour force characteristics, monthly, seasonally adjusted and trend-cycle",
+      "title_fr": "Caractéristiques de la population active, données mensuelles désaisonnalisées et la tendance-cycle",
+      "series": "Employment, Total - Gender, 15 years and over, Estimate, Seasonally adjusted (variation sept. -> oct. 2026, par province et par groupe d'âge)",
+      "reference_date": "2026-10",
+      "downloaded": "2026-11-08",
+      "release": "2026-11-06T08:30",
+      "wds_url": "https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/14100287/en",
+      "csv_url": "https://www150.statcan.gc.ca/n1/tbl/csv/14100287-eng.zip"
+    },
+    {
+      "product_id": "17100009",
+      "table": "17-10-0009-01",
+      "title_en": "Population estimates, quarterly",
+      "title_fr": "Estimations de la population, trimestrielles",
+      "reference_date": "2026-07-01",
+      "release": "2026-09-23T08:30",
+      "wds_url": "https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/17100009/en",
+      "csv_url": "https://www150.statcan.gc.ca/n1/tbl/csv/17100009-eng.zip"
+    },
+    {
+      "product_id": "18100004",
+      "table": "18-10-0004-01",
+      "title_en": "Consumer Price Index, monthly, not seasonally adjusted",
+      "title_fr": "Indice des prix à la consommation mensuel, non désaisonnalisé",
+      "reference_date": "2026-09",
+      "release": "2026-10-19T08:30",
+      "wds_url": "https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/18100004/en",
+      "csv_url": "https://www150.statcan.gc.ca/n1/tbl/csv/18100004-eng.zip"
+    }
+  ]
+}
