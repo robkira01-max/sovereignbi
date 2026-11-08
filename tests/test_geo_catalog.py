@@ -53,7 +53,10 @@ def test_all_layers_have_license():
     raw = yaml.safe_load(_CATALOG_PATH.read_text(encoding="utf-8"))
     for la in raw["layers"]:
         assert la.get("license"), f"Layer {la['id']} missing license"
-        assert la.get("license_url"), f"Layer {la['id']} missing license_url"
+        # Draft layers (e.g. user imports, pending validation) are not required
+        # to have a license_url yet — only validated layers must have one.
+        if la.get("status") == "validated":
+            assert la.get("license_url"), f"Validated layer {la['id']} missing license_url"
 
 
 def test_quartiers_has_warning():
