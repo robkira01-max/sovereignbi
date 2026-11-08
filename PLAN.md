@@ -164,6 +164,9 @@ Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~
 ### Sprint H5 — Chatbot universel ✅ (2026-10-19)
 `POST /api/v1/chatbot` : routeur intelligent SQL/général — détecte automatiquement si la question porte sur les données (`_DATA_PATTERNS`) ou sur un sujet général, historique de conversation (10 tours max), réponse unifiée `ChatResponse` (answer, mode, sql, columns, rows, confidence). `ChatPage.tsx` réécrite : bulles de conversation, badge mode data/général, SQL dépliable, case « Analyser les données ». 18 tests (12 Python + 6 seed). 945/945 tests.
 
+### Sprint H8 — P-022 Catalogue géospatial MizanGeo + HeatmapTile ✅ (2026-11-08)
+Pivot stratégique : MizanBI → MizanBI + MizanGeo + MizanAI (socle commun). Catalogue géospatial centralisé (`data/geo/catalog.yaml`, `app/geo_catalog/`, `GET|PUT /api/v1/geo/catalog`), 3 couches DJ référencées (ADM1 CC BY 4.0, ADM2 CC BY 4.0, quartiers ODbL draft+avertissement). `GeoCatalog.tsx` (viewer/editor, toggle, badges statut, avertissements qualité, filtre enabled_only). HeatmapTile SVG 1D/2D 4 palettes. Feuille de route P-023→P-029 ajoutée dans proposals.md. 1178/1180 tests (2 pre-existing) · 114/114 Vitest.
+
 ### Sprint H7 — Propositions P-017 à P-021 ✅ (2026-11-07)
 Annotations tuiles (`Tile.note`, `PUT .../note`, 1 000 chars max) · Tri + filtrage inline des tables (`TableTile.tsx`) · Étiquettes dashboards (`Dashboard.tags`, `PUT .../tags`, filtre `GET ?tag=`) · Connecteur UN Comtrade Plus v1 (`ComtradeClient`, fallback démo, `tools/ingest_comtrade.py`) · Choroplèthe ADM2 + Quartiers Djibouti-ville (`MapAdm2.tsx`, `GET /api/v1/geo/dj/{adm1|adm2|quartiers}`, 11 quartiers OSM approximatifs, `tools/download_dj_geo.py`). 1151/1153 tests (2 pre-existing) · 93/93 Vitest.
 

@@ -26,11 +26,11 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - **Licences** : MIT/Apache/BSD uniquement ; tenir `THIRD_PARTY.md` à jour.
 - **Code** : anglais. **UI + docs** : français (anglais second).
 
-## État courant (2026-11-07)
+## État courant (2026-11-08)
 
-- **Tests** : 1151/1153 pytest + 93/93 Vitest
-- **Dernière proposal** : P-021 ADM2 + Quartiers Djibouti-ville (`map-adm2`)
-- **Commit** : `b3e3a76`
+- **Tests** : 1178/1180 pytest + 114/114 Vitest
+- **Dernière proposal** : P-022 Catalogue géospatial centralisé MizanGeo + HeatmapTile (bonus)
+- **Commit** : (voir git log)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack
@@ -44,7 +44,7 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 | Tests clés viewer | `X-Api-Key: test-viewer-key-s6` |
 | Tests clés editor | `X-Api-Key: test-editor-key-s6` |
 
-## Composants carte disponibles
+## Composants carte et visualisation disponibles
 
 | Composant | Tile type | Usage |
 |-----------|-----------|-------|
@@ -52,6 +52,18 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 | `MapAdm2` | `map-adm2` | Choroplèthe ADM2 / quartiers DJ-ville, toggle niveau |
 | `BivariateChoropleth` | `map-bivariate` | 2 variables, matrice 3×3 |
 | `TradeFlowMap` | `trade-flow-map` | Flux commerciaux Port DJ animés |
+| `HeatmapTile` | `heatmap` | Calendrier de chaleur SVG 1D/2D, 4 palettes |
+| `GeoCatalog` | — | Catalogue couches géospatiales, viewer + editor |
+
+## Catalogue géospatial (P-022)
+
+- `data/geo/catalog.yaml` — registre maître (source de vérité licences + statut)
+- `app/geo_catalog/models.py` — `GeoLayer`, `GeoCatalog`, `LayerWarning`
+- `app/geo_catalog/registry.py` — `load_catalog()`, `get_layer()`, `toggle_layer()`
+- `GET /api/v1/geo/catalog` — liste (filtre `?enabled_only=true`)
+- `GET /api/v1/geo/catalog/{id}` — métadonnées d'une couche
+- `PUT /api/v1/geo/catalog/{id}/toggle` — activer/désactiver (editor)
+- Règle : toute nouvelle couche géographique doit être enregistrée dans `catalog.yaml` avec licence vérifiée avant usage.
 
 ## Données géographiques
 

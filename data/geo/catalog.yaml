@@ -1,0 +1,64 @@
+version: "1"
+# Geographic layer registry — MizanGeo catalogue
+# All layers referenced here must have a verified license before use in production.
+# Fields: id, name_fr, name_en, description_fr, description_en,
+#         format, geometry_type, source, license, license_url,
+#         date_acquired, coverage, status, warnings, api_endpoint, enabled
+
+layers:
+
+  - id: dj_adm1
+    name_fr: "Régions de Djibouti (ADM1)"
+    name_en: "Djibouti Regions (ADM1)"
+    description_fr: "6 régions administratives de premier niveau : Djibouti, Ali Sabieh, Arta, Dikhil, Obock, Tadjourah."
+    description_en: "6 first-level administrative regions: Djibouti, Ali Sabieh, Arta, Dikhil, Obock, Tadjourah."
+    format: geojson
+    geometry_type: Polygon
+    source: "GADM v4.1"
+    license: "CC BY 4.0"
+    license_url: "https://gadm.org/license.html"
+    date_acquired: "2026-10-01"
+    coverage: "Djibouti — national"
+    feature_count: 6
+    status: validated
+    warnings: []
+    api_endpoint: "/api/v1/geo/dj/adm1"
+    enabled: true
+
+  - id: dj_adm2
+    name_fr: "Districts de Djibouti (ADM2)"
+    name_en: "Djibouti Districts (ADM2)"
+    description_fr: "6 districts avec données de population estimée, densité et superficie. Géométries alignées sur ADM1 GADM v4.1."
+    description_en: "6 districts with estimated population, density and area data. Geometries aligned to GADM v4.1 ADM1."
+    format: geojson
+    geometry_type: Polygon
+    source: "GADM v4.1 (gadm.org)"
+    license: "CC BY 4.0"
+    license_url: "https://gadm.org/license.html"
+    date_acquired: "2026-10-01"
+    coverage: "Djibouti — national"
+    feature_count: 6
+    status: validated
+    warnings: []
+    api_endpoint: "/api/v1/geo/dj/adm2"
+    enabled: true
+
+  - id: dj_quartiers
+    name_fr: "Quartiers de Djibouti-Ville"
+    name_en: "Djibouti City Neighbourhoods"
+    description_fr: "11 quartiers de Djibouti-Ville : Centre-ville, Plateau du Serpent, Arhiba, Farah Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh, Quartier 7."
+    description_en: "11 Djibouti City neighbourhoods: Centre-ville, Plateau du Serpent, Arhiba, Farah Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh, Quartier 7."
+    format: geojson
+    geometry_type: Polygon
+    source: "OpenStreetMap contributors (OSM Overpass)"
+    license: "ODbL 1.0"
+    license_url: "https://opendatacommons.org/licenses/odbl/1-0/"
+    date_acquired: "2026-10-01"
+    coverage: "Djibouti-Ville"
+    feature_count: 11
+    status: draft
+    warnings:
+      - fr: "Délimitations approximatives — à valider avec la mairie de Djibouti avant toute utilisation institutionnelle."
+        en: "Approximate boundaries — must be validated with the Municipality of Djibouti before institutional use."
+    api_endpoint: "/api/v1/geo/dj/quartiers"
+    enabled: true

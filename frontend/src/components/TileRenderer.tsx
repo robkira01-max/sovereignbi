@@ -9,6 +9,7 @@ import { MapAdm2 } from './MapAdm2'
 import { BivariateChoropleth } from './BivariateChoropleth'
 import { SparklineKpi } from './SparklineKpi'
 import { TableTile } from './TableTile'
+import { HeatmapTile } from './HeatmapTile'
 
 interface TileData {
   columns: string[]
@@ -275,6 +276,20 @@ export function TileRenderer({ type, title, data, options = {} }: Props) {
     // ── Table (sortable + filterable) ────────────────────────────────────────
     case 'table':
       return <TableTile data={data} />
+
+    // ── Heatmap (SVG, calendrier de chaleur 1D ou 2D) ────────────────────────
+    case 'heatmap':
+      return (
+        <HeatmapTile
+          data={data}
+          title={title}
+          unit={unit}
+          options={{
+            colorScheme: options.colorScheme ?? 'blue',
+            showValues:  options.showValues === true,
+          }}
+        />
+      )
 
     // ── Choropleth map (Djibouti ADM1) ────────────────────────────────────────
     case 'map':

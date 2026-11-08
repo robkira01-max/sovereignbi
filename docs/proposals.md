@@ -4,6 +4,50 @@ Ajoutées le 2026-11-06. Chaque proposition inclut la raison et l'impact estimé
 
 ---
 
+## P-022 — Catalogue géospatial centralisé MizanGeo ✅
+
+**Raison :** Les couches ADM1, ADM2 et quartiers existaient sans registre commun. Un catalogue centralisé permet de référencer chaque couche avec sa source, sa licence, ses avertissements qualité, et son statut de validation — base nécessaire avant tout moteur d'analyse spatiale.
+**Impact :** Élevé — gouvernance des données géographiques, prérequis P-023 à P-029.
+**Statut :** Livré 2026-11-08. `data/geo/catalog.yaml` (registre maître YAML, 3 couches DJ), `app/geo_catalog/` (models + registry avec cache + toggle), `GET /api/v1/geo/catalog` (liste + filtre enabled_only), `GET /api/v1/geo/catalog/{id}`, `PUT /api/v1/geo/catalog/{id}/toggle` (editor). `GeoCatalog.tsx` (cards statut/warning/toggle, viewer/editor). HeatmapTile livré en bonus. 24 pytest + 13 Vitest + 3 Vitest heatmap. 1178/1178 tests.
+
+## P-022b — HeatmapTile (bonus, livré avec P-022)
+
+**Raison :** Visualisation calendrier de chaleur 1D/2D pour données temporelles INSTAD (exportations par mois, flux par heure × région). Composant SVG pur, sans dépendance.
+**Impact :** Faible/Moyen — nouveau type de tile utile pour séries temporelles.
+**Statut :** Livré 2026-11-08. `HeatmapTile.tsx` (SVG, 4 palettes, 5 niveaux, mode 1D/2D), tile type `heatmap`, i18n `heatmap.*` (fr/en/ar/es). 3 pytest + 8 Vitest.
+
+## P-023 — Moteur d'analyse spatiale (DuckDB Spatial)
+
+**Raison :** Après le catalogue, l'étape suivante est d'exécuter des requêtes spatiales sur les couches géographiques — buffers, proximité, intersections, densité de points.
+**Impact :** Élevé — permet l'analyse spatiale native sans PostGIS.
+**Statut :** Proposé. À vérifier : disponibilité de l'extension DuckDB Spatial dans `.venv`.
+
+## P-024 — Import GeoJSON / GeoPackage / GeoParquet
+
+**Raison :** Permettre à INSTAD d'importer ses propres données géographiques dans le catalogue.
+**Impact :** Élevé pour l'autonomie utilisateur.
+**Statut :** Proposé. Dépend de P-023 (validation par analyse spatiale).
+
+## P-025 — Analyses spatiales : buffers, proximité, intersections, densité
+
+**Raison :** Cas d'usage concret INSTAD : « Quels districts sont à moins de 50 km d'un port ? »
+**Impact :** Élevé — différenciateur BI+SIG.
+**Statut :** Proposé. Dépend de P-023.
+
+## P-026 — Interaction carte ↔ dashboards BI
+
+**Raison :** Sélectionner une région sur la carte filtre automatiquement les KPIs et graphiques du dashboard.
+**Impact :** Très élevé — expérience BI géospatiale unifiée.
+**Statut :** Proposé. Dépend de P-022 + P-023.
+
+## P-027 — Assistant GeoAI en langage naturel
+
+**Raison :** « Affiche les régions où la densité est la plus élevée et compare avec le chômage » — interprété par le LLM, carte + KPIs générés.
+**Impact :** Très élevé — différenciateur marché.
+**Statut :** Proposé. Dépend de P-025 + P-026.
+
+---
+
 ## P-001 — Small multiples (tile type `grid`) ✅
 **Raison :** Pour les 6 régions de Djibouti, afficher 6 mini-graphiques côte à côte est plus lisible qu'un seul barplot. Standard ONS UK, INSEE, KNBS.  
 **Impact :** Moyen — pur frontend, 2-3 jours. Idéal pour les dashboards INSTAD.  

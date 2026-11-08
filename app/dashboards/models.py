@@ -12,7 +12,7 @@ import yaml
 @dataclass
 class Tile:
     id: str
-    type: str  # kpi | line | bar | table | pie
+    type: str  # kpi | line | bar | table | pie | map | map-adm2 | map-bivariate | trade-flow-map | grid | heatmap | scrolly
     title: str
     metric: str | None = None
     sql_pinned: str | None = None

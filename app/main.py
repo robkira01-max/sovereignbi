@@ -45,6 +45,7 @@ from app.routers.chatbot import router as chatbot_router
 from app.routers.trade_flows import router as trade_flows_router
 from app.routers.mcp import router as mcp_router
 from app.routers.geo import router as geo_router
+from app.routers.geo_catalog import router as geo_catalog_router
 from app.sync.scheduler import CronScheduler
 from app.monitoring.metrics import (
     active_tables,
@@ -142,6 +143,7 @@ app.include_router(chatbot_router)
 app.include_router(trade_flows_router)
 app.include_router(mcp_router)
 app.include_router(geo_router)
+app.include_router(geo_catalog_router)
 
 store = DataStore()
 doc_store = DocStore()
