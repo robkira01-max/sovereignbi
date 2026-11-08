@@ -19,13 +19,28 @@ export function authHeaders(): Record<string, string> {
   return runtimeKey ? { 'X-Api-Key': runtimeKey } : {}
 }
 
+/** HTTP error with the status and, when the backend sent one, its FastAPI `detail` string. */
+export class ApiError extends Error {
+  constructor(public status: number, public detail?: string) {
+    super(`HTTP ${status}`)
+    this.name = 'ApiError'
+  }
+}
+
 export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
   if (!isApiConfigured()) throw new Error('API non configurée (VITE_API_BASE vide)')
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: { ...authHeaders(), ...(init.headers as Record<string, string> | undefined) },
   })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  if (!res.ok) {
+    let detail: string | undefined
+    try {
+      const body = (await res.json()) as { detail?: unknown }
+      if (typeof body.detail === 'string') detail = body.detail
+    } catch { /* non-JSON error body */ }
+    throw new ApiError(res.status, detail)
+  }
   return res
 }
 

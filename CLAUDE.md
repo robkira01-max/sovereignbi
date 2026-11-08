@@ -29,8 +29,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1415/1415 pytest + 152/152 Vitest (frontend) + 83/83 Vitest mizanbi-client · `tsc --noEmit` propre (frontend et mizanbi-client)
-- **Dernière proposal** : P-037 Gestion des comptes par rôle · P-036 i18n GeoAI · revue complète 2026-11-08
+- **Tests** : 1420/1420 pytest + 152/152 Vitest (frontend) + 122/122 Vitest mizanbi-client · `tsc --noEmit` propre (frontend et mizanbi-client)
+- **Dernière proposal** : P-038 Écran administrateur des comptes · P-037 comptes par rôle · P-036 i18n GeoAI · revue complète 2026-11-08
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
 - **Commit** : (voir git log)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)

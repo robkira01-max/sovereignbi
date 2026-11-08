@@ -544,3 +544,28 @@ def test_no_store_on_every_success_response(client):
     responses.append(_change(client, h2, current=NEW_PW, new="third-long-passphrase"))
     assert [r.status_code for r in responses] == [200, 200, 204, 204]
     assert all(r.headers.get("cache-control") == "no-store" for r in responses)
+
+
+# ── CORS (browser clients on another origin) ─────────────────────────────────
+
+@pytest.mark.parametrize("method", ["GET", "POST", "PATCH", "PUT"])
+def test_cors_preflight_allows_account_routes_from_allowed_origin(client, method):
+    """TestClient never does CORS; a browser preflights PATCH/PUT with Authorization + JSON."""
+    r = client.options(
+        "/auth/users/1",
+        headers={
+            "Origin": "http://localhost:8000",
+            "Access-Control-Request-Method": method,
+            "Access-Control-Request-Headers": "authorization,content-type",
+        },
+    )
+    assert r.status_code == 200, r.text
+    assert method in r.headers["access-control-allow-methods"]
+
+
+def test_cors_preflight_refuses_unknown_origin(client):
+    r = client.options(
+        "/auth/users/1",
+        headers={"Origin": "https://evil.example", "Access-Control-Request-Method": "PATCH"},
+    )
+    assert "access-control-allow-origin" not in r.headers

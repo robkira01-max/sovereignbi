@@ -89,6 +89,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Très élevé — données bancaires et démographiques nationales vérifiées.
 **Statut :** ✅ Livré 2026-11-08. `src/lib/bcd.ts` + `src/data/bcd/bcd_2024.json` + `src/data/instad/rgph3.json`. Page `BcdPage` : KPI cards, graphiques recharts.
 
+## P-038 — Écran administrateur des comptes ✅ (livré 2026-11-08)
+
+**Raison :** P-037 exposait la gestion des comptes uniquement par API/CLI ; l'INSTAD a besoin d'un écran.
+**Impact :** Élevé — autonomie des administrateurs du pilote.
+**Statut :** ✅ Livré 2026-11-08. `mizanbi-client` : page `Admin.tsx` (liste, création, rôle en ligne, désactivation en deux temps, réinitialisation de mot de passe), `lib/accounts.ts` (service API + simulation démo aux mêmes règles), `ApiError` (statut + détail), i18n fr/en/ar, entrée de navigation visible aux seuls admins (rôle lu via `/auth/me`). **Bug serveur trouvé en testant dans un vrai navigateur :** CORS n'autorisait pas `PATCH`, donc le changement de rôle aurait échoué en production (corrigé + tests de pré-contrôle). 39 tests Vitest. Vérifié en navigateur : démo, connecté (vrai backend), arabe/RTL, compte lecteur (entrée masquée, API 403). **À faire relire par un arabophone.**
+
 ## P-037 — Gestion des comptes par rôle ✅ (livré 2026-11-08)
 
 **Raison :** Après la revue (rôle par utilisateur), il n'existait aucun moyen de créer un compte autre qu'`admin` (seul `seed_admin`).
