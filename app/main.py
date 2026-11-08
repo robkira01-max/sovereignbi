@@ -48,6 +48,7 @@ from app.routers.geo import router as geo_router
 from app.routers.geo_catalog import router as geo_catalog_router
 from app.routers.geo_spatial import router as geo_spatial_router
 from app.routers.geo_import import router as geo_import_router
+from app.routers.geo_ai import router as geo_ai_router
 from app.sync.scheduler import CronScheduler
 from app.monitoring.metrics import (
     active_tables,
@@ -148,6 +149,7 @@ app.include_router(geo_router)
 app.include_router(geo_catalog_router)
 app.include_router(geo_spatial_router)
 app.include_router(geo_import_router)
+app.include_router(geo_ai_router)
 
 store = DataStore()
 doc_store = DocStore()
