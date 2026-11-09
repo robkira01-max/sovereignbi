@@ -89,6 +89,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Très élevé — données bancaires et démographiques nationales vérifiées.
 **Statut :** ✅ Livré 2026-11-08. `src/lib/bcd.ts` + `src/data/bcd/bcd_2024.json` + `src/data/instad/rgph3.json`. Page `BcdPage` : KPI cards, graphiques recharts.
 
+## P-039 — Écran « changer mon mot de passe » + CI GitHub Actions ✅ (livré 2026-11-09)
+
+**Raison :** `POST /auth/password` existait (P-037) sans interface utilisateur ; les 48+ commits n'avaient aucun workflow CI.
+**Impact :** Moyen — autonomie utilisateur (tout rôle peut changer son propre mot de passe) + CI sur push/PR.
+**Statut :** ✅ Livré 2026-11-09. `ChangePasswordModal.tsx` (champs current/new/confirm, toggle show/hide, messages d'erreur localisés, état succès). `accounts.ts` : `changePassword()` dans l'interface + API (POST /auth/password, mappage 403→wrongPassword) + démo (validation seule). `i18n.ts` : section `changePwd` fr/en/ar. `App.tsx` : bouton cadenas près du déconnexion (masqué en mode démo). `.github/workflows/ci.yml` : lint ruff + py_compile → pytest unitaires → tsc + Vitest + npm build. Ruff 0 violations dans app/. 127/127 Vitest, 1436/1436 pytest.
+
 ## P-038 — Écran administrateur des comptes ✅ (livré 2026-11-08)
 
 **Raison :** P-037 exposait la gestion des comptes uniquement par API/CLI ; l'INSTAD a besoin d'un écran.
