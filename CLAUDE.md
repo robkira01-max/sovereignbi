@@ -32,7 +32,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - **Tests** : 1420/1420 pytest + 152/152 Vitest (frontend) + 122/122 Vitest mizanbi-client · `tsc --noEmit` propre (frontend et mizanbi-client)
 - **Dernière proposal** : P-038 Écran administrateur des comptes · P-037 comptes par rôle · P-036 i18n GeoAI · revue complète 2026-11-08
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
-- **Commit** : (voir git log)
+- **Commit** : (voir git log) — 48+ commits locaux **non poussés** vers `origin` (décision du propriétaire)
+- **Reprise (fin de session 2026-11-08)** — avant livraison réelle, restent : (1) pousser les commits ; (2) relecture humaine de `app/auth/` par le propriétaire (règle section Sécurité) ; (3) choisir le frontend livré (`frontend/` vs `mizanbi-client/`) et lui donner un déploiement (Dockerfile/serveur statique) ; `frontend/` contient l'URL de prod en dur ; (4) CI GitHub Actions (aucun workflow) ; (5) écran « changer mon mot de passe » (API `POST /auth/password` prête, sans UI) ; (6) installer `ruff` + `pip-audit` et les passer ; (7) relecture de l'arabe (GeoAI, Comptes) par un arabophone ; (8) vérifier le chemin LLM réel (Ollama/Kimi) ; (9) droits de redistribution des données BIE/BCD/StatCan embarquées
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack
