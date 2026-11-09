@@ -16,10 +16,14 @@ export default function LoginPage({ t, lang, setLang, onEnter }: Props) {
   const [password, setPassword] = useState('')
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const [honey, setHoney] = useState('')
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErr('')
+    if (honey) return
+    if (!email.includes('@')) { setErr(t.loginError); return }
+    if (password.length < 1) { setErr(t.loginError); return }
     if (!isApiConfigured()) {
       setErr(t.loginError)
       return
@@ -53,6 +57,8 @@ export default function LoginPage({ t, lang, setLang, onEnter }: Props) {
           </div>
         </div>
         <p style={{ margin: 0, fontSize: 13, color: 'var(--muted)' }}>{t.slogan}</p>
+        {/* honeypot: invisible aux utilisateurs, les bots le remplissent */}
+        <input type="text" name="website" value={honey} onChange={(e) => setHoney(e.target.value)} tabIndex={-1} aria-hidden style={{ display: 'none' }} autoComplete="off" />
         <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontWeight: 500, fontSize: 13 }}>
           {t.email}
           <input type="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="nom@instad.dj" />

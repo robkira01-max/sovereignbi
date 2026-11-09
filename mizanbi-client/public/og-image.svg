@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#070711"/>
+  <rect x="0" y="0" width="8" height="630" fill="oklch(65% 0.22 265)"/>
+  <text x="80" y="260" font-family="system-ui,sans-serif" font-size="96" font-weight="700" fill="white" letter-spacing="-2">MizanBI</text>
+  <text x="80" y="340" font-family="system-ui,sans-serif" font-size="36" fill="oklch(65% 0.22 265)">L'IA vient à vos données, pas l'inverse</text>
+  <text x="80" y="400" font-family="system-ui,sans-serif" font-size="26" fill="#888" >BI conversationnelle · Auto-hébergée · Hors ligne · Souveraine</text>
+</svg>

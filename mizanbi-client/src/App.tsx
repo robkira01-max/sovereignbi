@@ -19,9 +19,12 @@ import BiePage from './pages/Bie'
 import BcdPage from './pages/Bcd'
 import GeoAIPage from './pages/GeoAI'
 import AdminPage from './pages/Admin'
+import PrivacyPage from './pages/Privacy'
+import TermsPage from './pages/Terms'
 import ChangePasswordModal from './components/ChangePasswordModal'
+import CookieBanner, { useCookieConsent } from './components/CookieBanner'
 
-export type Page = 'home' | 'chat' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin'
+export type Page = 'home' | 'chat' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms'
 export type View = 'all' | 'bi' | 'sig'
 
 const NAV: { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string }[] = [
@@ -55,6 +58,8 @@ export default function App() {
   const [view, setView] = useState<View>('all')
   // P-028 : thème dynamique. Auto = suit la page et l'indicateur ; manuel = fixe.
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => loadThemeMode())
+  const [cookieConsent, setCookieConsent] = useCookieConsent()
+  const [showCookieBanner, setShowCookieBanner] = useState(cookieConsent === null)
   const [indicator, setIndicator] = useState<IndicatorId>('unemployment')
   const [themeMenuOpen, setThemeMenuOpen] = useState(false)
   const themeMenuRef = useRef<HTMLDivElement>(null)
@@ -106,7 +111,7 @@ export default function App() {
     setPage(p as Page)
     if (p === 'sig') setView('sig')
     if (p === 'ancient') setView('sig')
-    if (p === 'home' || p === 'chat' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd' || p === 'geoai' || p === 'admin') setView((v) => (v === 'sig' ? 'bi' : v))
+    if (p === 'home' || p === 'chat' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd' || p === 'geoai' || p === 'admin' || p === 'privacy' || p === 'terms') setView((v) => (v === 'sig' ? 'bi' : v))
     window.scrollTo(0, 0)
   }
 
@@ -139,7 +144,7 @@ export default function App() {
     )
   }
 
-  const pageTitle: Record<Page, string> = { home: t.home, chat: t.chat, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title }
+  const pageTitle: Record<Page, string> = { home: t.home, chat: t.chat, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title }
   const showBi = view !== 'sig'
   const showSig = view !== 'bi'
 
@@ -238,11 +243,25 @@ export default function App() {
         {page === 'ancient' && <AncientMapsPage t={t} />}
         {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
         {page === 'chat' && !showBi && <p className="muted">ChatBI — {t.voletBi}. {t.overview}.</p>}
+        {page === 'privacy' && <PrivacyPage t={t} go={go} />}
+        {page === 'terms' && <TermsPage t={t} go={go} />}
       </main>
+      <footer style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', fontSize: 12, color: 'var(--muted)', display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span>© {new Date().getFullYear()} MizanBI</span>
+        <button onClick={() => go('privacy')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.privacy}</button>
+        <button onClick={() => go('terms')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.terms}</button>
+      </footer>
       {page !== 'chat' && (
         <button onClick={() => go('chat')} aria-label={t.chatBubble} title={t.chatBubble} className="chat-bubble">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
         </button>
+      )}
+      {showCookieBanner && (
+        <CookieBanner
+          t={t}
+          onAccept={() => { setCookieConsent(true); setShowCookieBanner(false) }}
+          onDecline={() => { setCookieConsent(false); setShowCookieBanner(false) }}
+        />
       )}
     </div>
   )

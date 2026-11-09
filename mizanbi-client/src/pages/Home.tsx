@@ -6,6 +6,7 @@ import { DEMO_TABLES, FORECAST_2030, REGIONS, TOTAL_POPULATION, UNEMPLOYMENT_TRE
 import { apiJson, isApiConfigured } from '../lib/api'
 import { currentTheme } from '../lib/theme'
 import DjiboutiMap from '../components/DjiboutiMap'
+import SourceAttribution from '../components/SourceAttribution'
 
 interface Props {
   t: Dict
@@ -81,6 +82,7 @@ export default function HomePage({ t, go }: Props) {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          <SourceAttribution source="INSTAD / BIE" year="2026" />
         </div>
 
         <div className="card-solid">
@@ -127,6 +129,7 @@ export default function HomePage({ t, go }: Props) {
               </ResponsiveContainer>
             </div>
           </div>
+          <SourceAttribution source="INSTAD / BIE" year="2026" note="Prévision modèle linéaire" />
         </div>
 
         <div className="card-solid span4" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

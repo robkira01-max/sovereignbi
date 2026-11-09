@@ -11,7 +11,7 @@ os.environ.setdefault("SOVEREIGN_EMBEDDER", "tfidf")
 # ── KimiClient ────────────────────────────────────────────────────────────────
 
 def _kimi_env(monkeypatch):
-    monkeypatch.setenv("KIMI_BASE_URL", "http://kimi-test.internal/v1")
+    monkeypatch.setenv("KIMI_BASE_URL", "https://kimi-test.internal/v1")
     monkeypatch.setenv("KIMI_API_KEY", "test-key-abc")
     monkeypatch.setenv("KIMI_MODEL", "kimi-k3")
 
@@ -53,7 +53,7 @@ def test_kimi_sends_correct_payload(monkeypatch):
     client = KimiClient()
     client.complete("sys", "usr")
 
-    assert captured["url"] == "http://kimi-test.internal/v1/chat/completions"
+    assert captured["url"] == "https://kimi-test.internal/v1/chat/completions"
     assert captured["headers"]["Authorization"] == "Bearer test-key-abc"
     assert captured["json"]["model"] == "kimi-k3"
     assert captured["json"]["temperature"] == 0
@@ -74,7 +74,7 @@ def test_kimi_raises_without_base_url(monkeypatch):
 
 
 def test_kimi_raises_without_api_key(monkeypatch):
-    monkeypatch.setenv("KIMI_BASE_URL", "http://kimi-test.internal/v1")
+    monkeypatch.setenv("KIMI_BASE_URL", "https://kimi-test.internal/v1")
     monkeypatch.delenv("KIMI_API_KEY", raising=False)
     from importlib import reload
     import app.llm.kimi_client as m
@@ -174,7 +174,7 @@ def test_startup_warns_missing_kimi_base_url(monkeypatch):
 
 def test_startup_warns_missing_kimi_api_key(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "kimi")
-    monkeypatch.setenv("KIMI_BASE_URL", "http://kimi-test.internal/v1")
+    monkeypatch.setenv("KIMI_BASE_URL", "https://kimi-test.internal/v1")
     monkeypatch.delenv("KIMI_API_KEY", raising=False)
     from app.startup import validate_env
     warns = validate_env()
@@ -183,7 +183,7 @@ def test_startup_warns_missing_kimi_api_key(monkeypatch):
 
 def test_startup_no_kimi_warnings_when_configured(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "kimi")
-    monkeypatch.setenv("KIMI_BASE_URL", "http://kimi-test.internal/v1")
+    monkeypatch.setenv("KIMI_BASE_URL", "https://kimi-test.internal/v1")
     monkeypatch.setenv("KIMI_API_KEY", "key")
     from app.startup import validate_env
     warns = validate_env()
