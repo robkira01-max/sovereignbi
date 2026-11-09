@@ -1,0 +1,426 @@
+{
+  "type": "FeatureCollection",
+  "name": "Djibouti-ville — quartiers",
+  "licence": "ODbL · © OpenStreetMap contributors",
+  "note": "Délimitations approximatives à des fins de visualisation. Valider avec mairie de Djibouti.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Centre-ville",
+        "name_ar": "وسط المدينة",
+        "population_est": 42000,
+        "density_km2": 42000,
+        "description": "Quartier colonial historique, port",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.128,
+              11.572
+            ],
+            [
+              43.158,
+              11.572
+            ],
+            [
+              43.158,
+              11.605
+            ],
+            [
+              43.128,
+              11.605
+            ],
+            [
+              43.128,
+              11.572
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Plateau du Serpent",
+        "name_ar": "هضبة الثعبان",
+        "population_est": 28000,
+        "density_km2": 28000,
+        "description": "Quartier résidentiel sud",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.141,
+              11.546
+            ],
+            [
+              43.168,
+              11.546
+            ],
+            [
+              43.168,
+              11.572
+            ],
+            [
+              43.141,
+              11.572
+            ],
+            [
+              43.141,
+              11.546
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Arhiba",
+        "name_ar": "أرهيبا",
+        "population_est": 55000,
+        "density_km2": 35000,
+        "description": "Quartier résidentiel dense",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.155,
+              11.57
+            ],
+            [
+              43.192,
+              11.57
+            ],
+            [
+              43.192,
+              11.605
+            ],
+            [
+              43.155,
+              11.605
+            ],
+            [
+              43.155,
+              11.57
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Farah Waaberi",
+        "name_ar": "فرح وابري",
+        "population_est": 38000,
+        "density_km2": 38000,
+        "description": "Quartier central ouest",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.105,
+              11.564
+            ],
+            [
+              43.13,
+              11.564
+            ],
+            [
+              43.13,
+              11.6
+            ],
+            [
+              43.105,
+              11.6
+            ],
+            [
+              43.105,
+              11.564
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Boulaos",
+        "name_ar": "بولاوس",
+        "population_est": 47000,
+        "density_km2": 32000,
+        "description": "Quartier résidentiel sud",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.118,
+              11.535
+            ],
+            [
+              43.155,
+              11.535
+            ],
+            [
+              43.155,
+              11.568
+            ],
+            [
+              43.118,
+              11.568
+            ],
+            [
+              43.118,
+              11.535
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ambouli",
+        "name_ar": "عمبولي",
+        "population_est": 22000,
+        "density_km2": 20000,
+        "description": "Secteur aéroport",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.142,
+              11.51
+            ],
+            [
+              43.19,
+              11.51
+            ],
+            [
+              43.19,
+              11.542
+            ],
+            [
+              43.142,
+              11.542
+            ],
+            [
+              43.142,
+              11.51
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "PK12",
+        "name_ar": "PK12",
+        "population_est": 65000,
+        "density_km2": 28000,
+        "description": "Périphérie ouest",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.08,
+              11.542
+            ],
+            [
+              43.122,
+              11.542
+            ],
+            [
+              43.122,
+              11.572
+            ],
+            [
+              43.08,
+              11.572
+            ],
+            [
+              43.08,
+              11.542
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Balbala Nord",
+        "name_ar": "بلبلة الشمالية",
+        "population_est": 85000,
+        "density_km2": 22000,
+        "description": "Grand quartier populaire ouest",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.035,
+              11.518
+            ],
+            [
+              43.082,
+              11.518
+            ],
+            [
+              43.082,
+              11.562
+            ],
+            [
+              43.035,
+              11.562
+            ],
+            [
+              43.035,
+              11.518
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Balbala Sud",
+        "name_ar": "بلبلة الجنوبية",
+        "population_est": 72000,
+        "density_km2": 19000,
+        "description": "Extension urbaine sud-ouest",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.022,
+              11.475
+            ],
+            [
+              43.068,
+              11.475
+            ],
+            [
+              43.068,
+              11.52
+            ],
+            [
+              43.022,
+              11.52
+            ],
+            [
+              43.022,
+              11.475
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hayableh",
+        "name_ar": "حيابلة",
+        "population_est": 48000,
+        "density_km2": 21000,
+        "description": "Quartier périphérique",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.065,
+              11.475
+            ],
+            [
+              43.108,
+              11.475
+            ],
+            [
+              43.108,
+              11.52
+            ],
+            [
+              43.065,
+              11.52
+            ],
+            [
+              43.065,
+              11.475
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Quartier 7",
+        "name_ar": "حي 7",
+        "population_est": 33000,
+        "density_km2": 25000,
+        "description": "Quartier nord-ouest",
+        "source": "OpenStreetMap contributors · ODbL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.09,
+              11.572
+            ],
+            [
+              43.13,
+              11.572
+            ],
+            [
+              43.13,
+              11.615
+            ],
+            [
+              43.09,
+              11.615
+            ],
+            [
+              43.09,
+              11.572
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

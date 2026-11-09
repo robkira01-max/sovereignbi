@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Dict } from '../lib/i18n'
 import { PROVENANCE, QUARTIERS, REGIONS, TRADE_FLOWS, fmt } from '../data/demo'
 import DjiboutiMap from '../components/DjiboutiMap'
+import EcolesMap from '../components/EcolesMap'
 import { colorForValue, currentTheme, scaleFor, textOnFill, type IndicatorId } from '../lib/theme'
 
 type Level = 'adm1' | 'adm2' | 'quartiers'
@@ -156,6 +157,20 @@ export default function SigPage({ t, onIndicator, onAncient }: { t: Dict; onIndi
           </>
         )}
       </section>
+      <section className="card-solid" data-testid="ecoles-section">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+          <div>
+            <h3 style={{ margin: 0 }}>{t.ecoles.title}</h3>
+            <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>{t.ecoles.subtitle}</p>
+          </div>
+          <span className="badge badge-demo">OSM</span>
+        </div>
+        <EcolesMap t={t} />
+        <p className="muted" style={{ marginTop: 10, fontSize: 12 }}>
+          ⚠️ {t.ecoles.giga}
+        </p>
+      </section>
+
       <p className="muted">Source : {PROVENANCE.unemployment.table} (2024, démo) · {PROVENANCE.population.table} (2024, démo) · {t.loi25}</p>
     </div>
   )

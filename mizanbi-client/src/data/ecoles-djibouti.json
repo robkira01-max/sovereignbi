@@ -1,0 +1,2049 @@
+{
+ "type": "FeatureCollection",
+ "name": "ecoles-djibouti-osm",
+ "crs": {
+  "type": "name",
+  "properties": {
+   "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+  }
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.983778,
+     12.496499
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Alaili Dadda",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 732071275,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.900724,
+     12.408326
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "Alaili Dadda",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 785872820,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.705973,
+     11.157594
+    ]
+   },
+   "properties": {
+    "name": "Collège d'Ali Sabieh كلية علي صبيح",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 390210703,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.915185,
+     11.296016
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 4026402301,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.999922,
+     11.421036
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 739165014,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.929917,
+     11.31169
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 739165026,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.830927,
+     10.987809
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 739480382,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.710011,
+     11.164854
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 236012957,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.705534,
+     11.161776
+    ]
+   },
+   "properties": {
+    "name": "Lycée Polyvalent d'Ali Sabieh",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 946001139,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.709576,
+     11.152404
+    ]
+   },
+   "properties": {
+    "name": "École Primaire",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 373606277,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.700342,
+     11.154797
+    ]
+   },
+   "properties": {
+    "name": "École Primaire 2",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 946001135,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.711303,
+     11.146022
+    ]
+   },
+   "properties": {
+    "name": "École Primaire 3 مسرسة",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 946196815,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.893447,
+     11.135609
+    ]
+   },
+   "properties": {
+    "name": "École maternelle",
+    "type": "Maternelle",
+    "amenity": "kindergarten",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 400148576,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.882253,
+     11.123302
+    ]
+   },
+   "properties": {
+    "name": "École maternelle روضة أطفال",
+    "type": "Maternelle",
+    "amenity": "kindergarten",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 400022975,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.884193,
+     11.129737
+    ]
+   },
+   "properties": {
+    "name": "École maternelle روضة أطفال",
+    "type": "Maternelle",
+    "amenity": "kindergarten",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 400022977,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.894319,
+     11.127177
+    ]
+   },
+   "properties": {
+    "name": "École section 4 École section مدرسة قسم 4",
+    "type": "Maternelle",
+    "amenity": "kindergarten",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 400022976,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.891519,
+     11.128788
+    ]
+   },
+   "properties": {
+    "name": "École مدرسة",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Ali Sabieh",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 400022973,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.105617,
+     11.005531
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "As Eyla",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 931428388,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     41.964555,
+     11.020259
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "As Eyla",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 908353427,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.205426,
+     10.974672
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "As Eyla",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 909714166,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.173508,
+     11.021286
+    ]
+   },
+   "properties": {
+    "name": "Garsaledaba",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "As Eyla",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 10923840105,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.584064,
+     11.699611
+    ]
+   },
+   "properties": {
+    "name": "Ecole de Galina",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Balha",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 730446998,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.228803,
+     12.089935
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "Balha",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 745151574,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.192062,
+     12.059449
+    ]
+   },
+   "properties": {
+    "name": "École primaire de Balho",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Balha",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 745151572,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.375411,
+     11.10475
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Dikhil",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 739170224,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.360304,
+     11.105723
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Dikhil",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 739170226,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.36712,
+     11.107808
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Dikhil",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 739170233,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.353608,
+     11.106826
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Dikhil",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 739484709,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.75594,
+     11.379692
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Dikhil",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 816793631,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.376609,
+     11.11006
+    ]
+   },
+   "properties": {
+    "name": "Lycée De Dikhil",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Dikhil",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 991960909,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.556885,
+     11.450319
+    ]
+   },
+   "properties": {
+    "name": "École primaire مدرسة كارتا",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Dikhil",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 745151564,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.151968,
+     11.588248
+    ]
+   },
+   "properties": {
+    "name": "American Institute المعهد الأمريكي",
+    "type": "College",
+    "amenity": "college",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5345093773,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.110782,
+     11.550317
+    ]
+   },
+   "properties": {
+    "name": "Balbala 2 / بلبالا 2",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": "Public",
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 554279858,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.120578,
+     11.561774
+    ]
+   },
+   "properties": {
+    "name": "Balbala 6 / بلبالا 6",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 554275107,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.13438,
+     11.570649
+    ]
+   },
+   "properties": {
+    "name": "CES d'Ambouli",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 372075281,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.15307,
+     11.584745
+    ]
+   },
+   "properties": {
+    "name": "CES de Boulaos",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 696784073,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.117143,
+     11.568246
+    ]
+   },
+   "properties": {
+    "name": "Collège Barwako",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5317174227,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.117749,
+     11.561493
+    ]
+   },
+   "properties": {
+    "name": "Collège de Fukuzawa كلية فوكوزاوا",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": "public",
+    "osm_type": "way",
+    "osm_id": 309025093,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.110158,
+     11.548085
+    ]
+   },
+   "properties": {
+    "name": "Collège de Hayel Saïd",
+    "type": "College",
+    "amenity": "college",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": "public",
+    "osm_type": "node",
+    "osm_id": 5417133614,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.093586,
+     11.554057
+    ]
+   },
+   "properties": {
+    "name": "Collège de Hodan 3 / كلية هودان 3",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5313373971,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.149247,
+     11.570773
+    ]
+   },
+   "properties": {
+    "name": "Collège et Lycée Ileys مدرسة إيليس المتوسطة والثانوية",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 695805572,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.121528,
+     11.558025
+    ]
+   },
+   "properties": {
+    "name": "Ecole de Balbala 1 Annexe 3 / مدرسة بلبالا 1 ملحق 3",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 375569080,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.103484,
+     11.560892
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 359600913,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.098526,
+     11.571705
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 375567346,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.101471,
+     11.566358
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 375567354,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.101674,
+     11.568467
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 375567371,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.148312,
+     11.561376
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 555297049,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.101182,
+     11.572084
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 626756992,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.083624,
+     11.560768
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 626756993,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.075156,
+     11.558273
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 626756994,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.107785,
+     11.568426
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 711138832,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.111326,
+     11.573008
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 711138853,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.09803,
+     11.542801
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 1364221410,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.091591,
+     11.55825
+    ]
+   },
+   "properties": {
+    "name": "Garderie RAHMA حضانة الرحمة",
+    "type": "Maternelle",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5313339829,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.098078,
+     11.557923
+    ]
+   },
+   "properties": {
+    "name": "Génération Future",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5313280215,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.134668,
+     11.580835
+    ]
+   },
+   "properties": {
+    "name": "Lycée Industriel et Commercial المدرسة الثانوية الصناعية والتجارية",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 353240916,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.139163,
+     11.578251
+    ]
+   },
+   "properties": {
+    "name": "Lycée Saoudien مدرسة",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 353258684,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.111854,
+     11.552553
+    ]
+   },
+   "properties": {
+    "name": "Lycée de Balbala مدرسة عالية بلبالا",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 309024873,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.144488,
+     11.562086
+    ]
+   },
+   "properties": {
+    "name": "Lycée de Gabode مدرسة ثانوية غابود",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 353233070,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.091325,
+     11.553198
+    ]
+   },
+   "properties": {
+    "name": "Lycée de Hodan 4 / ثانوية هودان 4",
+    "type": "Lycee",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 628372440,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.151753,
+     11.591838
+    ]
+   },
+   "properties": {
+    "name": "Université de Djibouti (Site 3)",
+    "type": "Universite",
+    "amenity": "university",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 574113753,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.116326,
+     11.538158
+    ]
+   },
+   "properties": {
+    "name": "Université de Djibouti - حرم جامعة بلبالا",
+    "type": "Universite",
+    "amenity": "university",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 575079686,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.151131,
+     11.593754
+    ]
+   },
+   "properties": {
+    "name": "Université de Djibouti جامعة جيبوتي",
+    "type": "Universite",
+    "amenity": "university",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 266382353,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.150748,
+     11.595329
+    ]
+   },
+   "properties": {
+    "name": "administration de FLLSH",
+    "type": "College",
+    "amenity": "college",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5511884427,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.107052,
+     11.546012
+    ]
+   },
+   "properties": {
+    "name": "barwaqo 2",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5518838913,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.141904,
+     11.578221
+    ]
+   },
+   "properties": {
+    "name": "college d arhiba كلية أرهيبا",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 754721048,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.105024,
+     11.54893
+    ]
+   },
+   "properties": {
+    "name": "collège de biokeyd كلية بيوكيد",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": "école",
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 584206424,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.152574,
+     11.566226
+    ]
+   },
+   "properties": {
+    "name": "École 1e / المدرسة 1",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 69147603,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.095787,
+     11.561599
+    ]
+   },
+   "properties": {
+    "name": "École Balbala 10 / مدرسة بالبالا 10",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": "public",
+    "osm_type": "way",
+    "osm_id": 711138834,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.114702,
+     11.561199
+    ]
+   },
+   "properties": {
+    "name": "École Balbala 3",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 554277811,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.133513,
+     11.579544
+    ]
+   },
+   "properties": {
+    "name": "École Primaire D'al Hourya مدرسة الحورية الابتدائية",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 353240917,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.1473,
+     11.58127
+    ]
+   },
+   "properties": {
+    "name": "École Primaire Quartier 6 مدرسة المنطقة السادسة الابتدائية",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 696517055,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.137069,
+     11.575307
+    ]
+   },
+   "properties": {
+    "name": "École de Gachamalé",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 696784070,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.144668,
+     11.574822
+    ]
+   },
+   "properties": {
+    "name": "École de Guelleh Batal مدرسة غيله بتال",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 383772390,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.862065,
+     11.501113
+    ]
+   },
+   "properties": {
+    "name": "École de Ouéa",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 550510218,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.146651,
+     11.577161
+    ]
+   },
+   "properties": {
+    "name": "École de la Salle مدرسة القاعة",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 372077639,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.156074,
+     11.605322
+    ]
+   },
+   "properties": {
+    "name": "École de la nativité",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 9667836451,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.132439,
+     11.564762
+    ]
+   },
+   "properties": {
+    "name": "École des Lumières مدرسة التنوير",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": "private",
+    "osm_type": "way",
+    "osm_id": 555297029,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.100717,
+     11.553798
+    ]
+   },
+   "properties": {
+    "name": "École privée",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5313346175,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.139907,
+     11.57527
+    ]
+   },
+   "properties": {
+    "name": "École quartier 7 / مدرسة حي 7",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 383771081,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.117495,
+     11.556395
+    ]
+   },
+   "properties": {
+    "name": "école islamique مدرسة إسلامية",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 5552921971,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.149175,
+     11.601804
+    ]
+   },
+   "properties": {
+    "name": "École Dolto مدرسة دولتو",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Djibouti",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 114932407,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.475431,
+     12.149276
+    ]
+   },
+   "properties": {
+    "name": "Collège et École primaire de Dorra كلية ومدرسة ابتدائية درة",
+    "type": "College",
+    "amenity": "school",
+    "district_adm2": "Dorra",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 934517098,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.438158,
+     12.301248
+    ]
+   },
+   "properties": {
+    "name": "École Primaire de Mouddo",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Dorra",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 815075472,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.283005,
+     11.96368
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Obock",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 749868781,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.285188,
+     11.967404
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Obock",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 749868783,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.288358,
+     11.966775
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Obock",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 749868784,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.334759,
+     12.386952
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "Obock",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 465818080,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     43.252261,
+     11.971943
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "Obock",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 749852743,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.620857,
+     11.901351
+    ]
+   },
+   "properties": {
+    "name": "Ecole de Bolli",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Randa",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 4066323089,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.639052,
+     11.786242
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Randa",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 749642078,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.662587,
+     11.847249
+    ]
+   },
+   "properties": {
+    "name": "École de Randa",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Randa",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 7731173246,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.879585,
+     11.789462
+    ]
+   },
+   "properties": {
+    "name": "Centre de Formation Professsionnelle pour Adultes مدرسة",
+    "type": "Formation professionnelle",
+    "amenity": "school",
+    "district_adm2": "Tadjourah",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 552216591,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.791873,
+     11.757485
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (niveau non precise dans OSM)",
+    "amenity": "school",
+    "district_adm2": "Tadjourah",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 749642097,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.887068,
+     11.783217
+    ]
+   },
+   "properties": {
+    "name": "Ecole sans nom (OSM)",
+    "type": "Ecole (sans nom dans OSM)",
+    "amenity": null,
+    "district_adm2": "Tadjourah",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 236000167,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.883448,
+     11.789247
+    ]
+   },
+   "properties": {
+    "name": "École primaire",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Tadjourah",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "way",
+    "osm_id": 236000330,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.107265,
+     11.510573
+    ]
+   },
+   "properties": {
+    "name": "École primaire de YOBOKI",
+    "type": "Primaire",
+    "amenity": "school",
+    "district_adm2": "Yoboki",
+    "operator": null,
+    "operator_type": null,
+    "osm_type": "node",
+    "osm_id": 10654215405,
+    "source": "OpenStreetMap, extrait Geofabrik Djibouti 8 nov. 2026"
+   }
+  }
+ ]
+}

@@ -1,4 +1,5 @@
 import geojson from '../data/dj_adm1.json'
+import djQuartiersGeo from '../data/dj-quartiers.json'
 import { REGIONS } from '../data/demo'
 
 export interface GeoShape {
@@ -106,6 +107,83 @@ export function buildDjiboutiMap(): GeoMap {
     return { name, key: norm(name), d, x: cx, y: cy, unemployment: region ? region.unemployment : null }
   })
   return { shapes, view: `-6 -6 ${W + 12} ${H + 12}`, ratio: `${W + 12} / ${H + 12}`, w: W + 12, h: H + 12 }
+}
+
+// --- Djibouti-ville : quartiers ---
+
+interface QuartierFeature {
+  type: 'Feature'
+  properties: { name: string; name_ar: string; population_est: number }
+  geometry: { type: string; coordinates: unknown }
+}
+
+const QUARTIERS_FEATURES = (djQuartiersGeo as unknown as { features: QuartierFeature[] }).features
+
+export function djiVilleBounds(): LonLatBounds {
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9
+  const walk = (c: unknown) => {
+    if (Array.isArray(c) && typeof c[0] === 'number') {
+      const [x, y] = c as [number, number]; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y)
+    } else if (Array.isArray(c)) { c.forEach(walk) }
+  }
+  QUARTIERS_FEATURES.forEach((f) => walk(f.geometry.coordinates))
+  const k = Math.cos(((y0 + y1) / 2) * (Math.PI / 180))
+  const sc = 300 / ((x1 - x0) * k)
+  return { x0, x1, y0, y1, k, sc }
+}
+
+export function buildDjiboutiVilleMap(): GeoMap {
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9
+  const walk = (c: unknown) => {
+    if (Array.isArray(c) && typeof c[0] === 'number') {
+      const [x, y] = c as [number, number]; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y)
+    } else if (Array.isArray(c)) { c.forEach(walk) }
+  }
+  QUARTIERS_FEATURES.forEach((f) => walk(f.geometry.coordinates))
+  const k = Math.cos(((y0 + y1) / 2) * (Math.PI / 180))
+  const sc = 300 / ((x1 - x0) * k)
+  const W = 300
+  const H = (y1 - y0) * sc
+  const P = (x: number) => (x - x0) * k * sc
+  const Q = (y: number) => (y1 - y) * sc
+
+  const shapes: GeoShape[] = QUARTIERS_FEATURES.map((f) => {
+    const name = f.properties.name
+    let area = -1; let cx = 0; let cy = 0
+    const d = polys(f.geometry)
+      .map((poly) => {
+        poly.forEach((ring, i) => {
+          if (i === 0) {
+            let mx0 = 1e9, mx1 = -1e9, my0 = 1e9, my1 = -1e9
+            ring.forEach(([x, y]) => { mx0 = Math.min(mx0, x); mx1 = Math.max(mx1, x); my0 = Math.min(my0, y); my1 = Math.max(my1, y) })
+            const a = (mx1 - mx0) * (my1 - my0)
+            if (a > area) { area = a; cx = P((mx0 + mx1) / 2); cy = Q((my0 + my1) / 2) }
+          }
+        })
+        return poly.map((ring) => 'M' + ring.map(([x, y]) => `${P(x).toFixed(1)} ${Q(y).toFixed(1)}`).join('L') + 'Z').join('')
+      })
+      .join('')
+    return { name, key: name.toLowerCase().replace(/\s+/g, '-'), d, x: cx, y: cy, unemployment: null }
+  })
+  return { shapes, view: `-6 -6 ${W + 12} ${H + 12}`, ratio: `${W + 12} / ${H + 12}`, w: W + 12, h: H + 12 }
+}
+
+function pointInRing(lon: number, lat: number, ring: [number, number][]): boolean {
+  let inside = false
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i]; const [xj, yj] = ring[j]
+    if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside
+  }
+  return inside
+}
+
+export function getQuartierForPoint(lon: number, lat: number): string | null {
+  for (const f of QUARTIERS_FEATURES) {
+    for (const poly of polys(f.geometry)) {
+      if (pointInRing(lon, lat, poly[0] as [number, number][])) return f.properties.name
+    }
+  }
+  return null
 }
 
 // P-028 : compatibilité conservée — la couleur vient désormais de l'échelle
