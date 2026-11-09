@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict
-from typing import Any, Optional
+from typing import Any
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -121,7 +121,6 @@ def run_schedule_now(schedule_id: str, request: Request, _: str = Depends(_EDITO
         raise HTTPException(404, "Planification introuvable.")
     store = request.app.state.store if hasattr(request.app.state, "store") else None
     from app.sync.sync_engine import run_sync
-    from app.sync.credential_vault import decrypt_credential
     import pandas as pd
 
     def _mock_connector(schedule: SyncSchedule, password: str):

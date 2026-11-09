@@ -214,4 +214,52 @@ describe('demo service (same rules as the server, nothing persisted)', () => {
     expect(await rejectsWith(s.resetPassword(3, 'short'))).toBe('passwordShort')
     expect(await rejectsWith(s.resetPassword(999, 'another-long-pw!'))).toBe('notFound')
   })
+
+  it('changePassword validates new password strength', async () => {
+    const s = createDemoAccounts()
+    await expect(s.changePassword('any-old-pwd', 'new-strong-pw!')).resolves.toBeUndefined()
+    expect(await rejectsWith(s.changePassword('any-old-pwd', 'short'))).toBe('passwordShort')
+    expect(await rejectsWith(s.changePassword('any-old-pwd', 'é'.repeat(40)))).toBe('passwordLong')
+  })
+})
+
+describe('mapApiError — changePwd context', () => {
+  it('maps 403 to wrongPassword', () => {
+    expect(mapApiError(new ApiError(403, 'wrong'), 'changePwd').code).toBe('wrongPassword')
+  })
+
+  it('still maps 403 to forbidden in other contexts', () => {
+    expect(mapApiError(new ApiError(403, ''), 'other').code).toBe('forbidden')
+    expect(mapApiError(new ApiError(403, ''), 'create').code).toBe('forbidden')
+  })
+})
+
+describe('API service — changePassword', () => {
+  const fetchMock = vi.fn()
+
+  beforeEach(() => {
+    vi.resetModules()
+    vi.stubEnv('VITE_API_BASE', 'http://api.test/')
+    vi.stubGlobal('localStorage', { getItem: (k: string) => (k === 'mizan_token' ? 'tok123' : null) })
+    vi.stubGlobal('window', {})
+    fetchMock.mockReset()
+    vi.stubGlobal('fetch', fetchMock)
+  })
+  afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals() })
+
+  it('sends POST /auth/password with correct body', async () => {
+    fetchMock.mockResolvedValue({ ok: true, status: 204, json: async () => { throw new SyntaxError('empty') } })
+    const s = (await import('../accounts')).createApiAccounts()
+    await expect(s.changePassword('old-secret-pw!', 'new-secret-pw!')).resolves.toBeUndefined()
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(url).toBe('http://api.test/auth/password')
+    expect(init.method).toBe('POST')
+    expect(JSON.parse(init.body as string)).toEqual({ current_password: 'old-secret-pw!', new_password: 'new-secret-pw!' })
+  })
+
+  it('maps 403 to wrongPassword', async () => {
+    fetchMock.mockResolvedValue({ ok: false, status: 403, json: async () => ({ detail: 'Mot de passe actuel incorrect.' }) })
+    const s = (await import('../accounts')).createApiAccounts()
+    expect(await rejectsWith(s.changePassword('bad-pw', 'new-secret-pw!'))).toBe('wrongPassword')
+  })
 })

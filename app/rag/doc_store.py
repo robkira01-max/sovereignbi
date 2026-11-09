@@ -98,7 +98,6 @@ class DocStore:
 
     def ingest_bytes(self, content: bytes, filename: str) -> int:
         """Ingère du contenu binaire (pour tests et routes HTTP)."""
-        import io
 
         doc_id = hashlib.sha256(content).hexdigest()
         existing = self._con.execute(

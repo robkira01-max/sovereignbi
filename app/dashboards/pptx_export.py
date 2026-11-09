@@ -76,7 +76,6 @@ def _add_disclaimer(slide) -> None:
 
 def _slide_kpi(slide, tile_title: str, data: dict, brand: RGBColor) -> None:
     val = data.get("rows", [[None]])[0][0] if data.get("rows") else None
-    unit = ""
     formatted = str(val) if val is not None else "—"
 
     # Large KPI value centred

@@ -10,7 +10,6 @@ from fastapi.responses import HTMLResponse, Response
 
 from app.dashboards.models import (
     Dashboard,
-    DashboardTemplate,
     load_dashboard,
     load_template,
     save_dashboard,

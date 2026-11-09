@@ -4,10 +4,8 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
-from app.alerts.engine import evaluate_rule, run_due_rules
+from app.alerts.engine import evaluate_rule
 from app.alerts.models import (
-    ALERT_HISTORY_PATH,
-    ALERTS_PATH,
     AlertRule,
     create_rule,
     delete_rule,

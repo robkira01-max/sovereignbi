@@ -1,12 +1,10 @@
 """Routes RAG documentaire : ingestion PDF/DOCX et recherche de chunks."""
 from __future__ import annotations
 
-import io
 import tempfile
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
-from fastapi.responses import JSONResponse
 
 from app.rag.doc_pipeline import ingest_document
 from app.security.rbac import RequireRole

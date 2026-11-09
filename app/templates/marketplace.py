@@ -1,7 +1,6 @@
 """Marketplace de templates — imports/exports JSON, templates vedettes, découverte."""
 from __future__ import annotations
 
-import json
 import uuid
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -12,7 +11,6 @@ from app.templates.catalogue import (
     CATALOGUE_PATH,
     CatalogueEntry,
     _load_catalogue,
-    _write_catalogue,
     register_template,
 )
 

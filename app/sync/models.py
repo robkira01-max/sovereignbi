@@ -6,7 +6,6 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
-from uuid import uuid4
 
 SYNC_DIR = Path("data/sync")
 SCHEDULES_FILE = SYNC_DIR / "schedules.jsonl"

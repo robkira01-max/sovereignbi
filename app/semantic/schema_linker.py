@@ -12,7 +12,7 @@ from __future__ import annotations
 import os
 from typing import Protocol
 
-from app.semantic.model import JoinInfo, MetricInfo, SemanticModel, TableInfo
+from app.semantic.model import JoinInfo, MetricInfo, SemanticModel
 
 
 # ── Protocole Embedder ────────────────────────────────────────────────────────

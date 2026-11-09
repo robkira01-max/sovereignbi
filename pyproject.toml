@@ -40,5 +40,12 @@ mcp = ["mcp[cli]<2"]
 testpaths = ["tests"]
 pythonpath = ["."]
 
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501", "E741"]
+
 [tool.setuptools]
 packages = ["app"]

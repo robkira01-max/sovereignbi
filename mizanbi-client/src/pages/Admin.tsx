@@ -16,7 +16,7 @@ type Texts = Dict['admin']
 const ERR_KEY: Record<AccountErrorCode, keyof Texts> = {
   exists: 'errExists', lastAdmin: 'errLastAdmin', notFound: 'errNotFound', invalidEmail: 'errInvalidEmail',
   passwordShort: 'errPasswordShort', passwordLong: 'errPasswordLong', forbidden: 'errForbidden',
-  unauthorized: 'errUnauthorized', busy: 'errBusy', network: 'errNetwork', unknown: 'errUnknown',
+  unauthorized: 'errUnauthorized', wrongPassword: 'errUnknown', busy: 'errBusy', network: 'errNetwork', unknown: 'errUnknown',
 }
 
 const ROLE_KEY: Record<Role, { label: keyof Texts; help: keyof Texts }> = {

@@ -1,9 +1,7 @@
 """Métriques Prometheus — collecteur léger sans dépendance obligatoire."""
 from __future__ import annotations
 
-import time
 from threading import Lock
-from typing import Any
 
 
 class Counter:

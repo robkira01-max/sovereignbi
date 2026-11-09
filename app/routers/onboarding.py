@@ -9,7 +9,6 @@ from app.onboarding.guide import (
     complete_step,
     create_session,
     get_progress,
-    get_session,
 )
 from app.onboarding.sandbox import load_sandbox, reset_sandbox, sandbox_questions
 from app.security.rbac import RequireRole
@@ -51,7 +50,7 @@ def get_session_progress(session_id: str, _: str = Depends(_VIEWER)):
 @router.post("/sessions/{session_id}/complete")
 def mark_step_complete(session_id: str, body: StepComplete, _: str = Depends(_VIEWER)):
     try:
-        session = complete_step(session_id, body.step_id)
+        complete_step(session_id, body.step_id)
         return get_progress(session_id)
     except KeyError:
         raise HTTPException(404, "Session ou étape introuvable")

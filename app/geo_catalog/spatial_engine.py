@@ -7,7 +7,7 @@ from typing import Any
 
 import duckdb
 
-from app.geo_catalog.registry import get_layer, load_catalog
+from app.geo_catalog.registry import get_layer
 
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
 

@@ -65,7 +65,6 @@ def run_sync(
         return _fail("Le connecteur n'a retourné aucune donnée.")
 
     try:
-        import duckdb
         from app.data.duckdb_store import _safe_name
         safe_table = _safe_name(schedule.target_table)
         store.con.execute(f'DROP TABLE IF EXISTS "{safe_table}"')

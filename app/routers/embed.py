@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.dashboards.models import load_dashboard

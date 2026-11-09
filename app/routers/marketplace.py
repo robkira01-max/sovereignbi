@@ -2,15 +2,12 @@
 from __future__ import annotations
 
 from dataclasses import asdict
-from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from app.security.rbac import RequireRole
 from app.templates.catalogue import (
-    CATALOGUE_PATH,
-    get_entry,
     list_tags,
     rate_template,
     search_templates,

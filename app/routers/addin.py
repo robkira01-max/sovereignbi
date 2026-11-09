@@ -5,7 +5,7 @@ import re
 from typing import Any
 
 import pandas as pd
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, field_validator
 
 from app.security.rbac import RequireRole

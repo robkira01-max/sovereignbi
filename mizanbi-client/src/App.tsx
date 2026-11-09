@@ -19,6 +19,7 @@ import BiePage from './pages/Bie'
 import BcdPage from './pages/Bcd'
 import GeoAIPage from './pages/GeoAI'
 import AdminPage from './pages/Admin'
+import ChangePasswordModal from './components/ChangePasswordModal'
 
 export type Page = 'home' | 'chat' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin'
 export type View = 'all' | 'bi' | 'sig'
@@ -57,6 +58,7 @@ export default function App() {
   const [indicator, setIndicator] = useState<IndicatorId>('unemployment')
   const [themeMenuOpen, setThemeMenuOpen] = useState(false)
   const themeMenuRef = useRef<HTMLDivElement>(null)
+  const [showChangePwd, setShowChangePwd] = useState(false)
 
   const t = I18N[lang]
 
@@ -195,9 +197,22 @@ export default function App() {
             </span>
             <span style={{ fontSize: 13, fontWeight: 600 }}>{userName || email}</span>
           </span>
+          {token !== 'demo' && (
+            <button onClick={() => setShowChangePwd(true)} className="btn-ghost" style={{ padding: '5px 12px' }} title={t.changePwd.title}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </button>
+          )}
           <button onClick={logout} className="btn-ghost" style={{ padding: '5px 12px' }}>{t.logout}</button>
         </div>
       </header>
+      {showChangePwd && (
+        <ChangePasswordModal
+          t={t}
+          service={accounts}
+          isDemo={token === 'demo'}
+          onClose={() => setShowChangePwd(false)}
+        />
+      )}
       <main>
         {page === 'home' && (
           <>

@@ -23,7 +23,7 @@ const MAX_PASSWORD_BYTES = 72 // bcrypt limit
 
 export type AccountErrorCode =
   | 'exists' | 'lastAdmin' | 'notFound' | 'invalidEmail' | 'passwordShort' | 'passwordLong'
-  | 'forbidden' | 'unauthorized' | 'busy' | 'network' | 'unknown'
+  | 'forbidden' | 'unauthorized' | 'wrongPassword' | 'busy' | 'network' | 'unknown'
 
 export class AccountsError extends Error {
   constructor(public code: AccountErrorCode, public detail?: string) {
@@ -61,9 +61,10 @@ export interface AccountsService {
   create(email: string, password: string, role: Role): Promise<Account>
   update(id: number, patch: { role?: Role; is_active?: boolean }): Promise<Account>
   resetPassword(id: number, password: string): Promise<void>
+  changePassword(currentPassword: string, newPassword: string): Promise<void>
 }
 
-type Context = 'create' | 'update' | 'other'
+type Context = 'create' | 'update' | 'changePwd' | 'other'
 
 /** Maps an HTTP failure to a stable code the UI can localise. */
 export function mapApiError(e: unknown, ctx: Context = 'other'): AccountsError {
@@ -71,7 +72,7 @@ export function mapApiError(e: unknown, ctx: Context = 'other'): AccountsError {
   if (!(e instanceof ApiError)) return new AccountsError('network')
   switch (e.status) {
     case 401: return new AccountsError('unauthorized')
-    case 403: return new AccountsError('forbidden')
+    case 403: return ctx === 'changePwd' ? new AccountsError('wrongPassword') : new AccountsError('forbidden')
     case 404: return new AccountsError('notFound')
     case 409: return new AccountsError(ctx === 'create' ? 'exists' : 'lastAdmin')
     case 429:
@@ -105,6 +106,8 @@ export function createApiAccounts(): AccountsService {
       guard('update', () => apiJson<Account>(`/auth/users/${id}`, { method: 'PATCH', ...json(patch) })),
     resetPassword: (id, password) =>
       guard('other', async () => { await apiFetch(`/auth/users/${id}/password`, { method: 'PUT', ...json({ password }) }) }),
+    changePassword: (currentPassword, newPassword) =>
+      guard('changePwd', async () => { await apiFetch('/auth/password', { method: 'POST', ...json({ current_password: currentPassword, new_password: newPassword }) }) }),
   }
 }
 
@@ -156,6 +159,10 @@ export function createDemoAccounts(): AccountsService {
       await tick()
       find(id)
       validatePassword(password)
+    },
+    async changePassword(_currentPassword, newPassword) {
+      await tick()
+      validatePassword(newPassword)
     },
   }
 }
