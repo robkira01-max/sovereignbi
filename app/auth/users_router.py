@@ -89,9 +89,9 @@ def _db_guard():
     """Map a locked/unavailable auth database to 503 and validation errors to 422."""
     try:
         yield
-    except sqlite3.OperationalError as e:
-        log.error("auth_db_unavailable", error=str(e))
-        raise HTTPException(503, "Base d'authentification occupée, réessayez.") from e
+    except sqlite3.OperationalError as exc:
+        log.error("auth_db_unavailable")
+        raise HTTPException(503, "Base d'authentification occupée, réessayez.") from exc
     except (sec.UserExistsError, sec.LastAdminError):
         raise  # ValueError subclasses that callers map to 409, not a validation error
     except ValueError as e:

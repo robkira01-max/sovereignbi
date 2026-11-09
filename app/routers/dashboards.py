@@ -15,6 +15,7 @@ from app.dashboards.models import (
     save_dashboard,
 )
 from app.security.rbac import RequireRole
+from app.security.sql_guard import SQLGuardError, validate_sql
 
 router = APIRouter(tags=["dashboards"])
 
@@ -510,7 +511,10 @@ def tile_export_csv(dashboard_id: str, tile_id: str, request: Request, _: str = 
 
     store = request.app.state.store
     try:
-        columns, rows = store.execute(sql)
+        safe_sql = validate_sql(sql, store.tables)
+        columns, rows = store.execute(safe_sql)
+    except SQLGuardError as exc:
+        raise HTTPException(422, f"Requête SQL non autorisée : {exc}") from exc
     except Exception as exc:
         raise HTTPException(422, str(exc)) from exc
 

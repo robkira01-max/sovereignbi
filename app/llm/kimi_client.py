@@ -55,12 +55,14 @@ class KimiClient:
         model: str | None = None,
         timeout: float | None = None,
     ) -> None:
-        resolved_url = base_url or os.environ.get("KIMI_BASE_URL", "")
+        resolved_url = (base_url or os.environ.get("KIMI_BASE_URL", "")).strip()
         if not resolved_url:
             raise RuntimeError(
                 "KIMI_BASE_URL est obligatoire quand LLM_PROVIDER=kimi. "
                 "Définissez cette variable d'environnement avant de démarrer."
             )
+        if not resolved_url.startswith("https://"):
+            raise RuntimeError("KIMI_BASE_URL doit commencer par https://")
         resolved_key = api_key or os.environ.get("KIMI_API_KEY", "")
         if not resolved_key:
             raise RuntimeError(

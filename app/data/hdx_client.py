@@ -50,7 +50,10 @@ class HdxClient:
 
     def __init__(self, base_url: str | None = None) -> None:
         raw = base_url or os.environ.get("SOVEREIGN_HDX_URL", _DEFAULT_BASE)
-        self._base = raw.rstrip("/")
+        u = raw.strip().rstrip("/")
+        if not u.startswith("https://"):
+            raise ValueError("SOVEREIGN_HDX_URL doit commencer par https://")
+        self._base = u
         self._cb = _CircuitBreaker()
 
     def _get(self, path: str, params: dict | None = None) -> Any:
@@ -110,6 +113,8 @@ class HdxClient:
         strip_hxl: bool = True,
     ) -> pd.DataFrame:
         """Download a CSV from HDX and optionally strip the HXL hashtag row."""
+        if not url.startswith("https://"):
+            raise ValueError("URL de téléchargement HDX doit commencer par https://")
         if self._cb.is_open:
             raise RuntimeError("HDX circuit breaker open.")
         try:

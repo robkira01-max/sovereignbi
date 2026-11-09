@@ -325,11 +325,12 @@ def test_missing_user_raises(db, fn):
         fn(123, "viewer") if fn is sec.update_user else fn(123, NEW_PW)
 
 
-def test_seed_admin_not_subject_to_api_password_policy(db, monkeypatch):
+def test_seed_admin_rejects_short_password(db, monkeypatch):
+    # H5 — seed_admin must refuse passwords shorter than MIN_PASSWORD_CHARS
     monkeypatch.setenv("ADMIN_EMAIL", "boss@example.org")
-    monkeypatch.setenv("ADMIN_PASSWORD", "short")  # existing deployments may have one
-    sec.seed_admin()
-    assert sec.login_user("boss@example.org", "short")
+    monkeypatch.setenv("ADMIN_PASSWORD", "short")
+    with pytest.raises(ValueError, match="ADMIN_PASSWORD trop court"):
+        sec.seed_admin()
 
 
 # ── CLI ──────────────────────────────────────────────────────────────────────

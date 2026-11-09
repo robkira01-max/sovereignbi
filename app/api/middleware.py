@@ -89,8 +89,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         "Strict-Transport-Security": "max-age=63072000; includeSubDomains",
         "Content-Security-Policy": (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline'; "
-            "style-src 'self' 'unsafe-inline'; "
+            "script-src 'self'; "
+            "style-src 'self'; "
             "img-src 'self' data:; "
             "frame-ancestors 'none'"
         ),

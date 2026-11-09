@@ -6,6 +6,7 @@ Si la variable est absente, les routes retournent 503 (service non configuré).
 from __future__ import annotations
 
 import dataclasses
+import hmac
 import os
 from pathlib import Path
 
@@ -26,7 +27,7 @@ def _require_admin(key: str | None = Depends(_KEY_HEADER)) -> None:
     expected = os.environ.get("SOVEREIGN_ADMIN_KEY", "")
     if not expected:
         raise HTTPException(503, "SOVEREIGN_ADMIN_KEY non configuré")
-    if key != expected:
+    if not hmac.compare_digest(key or "", expected):
         raise HTTPException(403, "Clé d'administration invalide")
 
 

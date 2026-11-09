@@ -203,6 +203,22 @@ def health():
 _MAX_UPLOAD_BYTES = int(os.environ.get("SOVEREIGN_MAX_UPLOAD_MB", "50")) * 1024 * 1024
 
 
+_ZIP_MAGIC = b"PK\x03\x04"
+_XLSX_EXTENSIONS = {".xlsx", ".xlsm"}
+
+
+def _validate_file_magic(suffix: str, data: bytes) -> None:
+    """Refuse files whose magic bytes contradict their declared extension."""
+    if suffix in _XLSX_EXTENSIONS:
+        if not data[:4] == _ZIP_MAGIC:
+            raise HTTPException(400, "Fichier XLSX/XLSM invalide (signature ZIP absente).")
+    elif suffix == ".csv":
+        # Reject HTML/XML masquerading as CSV.
+        head = data[:64].lstrip()
+        if head.startswith(b"<"):
+            raise HTTPException(400, "Fichier CSV invalide (contenu HTML ou XML détecté).")
+
+
 @app.post("/upload")
 async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
     suffix = Path(file.filename or "").suffix.lower()
@@ -216,6 +232,7 @@ async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
             f"Fichier trop volumineux : {len(data) // 1024 // 1024} Mo reçu, "
             f"limite {_MAX_UPLOAD_BYTES // 1024 // 1024} Mo.",
         )
+    _validate_file_magic(suffix, data)
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / Path(file.filename).name
         p.write_bytes(data)

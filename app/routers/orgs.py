@@ -4,6 +4,11 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
+
+def _mask(key: str) -> str:
+    """Return first 8 chars + **** — never expose full API keys in responses."""
+    return key[:8] + "****" if len(key) >= 8 else "****"
+
 from app.security.rbac import RequireRole
 
 router = APIRouter(prefix="/orgs", tags=["orgs"])
@@ -58,8 +63,8 @@ def get_org(
     return {
         "org_id": org.org_id,
         "name": org.name,
-        "owner_key": org.owner_key,
-        "member_keys": org.member_keys,
+        "owner_key": _mask(org.owner_key),
+        "member_keys": [_mask(k) for k in org.member_keys],
         "created_at": org.created_at,
     }
 
@@ -78,7 +83,7 @@ def add_member(
         raise HTTPException(404, str(e))
     except PermissionError as e:
         raise HTTPException(403, str(e))
-    return {"org_id": org.org_id, "member_keys": org.member_keys}
+    return {"org_id": org.org_id, "member_keys": [_mask(k) for k in org.member_keys]}
 
 
 @router.delete("/{org_id}/members/{key}", status_code=200)
@@ -97,4 +102,4 @@ def remove_member(
         raise HTTPException(403, str(e))
     except ValueError as e:
         raise HTTPException(400, str(e))
-    return {"org_id": org.org_id, "member_keys": org.member_keys}
+    return {"org_id": org.org_id, "member_keys": [_mask(k) for k in org.member_keys]}

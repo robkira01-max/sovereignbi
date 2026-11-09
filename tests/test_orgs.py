@@ -212,7 +212,8 @@ def test_add_member_via_route(client):
     org_id = resp.json()["org_id"]
     r = client.post(f"/orgs/{org_id}/members", json={"key": "new-member-key"}, headers=_A)
     assert r.status_code == 200
-    assert "new-member-key" in r.json()["member_keys"]
+    # Keys are masked in responses (first 8 chars + ****)
+    assert "new-memb****" in r.json()["member_keys"]
 
 
 def test_remove_member_via_route(client):
@@ -221,4 +222,4 @@ def test_remove_member_via_route(client):
     client.post(f"/orgs/{org_id}/members", json={"key": "to-remove"}, headers=_A)
     r = client.delete(f"/orgs/{org_id}/members/to-remove", headers=_A)
     assert r.status_code == 200
-    assert "to-remove" not in r.json()["member_keys"]
+    assert "to-remov****" not in r.json()["member_keys"]

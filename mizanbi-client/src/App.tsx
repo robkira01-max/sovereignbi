@@ -44,7 +44,7 @@ const NAV: { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string
 export default function App() {
   const [lang, setLang] = useState<Lang>('fr')
   const [token, setToken] = useState<string | null>(() => {
-    const tk = localStorage.getItem('mizan_token')
+    const tk = sessionStorage.getItem('mizan_token')
     // Un token « demo » périmé n'ouvre pas de session quand l'API est configurée.
     return tk === 'demo' && isApiConfigured() ? null : tk
   })
@@ -112,7 +112,7 @@ export default function App() {
 
   const enter = (tk: string, em: string) => {
     const name = tk === 'demo' ? DEMO_USER.name : em
-    localStorage.setItem('mizan_token', tk)
+    sessionStorage.setItem('mizan_token', tk)
     localStorage.setItem('mizan_email', em)
     localStorage.setItem('mizan_user_name', name)
     setToken(tk)
@@ -122,7 +122,7 @@ export default function App() {
   }
 
   const logout = () => {
-    localStorage.removeItem('mizan_token')
+    sessionStorage.removeItem('mizan_token')
     localStorage.removeItem('mizan_email')
     localStorage.removeItem('mizan_user_name')
     setToken(null)

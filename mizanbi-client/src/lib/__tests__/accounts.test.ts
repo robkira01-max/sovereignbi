@@ -79,7 +79,7 @@ describe('API service (requests actually sent)', () => {
   beforeEach(() => {
     vi.resetModules()
     vi.stubEnv('VITE_API_BASE', 'http://api.test/')
-    vi.stubGlobal('localStorage', { getItem: (k: string) => (k === 'mizan_token' ? 'tok123' : null) })
+    vi.stubGlobal('sessionStorage', { getItem: (k: string) => (k === 'mizan_token' ? 'tok123' : null) })
     vi.stubGlobal('window', {})
     fetchMock.mockReset()
     vi.stubGlobal('fetch', fetchMock)
@@ -240,7 +240,7 @@ describe('API service — changePassword', () => {
   beforeEach(() => {
     vi.resetModules()
     vi.stubEnv('VITE_API_BASE', 'http://api.test/')
-    vi.stubGlobal('localStorage', { getItem: (k: string) => (k === 'mizan_token' ? 'tok123' : null) })
+    vi.stubGlobal('sessionStorage', { getItem: (k: string) => (k === 'mizan_token' ? 'tok123' : null) })
     vi.stubGlobal('window', {})
     fetchMock.mockReset()
     vi.stubGlobal('fetch', fetchMock)

@@ -70,12 +70,12 @@ def build_graph(
             chunks = doc_store.search(state["question"], k=3)
             if chunks:
                 doc_context = doc_store.format_context(chunks)
-        prompt = f"Schéma pertinent :\n{store.schema_description()}\n\n{context}\n\n"
+        prompt = f"###SCHEMA###\n{store.schema_description()}\n###END_SCHEMA###\n\n{context}\n\n"
         if doc_context:
             prompt += f"{doc_context}\n\n"
         if few_shot_text:
             prompt += f"{few_shot_text}\n\n"
-        prompt += f"Question : {state['question']}"
+        prompt += f"###QUESTION###\n{state['question']}\n###END_QUESTION###"
         if state.get("error"):
             prompt += f"\n\nTa requête précédente a échoué :\n{state['sql']}\nErreur : {state['error']}\nCorrige-la."
         return {"sql": extract_sql(llm.complete(SQL_SYSTEM, prompt)), "error": None}

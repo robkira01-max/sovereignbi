@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { authHeaders, login } from '../api'
 
 function stubBrowser(opts: { token?: string | null; key?: string }) {
-  vi.stubGlobal('localStorage', { getItem: (k: string) => (k === 'mizan_token' ? opts.token ?? null : null) })
+  vi.stubGlobal('sessionStorage', { getItem: (k: string) => (k === 'mizan_token' ? opts.token ?? null : null) })
   vi.stubGlobal('window', opts.key ? { __MIZAN_API_KEY__: opts.key } : {})
 }
 

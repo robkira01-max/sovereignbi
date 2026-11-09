@@ -219,7 +219,10 @@ def seed_admin() -> None:
         has_users = c.execute("SELECT 1 FROM users LIMIT 1").fetchone()
     if not has_users:
         if len(password) < MIN_PASSWORD_CHARS:
-            log.warning("seed_admin_weak_password", min_chars=MIN_PASSWORD_CHARS)
+            raise ValueError(
+                f"ADMIN_PASSWORD trop court ({len(password)} < {MIN_PASSWORD_CHARS}). "
+                "Modifiez .env avant de démarrer."
+            )
         create_user(normalize_email(email), password, role="admin")
 
 
