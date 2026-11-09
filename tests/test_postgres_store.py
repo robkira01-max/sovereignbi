@@ -1,5 +1,4 @@
 """Tests — app/data/postgres_store.py (Sprint 2)."""
-import os
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
@@ -85,7 +84,7 @@ def test_list_tables_custom_schema(monkeypatch):
     monkeypatch.setenv("SOVEREIGN_PG_DSN", "postgresql://fake:fake@localhost/fake")
     mock_conn, mock_cur = _mock_conn([("orders",)])
     with patch("app.data.postgres_store.psycopg2.connect", return_value=mock_conn):
-        result = list_tables(schema="sales")
+        list_tables(schema="sales")
     call_args = mock_cur.execute.call_args
     assert "sales" in str(call_args)
 
@@ -94,7 +93,7 @@ def test_load_table_returns_dataframe(monkeypatch):
     monkeypatch.setenv("SOVEREIGN_PG_DSN", "postgresql://fake:fake@localhost/fake")
     df_expected = pd.DataFrame({"id": [1, 2], "montant": [100.0, 200.0]})
     with patch("app.data.postgres_store.psycopg2.connect"), \
-         patch("app.data.postgres_store.pd.read_sql", return_value=df_expected) as mock_sql:
+         patch("app.data.postgres_store.pd.read_sql", return_value=df_expected):
         result = load_table("ventes")
     assert isinstance(result, pd.DataFrame)
     assert len(result) == 2

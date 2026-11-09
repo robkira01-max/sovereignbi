@@ -3,7 +3,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
 
 EVAL_DIR = Path(__file__).parent.parent / "eval"
 DATASET = EVAL_DIR / "dataset_large.jsonl"

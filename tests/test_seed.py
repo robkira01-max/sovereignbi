@@ -1,9 +1,6 @@
 """Tests pour seed_store — chargement automatique au démarrage."""
 from __future__ import annotations
 
-import os
-import tempfile
-from pathlib import Path
 
 import pytest
 
@@ -56,7 +53,6 @@ def test_seed_skips_bad_file(store, tmp_path):
 def test_seed_via_env_at_startup(seed_dir_with_csvs, monkeypatch):
     """L'app charge les tables si SOVEREIGN_SEED_DIR est définie au démarrage."""
     monkeypatch.setenv("SOVEREIGN_SEED_DIR", str(seed_dir_with_csvs))
-    from fastapi.testclient import TestClient
     # Réinitialiser le store pour simuler un vrai démarrage
     from app import main as app_module
     fresh_store = DataStore()

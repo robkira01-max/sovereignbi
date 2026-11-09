@@ -1,11 +1,8 @@
 """Tests for DocStore.ingest OCR integration."""
 from __future__ import annotations
 
-from pathlib import Path
-from unittest.mock import patch, MagicMock
-import io
+from unittest.mock import patch
 
-import pytest
 
 from app.rag.doc_store import DocStore
 

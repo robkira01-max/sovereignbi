@@ -1,10 +1,9 @@
 """Tests pour app/alerts/engine.py."""
 import pandas as pd
-import pytest
 from app.alerts.engine import CONDITION_FNS, evaluate_rule, run_due_rules
 from app.alerts.models import create_rule, AlertRule
 from app.data.duckdb_store import DataStore
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 
 
 def _store_with_data():

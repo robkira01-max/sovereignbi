@@ -1,7 +1,6 @@
 """Tests for app/data/hxl_parser.py."""
 import io
 import pandas as pd
-import pytest
 
 from app.data.hxl_parser import (
     detect_hxl_row,

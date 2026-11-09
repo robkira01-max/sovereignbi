@@ -14,7 +14,6 @@ _TABLES = {"ventes", "clients", "produits"}
 # ── sql_guard: injections SQL classiques ─────────────────────────────────────
 
 def test_guard_blocks_union_injection():
-    sql = "SELECT * FROM ventes UNION SELECT * FROM clients"
     # UNION is actually a valid SQL construct but tables need to be whitelisted
     # This should pass since both tables are allowed — testing UNION SELECT with exfil
     bad = "SELECT a FROM ventes UNION SELECT password FROM sys.users"

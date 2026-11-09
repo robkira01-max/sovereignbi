@@ -1,9 +1,8 @@
 """Tests du certificat de précision."""
 from __future__ import annotations
 
-import pytest
 
-from app.pipeline.confidence import ConfidenceScore, compute_confidence
+from app.pipeline.confidence import compute_confidence
 
 
 _SENTINEL = object()

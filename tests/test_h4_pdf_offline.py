@@ -1,7 +1,5 @@
 """Tests for Sprint H4 — reportlab PDF + offline export routes."""
-import io
 
-import pytest
 
 from app.export.pdf import results_to_pdf
 

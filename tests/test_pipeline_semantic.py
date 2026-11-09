@@ -46,7 +46,7 @@ def linker():
 def test_pipeline_with_linker_invokes_llm(store_with_data, linker):
     llm = _FakeLLM("SELECT SUM(montant_ht) AS ca FROM ventes_detail")
     g = build_graph(llm, store_with_data, linker=linker)
-    result = g.invoke({"question": "Quel est le chiffre d'affaires ?", "dry_run": True})
+    g.invoke({"question": "Quel est le chiffre d'affaires ?", "dry_run": True})
     assert len(llm.calls) > 0
 
 

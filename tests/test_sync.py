@@ -1,26 +1,17 @@
 """Tests Sprint 25 — synchronisation automatique DB, scheduler, credential vault."""
 from __future__ import annotations
 
-import json
 import time
-from dataclasses import asdict
 from datetime import datetime, timezone
-from pathlib import Path
 from unittest.mock import patch
 
-import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
 from app.sync.credential_vault import decrypt_credential, encrypt_credential
 from app.sync.models import (
-    SyncRun,
     SyncSchedule,
-    delete_schedule,
     get_schedule,
-    load_runs,
-    load_schedules,
-    save_run,
     save_schedule,
 )
 from app.sync.scheduler import CronScheduler

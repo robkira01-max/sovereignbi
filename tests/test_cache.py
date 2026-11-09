@@ -1,6 +1,5 @@
 """Tests cache LRU + performance — Sprint 17."""
 import time
-import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 

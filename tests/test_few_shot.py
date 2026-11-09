@@ -2,7 +2,6 @@
 import os
 
 import pandas as pd
-import pytest
 
 os.environ.setdefault("SOVEREIGN_EMBEDDER", "tfidf")
 

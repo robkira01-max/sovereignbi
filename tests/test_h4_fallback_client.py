@@ -2,7 +2,6 @@
 import os
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 def _make_fallback(**env_overrides):
@@ -107,7 +106,6 @@ def test_factory_returns_fallback_for_kimi():
         "KIMI_API_KEY": "key",
     }
     with patch.dict(os.environ, env):
-        from app.llm import get_llm_client
         from app.llm.fallback_client import FallbackLLMClient
         import importlib
         import app.llm

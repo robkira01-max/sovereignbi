@@ -1,14 +1,12 @@
 """Tests Sprint 22 — productionisation + hardening."""
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api.middleware import RateLimitMiddleware, SecurityHeadersMiddleware, _RATE_EXEMPT
+from app.api.middleware import RateLimitMiddleware, _RATE_EXEMPT
 from app.main import app
 from app.startup import validate_env
 

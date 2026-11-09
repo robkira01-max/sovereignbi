@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from fastapi.testclient import TestClient
 
-from app.main import app, store
+from app.main import app
 from app.data.snowflake_store import _quote_sf_ident, load_snowflake_table
 from app.data.bigquery_store import _quote_bq_ident, load_bigquery_table
 from app.data.mongodb_store import load_mongodb_collection

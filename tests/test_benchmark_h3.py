@@ -2,7 +2,6 @@
 import json
 from pathlib import Path
 
-import pytest
 
 BENCHMARK_FILE = Path("eval/benchmark_h3.jsonl")
 

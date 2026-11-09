@@ -1,8 +1,6 @@
 """Tests for admin learning routes: proposals, versions, report."""
 import os
 
-import pytest
-import yaml
 from fastapi.testclient import TestClient
 
 os.environ.setdefault("SOVEREIGN_ADMIN_KEY", "test-admin-key-sprint3")

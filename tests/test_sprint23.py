@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import io
-import json
 import tempfile
 import uuid
 from pathlib import Path
@@ -207,7 +206,7 @@ def test_structure_to_template_kpis_become_tiles():
 
 
 def test_structure_to_template_sections_chart_types():
-    from ingestion.universal_extractor import ExtractedKPI, ExtractedSection, ExtractedStructure
+    from ingestion.universal_extractor import ExtractedSection, ExtractedStructure
     from app.templates.structure_to_template import structure_to_template
 
     structure = ExtractedStructure(

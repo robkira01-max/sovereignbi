@@ -8,7 +8,7 @@ import pytest
 
 pymssql = pytest.importorskip("pymssql")
 
-from app.data.mssql_store import _parse_mssql_dsn, _quote_mssql_ident, load_mssql_table
+from app.data.mssql_store import _parse_mssql_dsn, _quote_mssql_ident, load_mssql_table  # noqa: E402
 
 
 def test_quote_mssql_ident_valid():
@@ -61,7 +61,7 @@ def test_load_mssql_table_calls_correct_query(mock_connect):
     with patch("pandas.read_sql", return_value=df_expected) as mock_sql:
         mock_connect.return_value = MagicMock()
         mock_connect.return_value.close = MagicMock()
-        result = load_mssql_table(table="orders", database="sales")
+        load_mssql_table(table="orders", database="sales")
         call_args = mock_sql.call_args[0][0]
         assert "[orders]" in call_args
         assert "[sales]" in call_args

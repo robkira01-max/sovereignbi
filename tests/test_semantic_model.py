@@ -1,16 +1,10 @@
 """Tests du parser SemanticModel (model.py)."""
-import textwrap
 from pathlib import Path
 
-import pytest
 import yaml
 
 from app.semantic.model import (
-    ColumnInfo,
-    JoinInfo,
-    MetricInfo,
     SemanticModel,
-    TableInfo,
     load_model,
     model_to_prompt_text,
 )

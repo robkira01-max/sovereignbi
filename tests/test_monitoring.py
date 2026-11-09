@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 from app.main import app, store
 from app.monitoring.metrics import (
     Counter, Gauge, Histogram,
-    asks_total, active_tables, cache_hits_total, render_all,
+    render_all,
 )
 
 VIEWER = {"X-Api-Key": "test-viewer-key-s6"}
@@ -98,7 +98,7 @@ def test_metrics_endpoint(client):
 
 
 def test_metrics_contains_active_tables(client):
-    import io, pandas as pd
+    import pandas as pd
     store.load_dataframe("metrics_test", pd.DataFrame({"x": [1]}))
     r = client.get("/metrics")
     assert "mizanbi_active_tables" in r.text

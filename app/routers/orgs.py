@@ -4,12 +4,12 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
+from app.security.rbac import RequireRole
+
 
 def _mask(key: str) -> str:
     """Return first 8 chars + **** — never expose full API keys in responses."""
     return key[:8] + "****" if len(key) >= 8 else "****"
-
-from app.security.rbac import RequireRole
 
 router = APIRouter(prefix="/orgs", tags=["orgs"])
 

@@ -1,5 +1,4 @@
 """Tests for Sprint H4 — SQLite persistent cache."""
-import tempfile
 import time
 from pathlib import Path
 

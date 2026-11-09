@@ -535,7 +535,7 @@ def test_login_racing_a_deactivation_gets_no_session(db, monkeypatch):
 
 def test_no_store_on_every_success_response(client):
     uid = _create(client, "a@example.org").json()["id"]
-    h = _bearer(client, "a@example.org")
+    _bearer(client, "a@example.org")
     responses = [
         client.get("/auth/users", headers=ADMIN),
         client.patch(f"/auth/users/{uid}", json={"role": "editor"}, headers=ADMIN),

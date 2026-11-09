@@ -3,7 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.templates.catalogue import CATALOGUE_PATH, register_template
+from app.templates.catalogue import register_template
 from app.templates.marketplace import (
     FEATURED_TEMPLATES,
     export_template_package,
@@ -85,7 +85,7 @@ def test_import_wrong_format(cat):
 
 def test_search_by_tag(cat):
     seed_featured_templates(cat)
-    results = seed_featured_templates(cat)
+    seed_featured_templates(cat)
     from app.templates.catalogue import search_templates
     hits = search_templates(tags=["kpi"], catalogue_path=cat)
     assert any("kpi" in e.tags for e in hits)

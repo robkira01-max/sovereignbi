@@ -54,7 +54,7 @@ def _patch_httpx(monkeypatch):
         yield
 
 
-from app.mcp.server import (
+from app.mcp.server import (  # noqa: E402
     ask,
     get_dashboard,
     get_tile_insight,

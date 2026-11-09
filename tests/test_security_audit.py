@@ -1,7 +1,6 @@
 """Tests pour app/security/audit.py — audit de configuration SEC-001 à SEC-006."""
 import os
 
-import pytest
 
 from app.security.audit import SecurityFinding, audit_configuration, log_audit_results
 

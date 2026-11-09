@@ -107,7 +107,7 @@ def test_coerce_date_columns():
     for col in date_cols:
         dtype = df[col].dtype
         is_dt = pd.api.types.is_datetime64_any_dtype(dtype)
-        is_str = dtype == object or "string" in str(dtype).lower() or str(dtype) == "str"
+        is_str = dtype == object or "string" in str(dtype).lower() or str(dtype) == "str"  # noqa: E721
         assert is_dt or is_str, f"Colonne date {col!r} dtype inattendu : {dtype}"
 
 
@@ -163,6 +163,6 @@ def test_datastore_loads_large_csv():
 def test_datastore_large_csv_has_50_cols():
     store = DataStore()
     names = store.load_file(FIXTURES / "large_schema.csv")
-    table = names[0]
+    names[0]
     schema = store.schema_description()
     assert "montant_ht" in schema

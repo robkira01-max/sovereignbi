@@ -4,7 +4,6 @@ from __future__ import annotations
 import io
 from unittest.mock import MagicMock, patch
 
-import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
@@ -223,7 +222,6 @@ def test_chatbot_response_schema(client):
 # --- py_compile check (implicite via import) --------------------------------
 
 def test_chatbot_module_importable():
-    import importlib
     import app.routers.chatbot as mod
     assert hasattr(mod, "router")
     assert hasattr(mod, "ChatRequest")

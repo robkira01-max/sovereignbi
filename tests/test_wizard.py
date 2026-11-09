@@ -1,6 +1,5 @@
 """Tests du wizard de création guidée de templates."""
 import pytest
-from pathlib import Path
 from app.templates.wizard import (
     new_session,
     get_session,

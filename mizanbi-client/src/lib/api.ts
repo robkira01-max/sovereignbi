@@ -88,3 +88,15 @@ export async function login(email: string, password: string): Promise<{ token: s
   if (!token) throw new Error('login failed')
   return { token, email: j.email || email }
 }
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  const res = await apiFetch('/auth/password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+  })
+  if (res.status !== 204 && !res.ok) {
+    const body = await res.json().catch(() => ({})) as { detail?: string }
+    throw new ApiError(res.status, body.detail)
+  }
+}

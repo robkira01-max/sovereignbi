@@ -1,7 +1,5 @@
 """Tests SBOM CycloneDX 1.4."""
-from pathlib import Path
 
-import pytest
 
 from tools.generate_sbom import generate_sbom
 

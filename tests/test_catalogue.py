@@ -92,8 +92,8 @@ def test_search_sorted_by_use_count(tmp_path):
     # Clone id1 twice to increase use_count
     _make_template(tdir, "A")  # dummy for clone source
     import uuid
-    tid = str(uuid.uuid4())
-    from app.dashboards.models import Tile, DashboardTheme, DashboardTemplate, save_template as st
+    str(uuid.uuid4())
+    from app.dashboards.models import DashboardTheme, DashboardTemplate, save_template as st
     t = DashboardTemplate(id="id1", title="A", description="D", tiles=[], theme=DashboardTheme())
     st(t, tdir / "id1.yaml")
     clone_template("id1", "A2", catalogue_path=cat, templates_dir=tdir)
@@ -105,7 +105,7 @@ def test_clone_increments_use_count(tmp_path):
     cat = tmp_path / "cat.jsonl"
     tdir = tmp_path / "templates"
     register_template("id1", "T", "D", catalogue_path=cat)
-    from app.dashboards.models import Tile, DashboardTheme, DashboardTemplate, save_template as st
+    from app.dashboards.models import DashboardTheme, DashboardTemplate, save_template as st
     t = DashboardTemplate(id="id1", title="T", description="D", tiles=[], theme=DashboardTheme())
     st(t, tdir / "id1.yaml")
     clone_template("id1", "T copy", catalogue_path=cat, templates_dir=tdir)

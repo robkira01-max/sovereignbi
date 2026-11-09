@@ -17,7 +17,7 @@ _VIEWER_HEADERS = {"X-Api-Key": os.environ.get("SOVEREIGN_VIEWER_KEY", "test-vie
 
 # ─── Models ──────────────────────────────────────────────────────────────────
 
-from app.dashboards.models import (
+from app.dashboards.models import (  # noqa: E402
     Dashboard,
     DashboardTemplate,
     DashboardTheme,
@@ -102,8 +102,8 @@ def test_save_load_template_roundtrip(tmp_path):
 
 # ─── Renderer ────────────────────────────────────────────────────────────────
 
-from app.dashboards.renderer import render_tile
-from app.data.duckdb_store import DataStore
+from app.dashboards.renderer import render_tile  # noqa: E402
+from app.data.duckdb_store import DataStore  # noqa: E402
 
 
 def _store_with_data() -> DataStore:

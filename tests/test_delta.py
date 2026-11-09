@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import os
-import json
 from pathlib import Path
 
 import pytest
@@ -130,14 +129,14 @@ def _make_dashboard(tmp_path: Path, dash_id: str, sql: str) -> Path:
 
 def test_delta_route_missing_dashboard(client, tmp_path, monkeypatch):
     monkeypatch.setattr("app.routers.dashboards._DASHBOARDS_DIR", tmp_path)
-    r = client.get(f"/dashboards/ghost/tiles/kpi1/delta", headers=VIEWER)
+    r = client.get("/dashboards/ghost/tiles/kpi1/delta", headers=VIEWER)
     assert r.status_code == 404
 
 
 def test_delta_route_missing_tile(client, tmp_path, monkeypatch):
     monkeypatch.setattr("app.routers.dashboards._DASHBOARDS_DIR", tmp_path)
     _make_dashboard(tmp_path, "d-delta-t1", "SELECT 1 AS v")
-    r = client.get(f"/dashboards/d-delta-t1/tiles/ghost/delta", headers=VIEWER)
+    r = client.get("/dashboards/d-delta-t1/tiles/ghost/delta", headers=VIEWER)
     assert r.status_code == 404
 
 

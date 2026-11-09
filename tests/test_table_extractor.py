@@ -1,12 +1,9 @@
 """Tests for app.rag.table_extractor."""
 from __future__ import annotations
 
-import io
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
-import pytest
 
 from app.rag.table_extractor import (
     ExtractedTable,

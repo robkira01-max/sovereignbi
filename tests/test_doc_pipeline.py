@@ -1,11 +1,9 @@
 """Tests for app.rag.doc_pipeline."""
 from __future__ import annotations
 
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
-import pytest
 
 from app.rag.doc_pipeline import IngestResult, _safe_table_name, ingest_document
 

@@ -1,6 +1,4 @@
 """Tests that FastAPI routes still work with/without the React static mount."""
-import os
-import pytest
 from fastapi.testclient import TestClient
 
 

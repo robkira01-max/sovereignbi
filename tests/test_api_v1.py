@@ -1,6 +1,5 @@
 """Tests pour l'API REST v1 (/api/v1/)."""
 import io
-import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 

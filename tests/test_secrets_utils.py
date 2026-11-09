@@ -1,7 +1,6 @@
 """Tests pour app/security/secrets.py."""
 import re
 
-import pytest
 
 from app.security.secrets import generate_api_key, hash_key_for_log, validate_key_strength
 

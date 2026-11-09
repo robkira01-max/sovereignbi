@@ -1,12 +1,9 @@
 """Tests certificat de précision — Sprint 20."""
-import os
 import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 from app.accuracy.certificate import (
-    AccuracyCheck,
-    PrecisionCertificate,
     _grade,
     check_answer_references_data,
     check_confidence,

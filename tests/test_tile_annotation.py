@@ -35,7 +35,7 @@ def _write_yaml(tmp_path: Path, dash_id: str, tile_note: str | None = None) -> N
 # ── Unit test: note round-trips through model ───────────────────────────────
 
 def test_tile_note_in_model(tmp_path):
-    from app.dashboards.models import _tile_from_dict, Tile
+    from app.dashboards.models import _tile_from_dict
     d = {"id": "t1", "type": "kpi", "title": "X", "note": "Source : INSTAD 2023"}
     tile = _tile_from_dict(d)
     assert tile.note == "Source : INSTAD 2023"

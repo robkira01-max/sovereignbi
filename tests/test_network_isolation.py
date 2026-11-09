@@ -60,7 +60,7 @@ def test_no_hardcoded_external_urls_in_app():
             for m in _EXTERNAL_URL_RE.finditer(line):
                 violations.append(f"{py_file}:{i}: {m.group()}")
 
-    assert violations == [], f"Hardcoded external URLs found:\n" + "\n".join(violations)
+    assert violations == [], "Hardcoded external URLs found:\n" + "\n".join(violations)
 
 
 # ── sql_guard: LIMIT forced ───────────────────────────────────────────────────

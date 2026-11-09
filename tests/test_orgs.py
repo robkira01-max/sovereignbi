@@ -78,7 +78,7 @@ def test_get_by_key_unknown_returns_none(tmp_path):
     assert reg.get_by_key("unknown-key") is None
 
 
-def test_list_orgs_empty(tmp_path):
+def test_list_orgs_empty_unit(tmp_path):
     from app.multitenancy.org import OrgRegistry
     reg = OrgRegistry(path=str(tmp_path / "orgs.jsonl"))
     assert reg.list_orgs("some-key") == []

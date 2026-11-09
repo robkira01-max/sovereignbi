@@ -71,7 +71,7 @@ def test_load_mysql_table_calls_correct_query(mock_connect):
     with patch("pandas.read_sql", return_value=df_expected) as mock_sql:
         mock_connect.return_value = MagicMock()
         mock_connect.return_value.close = MagicMock()
-        result = load_mysql_table(table="orders", database="sales")
+        load_mysql_table(table="orders", database="sales")
         call_args = mock_sql.call_args[0][0]
         assert "`orders`" in call_args
         assert "`sales`" in call_args

@@ -2,10 +2,8 @@
 from __future__ import annotations
 
 import os
-from io import StringIO
 from unittest.mock import MagicMock, patch
 
-import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 

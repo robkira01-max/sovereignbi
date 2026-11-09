@@ -1,5 +1,4 @@
 """Tests pour les en-têtes X-RateLimit-* dans RateLimitMiddleware."""
-import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app

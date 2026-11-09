@@ -45,7 +45,8 @@ def test_generate_embed_token_with_admin(client):
 
 def test_embed_dashboard_with_valid_token(client, tmp_path):
     # Create a real dashboard file first
-    import uuid, yaml
+    import uuid
+    import yaml
     from pathlib import Path
     dash_id = str(uuid.uuid4())
     dash_data = {"id": dash_id, "title": "Test", "scope": "personal",
