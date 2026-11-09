@@ -2,7 +2,10 @@
 Test pipeline MizanBI avec données réelles Djibouti (HDX OCHA).
 Usage : python tools/test_real_data.py [--ollama]
 """
-import os, sys, time, argparse
+import os
+import sys
+import time
+import argparse
 from pathlib import Path
 
 # Add project root to path
