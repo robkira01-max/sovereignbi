@@ -93,6 +93,8 @@ def _cors_origins() -> list[str]:
     return [o.strip() for o in raw.split(",") if o.strip()]
 
 
+_DEBUG = os.environ.get("DEBUG", "").lower() in {"1", "true", "yes"}
+
 app = FastAPI(
     title="MizanBI",
     version="1.0.0",
@@ -109,6 +111,9 @@ app = FastAPI(
         {"name": "cache", "description": "Statistiques et invalidation du cache requêtes"},
     ],
     lifespan=lifespan,
+    docs_url="/docs" if _DEBUG else None,
+    redoc_url="/redoc" if _DEBUG else None,
+    openapi_url="/openapi.json" if _DEBUG else None,
 )
 
 # Middleware stack (applied in reverse order — last added = outermost)

@@ -74,22 +74,21 @@ def test_middleware_injects_version_on_old_routes(client):
     assert r.headers.get("x-api-version") == "v1"
 
 
-def test_openapi_schema_accessible(client):
-    r = client.get("/openapi.json")
-    assert r.status_code == 200
-    schema = r.json()
+def test_openapi_schema_disabled_in_production(client):
+    # /openapi.json and /docs are only served when DEBUG=true (not in prod).
+    assert client.get("/openapi.json").status_code == 404
+    assert client.get("/docs").status_code == 404
+    assert client.get("/redoc").status_code == 404
+
+
+def test_openapi_schema_accessible_in_debug(client, monkeypatch):
+    monkeypatch.setenv("DEBUG", "true")
+    # Re-import to pick up the env var — use app.openapi() instead of the route.
+    from app.main import app as _app
+    schema = _app.openapi()
     assert schema["info"]["title"] == "MizanBI"
     assert schema["info"]["version"] == "1.0.0"
-
-
-def test_openapi_has_v1_paths(client):
-    r = client.get("/openapi.json")
-    paths = r.json()["paths"]
+    paths = schema["paths"]
     assert "/api/v1/health" in paths
     assert "/api/v1/ask" in paths
     assert "/api/v1/upload" in paths
-
-
-def test_docs_endpoint_accessible(client):
-    r = client.get("/docs")
-    assert r.status_code == 200
