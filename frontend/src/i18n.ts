@@ -1,5 +1,6 @@
 export type Locale = 'fr' | 'ar' | 'en' | 'es'
-export const SUPPORTED_LOCALES: Locale[] = ['fr', 'en', 'ar', 'es']
+// Arabic excluded from SIG/cartography frontend — no validated translation for spatial UI
+export const SUPPORTED_LOCALES: Locale[] = ['fr', 'en', 'es']
 export const DEFAULT_LOCALE: Locale = 'fr'
 
 export const LOCALE_LABELS: Record<Locale, string> = {

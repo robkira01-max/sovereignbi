@@ -9,15 +9,15 @@ import {
 } from '../i18n'
 
 describe('SUPPORTED_LOCALES', () => {
-  it('contains fr, ar, en, es', () => {
+  it('contains fr, en, es (ar disabled for SIG frontend)', () => {
     expect(SUPPORTED_LOCALES).toContain('fr')
-    expect(SUPPORTED_LOCALES).toContain('ar')
     expect(SUPPORTED_LOCALES).toContain('en')
     expect(SUPPORTED_LOCALES).toContain('es')
+    expect(SUPPORTED_LOCALES).not.toContain('ar')
   })
 
-  it('has exactly 4 locales', () => {
-    expect(SUPPORTED_LOCALES).toHaveLength(4)
+  it('has exactly 3 locales', () => {
+    expect(SUPPORTED_LOCALES).toHaveLength(3)
   })
 })
 

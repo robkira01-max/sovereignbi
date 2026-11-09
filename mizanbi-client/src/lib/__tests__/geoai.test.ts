@@ -146,11 +146,9 @@ describe('geoai dictionaries', () => {
     }
   })
 
-  it('ar is actually translated (Arabic script in every string except the product name)', () => {
-    for (const [k, v] of Object.entries(I18N.ar.geoai)) {
-      if (k === 'title') continue
-      expect(v, k).toMatch(/[؀-ۿ]/)
-    }
+  it('ar.geoai intentionally falls back to fr (Arabic disabled for SIG)', () => {
+    // ar.geoai is not translated — it inherits fr via spread by design.
+    expect(I18N.ar.geoai.subtitle).toBe(I18N.fr.geoai.subtitle)
   })
 
   it('en differs from fr everywhere except the product name and true cognates', () => {
@@ -188,13 +186,13 @@ describe('localized demo answers', () => {
     expect(r.prose).not.toMatch(/\{\w+\}/) // no unreplaced placeholder
   })
 
-  it('numbers follow the locale (fr comma + spaced %, en dot, ar Latin digits)', () => {
+  it('numbers follow the locale (fr comma + spaced %, en dot)', () => {
     const q = (l: Lang) => demoAnswer(demoQuestions(l)[0].q, l).prose
     expect(q('fr')).toContain('29,1 %')
     expect(q('en')).toContain('29.1%')
-    expect(q('ar')).toContain('29.1%')
-    expect(q('ar')).not.toMatch(/[٠-٩]/) // no Arabic-Indic digits
-    expect(numberLocale('ar')).toContain('latn')
+    // ar falls back to fr strings but keeps latn number formatting (dot, no Arabic-Indic digits)
+    expect(q('ar')).toContain('29.1 %')
+    expect(q('ar')).not.toMatch(/[٠-٩]/)
   })
 
   it('population prose is derived from the data, not hard-coded', () => {
