@@ -1,0 +1,7 @@
+# Security constraints — transitive deps pinned to their CVE-free minimum.
+# Install with: pip install -c constraints.txt -e .
+# Updated 2026-11-09 (pip-audit clean after these pins).
+pypdf>=6.21.4
+pillow>=13.0.0
+certifi>=2026.10.18
+filelock>=4.2.1

@@ -19,6 +19,20 @@ services:
       retries: 3
       start_period: 30s
 
+  # mizanbi-client : frontend React standalone.
+  # Décommenter quand le choix frontend est arrêté (mizanbi-client vs frontend/).
+  # Build : docker compose -f docker-compose.server.yml build mizanbi-client
+  # Passer VITE_API_BASE=https://sovereignbi-api.147-5-126-188.sslip.io pour pointer sur l'API Oracle.
+  #
+  # mizanbi-client:
+  #   build:
+  #     context: ./mizanbi-client
+  #     args:
+  #       VITE_API_BASE: "https://sovereignbi-api.147-5-126-188.sslip.io"
+  #   restart: unless-stopped
+  #   networks:
+  #     - caddy_net
+
 networks:
   caddy_net:
     external: true

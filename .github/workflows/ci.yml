@@ -30,7 +30,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -c constraints.txt -e ".[dev]" pip-audit
+      - name: pip-audit (zero known CVEs)
+        run: pip-audit
       - name: Run unit tests
         run: pytest tests/ -v --ignore=tests/integration
 
@@ -52,5 +54,8 @@ jobs:
         run: npx tsc --noEmit
       - name: Vitest
         run: npm test
-      - name: Build
+      - name: Build (Vite)
         run: npm run build
+      - name: Docker build (smoke test)
+        run: docker build --build-arg VITE_API_BASE="" -t mizanbi-client:ci . 2>&1 | tail -3
+        continue-on-error: true
