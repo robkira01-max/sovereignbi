@@ -91,4 +91,199 @@ layers:
   warnings:
   - en: Data from 2020 — verify current operational status before institutional use.
     fr: Données de 2020 — vérifier le statut opérationnel actuel avant usage institutionnel.
+# ── CERD Djibouti-ville layers (UTM 38N → WGS84) ─────────────────────────────
+- api_endpoint: /api/v1/geo/dj/cerd_equipements_scolaires
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 31 schools in Djibouti city (primary, secondary, private/public) with names and codes.
+  description_fr: 31 établissements scolaires de Djibouti-ville (primaires, CEM, lycées, public/privé).
+  enabled: true
+  feature_count: 31
+  file_path: data/geo/cerd/cerd_equipements_scolaires.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_equipements_scolaires
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: nom
+  name_en: Djibouti City — Schools
+  name_fr: Établissements scolaires de Djibouti-ville
+  source: CERD (Centre d'Études et de Recherche de Djibouti), données urbaines ~2015
+  status: draft
+  warnings:
+  - en: Approximate date — verify with MENFOP before institutional use.
+    fr: Date approximative — vérifier avec le MENFOP avant usage institutionnel.
+- api_endpoint: /api/v1/geo/dj/cerd_equipements_sociaux
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 81 socioeconomic facilities (markets, health centres, mosques, sports, admin, military).
+  description_fr: 81 équipements socio-économiques (marchés, sanitaires, religieux, sportifs, administration, militaire).
+  enabled: true
+  feature_count: 81
+  file_path: data/geo/cerd/cerd_equipements_sociaux.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_equipements_sociaux
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: nom
+  name_en: Djibouti City — Socioeconomic Facilities
+  name_fr: Équipements socio-économiques de Djibouti-ville
+  source: CERD, données urbaines ~2015
+  status: draft
+  warnings: []
+- api_endpoint: /api/v1/geo/dj/cerd_secteurs_adressage
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 14 address sectors used for postal and civic addressing in Djibouti city.
+  description_fr: 14 secteurs d'adressage de Djibouti-ville (plan d'adressage urbain).
+  enabled: true
+  feature_count: 14
+  file_path: data/geo/cerd/cerd_secteurs_adressage.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_secteurs_adressage
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: nom
+  name_en: Djibouti City — Address Sectors
+  name_fr: Secteurs d'adressage de Djibouti-ville
+  source: CERD, plan d'adressage urbain
+  status: draft
+  warnings: []
+- api_endpoint: /api/v1/geo/dj/cerd_communes
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 2 administrative communes of Djibouti city (Djibouti, Balbala).
+  description_fr: 2 communes administratives de Djibouti-ville (Djibouti, Balbala).
+  enabled: true
+  feature_count: 2
+  file_path: data/geo/cerd/cerd_communes.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_communes
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: commune
+  name_en: Djibouti City — Communes
+  name_fr: Communes de Djibouti-ville
+  source: CERD, découpage communal
+  status: draft
+  warnings: []
+- api_endpoint: /api/v1/geo/dj/cerd_ilots
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 4010 city blocks (îlots) with commune, arrondissement, quartier and cadastral zone. Geometry simplified at 2 m.
+  description_fr: 4 010 îlots urbains avec commune, arrondissement, quartier et zone cadastrale. Géométrie simplifiée à 2 m.
+  enabled: true
+  feature_count: 4010
+  file_path: data/geo/cerd/cerd_ilots.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_ilots
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: num_ilot
+  name_en: Djibouti City — City Blocks
+  name_fr: Îlots de Djibouti-ville
+  source: CERD, cadastre urbain
+  status: draft
+  warnings:
+  - en: Large file (~2.3 MB) — load selectively in browser.
+    fr: Fichier volumineux (~2,3 Mo) — charger de façon sélective dans le navigateur.
+- api_endpoint: /api/v1/geo/dj/cerd_lignes_bus
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 5 bus lines of Djibouti city.
+  description_fr: 5 lignes de bus de Djibouti-ville.
+  enabled: true
+  feature_count: 5
+  file_path: data/geo/cerd/cerd_lignes_bus.geojson
+  format: geojson
+  geometry_type: LineString
+  id: cerd_lignes_bus
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: ligne
+  name_en: Djibouti City — Bus Lines
+  name_fr: Lignes de bus de Djibouti-ville
+  source: CERD, réseau de transport urbain
+  status: draft
+  warnings: []
+- api_endpoint: /api/v1/geo/dj/cerd_terminus_bus
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 6 bus terminal points.
+  description_fr: 6 terminus de bus de Djibouti-ville.
+  enabled: true
+  feature_count: 6
+  file_path: data/geo/cerd/cerd_terminus_bus.geojson
+  format: geojson
+  geometry_type: Point
+  id: cerd_terminus_bus
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: nom
+  name_en: Djibouti City — Bus Terminals
+  name_fr: Terminus de bus de Djibouti-ville
+  source: CERD, réseau de transport urbain
+  status: draft
+  warnings: []
+- api_endpoint: /api/v1/geo/dj/cerd_voirie
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 1447 road segments with hierarchy, width and surface type. Geometry simplified at 1 m.
+  description_fr: 1 447 tronçons de voirie avec hiérarchie, largeur et revêtement. Géométrie simplifiée à 1 m.
+  enabled: true
+  feature_count: 1447
+  file_path: data/geo/cerd/cerd_voirie.geojson
+  format: geojson
+  geometry_type: LineString
+  id: cerd_voirie
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: hierarchie
+  name_en: Djibouti City — Road Network
+  name_fr: Réseau routier de Djibouti-ville
+  source: CERD, réseau viaire
+  status: draft
+  warnings: []
+- api_endpoint: /api/v1/geo/dj/cerd_ouvrages
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 22 road crossing structures (bridges, culverts) with condition status.
+  description_fr: 22 ouvrages de franchissement (ponts, dalots) avec état.
+  enabled: true
+  feature_count: 22
+  file_path: data/geo/cerd/cerd_ouvrages.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_ouvrages
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: etat
+  name_en: Djibouti City — Bridges & Crossings
+  name_fr: Ouvrages de franchissement de Djibouti-ville
+  source: CERD
+  status: draft
+  warnings: []
+- api_endpoint: /api/v1/geo/dj/cerd_typologies_urbaines
+  coverage: Djibouti-ville
+  date_acquired: '2026-11-11'
+  description_en: 27 urban typology zones (formal, informal, industrial, etc.).
+  description_fr: 27 zones de typologies urbaines (formel, informel, industriel, etc.).
+  enabled: true
+  feature_count: 27
+  file_path: data/geo/cerd/cerd_typologies_urbaines.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_typologies_urbaines
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: nom
+  name_en: Djibouti City — Urban Typologies
+  name_fr: Typologies urbaines de Djibouti-ville
+  source: CERD, étude de typologies urbaines
+  status: draft
+  warnings: []
 version: '1'

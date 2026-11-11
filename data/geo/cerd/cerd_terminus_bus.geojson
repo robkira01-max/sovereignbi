@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+"name": "cerd_terminus_bus",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "nom": "Terminus PK12" }, "geometry": { "type": "Point", "coordinates": [ 43.081640579847935, 11.55734812365567 ] } },
+{ "type": "Feature", "properties": { "nom": "Terminus Hodan" }, "geometry": { "type": "Point", "coordinates": [ 43.098469699981194, 11.552721404590146 ] } },
+{ "type": "Feature", "properties": { "nom": "Terminus Agalis" }, "geometry": { "type": "Point", "coordinates": [ 43.110259033312424, 11.552200050215307 ] } },
+{ "type": "Feature", "properties": { "nom": "Terminus Wahle Daba" }, "geometry": { "type": "Point", "coordinates": [ 43.107248452561592, 11.558145154826102 ] } },
+{ "type": "Feature", "properties": { "nom": "Terminus BB 3" }, "geometry": { "type": "Point", "coordinates": [ 43.114035036574677, 11.561176423852388 ] } },
+{ "type": "Feature", "properties": { "nom": "Terminus Hayableh" }, "geometry": { "type": "Point", "coordinates": [ 43.103561622037049, 11.566621326589319 ] } }
+]
+}

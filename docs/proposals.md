@@ -91,6 +91,66 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 
 ## P-039 — Écran « changer mon mot de passe » + CI GitHub Actions ✅ (livré 2026-11-09)
 
+## P-040 — Attribution de source sur les tuiles ✅ (livré 2026-11-11)
+**Raison :** Les tableaux de bord institutionnels (INSTAD, BCD) doivent citer leurs sources sur chaque tuile, dans le Bulletin HTML, le PPTX et le CSV. Standard rapports officiels.
+**Impact :** Moyen — `Tile.source`, `PUT /source`, affichage tuile, bulletin CSS `::before`, PPTX 8pt, CSV `# Source :`. 12 pytest. 1448/1448 tests.
+
+## P-041 — Intégration données SIG CERD Djibouti-ville ✅ (livré 2026-11-11)
+**Raison :** 10 couches vecteur UTM 38N fournies par le propriétaire (CERD) : écoles, équipements socio-éco, secteurs d'adressage, communes, îlots, bus, voirie, ouvrages, typologies urbaines. Conversion EPSG:32638 → WGS84 GeoJSON, enregistrement catalog.yaml en draft, 10 routes `/api/v1/geo/dj/cerd_*`.
+**Impact :** Élevé — données urbaines Djibouti-ville pour analyse spatiale et visualisation. `tools/convert_cerd_shp.py`. 49 pytest. 1517/1517 tests.
+
+## P-042 — Intégration données Santé INSTAD Djibouti 2020 ✅ (livré 2026-11-11)
+**Raison :** Données XLSX Annuaire Statistiques Sanitaires 2020 (structures sanitaires, indicateurs de santé, PCIME enfants) fournies par le propriétaire. 73 structures, 65 avec GPS, 39 indicateurs, 66 structures PCIME.
+**Impact :** Élevé — données santé réelles DJ. 3 tables DuckDB, GeoJSON `/structures_sante`, dashboard `sante-djibouti-2020.yaml`. 20 pytest. 1468/1468 tests.
+
+## P-043 — Suppression arabe volet SIG (mizanbi-client) ✅ (livré 2026-11-11)
+**Raison :** Pas de traduction arabe validée pour l'interface cartographique et spatiale. `SIG_LANGS = ['fr', 'en']`, auto-switch vers FR si langue AR quand on entre dans le volet SIG.
+**Impact :** Faible — cosmétique + exactitude linguistique. 0 test impacté.
+
+---
+
+## P-050 — Fusion frontend/ + mizanbi-client/ : Phase 1 — base mizanbi-client
+
+**Raison :** Deux frontends React coexistent, créant une dette de maintenance : features dans l'un absentes de l'autre, deux CI builds, deux bases i18n divergentes. Base retenue : `mizanbi-client/` (design dark OKLCH, population/BIE/BCD Canada, GeoAI, Admin, Auth).
+**Impact :** Élevé / risqué — semaine de travail. Prérequis : tous les P-05x.
+**Plan :** Mettre en place l'infrastructure commune (API client, types partagés, structure routes) dans `mizanbi-client/` avant de porter les composants.
+**Statut :** À valider avant de démarrer.
+
+## P-051 — Fusion : Phase 2 — DashboardPage complète dans mizanbi-client
+
+**Raison :** `frontend/` a toute la logique dashboard (tile CRUD, SQL editor pinné, export, source, annotations, tags, favoris, sharing, freshness). La migrer dans le design `mizanbi-client/`.
+**Impact :** Élevé — c'est le cœur fonctionnel BI. Composants à porter : `DashboardPage.tsx`, `TableTile.tsx`, `SqlEditor.tsx`, `TileFreshnessBar.tsx`.
+**Dépend de :** P-050
+**Statut :** À valider avant de démarrer.
+
+## P-052 — Fusion : Phase 3 — Tiles avancées (map-bivariate, heatmap, trade-flow)
+
+**Raison :** `BivariateChoropleth`, `HeatmapTile`, `TradeFlowMap`, `MapAdm2` existent dans `frontend/` mais pas dans `mizanbi-client/`. Composants autonomes, portage direct.
+**Impact :** Moyen — spécialisation INSTAD et démos institutionnelles.
+**Dépend de :** P-051
+**Statut :** À valider avant de démarrer.
+
+## P-053 — Fusion : Phase 4 — Exports (Bulletin HTML, PPTX, CSV par tuile)
+
+**Raison :** Les boutons "↓ Bulletin", "↓ PPTX", "↓ CSV" de `frontend/` sont absents de `mizanbi-client/`. Ce sont les fonctionnalités les plus demandées en démo institutionnelle.
+**Impact :** Élevé pour l'adoption — les rapports sont la valeur perçue principale.
+**Dépend de :** P-051
+**Statut :** À valider avant de démarrer.
+
+## P-054 — Fusion : Phase 5 — SIG complet (GeoImport, GeoCatalog, SpatialAnalysis dans mizanbi-client)
+
+**Raison :** `frontend/` a `GeoImport.tsx`, `GeoCatalog.tsx`, `SpatialAnalysis.tsx` avec l'UI d'import drag-and-drop et le moteur d'analyse DuckDB Spatial. Dépend du volet SIG déjà présent dans `mizanbi-client/`.
+**Impact :** Moyen — complet le volet SIG de mizanbi-client.
+**Dépend de :** P-050, P-052
+**Statut :** À valider avant de démarrer.
+
+## P-055 — Fusion : Phase 6 — Suppression frontend/ et migration CI
+
+**Raison :** Une fois P-050 à P-054 terminés, `frontend/` devient redondant. Supprimer pour éliminer la dette de maintenance. Mettre à jour CI, Dockerfile, CLAUDE.md, PLAN.md.
+**Impact :** Faible (cleanup) — mais irréversible. Prendre un snapshot git avant.
+**Dépend de :** P-050 à P-054 tous terminés
+**Statut :** À valider avant de démarrer. Ne pas commencer sans accord explicite.
+
 **Raison :** `POST /auth/password` existait (P-037) sans interface utilisateur ; les 48+ commits n'avaient aucun workflow CI.
 **Impact :** Moyen — autonomie utilisateur (tout rôle peut changer son propre mot de passe) + CI sur push/PR.
 **Statut :** ✅ Livré 2026-11-09. `ChangePasswordModal.tsx` (champs current/new/confirm, toggle show/hide, messages d'erreur localisés, état succès). `accounts.ts` : `changePassword()` dans l'interface + API (POST /auth/password, mappage 403→wrongPassword) + démo (validation seule). `i18n.ts` : section `changePwd` fr/en/ar. `App.tsx` : bouton cadenas près du déconnexion (masqué en mode démo). `.github/workflows/ci.yml` : lint ruff + py_compile → pytest unitaires → tsc + Vitest + npm build. Ruff 0 violations dans app/. 127/127 Vitest, 1436/1436 pytest.

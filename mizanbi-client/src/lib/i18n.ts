@@ -1,6 +1,8 @@
 export type Lang = 'fr' | 'en' | 'ar'
 
 export const LANGS: Lang[] = ['fr', 'en', 'ar']
+// Arabic excluded from SIG/cartography volet — no validated translation for spatial UI
+export const SIG_LANGS: Lang[] = ['fr', 'en']
 
 const fr = {
   tagline: 'Intelligence décisionnelle conversationnelle',

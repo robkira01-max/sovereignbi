@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { I18N, LANGS, dirOf, type Lang } from './lib/i18n'
+import { I18N, LANGS, SIG_LANGS, dirOf, type Lang } from './lib/i18n'
 import { DEMO_USER } from './data/demo'
 import { isApiConfigured } from './lib/api'
 import { DEMO_ME, createAccountsService, type Me } from './lib/accounts'
@@ -109,8 +109,8 @@ export default function App() {
 
   const go = (p: string) => {
     setPage(p as Page)
-    if (p === 'sig') setView('sig')
-    if (p === 'ancient') setView('sig')
+    if (p === 'sig') { setView('sig'); if (!SIG_LANGS.includes(lang)) setLang('fr') }
+    if (p === 'ancient') { setView('sig'); if (!SIG_LANGS.includes(lang)) setLang('fr') }
     if (p === 'home' || p === 'chat' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd' || p === 'geoai' || p === 'admin' || p === 'privacy' || p === 'terms') setView((v) => (v === 'sig' ? 'bi' : v))
     window.scrollTo(0, 0)
   }
@@ -164,10 +164,10 @@ export default function App() {
           <div className="view-switch" role="tablist" aria-label="Volets">
             <button className={view === 'all' ? 'active' : ''} onClick={() => setView('all')}>{t.overview}</button>
             <button className={view === 'bi' ? 'active' : ''} onClick={() => { setView('bi'); if (page === 'sig') setPage('home') }}>{t.voletBi}</button>
-            <button className={view === 'sig' ? 'active' : ''} onClick={() => { setView('sig'); setPage('sig') }}>{t.voletSig}</button>
+            <button className={view === 'sig' ? 'active' : ''} onClick={() => { setView('sig'); setPage('sig'); if (!SIG_LANGS.includes(lang)) setLang('fr') }}>{t.voletSig}</button>
           </div>
           <div style={{ display: 'flex', gap: 4 }}>
-            {LANGS.map((l) => (
+            {(view === 'sig' ? SIG_LANGS : LANGS).map((l) => (
               <button key={l} onClick={() => setLang(l)} className={`lang-btn${lang === l ? ' active' : ''}`}>{l.toUpperCase()}</button>
             ))}
           </div>

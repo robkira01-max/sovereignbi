@@ -1,10 +1,22 @@
-"""Geo route — serving GeoJSON for Djibouti administrative boundaries.
+"""Geo route — serving GeoJSON for Djibouti administrative boundaries and urban layers.
 
-Levels:
+Administrative levels:
   adm1              — 6 regions (ADM1 shapefile, bundled in frontend)
-  adm2              — 6 districts enriched with population/density (data/geo/dj_adm2.geojson)
-  quartiers         — 11 Djibouti-ville quartiers (data/geo/dj_quartiers.geojson)
-  structures_sante  — 65 health facilities with GPS + personnel (data/geo/dj_structures_sante.geojson)
+  adm2              — 6 districts enriched with population/density
+  quartiers         — 11 Djibouti-ville quartiers (OSM, approximate)
+  structures_sante  — 65 health facilities with GPS + personnel
+
+CERD Djibouti-ville layers (source: CERD, ~2015, EPSG:32638 converted to WGS84):
+  cerd_equipements_scolaires  — 31 schools
+  cerd_equipements_sociaux    — 81 socioeconomic facilities
+  cerd_secteurs_adressage     — 14 address sectors
+  cerd_communes               — 2 communes
+  cerd_ilots                  — 4010 city blocks (simplified 2 m, ~2.3 MB)
+  cerd_lignes_bus             — 5 bus lines
+  cerd_terminus_bus           — 6 bus terminals
+  cerd_voirie                 — 1447 road segments (simplified 1 m)
+  cerd_ouvrages               — 22 bridges / crossings
+  cerd_typologies_urbaines    — 27 urban typology zones
 """
 from __future__ import annotations
 
@@ -18,11 +30,24 @@ router = APIRouter(prefix="/api/v1/geo", tags=["geo"])
 
 _REPO_ROOT = Path(__file__).parent.parent.parent
 
+_CERD = _REPO_ROOT / "data" / "geo" / "cerd"
+
 _LEVEL_PATHS: dict[str, Path] = {
-    "adm1":             _REPO_ROOT / "frontend" / "src" / "data" / "dji_adm1.geojson",
-    "adm2":             _REPO_ROOT / "data" / "geo" / "dj_adm2.geojson",
-    "quartiers":        _REPO_ROOT / "data" / "geo" / "dj_quartiers.geojson",
-    "structures_sante": _REPO_ROOT / "data" / "geo" / "dj_structures_sante.geojson",
+    "adm1":                       _REPO_ROOT / "frontend" / "src" / "data" / "dji_adm1.geojson",
+    "adm2":                       _REPO_ROOT / "data" / "geo" / "dj_adm2.geojson",
+    "quartiers":                  _REPO_ROOT / "data" / "geo" / "dj_quartiers.geojson",
+    "structures_sante":           _REPO_ROOT / "data" / "geo" / "dj_structures_sante.geojson",
+    # CERD Djibouti-ville layers
+    "cerd_equipements_scolaires": _CERD / "cerd_equipements_scolaires.geojson",
+    "cerd_equipements_sociaux":   _CERD / "cerd_equipements_sociaux.geojson",
+    "cerd_secteurs_adressage":    _CERD / "cerd_secteurs_adressage.geojson",
+    "cerd_communes":              _CERD / "cerd_communes.geojson",
+    "cerd_ilots":                 _CERD / "cerd_ilots.geojson",
+    "cerd_lignes_bus":            _CERD / "cerd_lignes_bus.geojson",
+    "cerd_terminus_bus":          _CERD / "cerd_terminus_bus.geojson",
+    "cerd_voirie":                _CERD / "cerd_voirie.geojson",
+    "cerd_ouvrages":              _CERD / "cerd_ouvrages.geojson",
+    "cerd_typologies_urbaines":   _CERD / "cerd_typologies_urbaines.geojson",
 }
 
 _VALID_LEVELS = frozenset(_LEVEL_PATHS)
