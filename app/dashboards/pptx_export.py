@@ -74,6 +74,18 @@ def _add_disclaimer(slide) -> None:
     run.font.color.rgb = RGBColor(0x88, 0x88, 0x88)
 
 
+def _add_source(slide, source: str) -> None:
+    left, top, width, height = Inches(0.5), Inches(6.6), Inches(9.0), Inches(0.4)
+    txb = slide.shapes.add_textbox(left, top, width, height)
+    tf = txb.text_frame
+    p = tf.paragraphs[0]
+    run = p.add_run()
+    run.text = f"Source : {source}"
+    run.font.size = Pt(8)
+    run.font.italic = True
+    run.font.color.rgb = RGBColor(0x6B, 0x72, 0x80)
+
+
 def _slide_kpi(slide, tile_title: str, data: dict, brand: RGBColor) -> None:
     val = data.get("rows", [[None]])[0][0] if data.get("rows") else None
     formatted = str(val) if val is not None else "—"
@@ -199,6 +211,9 @@ def generate_pptx(dashboard: Any, store: Any) -> bytes:
             _slide_table(slide, columns, rows, brand)
         else:
             _slide_summary(slide, tile.title, columns, rows, brand)
+
+        if tile.source:
+            _add_source(slide, tile.source)
 
     buf = io.BytesIO()
     prs.save(buf)

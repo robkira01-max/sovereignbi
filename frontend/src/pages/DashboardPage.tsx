@@ -583,6 +583,11 @@ export function DashboardPage() {
                     </div>
                   ) : (
                     <div style={{ marginTop: '6px' }}>
+                      {tile.source && (
+                        <p data-testid={`tile-source-${tile.id}`} style={{ fontSize: '0.68rem', color: '#9ca3af', margin: '0 0 2px', lineHeight: 1.4 }}>
+                          <span style={{ fontWeight: 600 }}>{t('dashboard.source_label')} </span>{tile.source}
+                        </p>
+                      )}
                       {tile.note && (
                         <p data-testid={`tile-note-${tile.id}`} style={{ fontSize: '0.72rem', color: '#6b7280', margin: 0, lineHeight: 1.4, fontStyle: 'italic' }}>
                           {tile.note}

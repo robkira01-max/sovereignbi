@@ -81,6 +81,12 @@ export const api = {
       { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ note }) }
     ),
 
+  setTileSource: (dashboardId: string, tileId: string, source: string) =>
+    apiFetch<{ dashboard_id: string; tile_id: string; source: string | null; updated_at: string }>(
+      `/dashboards/${dashboardId}/tiles/${tileId}/source`,
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ source }) }
+    ),
+
   setDashboardTags: (dashboardId: string, tags: string[]) =>
     apiFetch<{ dashboard_id: string; tags: string[]; updated_at: string }>(
       `/dashboards/${dashboardId}/tags`,
@@ -142,4 +148,5 @@ export interface Tile {
   position?: number
   options?: Record<string, unknown>
   note?: string | null
+  source?: string | null
 }

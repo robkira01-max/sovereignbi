@@ -28,6 +28,8 @@ tr:nth-child(even) td{background:#f8fafc}
 .disclaimer{background:#fef9c3;border:1px solid #fbbf24;padding:12px 16px;
             border-radius:6px;font-size:0.79rem;color:#78350f;margin:20px 0}
 .err{color:#dc2626;font-size:0.8rem}
+.source-attr{font-size:0.72rem;color:#6b7280;margin:4px 0 12px;font-style:italic}
+.source-attr::before{content:"Source : "}
 footer{margin-top:48px;border-top:1px solid #e5e7eb;padding-top:12px;
        font-size:0.72rem;color:#9ca3af}
 @media print{.disclaimer{border-color:#d1d5db}.insight{break-inside:avoid}}
@@ -93,7 +95,12 @@ def generate_bulletin_html(
             if insight_text
             else ""
         )
-        sections.append(f"<h2>{heading}</h2>{table}{insight_block}")
+        source_block = (
+            f'<p class="source-attr">{html.escape(tile.source)}</p>'
+            if tile.source
+            else ""
+        )
+        sections.append(f"<h2>{heading}</h2>{table}{insight_block}{source_block}")
 
     body = "\n".join(sections) or "<p>Aucune tuile avec SQL disponible.</p>"
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Dict, Lang } from '../lib/i18n'
 import { apiJson, isApiConfigured } from '../lib/api'
+import SourceAttribution from '../components/SourceAttribution'
 import {
   QUESTION_MAX, demoAnswer, demoQuestions, fmt, guardInjection, numberLocale, parseGeoAIResult,
   type GeoAIResult,
@@ -183,6 +184,8 @@ export default function GeoAIPage({ t, lang, go }: { t: Dict; lang: Lang; go: (p
               {g.demoNote}
             </p>
           )}
+
+          <SourceAttribution source="INSTAD / Données démo MizanBI" note="Vérifier les chiffres avec les données officielles avant tout usage officiel." />
         </div>
       )}
     </div>

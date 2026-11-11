@@ -20,7 +20,8 @@ class Tile:
     filters: dict[str, Any] = field(default_factory=dict)
     options: dict[str, Any] = field(default_factory=dict)
     position: int | None = None  # display order (0-based); None = append
-    note: str | None = None  # analyst annotation (source, caveat, methodology)
+    note: str | None = None  # analyst annotation (caveat, methodology)
+    source: str | None = None  # data source attribution (e.g. "INSTAD, Recensement 2023")
 
 
 @dataclass
@@ -69,6 +70,7 @@ def _tile_from_dict(d: dict) -> Tile:
         options=d.get("options", {}),
         position=d.get("position"),
         note=d.get("note"),
+        source=d.get("source"),
     )
 
 
