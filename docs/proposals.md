@@ -114,14 +114,14 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Raison :** Deux frontends React coexistent, créant une dette de maintenance : features dans l'un absentes de l'autre, deux CI builds, deux bases i18n divergentes. Base retenue : `mizanbi-client/` (design dark OKLCH, population/BIE/BCD Canada, GeoAI, Admin, Auth).
 **Impact :** Élevé / risqué — semaine de travail. Prérequis : tous les P-05x.
 **Plan :** Mettre en place l'infrastructure commune (API client, types partagés, structure routes) dans `mizanbi-client/` avant de porter les composants.
-**Statut :** À valider avant de démarrer.
+**Statut :** ✅ Livré 2026-11-11 — `api.ts` types+méthodes, `i18n.ts` section dashboard (fr/en/ar), `LiveTileRenderer.tsx` (kpi/bar/line/pie/table/grid/grid-facettes). Fix curly-quote bug i18n (double-quote switch). 142→257 Vitest.
 
 ## P-051 — Fusion : Phase 2 — DashboardPage complète dans mizanbi-client
 
 **Raison :** `frontend/` a toute la logique dashboard (tile CRUD, SQL editor pinné, export, source, annotations, tags, favoris, sharing, freshness). La migrer dans le design `mizanbi-client/`.
 **Impact :** Élevé — c'est le cœur fonctionnel BI. Composants à porter : `DashboardPage.tsx`, `TableTile.tsx`, `SqlEditor.tsx`, `TileFreshnessBar.tsx`.
 **Dépend de :** P-050
-**Statut :** À valider avant de démarrer.
+**Statut :** ✅ Livré 2026-11-11 — `Dashboards.tsx` réécrit (640 lignes) : liste+tags+favoris, vue détail, tile CRUD drag-and-drop, notes, source, freshness, AI insight, export bulletin/PPTX/CSV, clone, region filter badge. Mode démo préservé. 115 nouveaux tests → 257 Vitest.
 
 ## P-052 — Fusion : Phase 3 — Tiles avancées (map-bivariate, heatmap, trade-flow)
 

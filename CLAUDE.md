@@ -29,8 +29,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-08)
 
-- **Tests** : 1436/1436 pytest + 152/152 Vitest (frontend) + 142/142 Vitest mizanbi-client · `tsc --noEmit` propre (frontend et mizanbi-client)
-- **Dernière proposal** : EcolesMap SIG (97 écoles OSM + zoom Djibouti-ville 11 quartiers) — 2026-11-09
+- **Tests** : 1517/1517 pytest + 152/152 Vitest (frontend) + 257/257 Vitest mizanbi-client · `tsc --noEmit` propre (frontend et mizanbi-client)
+- **Dernière proposal** : P-051 DashboardPage complète mizanbi-client — 2026-11-11
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
 - **Commit** : poussé sur `origin/master` — dernier commit `d32548f`
 - **CI GitHub Actions** : `.github/workflows/ci.yml` — lint + pytest + tsc + vitest + vite build + docker smoke, déclenché sur `master`

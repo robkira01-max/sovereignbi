@@ -100,3 +100,95 @@ export async function changePassword(currentPassword: string, newPassword: strin
     throw new ApiError(res.status, body.detail)
   }
 }
+
+export function getApiBase(): string {
+  return API_BASE
+}
+
+// ── Dashboard types ───────────────────────────────────────────────────────────
+
+export interface DashboardSummary {
+  id: string
+  title: string
+  scope: string
+  updated_at: string
+  is_favorite?: boolean
+  tags?: string[]
+}
+
+export interface Dashboard {
+  id: string
+  title: string
+  scope: string
+  tiles: Tile[]
+  theme?: { primary_color?: string; font?: string; logo_url?: string }
+}
+
+export interface Tile {
+  id: string
+  type: string
+  title: string
+  metric?: string
+  sql_pinned?: string
+  dimensions?: string[]
+  position?: number
+  options?: Record<string, unknown>
+  note?: string | null
+  source?: string | null
+}
+
+export interface TileData {
+  columns: string[]
+  rows: unknown[][]
+}
+
+// ── Dashboard API methods ─────────────────────────────────────────────────────
+
+export const api = {
+  dashboards: () =>
+    apiJson<{ dashboards: DashboardSummary[] }>('/dashboards').then(r => r.dashboards),
+
+  getDashboard: (id: string) => apiJson<Dashboard>(`/dashboards/${id}`),
+
+  patchLayout: (id: string, tiles: { id: string; position: number }[]) =>
+    apiJson<{ id: string; updated_at: string; order: string[] }>(
+      `/dashboards/${id}/layout`,
+      { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tiles }) }
+    ),
+
+  addTile: (id: string, tile: Omit<Tile, 'position'> & { position?: number }) =>
+    apiJson<{ id: string; tile_id: string; updated_at: string }>(
+      `/dashboards/${id}/tiles`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(tile) }
+    ),
+
+  removeTile: (dashboardId: string, tileId: string) =>
+    apiJson<{ id: string; tile_id: string; updated_at: string }>(
+      `/dashboards/${dashboardId}/tiles/${tileId}`,
+      { method: 'DELETE' }
+    ),
+
+  toggleFavorite: (id: string) =>
+    apiJson<{ dashboard_id: string; is_favorite: boolean }>(
+      `/dashboards/${id}/favorite`,
+      { method: 'POST' }
+    ),
+
+  setTileNote: (dashboardId: string, tileId: string, note: string) =>
+    apiJson<{ dashboard_id: string; tile_id: string; note: string | null; updated_at: string }>(
+      `/dashboards/${dashboardId}/tiles/${tileId}/note`,
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ note }) }
+    ),
+
+  setTileSource: (dashboardId: string, tileId: string, source: string) =>
+    apiJson<{ dashboard_id: string; tile_id: string; source: string | null; updated_at: string }>(
+      `/dashboards/${dashboardId}/tiles/${tileId}/source`,
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ source }) }
+    ),
+
+  setDashboardTags: (dashboardId: string, tags: string[]) =>
+    apiJson<{ dashboard_id: string; tags: string[]; updated_at: string }>(
+      `/dashboards/${dashboardId}/tags`,
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tags }) }
+    ),
+}
