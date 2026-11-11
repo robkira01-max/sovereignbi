@@ -68,4 +68,27 @@ layers:
       before institutional use.
     fr: Délimitations approximatives — à valider avec la mairie de Djibouti avant
       toute utilisation institutionnelle.
+- api_endpoint: /api/v1/geo/dj/structures_sante
+  coverage: Djibouti — national
+  date_acquired: '2026-11-11'
+  description_en: 65 health facilities across all 6 regions (hospitals, CSC, health
+    posts, refugee camps) with GPS coordinates and personnel counts by category.
+  description_fr: 65 structures sanitaires dans les 6 régions (hôpitaux, CSC, postes
+    de santé, camps de réfugiés) avec coordonnées GPS et effectifs par catégorie.
+  enabled: true
+  feature_count: 65
+  file_path: data/geo/dj_structures_sante.geojson
+  format: geojson
+  geometry_type: Point
+  id: dj_structures_sante
+  license: Données fournies par le propriétaire du projet
+  license_url: ''
+  name_column: structure
+  name_en: Djibouti Health Facilities
+  name_fr: Structures sanitaires de Djibouti
+  source: Ministère de la Santé / INSTAD, Annuaire Statistiques Sanitaires 2020
+  status: draft
+  warnings:
+  - en: Data from 2020 — verify current operational status before institutional use.
+    fr: Données de 2020 — vérifier le statut opérationnel actuel avant usage institutionnel.
 version: '1'

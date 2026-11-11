@@ -1,9 +1,10 @@
 """Geo route — serving GeoJSON for Djibouti administrative boundaries.
 
 Levels:
-  adm1      — 6 regions (ADM1 shapefile, bundled in frontend)
-  adm2      — 6 districts enriched with population/density (data/geo/dj_adm2.geojson)
-  quartiers — 11 Djibouti-ville quartiers (data/geo/dj_quartiers.geojson)
+  adm1              — 6 regions (ADM1 shapefile, bundled in frontend)
+  adm2              — 6 districts enriched with population/density (data/geo/dj_adm2.geojson)
+  quartiers         — 11 Djibouti-ville quartiers (data/geo/dj_quartiers.geojson)
+  structures_sante  — 65 health facilities with GPS + personnel (data/geo/dj_structures_sante.geojson)
 """
 from __future__ import annotations
 
@@ -18,9 +19,10 @@ router = APIRouter(prefix="/api/v1/geo", tags=["geo"])
 _REPO_ROOT = Path(__file__).parent.parent.parent
 
 _LEVEL_PATHS: dict[str, Path] = {
-    "adm1":      _REPO_ROOT / "frontend" / "src" / "data" / "dji_adm1.geojson",
-    "adm2":      _REPO_ROOT / "data" / "geo" / "dj_adm2.geojson",
-    "quartiers": _REPO_ROOT / "data" / "geo" / "dj_quartiers.geojson",
+    "adm1":             _REPO_ROOT / "frontend" / "src" / "data" / "dji_adm1.geojson",
+    "adm2":             _REPO_ROOT / "data" / "geo" / "dj_adm2.geojson",
+    "quartiers":        _REPO_ROOT / "data" / "geo" / "dj_quartiers.geojson",
+    "structures_sante": _REPO_ROOT / "data" / "geo" / "dj_structures_sante.geojson",
 }
 
 _VALID_LEVELS = frozenset(_LEVEL_PATHS)
@@ -33,6 +35,7 @@ async def get_dj_geo(level: str) -> JSONResponse:
     - **adm1** : 6 régions (source GADM v4.1, CC BY 4.0)
     - **adm2** : 6 districts enrichis (population, superficie, densité)
     - **quartiers** : 11 quartiers de Djibouti-ville (OSM, ODbL — délimitations approximatives)
+    - **structures_sante** : 65 structures sanitaires avec GPS et effectifs (Ministère de la Santé 2020)
     """
     if level not in _VALID_LEVELS:
         raise HTTPException(

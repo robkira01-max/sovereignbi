@@ -1,0 +1,67 @@
+region,structure,enfants_examines,enfants_antibiotique,enfants_visite_suivi,enfants_transferes,enfants_toux_rhume,angine,enfants_infection_urinaire,infections_cutanees,diarrhee_persistante,dysenterie,diarrhees,infection_oreille,anemies,pneumonie
+Ali-Sabieh,CMH_Ali-Sabieh,330,5,0,3,129,39,0,42,0,9,105,20,13,40
+Ali-Sabieh,Camps de réfugies -Ali-Addeh,3973,2360,134,206,1490,104,10,138,12,9,248,278,128,598
+Ali-Sabieh,Camps de réfugiés Holl-Holl,1776,1135,100,9,659,1,0,29,0,35,134,475,23,30
+Ali-Sabieh,Hôpital régional d'Ali-Sabieh,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Ali-Sabieh,Poste de santé-Ali Addeh,295,93,70,10,78,19,0,5,14,0,72,30,9,55
+Ali-Sabieh,Poste de santé-Assamo,436,300,85,1,200,13,0,31,4,0,149,13,18,3
+Ali-Sabieh,Poste de santé-Beya Addeh,897,479,0,0,243,89,0,0,0,0,263,54,0,228
+Ali-Sabieh,Poste de santé-Dasbyo,848,386,690,0,474,28,0,15,0,0,122,40,23,140
+Ali-Sabieh,Poste de santé-Goubéto,815,426,145,0,307,129,7,19,29,15,523,182,91,257
+Ali-Sabieh,Poste de santé-Guestir,571,254,55,0,322,69,1,7,10,0,201,82,32,37
+Ali-Sabieh,Poste de santé-Holl-Holl,555,0,3,0,42,92,0,4,0,0,127,64,25,149
+Arta,CMH_Arta,414,104,34,10,143,39,0,6,0,6,115,16,7,69
+Arta,Poste de santé -Chebelley,133,65,0,4,28,2,0,5,4,4,24,3,3,32
+Arta,Poste de santé -Damerjog,3347,1481,253,267,1800,762,15,149,84,51,1536,430,25,525
+Arta,Poste de santé -Douda,871,507,49,4,392,79,0,29,5,7,230,47,51,73
+Arta,Poste de santé -Karta,84,48,35,0,118,15,0,20,6,2,57,11,4,7
+Arta,Poste de santé -Omar Jakaà,605,370,562,1,151,32,0,0,0,2,128,32,5,213
+Arta,Poste de santé -PK 51,62,44,7,1,72,27,2,21,4,8,61,30,1,39
+Arta,Poste de santé -Wéah,521,296,101,1,250,21,0,22,1,5,120,13,15,33
+Arta,poste de sante - Ali Ouneh,260,109,88,1,78,15,0,7,5,1,43,6,10,15
+Arta,poste de sante - Leyta,230,110,99,1,92,14,0,2,0,0,50,46,2,94
+Dikhil,CMH_Dikhil,997,510,129,20,255,63,0,16,4,15,271,71,24,105
+Dikhil,Poste de santé-Abaitou,436,166,0,0,128,50,0,20,1,7,126,39,4,4
+Dikhil,Poste de santé-As Eyla,1526,904,528,15,203,72,0,5,12,48,451,106,22,297
+Dikhil,Poste de santé-Galamo,574,256,90,0,220,49,0,0,7,2,29,19,32,296
+Dikhil,Poste de santé-Gourabous,207,197,26,6,59,13,0,2,7,10,36,11,14,25
+Dikhil,Poste de santé-Koutabouya,503,362,54,0,74,9,0,15,8,4,93,26,15,197
+Dikhil,Poste de santé-Mouloud,1076,632,926,54,122,63,1,51,0,34,238,79,35,440
+Dikhil,Poste de santé-Sankal,228,68,63,4,114,14,0,1,45,0,70,2,48,82
+Dikhil,Poste de santé-Yoboki,186,86,104,2,78,56,3,3,0,0,53,24,33,51
+Djibouti-ville,CSC- cite Nasib,111,38,57,0,21,1,0,2,0,3,26,6,1,4
+Djibouti-ville,CSC-Ambouli,2650,1017,75,29,842,80,27,156,0,0,585,509,2,15
+Djibouti-ville,CSC-Arhiba,1152,406,1,8,302,51,0,70,5,10,510,44,6,201
+Djibouti-ville,CSC-Balbala 1,4152,1154,276,42,1349,208,56,357,18,6,1353,271,83,509
+Djibouti-ville,CSC-Balbala 2,1540,0,0,2,684,91,37,98,0,16,708,139,37,152
+Djibouti-ville,CSC-Ibrahim balala,973,310,0,6,244,52,0,87,4,0,116,32,15,86
+Djibouti-ville,CSC-Khor-Bourhan,878,164,10,22,125,16,15,9,7,6,180,32,16,72
+Djibouti-ville,CSC-PK20,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Djibouti-ville,CSC-Quartier 7,949,334,14,3,364,50,16,110,47,89,231,69,28,173
+Djibouti-ville,CSC-Wahledaba,677,0,0,0,693,165,40,9,46,1,298,6,5,218
+Djibouti-ville,Polyclinique-Eingueila,955,294,0,9,634,69,5,32,49,28,466,60,1,197
+Djibouti-ville,Polyclinique-Farad had,1885,364,231,45,537,125,8,90,51,101,615,94,46,388
+Djibouti-ville,Polyclinique-Hayableh,5111,1713,464,18,934,137,92,291,242,864,747,170,61,202
+Djibouti-ville,Polyclinique-Maka Moukarama,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Djibouti-ville,Polyclinique-Pk 12,4028,1005,48,5,672,45,5,243,142,13,817,56,19,483
+Djibouti-ville,Polyclinique-Warabley,3341,946,0,59,812,246,40,262,97,18,544,198,67,530
+Obock,CMH_Obock,1675,1001,87,2,1055,91,6,117,13,34,439,121,41,361
+Obock,Camps des réfugiés Markazī,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Obock,Poste de santé-Allaillou,236,100,41,0,58,16,0,3,8,2,44,11,1,41
+Obock,Poste de santé-Assassan,227,95,0,0,94,11,0,0,0,15,50,8,47,25
+Obock,Poste de santé-Daley Af,260,177,4,0,154,19,0,12,8,4,45,10,14,25
+Obock,Poste de santé-Khor Angar,302,109,12,1,91,60,0,0,0,11,12,18,1,13
+Obock,Poste de santé-Medeho,88,100,10,0,129,20,0,2,0,8,44,12,5,55
+Obock,Poste de santé-Waddi,313,229,108,0,115,34,0,2,4,54,40,33,5,102
+Tadjourah,CMH_Tadjourah,1734,525,79,6,337,73,0,54,10,16,379,117,12,321
+Tadjourah,Poste de santé-Adaillou,307,74,39,0,172,10,0,4,0,0,24,12,15,10
+Tadjourah,Poste de santé-Adoyla,90,20,0,0,65,8,0,0,0,0,5,0,0,12
+Tadjourah,Poste de santé-Assa Guella,81,48,3,0,35,2,0,0,0,5,11,3,4,6
+Tadjourah,Poste de santé-Balho,666,358,13,0,255,46,0,6,1,20,107,71,41,83
+Tadjourah,Poste de santé-Day,0,0,0,0,51,4,0,0,0,2,13,0,2,5
+Tadjourah,Poste de santé-Dorra,517,129,209,13,275,40,0,9,25,16,70,26,47,71
+Tadjourah,Poste de santé-Guirrori,201,147,2,1,66,19,0,1,1,4,21,10,14,15
+Tadjourah,Poste de santé-Kalaf,222,54,0,0,194,14,0,3,0,4,49,18,14,16
+Tadjourah,Poste de santé-Randa,453,163,0,0,154,55,0,0,12,0,58,31,35,123
+Tadjourah,Poste de santé-Ripta,20,0,0,0,20,0,0,0,0,0,0,0,0,0
+Tadjourah,Poste de santé-Sagallou,397,397,33,0,162,40,0,0,22,8,56,33,19,40
