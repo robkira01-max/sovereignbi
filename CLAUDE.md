@@ -37,7 +37,8 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - **Dockerfile + nginx.conf** : `mizanbi-client/Dockerfile` + `mizanbi-client/nginx.conf` — build nginx:alpine, SPA fallback, security headers
 - **Langue arabe supprimée** : `Lang = 'fr' | 'en'`, dictionnaire ar retiré, SIG_LANGS supprimé, dirOf simplifié
 - **P-053 livré** : `lib/exports.ts` (tileDataToCsv, dashboardToBulletinHtml, triggerDownload), DemoDashboardDetail utilise pure JS, bouton CSV par tuile
-- **Reprise** — décisions propriétaire restantes : (1) relecture humaine de `app/auth/` (règle Sécurité) ; (2) choisir le frontend livré (`frontend/` vs `mizanbi-client/`) — `frontend/` contient l'URL de prod en dur ; (3) vérifier le chemin LLM réel (Ollama/Kimi)
+- **Frontend unique** : `mizanbi-client/` — `frontend/` supprimé (P-055, 2026-11-11), service Docker activé dans `docker-compose.server.yml`
+- **Reprise** — décisions propriétaire restantes : (1) relecture humaine de `app/auth/` (règle Sécurité, voir `docs/auth-review.md`) ; (2) vérifier le chemin LLM réel (`LLM_PROVIDER` pas setté sur Oracle) ; (3) rebuild image Oracle : `docker compose -f docker-compose.server.yml build mizanbi-client && docker compose -f docker-compose.server.yml up -d`
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack

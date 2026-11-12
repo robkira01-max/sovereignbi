@@ -22,19 +22,16 @@ Les données suivantes sont embarquées dans `mizanbi-client/src/data/` et distr
 
 ---
 
-## Q-002 — Choix du frontend livré : `frontend/` vs `mizanbi-client/`
+## Q-002 — Choix du frontend livré ✅ RÉSOLU 2026-11-11
 
-**Date :** 2026-11-09  
-**Impact :** Bloquant pour le déploiement Oracle.
-
-- `frontend/` : MapLibre GL, frontend complet, URL de prod en dur (`https://sovereignbi-api.147-5-126-188.sslip.io`), pas de compte utilisateur, Dockerfile existant.
-- `mizanbi-client/` : React standalone (sans MapLibre), comptes utilisateurs (login/admin), i18n fr/en/ar, données BIE/BCD/StatCan embarquées, Dockerfile ajouté (2026-11-09).
-
-**Question :** Lequel déployer sur Oracle ? Les deux peuvent coexister derrière Caddy (ports distincts).
+**Décision :** `mizanbi-client/` est le seul frontend. `frontend/` supprimé du dépôt.  
+`docker-compose.server.yml` : service `mizanbi-client` activé.
 
 ---
 
-## Q-003 — Relecture arabe par un arabophone
+## Q-003 — Relecture arabe par un arabophone ✅ RÉSOLU 2026-11-11
+
+**Décision :** Langue arabe supprimée (P-053). Plus de relecture nécessaire.
 
 **Date :** 2026-11-09  
 **Concerne :** Sections GeoAI (`geoai.*`), Comptes (`admin.*`), Changer mot de passe (`changePwd.*`) dans `mizanbi-client/src/lib/i18n.ts`.  

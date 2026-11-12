@@ -3,6 +3,8 @@ import type { Dict } from '../lib/i18n'
 import { PROVENANCE, QUARTIERS, REGIONS, TRADE_FLOWS, fmt } from '../data/demo'
 import DjiboutiMap from '../components/DjiboutiMap'
 import EcolesMap from '../components/EcolesMap'
+import StructuresSanteMap from '../components/StructuresSanteMap'
+import CerdEcolesMap from '../components/CerdEcolesMap'
 import { colorForValue, currentTheme, scaleFor, textOnFill, type IndicatorId } from '../lib/theme'
 
 type Level = 'adm1' | 'adm2' | 'quartiers'
@@ -169,6 +171,28 @@ export default function SigPage({ t, onIndicator, onAncient }: { t: Dict; onIndi
         <p className="muted" style={{ marginTop: 10, fontSize: 12 }}>
           ⚠️ {t.ecoles.giga}
         </p>
+      </section>
+
+      <section className="card-solid" data-testid="structures-sante-section">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Structures de santé — Djibouti</h3>
+            <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>65 structures · 6 régions · hôpitaux, centres et postes de santé</p>
+          </div>
+          <span className="badge badge-demo">MDS</span>
+        </div>
+        <StructuresSanteMap />
+      </section>
+
+      <section className="card-solid" data-testid="cerd-ecoles-section">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Établissements scolaires — Djibouti-ville</h3>
+            <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>31 établissements · données CERD · emprises bâties géoréférencées</p>
+          </div>
+          <span className="badge badge-demo">CERD</span>
+        </div>
+        <CerdEcolesMap />
       </section>
 
       <p className="muted">Source : {PROVENANCE.unemployment.table} (2024, démo) · {PROVENANCE.population.table} (2024, démo) · {t.loi25}</p>
