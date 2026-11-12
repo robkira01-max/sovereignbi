@@ -1,0 +1,9 @@
+{
+  "name": "sovereignbi-frontend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd ../mizanbi-client && npm install && npm run build",
+    "preview": "cd ../mizanbi-client && npm run preview"
+  }
+}
