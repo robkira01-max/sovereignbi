@@ -128,28 +128,26 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Raison :** `BivariateChoropleth`, `HeatmapTile`, `TradeFlowMap`, `MapAdm2` existent dans `frontend/` mais pas dans `mizanbi-client/`. Composants autonomes, portage direct.
 **Impact :** Moyen — spécialisation INSTAD et démos institutionnelles.
 **Dépend de :** P-051
-**Statut :** À valider avant de démarrer.
+**Statut :** ✅ Livré 2026-11-11 — `BivariateChoropleth.tsx`, `HeatmapTile.tsx`, `TradeFlowMap.tsx`, `SparklineKpi.tsx`, `TableTile.tsx` portés dans `mizanbi-client/src/components/`. `maplibre-gl` + `pmtiles` ajoutés. ChatBI drawer flottant + palette pro 12 couleurs (P-052b+c). 257/257 Vitest.
 
-## P-053 — Fusion : Phase 4 — Exports (Bulletin HTML, PPTX, CSV par tuile)
+## P-053 — Fusion : Phase 4 — Exports (Bulletin HTML, CSV par tuile)
 
-**Raison :** Les boutons "↓ Bulletin", "↓ PPTX", "↓ CSV" de `frontend/` sont absents de `mizanbi-client/`. Ce sont les fonctionnalités les plus demandées en démo institutionnelle.
+**Raison :** Les boutons export de `frontend/` étaient absents de `mizanbi-client/`. Fonctionnalité principale pour les démos institutionnelles.
 **Impact :** Élevé pour l'adoption — les rapports sont la valeur perçue principale.
 **Dépend de :** P-051
-**Statut :** À valider avant de démarrer.
+**Statut :** ✅ Livré 2026-11-11 — `lib/exports.ts` (tileDataToCsv, dashboardToBulletinHtml, triggerDownload), `DemoDashboardDetail` pur JS (plus d'appel API), bouton CSV par tuile. 14 nouveaux tests. Commit `b0cb391`.
 
-## P-054 — Fusion : Phase 5 — SIG complet (GeoImport, GeoCatalog, SpatialAnalysis dans mizanbi-client)
+## P-054 — SIG complet : GeoImport, GeoCatalog, SpatialAnalysis dans mizanbi-client
 
-**Raison :** `frontend/` a `GeoImport.tsx`, `GeoCatalog.tsx`, `SpatialAnalysis.tsx` avec l'UI d'import drag-and-drop et le moteur d'analyse DuckDB Spatial. Dépend du volet SIG déjà présent dans `mizanbi-client/`.
-**Impact :** Moyen — complet le volet SIG de mizanbi-client.
-**Dépend de :** P-050, P-052
-**Statut :** À valider avant de démarrer.
+**Raison :** `frontend/` avait ces composants UI (import drag-and-drop, moteur DuckDB Spatial). `mizanbi-client/` a déjà le volet SIG cartographique mais pas l'interface d'administration des couches.
+**Impact :** Moyen — complète le volet SIG de mizanbi-client.
+**Statut :** 🔜 Prochaine — à démarrer après décision propriétaire.
 
-## P-055 — Fusion : Phase 6 — Suppression frontend/ et migration CI
+## P-055 — Suppression frontend/ et finalisation CI
 
-**Raison :** Une fois P-050 à P-054 terminés, `frontend/` devient redondant. Supprimer pour éliminer la dette de maintenance. Mettre à jour CI, Dockerfile, CLAUDE.md, PLAN.md.
-**Impact :** Faible (cleanup) — mais irréversible. Prendre un snapshot git avant.
-**Dépend de :** P-050 à P-054 tous terminés
-**Statut :** À valider avant de démarrer. Ne pas commencer sans accord explicite.
+**Raison :** `frontend/` devenu redondant une fois `mizanbi-client/` complet. Éliminer la dette de maintenance.
+**Impact :** Faible (cleanup) — irréversible mais snapshot git conservé.
+**Statut :** ✅ Livré 2026-11-11 — `frontend/` supprimé (74 fichiers), service `mizanbi-client` activé dans `docker-compose.server.yml`, Q-002 et Q-003 fermées. Commit `5cb2627`.
 
 **Raison :** `POST /auth/password` existait (P-037) sans interface utilisateur ; les 48+ commits n'avaient aucun workflow CI.
 **Impact :** Moyen — autonomie utilisateur (tout rôle peut changer son propre mot de passe) + CI sur push/PR.

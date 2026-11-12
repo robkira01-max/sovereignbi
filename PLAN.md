@@ -170,6 +170,9 @@ Pipeline d'import géographique : `app/geo_catalog/importer.py` (validation Duck
 ### Sprint H9 — P-023 Moteur d'analyse spatiale DuckDB Spatial ✅ (2026-11-08)
 SpatialEngine DuckDB 1.5.6 : 5 analyses (area/centroid/bbox/nearest/summary), `ST_Area_Spheroid`, `ST_Distance`, path guard projet root. `file_path`+`name_column` dans catalog.yaml. `GET /api/v1/geo/analyze/types`, `POST /api/v1/geo/analyze`. 23 pytest. 1201/1203 tests.
 
+### Sprint H9 — P-052 Tiles avancées + P-053 Exports JS + P-055 Nettoyage frontend ✅ (2026-11-11)
+Langue arabe supprimée (`Lang = 'fr' | 'en'`, ~175 lignes retirées de `i18n.ts`, `SIG_LANGS` supprimé, `dirOf` simplifié). P-053 exports pur client : `lib/exports.ts` (`tileDataToCsv`, `dashboardToBulletinHtml`, `triggerDownload`), `DemoDashboardDetail` sans appel API, bouton CSV par tuile (si `tile.data` présent). `Tile.data?: TileData` ajouté à l'interface API. P-055 : `frontend/` supprimé (74 fichiers, `git rm -r`), service `mizanbi-client` activé dans `docker-compose.server.yml`. Q-002 et Q-003 fermées dans `docs/questions.md`. 257/257 Vitest · `tsc --noEmit` propre · `vite build` propre. Commits : `b0cb391` (P-053), `5cb2627` (P-055).
+
 ### Sprint H8 — P-022 Catalogue géospatial MizanGeo + HeatmapTile ✅ (2026-11-08)
 Pivot stratégique : MizanBI → MizanBI + MizanGeo + MizanAI (socle commun). Catalogue géospatial centralisé (`data/geo/catalog.yaml`, `app/geo_catalog/`, `GET|PUT /api/v1/geo/catalog`), 3 couches DJ référencées (ADM1 CC BY 4.0, ADM2 CC BY 4.0, quartiers ODbL draft+avertissement). `GeoCatalog.tsx` (viewer/editor, toggle, badges statut, avertissements qualité, filtre enabled_only). HeatmapTile SVG 1D/2D 4 palettes. Feuille de route P-023→P-029 ajoutée dans proposals.md. 1178/1180 tests (2 pre-existing) · 114/114 Vitest.
 
