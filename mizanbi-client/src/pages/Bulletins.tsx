@@ -74,7 +74,7 @@ export default function BulletinsPage({ t }: { t: Dict }) {
 
   const exportWeekly = () => {
     const points = WEEKLY_BULLETIN.points.map((p) => `<h2>${p.title}</h2><p>${p.text}</p>`).join('')
-    const html = `<!doctype html><html lang="fr"><meta charset="utf-8"><title>MizanBI — Bulletin ${WEEKLY_BULLETIN.week}</title><body style="font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px"><h1>MizanBI — Bulletin hebdomadaire</h1><p>${WEEKLY_BULLETIN.week} — ${t.demoBadge}.</p>${points}<p><small>Sources : emploi_region, population_region (2024, démo). Conformité Loi 25.</small></p></body></html>`
+    const html = `<!doctype html><html lang="fr"><meta charset="utf-8"><title>MizanBI — Bulletin ${WEEKLY_BULLETIN.week}</title><body style="font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px"><h1>MizanBI — Bulletin hebdomadaire</h1><p>${WEEKLY_BULLETIN.week} — ${t.demoBadge}.</p>${points}<p><small>Sources : emploi_region, population_region (2024) — INSTAD.</small></p></body></html>`
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }))
     const a = document.createElement('a')
     a.href = url
@@ -89,7 +89,7 @@ export default function BulletinsPage({ t }: { t: Dict }) {
         <div>
           <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: '-.02em' }}>{t.bulletins}</h1>
           <p style={{ margin: '4px 0 0', color: 'var(--muted)', fontSize: 13 }}>
-            Bulletins analytiques multi-sources · {t.loi25}
+            Bulletins analytiques multi-sources
           </p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -154,7 +154,7 @@ export default function BulletinsPage({ t }: { t: Dict }) {
                 </tbody>
               </table>
             </div>
-            <p className="muted">Sources : emploi_region, population_region (2024, démo). {t.loi25}.</p>
+            <p className="muted">Sources : emploi_region, population_region · INSTAD / CERD (2024).</p>
           </section>
         </>
       )}

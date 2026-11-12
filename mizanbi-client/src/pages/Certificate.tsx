@@ -9,7 +9,7 @@ export default function CertificatePage({ t }: { t: Dict }) {
     <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div>
         <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: '-.02em' }}>{t.certificate}</h1>
-        <p style={{ margin: '4px 0 0', color: 'var(--muted)' }}>{t.demoBadge} — {t.loi25}</p>
+        <p style={{ margin: '4px 0 0', color: 'var(--muted)' }}>{t.demoBadge}</p>
       </div>
       <section className="card-solid" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <h3>Comment un chiffre est produit — et comment il est vérifié</h3>

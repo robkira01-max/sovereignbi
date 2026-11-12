@@ -54,6 +54,7 @@ input, select { font-family: inherit; }
 .nav-btn { cursor: pointer; width: 42px; height: 42px; border-radius: 12px; border: 0; display: flex; align-items: center; justify-content: center; background: transparent; color: var(--muted); }
 .nav-btn:hover { background: var(--surface-solid); }
 .nav-btn.active { background: var(--brand); color: #fff; }
+.nav-sep { width: 24px; height: 1px; background: var(--border); margin: 4px 0; flex-shrink: 0; }
 .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--surface); backdrop-filter: blur(10px); gap: 12px; }
 .topbar-title { font-weight: 600; font-size: 15px; }
 .topbar-right { display: flex; align-items: center; gap: 14px; }

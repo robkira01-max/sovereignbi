@@ -68,7 +68,7 @@ export default function ImportPage({ t }: { t: Dict }) {
           </div>
         </section>
       )}
-      <div className="muted">{t.demoBadge} — {t.loi25}</div>
+      <div className="muted">{t.demoBadge}</div>
     </div>
   )
 }

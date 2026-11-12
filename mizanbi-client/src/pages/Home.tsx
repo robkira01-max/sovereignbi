@@ -32,7 +32,7 @@ export default function HomePage({ t, go }: Props) {
       <div className="hero">
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <span className="badge badge-demo">{t.demoBadge}</span>
-          <span className="badge badge-ok">{t.loi25}</span>
+
           <span className="badge badge-ok">{t.offlineBadge}</span>
           <span className="badge badge-ok">{apiStatus}</span>
         </div>

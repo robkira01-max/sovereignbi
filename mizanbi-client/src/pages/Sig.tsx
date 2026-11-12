@@ -18,7 +18,7 @@ const INDICATORS: { id: IndicatorId; label: string; unit: string }[] = [
   { id: 'poverty', label: 'Pauvreté', unit: '%' },
 ]
 
-export default function SigPage({ t, onIndicator, onAncient }: { t: Dict; onIndicator?: (i: IndicatorId) => void; onAncient?: () => void }) {
+export default function SigPage({ t, onIndicator, onAncient, onGeoAI }: { t: Dict; onIndicator?: (i: IndicatorId) => void; onAncient?: () => void; onGeoAI?: () => void }) {
   const [level, setLevel] = useState<Level>('adm1')
   const [bivariate, setBivariate] = useState(false)
   const [selected, setSelected] = useState<string | null>(null)
@@ -195,7 +195,16 @@ export default function SigPage({ t, onIndicator, onAncient }: { t: Dict; onIndi
         <CerdEcolesMap />
       </section>
 
-      <p className="muted">Source : {PROVENANCE.unemployment.table} (2024, démo) · {PROVENANCE.population.table} (2024, démo) · {t.loi25}</p>
+      {onGeoAI && (
+        <section className="card-solid" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 15 }}>Analyse géospatiale IA</div>
+            <p className="muted" style={{ margin: '2px 0 0', fontSize: 13 }}>Posez une question sur les données géographiques — couches, intersections, densité.</p>
+          </div>
+          <button className="btn-ghost" onClick={onGeoAI}>Ouvrir GeoAI →</button>
+        </section>
+      )}
+      <p className="muted">Source : {PROVENANCE.unemployment.table} · {PROVENANCE.population.table} · CERD / INSTAD (2024)</p>
     </div>
   )
 }

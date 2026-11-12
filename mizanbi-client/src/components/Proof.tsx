@@ -7,7 +7,7 @@ export function Provenance({ table, year, sql, confidence, sourceNote }: { table
   const label = confidence === 'high' ? 'Confiance élevée' : confidence === 'low' ? 'Confiance faible' : 'Confiance moyenne'
   return (
     <div className="muted" style={{ fontSize: 11, lineHeight: 1.6, borderTop: '1px solid oklch(25% 0.04 265 / .6)', paddingTop: 8 }}>
-      <div>{sourceNote ?? <>Source : <code>{table}</code> ({year}, démo) · {label}</>}</div>
+      <div>{sourceNote ?? <>Source : <code>{table}</code> ({year}) · {label}</>}</div>
       {sql && (
         <div dir="ltr" style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, Consolas, monospace", whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
           {sql}

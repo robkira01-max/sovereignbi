@@ -75,7 +75,7 @@ export default function LoginPage({ t, lang, setLang, onEnter }: Props) {
             <div className="muted" style={{ fontSize: 13, textAlign: 'center' }}>{t.demoAccount} · {DEMO_USER.initials}</div>
           </>
         )}
-        <div className="muted">{t.loi25} · {t.demoBadge} · {!isApiConfigured() ? t.off : t.live}</div>
+        <div className="muted">{t.demoBadge} · {!isApiConfigured() ? t.off : t.live}</div>
       </form>
     </div>
   )

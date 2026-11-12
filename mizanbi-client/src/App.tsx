@@ -27,20 +27,26 @@ import CookieBanner, { useCookieConsent } from './components/CookieBanner'
 export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms'
 export type View = 'all' | 'bi' | 'sig'
 
-const NAV: { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string }[] = [
+type NavItem = { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string }
+// Groups: BI analysis | SIG | Settings (admin at bottom)
+const NAV_BI: NavItem[] = [
   { page: 'home', label: (t) => t.home, icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10' },
   { page: 'dash', label: (t) => t.dashboards, icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z' },
-  { page: 'sig', label: (t) => t.sig, icon: 'M9 20l-5.5-2.5v-13L9 7l6-2.5L20.5 7v13L15 17.5 9 20zM9 7v13M15 4.5v13' },
-  { page: 'ancient', label: (t) => t.ancientMaps, icon: 'M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5' },
-  { page: 'upload', label: (t) => t.import, icon: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12' },
   { page: 'bulletins', label: (t) => t.bulletins, icon: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z' },
-  { page: 'cert', label: (t) => t.certificate, icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
-  { page: 'canada', label: (t) => t.canada, icon: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' },
-  { page: 'canadanat', label: (t) => t.canadaNational, icon: 'M3 3h18v18H3zM3 9h18M9 21V9' },
   { page: 'bie', label: (t) => t.bie, icon: 'M3 21h18M6 21V11M11 21V4M16 21v-8M21 21V8' },
   { page: 'bcd', label: (t) => t.bcd, icon: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' },
+  { page: 'canada', label: (t) => t.canada, icon: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' },
+  { page: 'canadanat', label: (t) => t.canadaNational, icon: 'M3 3h18v18H3zM3 9h18M9 21V9' },
+  { page: 'upload', label: (t) => t.import, icon: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12' },
+]
+const NAV_SIG: NavItem[] = [
+  { page: 'sig', label: (t) => t.sig, icon: 'M9 20l-5.5-2.5v-13L9 7l6-2.5L20.5 7v13L15 17.5 9 20zM9 7v13M15 4.5v13' },
+  { page: 'ancient', label: (t) => t.ancientMaps, icon: 'M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5' },
+  // GeoAI is accessible from within the SIG page, not shown as top-level nav item
+]
+const NAV_SETTINGS: NavItem[] = [
+  { page: 'cert', label: (t) => t.certificate, icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
   { page: 'admin', label: (t) => t.admin.title, icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' },
-  { page: 'geoai', label: (t) => t.geoai.title, icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z' },
 ]
 
 export default function App() {
@@ -110,9 +116,8 @@ export default function App() {
 
   const go = (p: string) => {
     setPage(p as Page)
-    if (p === 'sig') { setView('sig') }
-    if (p === 'ancient') { setView('sig') }
-    if (p === 'home' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd' || p === 'geoai' || p === 'admin' || p === 'privacy' || p === 'terms') setView((v) => (v === 'sig' ? 'bi' : v))
+    if (p === 'sig' || p === 'ancient' || p === 'geoai') { setView('sig') }
+    else { setView('bi') }
     window.scrollTo(0, 0)
   }
 
@@ -153,7 +158,19 @@ export default function App() {
     <div dir={dirOf(lang)} className="app">
       <nav className="sidebar" aria-label="Navigation principale">
         <div className="logo">M</div>
-        {NAV.filter((n) => n.page !== 'admin' || me?.role === 'admin').map((n) => (
+        {NAV_BI.map((n) => (
+          <button key={n.page} title={n.label(t)} aria-label={n.label(t)} onClick={() => go(n.page)} className={`nav-btn${page === n.page ? ' active' : ''}`}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={n.icon} /></svg>
+          </button>
+        ))}
+        <div className="nav-sep" aria-hidden="true" />
+        {NAV_SIG.map((n) => (
+          <button key={n.page} title={n.label(t)} aria-label={n.label(t)} onClick={() => go(n.page)} className={`nav-btn${page === n.page ? ' active' : ''}`}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={n.icon} /></svg>
+          </button>
+        ))}
+        <div style={{ flex: 1 }} aria-hidden="true" />
+        {NAV_SETTINGS.filter((n) => n.page !== 'admin' || me?.role === 'admin').map((n) => (
           <button key={n.page} title={n.label(t)} aria-label={n.label(t)} onClick={() => go(n.page)} className={`nav-btn${page === n.page ? ' active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={n.icon} /></svg>
           </button>
@@ -162,11 +179,6 @@ export default function App() {
       <header className="topbar">
         <div className="topbar-title">{pageTitle[page]}</div>
         <div className="topbar-right">
-          <div className="view-switch" role="tablist" aria-label="Volets">
-            <button className={view === 'all' ? 'active' : ''} onClick={() => setView('all')}>{t.overview}</button>
-            <button className={view === 'bi' ? 'active' : ''} onClick={() => { setView('bi'); if (page === 'sig') setPage('home') }}>{t.voletBi}</button>
-            <button className={view === 'sig' ? 'active' : ''} onClick={() => { setView('sig'); setPage('sig') }}>{t.voletSig}</button>
-          </div>
           <div style={{ display: 'flex', gap: 4 }}>
             {LANGS.map((l) => (
               <button key={l} onClick={() => setLang(l)} className={`lang-btn${lang === l ? ' active' : ''}`}>{l.toUpperCase()}</button>
@@ -241,7 +253,7 @@ export default function App() {
         {page === 'geoai' && showBi && <GeoAIPage t={t} lang={lang} go={go} />}
         {page === 'admin' && showBi && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
-        {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
+        {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} onGeoAI={() => go('geoai')} />}
         {page === 'privacy' && <PrivacyPage t={t} go={go} />}
         {page === 'terms' && <TermsPage t={t} go={go} />}
       </main>

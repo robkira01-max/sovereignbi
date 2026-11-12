@@ -393,7 +393,7 @@ export default function AncientMapsPage({ t }: { t: Dict }) {
         </>
       )}
       {notice && <p style={{ fontSize: 13, color: 'var(--muted)' }}>{notice}</p>}
-      <p className="muted">Stockage : localStorage du navigateur (métadonnées, points de contrôle et image compressée). Rien n’est envoyé sur un serveur. Limite : si l’image est trop lourde pour le stockage local, la fiche est gardée sans l’image — réimportez le scan pour la revoir. Carte de référence : Djibouti ADM1, geoBoundaries, licence ouverte. {t.loi25}.</p>
+      <p className="muted">Stockage : localStorage du navigateur (métadonnées, points de contrôle et image compressée). Rien n’est envoyé sur un serveur. Limite : si l’image est trop lourde pour le stockage local, la fiche est gardée sans l’image — réimportez le scan pour la revoir. Carte de référence : Djibouti ADM1, geoBoundaries, licence ouverte.</p>
     </div>
   )
 }

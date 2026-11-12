@@ -238,7 +238,7 @@ export function renderBulletinHtml(sections: BulletinSection[], title = 'MizanBI
 <body style="font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;color:#111827">
 <header style="border-bottom:3px solid #1d4ed8;padding-bottom:16px;margin-bottom:24px">
   <h1 style="margin:0;font-size:24px;font-weight:800">${title}</h1>
-  <p style="margin:6px 0 0;color:#6b7280;font-size:13px">Généré le ${date} · Données : snapshots locaux vérifiés · Conformité Loi 25</p>
+  <p style="margin:6px 0 0;color:#6b7280;font-size:13px">Généré le ${date} · Données : snapshots locaux vérifiés</p>
 </header>
 ${sectionsHtml}
 <footer style="margin-top:40px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af">
