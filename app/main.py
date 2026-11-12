@@ -88,6 +88,7 @@ def _cors_origins() -> list[str]:
     raw = os.environ.get(
         "SOVEREIGN_CORS_ORIGINS",
         "http://localhost:8000,http://localhost:9000,"
+        "https://sovereignbi.vercel.app,"
         "https://excel.officeapps.live.com,https://officeapps.live.com",
     )
     return [o.strip() for o in raw.split(",") if o.strip()]
