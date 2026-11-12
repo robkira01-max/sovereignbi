@@ -130,25 +130,20 @@ describe('demoAnswer', () => {
 import { I18N, type Lang } from '../i18n'
 import { demoQuestions, fmt, numberLocale } from '../geoai'
 
-const LANGS_UNDER_TEST: Lang[] = ['fr', 'en', 'ar']
+const LANGS_UNDER_TEST: Lang[] = ['fr', 'en']
 const placeholders = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort()
 
 describe('geoai dictionaries', () => {
   const frKeys = Object.keys(I18N.fr.geoai).sort()
 
-  it.each(['en', 'ar'] as Lang[])('%s has exactly the same keys as fr', (l) => {
-    expect(Object.keys(I18N[l].geoai).sort()).toEqual(frKeys)
+  it('en has exactly the same keys as fr', () => {
+    expect(Object.keys(I18N.en.geoai).sort()).toEqual(frKeys)
   })
 
-  it.each(['en', 'ar'] as Lang[])('%s keeps the same {placeholders} as fr for every string', (l) => {
+  it('en keeps the same {placeholders} as fr for every string', () => {
     for (const k of frKeys as (keyof typeof I18N.fr.geoai)[]) {
-      expect(placeholders(I18N[l].geoai[k]), `${l}.${k}`).toEqual(placeholders(I18N.fr.geoai[k]))
+      expect(placeholders(I18N.en.geoai[k]), `en.${k}`).toEqual(placeholders(I18N.fr.geoai[k]))
     }
-  })
-
-  it('ar.geoai intentionally falls back to fr (Arabic disabled for SIG)', () => {
-    // ar.geoai is not translated — it inherits fr via spread by design.
-    expect(I18N.ar.geoai.subtitle).toBe(I18N.fr.geoai.subtitle)
   })
 
   it('en differs from fr everywhere except the product name and true cognates', () => {
@@ -190,9 +185,6 @@ describe('localized demo answers', () => {
     const q = (l: Lang) => demoAnswer(demoQuestions(l)[0].q, l).prose
     expect(q('fr')).toContain('29,1 %')
     expect(q('en')).toContain('29.1%')
-    // ar falls back to fr strings but keeps latn number formatting (dot, no Arabic-Indic digits)
-    expect(q('ar')).toContain('29.1 %')
-    expect(q('ar')).not.toMatch(/[٠-٩]/)
   })
 
   it('population prose is derived from the data, not hard-coded', () => {
@@ -214,9 +206,6 @@ describe('localized demo answers', () => {
   it('free-form questions in each language reach the right demo', () => {
     expect(demoAnswer('Which regions have the highest poverty?', 'en').map_config?.value_col).toBe('poverty')
     expect(demoAnswer('compare population density', 'en').map_config?.value_col).toBe('density')
-    expect(demoAnswer('ما هو معدل الفقر؟', 'ar').map_config?.value_col).toBe('poverty')
-    expect(demoAnswer('كم عدد السكان؟', 'ar').map_config?.value_col).toBe('density')
-    expect(demoAnswer('بطالة', 'ar').map_config?.value_col).toBe('unemployment')
   })
 
   it('default language stays French (backward compatible)', () => {

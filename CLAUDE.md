@@ -27,16 +27,17 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - **Licences** : MIT/Apache/BSD uniquement ; tenir `THIRD_PARTY.md` à jour.
 - **Code** : anglais. **UI + docs** : français (anglais second).
 
-## État courant (2026-11-08)
+## État courant (2026-11-11)
 
 - **Tests** : 1517/1517 pytest + 152/152 Vitest (frontend) + 257/257 Vitest mizanbi-client · `tsc --noEmit` propre (frontend et mizanbi-client)
-- **Dernière proposal** : P-051 DashboardPage complète mizanbi-client — 2026-11-11
+- **Dernière proposal** : P-053 Exports Bulletin/CSV dans mizanbi-client — 2026-11-11
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
-- **Commit** : poussé sur `origin/master` — dernier commit `d32548f`
+- **Commit** : poussé sur `origin/master` — dernier commit `d32548f` (à pousser après P-053)
 - **CI GitHub Actions** : `.github/workflows/ci.yml` — lint + pytest + tsc + vitest + vite build + docker smoke, déclenché sur `master`
 - **Dockerfile + nginx.conf** : `mizanbi-client/Dockerfile` + `mizanbi-client/nginx.conf` — build nginx:alpine, SPA fallback, security headers
-- **ChangePasswordModal** : `mizanbi-client/src/components/ChangePasswordModal.tsx` — intégré dans App.tsx (bouton cadenas header)
-- **Reprise (fin de session 2026-11-09)** — décisions propriétaire restantes : (1) relecture humaine de `app/auth/` (règle Sécurité) ; (2) choisir le frontend livré (`frontend/` vs `mizanbi-client/`) — `frontend/` contient l'URL de prod en dur ; (3) relecture arabe (GeoAI, Comptes) par un arabophone ; (4) vérifier le chemin LLM réel (Ollama/Kimi) ; (5) droits de redistribution des données BIE/BCD/StatCan embarquées
+- **Langue arabe supprimée** : `Lang = 'fr' | 'en'`, dictionnaire ar retiré, SIG_LANGS supprimé, dirOf simplifié
+- **P-053 livré** : `lib/exports.ts` (tileDataToCsv, dashboardToBulletinHtml, triggerDownload), DemoDashboardDetail utilise pure JS, bouton CSV par tuile
+- **Reprise** — décisions propriétaire restantes : (1) relecture humaine de `app/auth/` (règle Sécurité) ; (2) choisir le frontend livré (`frontend/` vs `mizanbi-client/`) — `frontend/` contient l'URL de prod en dur ; (3) vérifier le chemin LLM réel (Ollama/Kimi)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack

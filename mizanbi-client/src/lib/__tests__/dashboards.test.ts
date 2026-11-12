@@ -8,7 +8,6 @@ import { I18N } from '../i18n'
 
 const fr = I18N.fr
 const en = I18N.en
-const ar = I18N.ar
 
 // ── i18n key coverage ─────────────────────────────────────────────────────────
 
@@ -38,17 +37,11 @@ describe('i18n dashboard keys', () => {
       expect(val.length).toBeGreaterThan(0)
     })
 
-    it(`ar.dashboard.${key} is a non-empty string (spread from fr)`, () => {
-      const val = (ar.dashboard as Record<string, string>)[key]
-      expect(typeof val).toBe('string')
-      expect(val.length).toBeGreaterThan(0)
-    })
   }
 
   it('regionFilter contains {region} placeholder', () => {
     expect(fr.dashboard.regionFilter).toContain('{region}')
     expect(en.dashboard.regionFilter).toContain('{region}')
-    expect(ar.dashboard.regionFilter).toContain('{region}')
   })
 
   it('regionFilter interpolation works with replace', () => {

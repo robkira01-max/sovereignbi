@@ -13,6 +13,7 @@ import {
 import { DEMO_DASHBOARDS } from '../data/demo'
 import DemoTileRenderer from '../components/TileRenderer'
 import { LiveTileRenderer } from '../components/LiveTileRenderer'
+import { tileDataToCsv, dashboardToBulletinHtml, triggerDownload } from '../lib/exports'
 
 const TILE_TYPES = ['kpi', 'bar', 'line', 'pie', 'table', 'map', 'map-adm2', 'map-bivariate', 'heatmap', 'grid']
 
@@ -44,20 +45,15 @@ function DemoDashboardDetail({ t, dash, onBack }: {
   dash: (typeof DEMO_DASHBOARDS)[0]
   onBack: () => void
 }) {
-  const [exportMsg, setExportMsg] = useState('')
+  const exportBulletin = () => {
+    const html = dashboardToBulletinHtml(dash.title, dash.tiles)
+    triggerDownload(html, `bulletin-${dash.id}.html`, 'text/html;charset=utf-8')
+  }
 
-  const exportBulletin = async () => {
-    setExportMsg('')
-    try {
-      const res = await apiFetch(`/dashboards/${dash.id}/export/bulletin`)
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url; a.download = `bulletin-${dash.id}.html`; a.click()
-      URL.revokeObjectURL(url)
-    } catch {
-      setExportMsg(t.exportFail)
-    }
+  const exportTileCsv = (tile: (typeof dash.tiles)[0]) => {
+    if (!tile.data) return
+    const csv = tileDataToCsv(tile.title, tile.data)
+    triggerDownload(csv, `${tile.id}.csv`, 'text/csv;charset=utf-8', true)
   }
 
   return (
@@ -70,13 +66,20 @@ function DemoDashboardDetail({ t, dash, onBack }: {
         </div>
         <button className="btn btn-green" onClick={exportBulletin}>↓ {t.bulletin}</button>
       </div>
-      {exportMsg && <div style={{ color: 'var(--warning)' }}>{exportMsg}</div>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,300px),1fr))', gap: 16 }}>
         {dash.tiles.map(tile => (
           <section key={tile.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
               <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600 }}>{tile.title}</h3>
-              <span style={{ fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase' }}>{tile.type}</span>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <span style={{ fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase' }}>{tile.type}</span>
+                {tile.data && (
+                  <button className="btn-ghost" style={{ fontSize: 10, padding: '2px 6px' }}
+                    onClick={() => exportTileCsv(tile)} title="Télécharger CSV">
+                    CSV
+                  </button>
+                )}
+              </div>
             </div>
             <DemoTileRenderer tile={tile} />
           </section>

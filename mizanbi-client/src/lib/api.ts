@@ -135,6 +135,7 @@ export interface Tile {
   options?: Record<string, unknown>
   note?: string | null
   source?: string | null
+  data?: TileData
 }
 
 export interface TileData {

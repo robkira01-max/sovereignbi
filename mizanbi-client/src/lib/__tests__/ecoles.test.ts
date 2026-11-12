@@ -82,12 +82,11 @@ describe('ecoles-djibouti.json', () => {
 })
 
 describe('i18n ecoles section', () => {
-  it('fr, en, ar all define ecoles section with same keys', async () => {
+  it('fr and en define ecoles section with same keys', async () => {
     const { I18N } = await import('../i18n')
     const frKeys = Object.keys(I18N.fr.ecoles).sort()
     expect(frKeys.length).toBeGreaterThan(5)
     expect(Object.keys(I18N.en.ecoles).sort()).toEqual(frKeys)
-    expect(Object.keys(I18N.ar.ecoles).sort()).toEqual(frKeys)
   })
 })
 

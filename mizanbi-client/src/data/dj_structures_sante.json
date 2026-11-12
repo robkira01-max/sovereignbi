@@ -1,0 +1,1240 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.695976815554914,
+          11.150224483544159
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "CMH_Ali-Sabieh",
+        "type": "centre_sante",
+        "total_personnel": 15,
+        "medecins": 0,
+        "infirmiers": 1,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.892551,
+          11.133097
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Camps de réfugies -Ali-Addeh",
+        "type": "camp_refugies",
+        "total_personnel": 6,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.915275,
+          11.296049
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Camps de réfugies Holl-Holl",
+        "type": "camp_refugies",
+        "total_personnel": 6,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.695836,
+          11.150035
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Hôpital régional d'Ali-Sabieh",
+        "type": "hôpital",
+        "total_personnel": 128,
+        "medecins": 13,
+        "infirmiers": 2,
+        "sages_femmes": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.8912375282579,
+          11.131487768651004
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Poste de santé-Ali Addeh",
+        "type": "poste_sante",
+        "total_personnel": 6,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.83934,
+          10.985443
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Poste de santé-Assamo",
+        "type": "poste_sante",
+        "total_personnel": 3,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.800418,
+          11.252282
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Poste de santé-Dasbyo",
+        "type": "poste_sante",
+        "total_personnel": 3,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.000024,
+          11.421076
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Poste de santé-Goubéto",
+        "type": "poste_sante",
+        "total_personnel": 4,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.959902,
+          11.014063
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Poste de santé-Guestir",
+        "type": "poste_sante",
+        "total_personnel": 1,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.914268,
+          11.298556
+        ]
+      },
+      "properties": {
+        "region": "Ali-Sabieh",
+        "structure": "Poste de santé-Holl-Holl",
+        "type": "poste_sante",
+        "total_personnel": 6,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.858218,
+          11.529797
+        ]
+      },
+      "properties": {
+        "region": "Arta",
+        "structure": "CMH-Arta",
+        "type": "centre_sante",
+        "total_personnel": 43,
+        "medecins": 4,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.076044,
+          11.490695
+        ]
+      },
+      "properties": {
+        "region": "Arta",
+        "structure": "Poste de santé -Chebelley",
+        "type": "poste_sante",
+        "total_personnel": 6,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.187044,
+          11.486233
+        ]
+      },
+      "properties": {
+        "region": "Arta",
+        "structure": "Poste de santé -Damerjog",
+        "type": "poste_sante",
+        "total_personnel": 12,
+        "medecins": 1,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.153776,
+          11.528678
+        ]
+      },
+      "properties": {
+        "region": "Arta",
+        "structure": "Poste de santé -Douda",
+        "type": "poste_sante",
+        "total_personnel": 8,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.55715,
+          11.449399
+        ]
+      },
+      "properties": {
+        "region": "Arta",
+        "structure": "Poste de santé -Karta",
+        "type": "poste_sante",
+        "total_personnel": 4,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.762582,
+          11.420789
+        ]
+      },
+      "properties": {
+        "region": "Arta",
+        "structure": "Poste de santé -PK 51",
+        "type": "poste_sante",
+        "total_personnel": 5,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.862588,
+          11.501786
+        ]
+      },
+      "properties": {
+        "region": "Arta",
+        "structure": "Poste de santé -Wéah",
+        "type": "poste_sante",
+        "total_personnel": 17,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.37307147102061,
+          11.1052687135331
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "CMH-Dikhil",
+        "type": "centre_sante",
+        "total_personnel": 77,
+        "medecins": 4,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.307424,
+          11.170199
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "Poste de santé-Abaitou",
+        "type": "poste_sante",
+        "total_personnel": 2,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.104105,
+          11.004155
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "Poste de santé-As Eyla",
+        "type": "poste_sante",
+        "total_personnel": 7,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.221702,
+          11.290377
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "Poste de santé-Gourabous",
+        "type": "poste_sante",
+        "total_personnel": 1,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          41.979662,
+          11.01712
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "Poste de santé-Koutabouya",
+        "type": "poste_sante",
+        "total_personnel": 2,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.503892,
+          11.165146
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "Poste de santé-Mouloud",
+        "type": "poste_sante",
+        "total_personnel": 9,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.205279,
+          10.974681
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "Poste de santé-Sankal",
+        "type": "poste_sante",
+        "total_personnel": 1,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.102446,
+          11.509596
+        ]
+      },
+      "properties": {
+        "region": "Dikhil",
+        "structure": "Poste de santé-Yoboki",
+        "type": "poste_sante",
+        "total_personnel": 6,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.08335640673248,
+          11.538455943750275
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC- cite Nasib",
+        "type": "centre_sante",
+        "total_personnel": 14,
+        "medecins": 1,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.14155587861732,
+          11.561586261292991
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Ambouli",
+        "type": "centre_sante",
+        "total_personnel": 28,
+        "medecins": 3,
+        "infirmiers": 2,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.140417,
+          11.581853
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Arhiba",
+        "type": "centre_sante",
+        "total_personnel": 30,
+        "medecins": 1,
+        "infirmiers": 1,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.124281874660404,
+          11.556650705759491
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Balbala 1",
+        "type": "centre_sante",
+        "total_personnel": 25,
+        "medecins": 1,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.11164233427606,
+          11.551298833890193
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Balbala 2",
+        "type": "centre_sante",
+        "total_personnel": 31,
+        "medecins": 3,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.14640430544698,
+          11.575673488185585
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Ibrahim balala",
+        "type": "centre_sante",
+        "total_personnel": 26,
+        "medecins": 2,
+        "infirmiers": 1,
+        "sages_femmes": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.1507286598427,
+          11.59078721024474
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Khor-Bourhan",
+        "type": "centre_sante",
+        "total_personnel": 27,
+        "medecins": 4,
+        "infirmiers": 0,
+        "sages_femmes": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.01027688502194,
+          11.55260590182108
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-PK20",
+        "type": "centre_sante",
+        "total_personnel": 1,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.159295057664444,
+          11.576402052031852
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Pénitencier de Gabode",
+        "type": "centre_sante",
+        "total_personnel": 6,
+        "medecins": 2,
+        "infirmiers": 1,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.1405517677492,
+          11.575330764881723
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Quartier 7",
+        "type": "centre_sante",
+        "total_personnel": 22,
+        "medecins": 2,
+        "infirmiers": 1,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.10438597774905,
+          11.554785967560148
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "CSC-Wahledaba",
+        "type": "centre_sante",
+        "total_personnel": 32,
+        "medecins": 3,
+        "infirmiers": 1,
+        "sages_femmes": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.09889372616488,
+          11.554727968990317
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Centre National de référence ''SR' Housseina",
+        "type": "autre",
+        "total_personnel": 62,
+        "medecins": 2,
+        "infirmiers": 2,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.14876138884456,
+          11.593689748559344
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Centre de référence VIH-IST  Yonis Toussaint",
+        "type": "autre",
+        "total_personnel": 68,
+        "medecins": 6,
+        "infirmiers": 0,
+        "sages_femmes": 4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.112226789654144,
+          11.54980942613077
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Hôpital Cheiko",
+        "type": "hôpital",
+        "total_personnel": 423,
+        "medecins": 30,
+        "infirmiers": 14,
+        "sages_femmes": 7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.153461940233115,
+          11.608299489671287
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Hôpital Général Peltier",
+        "type": "hôpital",
+        "total_personnel": 460,
+        "medecins": 48,
+        "infirmiers": 25,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.135772695254374,
+          11.574660748898019
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Hôpital de Maternité Dar El Hanan",
+        "type": "hôpital",
+        "total_personnel": 268,
+        "medecins": 3,
+        "infirmiers": 1,
+        "sages_femmes": 7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.15227198845555,
+          11.586905122706137
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Hôpital de pneumo-phtisiologie Dr Chakib Saad",
+        "type": "hôpital",
+        "total_personnel": 117,
+        "medecins": 5,
+        "infirmiers": 5,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.142672710935905,
+          11.588639234493293
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Polyclinique-Eingueila",
+        "type": "centre_sante",
+        "total_personnel": 50,
+        "medecins": 5,
+        "infirmiers": 0,
+        "sages_femmes": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.150450393796675,
+          11.57974375928595
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Polyclinique-Farad had",
+        "type": "centre_sante",
+        "total_personnel": 59,
+        "medecins": 10,
+        "infirmiers": 2,
+        "sages_femmes": 3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.10413856154231,
+          11.566756636300411
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Polyclinique-Hayableh",
+        "type": "centre_sante",
+        "total_personnel": 68,
+        "medecins": 6,
+        "infirmiers": 3,
+        "sages_femmes": 4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.08174695824219,
+          11.557026158244112
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Polyclinique-Pk 12",
+        "type": "centre_sante",
+        "total_personnel": 71,
+        "medecins": 5,
+        "infirmiers": 3,
+        "sages_femmes": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.086465079459224,
+          11.570842952062723
+        ]
+      },
+      "properties": {
+        "region": "djibouti_ville",
+        "structure": "Polyclinique-Warabley",
+        "type": "centre_sante",
+        "total_personnel": 46,
+        "medecins": 3,
+        "infirmiers": 2,
+        "sages_femmes": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.28956279097956,
+          11.962137980736745
+        ]
+      },
+      "properties": {
+        "region": "Obock",
+        "structure": "CMH-Obock",
+        "type": "centre_sante",
+        "total_personnel": 71,
+        "medecins": 3,
+        "infirmiers": 4,
+        "sages_femmes": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.158279,
+          12.112
+        ]
+      },
+      "properties": {
+        "region": "Obock",
+        "structure": "Poste de santé-Assassan",
+        "type": "poste_sante",
+        "total_personnel": 2,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.08659098650436,
+          11.852663841328031
+        ]
+      },
+      "properties": {
+        "region": "Obock",
+        "structure": "Poste de santé-Daley Af",
+        "type": "poste_sante",
+        "total_personnel": 4,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.366037,
+          12.164044
+        ]
+      },
+      "properties": {
+        "region": "Obock",
+        "structure": "Poste de santé-Khor Angar",
+        "type": "poste_sante",
+        "total_personnel": 4,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.025209,
+          11.973446
+        ]
+      },
+      "properties": {
+        "region": "Obock",
+        "structure": "Poste de santé-Medeho",
+        "type": "poste_sante",
+        "total_personnel": 7,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.00884275483995,
+          12.136737265364685
+        ]
+      },
+      "properties": {
+        "region": "Obock",
+        "structure": "Poste de santé-Waddi",
+        "type": "poste_sante",
+        "total_personnel": 4,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.88664730937901,
+          11.786928384238687
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "CMH-Tadjourah",
+        "type": "centre_sante",
+        "total_personnel": 80,
+        "medecins": 5,
+        "infirmiers": 7,
+        "sages_femmes": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.72087459534305,
+          11.983464098627278
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Adaillou",
+        "type": "poste_sante",
+        "total_personnel": 6,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.6688,
+          11.9446
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Adoyla",
+        "type": "poste_sante",
+        "total_personnel": 2,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.63873013557551,
+          12.192572601653735
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Assa Guella",
+        "type": "poste_sante",
+        "total_personnel": 3,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.19220502695403,
+          12.05972018283375
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Balho",
+        "type": "poste_sante",
+        "total_personnel": 3,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.64199625311307,
+          11.781116755355274
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Day",
+        "type": "poste_sante",
+        "total_personnel": 3,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.475980647062634,
+          12.152068405538616
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Dorra",
+        "type": "poste_sante",
+        "total_personnel": 7,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.79315065760002,
+          12.063938457279841
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Guirrori",
+        "type": "poste_sante",
+        "total_personnel": 2,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.79152340353579,
+          11.759375995509293
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Kalaf",
+        "type": "poste_sante",
+        "total_personnel": 2,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.65483993612331,
+          11.849712865733364
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Randa",
+        "type": "poste_sante",
+        "total_personnel": 5,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.91748100908336,
+          11.863788904870198
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Ripta",
+        "type": "poste_sante",
+        "total_personnel": 3,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.73355910181835,
+          11.671635829563122
+        ]
+      },
+      "properties": {
+        "region": "Tadjourah",
+        "structure": "Poste de santé-Sagallou",
+        "type": "poste_sante",
+        "total_personnel": 2,
+        "medecins": 0,
+        "infirmiers": 0,
+        "sages_femmes": 0
+      }
+    }
+  ]
+}

@@ -64,8 +64,7 @@ export function parseGeoAIResult(raw: unknown): GeoAIResult {
 
 // ── Localisation ─────────────────────────────────────────────────────────────
 
-// Chiffres latins pour l'arabe, comme le reste de l'application.
-const NUM_LOCALE: Record<Lang, string> = { fr: 'fr-FR', en: 'en-US', ar: 'ar-u-nu-latn' }
+const NUM_LOCALE: Record<Lang, string> = { fr: 'fr-FR', en: 'en-US' }
 
 export const numberLocale = (lang: Lang): string => NUM_LOCALE[lang]
 
@@ -138,7 +137,7 @@ function demoPauvrete(lang: Lang): GeoAIResult {
     rows: above30.map((r) => [r.name, r.poverty ?? '—', r.unemployment]),
     map_config: { type: 'map', layer_id: 'dj_adm1', value_col: 'poverty' },
     prose: fmt(g.prosePoverty, {
-      list: above30.map((r) => `${r.name} (${pct(lang, r.poverty ?? 0)})`).join(lang === 'ar' ? '، ' : ', ') || '—',
+      list: above30.map((r) => `${r.name} (${pct(lang, r.poverty ?? 0)})`).join(', ') || '—',
       n: above30.length,
     }),
     error: null,
