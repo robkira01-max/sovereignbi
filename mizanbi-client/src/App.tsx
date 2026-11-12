@@ -24,12 +24,11 @@ import TermsPage from './pages/Terms'
 import ChangePasswordModal from './components/ChangePasswordModal'
 import CookieBanner, { useCookieConsent } from './components/CookieBanner'
 
-export type Page = 'home' | 'chat' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms'
+export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms'
 export type View = 'all' | 'bi' | 'sig'
 
 const NAV: { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string }[] = [
   { page: 'home', label: (t) => t.home, icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10' },
-  { page: 'chat', label: (t) => t.chat, icon: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z' },
   { page: 'dash', label: (t) => t.dashboards, icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z' },
   { page: 'sig', label: (t) => t.sig, icon: 'M9 20l-5.5-2.5v-13L9 7l6-2.5L20.5 7v13L15 17.5 9 20zM9 7v13M15 4.5v13' },
   { page: 'ancient', label: (t) => t.ancientMaps, icon: 'M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5' },
@@ -64,6 +63,8 @@ export default function App() {
   const [themeMenuOpen, setThemeMenuOpen] = useState(false)
   const themeMenuRef = useRef<HTMLDivElement>(null)
   const [showChangePwd, setShowChangePwd] = useState(false)
+  const [chatOpen, setChatOpen] = useState(false)
+  const [chatMounted, setChatMounted] = useState(false)
 
   const t = I18N[lang]
 
@@ -111,7 +112,7 @@ export default function App() {
     setPage(p as Page)
     if (p === 'sig') { setView('sig'); if (!SIG_LANGS.includes(lang)) setLang('fr') }
     if (p === 'ancient') { setView('sig'); if (!SIG_LANGS.includes(lang)) setLang('fr') }
-    if (p === 'home' || p === 'chat' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd' || p === 'geoai' || p === 'admin' || p === 'privacy' || p === 'terms') setView((v) => (v === 'sig' ? 'bi' : v))
+    if (p === 'home' || p === 'dash' || p === 'upload' || p === 'bulletins' || p === 'cert' || p === 'canada' || p === 'canadanat' || p === 'bie' || p === 'bcd' || p === 'geoai' || p === 'admin' || p === 'privacy' || p === 'terms') setView((v) => (v === 'sig' ? 'bi' : v))
     window.scrollTo(0, 0)
   }
 
@@ -144,7 +145,7 @@ export default function App() {
     )
   }
 
-  const pageTitle: Record<Page, string> = { home: t.home, chat: t.chat, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title }
+  const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title }
   const showBi = view !== 'sig'
   const showSig = view !== 'bi'
 
@@ -229,7 +230,6 @@ export default function App() {
             )}
           </>
         )}
-        {page === 'chat' && showBi && <ChatPage t={t} />}
         {page === 'dash' && showBi && <DashboardsPage t={t} />}
         {page === 'upload' && showBi && <ImportPage t={t} />}
         {page === 'bulletins' && showBi && <BulletinsPage t={t} />}
@@ -242,7 +242,6 @@ export default function App() {
         {page === 'admin' && showBi && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
         {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
-        {page === 'chat' && !showBi && <p className="muted">ChatBI — {t.voletBi}. {t.overview}.</p>}
         {page === 'privacy' && <PrivacyPage t={t} go={go} />}
         {page === 'terms' && <TermsPage t={t} go={go} />}
       </main>
@@ -251,11 +250,48 @@ export default function App() {
         <button onClick={() => go('privacy')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.privacy}</button>
         <button onClick={() => go('terms')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.terms}</button>
       </footer>
-      {page !== 'chat' && (
-        <button onClick={() => go('chat')} aria-label={t.chatBubble} title={t.chatBubble} className="chat-bubble">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-        </button>
-      )}
+      {chatOpen && <div className="chat-drawer-overlay" onClick={() => setChatOpen(false)} aria-hidden="true" />}
+      <aside
+        className={`chat-drawer${chatOpen ? ' chat-drawer--open' : ''}`}
+        aria-label={t.chat}
+        aria-hidden={!chatOpen}
+      >
+        <div className="chat-drawer-header">
+          <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>ChatBI</span>
+          <button
+            onClick={() => setChatOpen(false)}
+            className="btn-ghost"
+            style={{ padding: '5px 10px' }}
+            aria-label="Fermer"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="chat-drawer-body">
+          {chatMounted && (showBi
+            ? <ChatPage t={t} />
+            : <p className="muted" style={{ padding: 16 }}>ChatBI — {t.voletBi}. {t.overview}.</p>
+          )}
+        </div>
+      </aside>
+      <button
+        onClick={() => { setChatOpen(o => !o); setChatMounted(true) }}
+        aria-label={chatOpen ? 'Fermer ChatBI' : t.chatBubble}
+        title={chatOpen ? 'Fermer ChatBI' : t.chatBubble}
+        className="chat-bubble"
+      >
+        {chatOpen ? (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        ) : (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+        )}
+      </button>
       {showCookieBanner && (
         <CookieBanner
           t={t}

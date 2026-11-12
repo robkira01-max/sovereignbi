@@ -1,12 +1,18 @@
 /**
- * Live-data tile renderer for the full DashboardPage (P-051).
+ * Live-data tile renderer for the full DashboardPage (P-051 / P-052).
  * Takes structured data from the backend (/tiles/{id}/data) and renders it.
- * Map tile types (map, map-adm2, map-bivariate, trade-flow-map) are stubbed — ported in P-052.
  */
 import {
   Bar, BarChart, CartesianGrid, Cell, Line, LineChart,
   Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend,
 } from 'recharts'
+import { HeatmapTile } from './HeatmapTile'
+import { TableTile } from './TableTile'
+import { SparklineKpi } from './SparklineKpi'
+import { MapLibreMap } from './MapLibreMap'
+import { MapAdm2 } from './MapAdm2'
+import { BivariateChoropleth } from './BivariateChoropleth'
+import { TradeFlowMap } from './TradeFlowMap'
 
 export interface LiveTileData {
   columns: string[]
@@ -35,7 +41,21 @@ interface Props {
   selectedRegion?: string | null
 }
 
-const COLORS = ['#7c6cf0', '#34d399', '#f59e0b', '#f87171', '#38bdf8', '#c084fc', '#f97316', '#84cc16']
+// 12-color professional BI palette — Tableau Classic 10 adapted for OKLCH dark theme
+const COLORS = [
+  '#60a5fa',  // cornflower blue   (primary)
+  '#fb923c',  // amber-orange      (Tableau orange)
+  '#34d399',  // emerald           (Tableau green)
+  '#f87171',  // rose-red          (Tableau red softened)
+  '#818cf8',  // indigo            (Tableau purple adapted)
+  '#2dd4bf',  // teal              (Tableau teal)
+  '#facc15',  // golden yellow     (Tableau yellow)
+  '#c084fc',  // soft purple       (secondary)
+  '#4ade80',  // lime green        (tertiary green)
+  '#f9a8d4',  // dusty pink        (Tableau pink)
+  '#5eead4',  // cyan-teal         (extra)
+  '#94a3b8',  // slate             (neutral)
+]
 
 function fmt(v: unknown, decimals = 1): string {
   if (v === null || v === undefined) return '—'
@@ -55,7 +75,7 @@ function toChartData(data: LiveTileData): Record<string, unknown>[] {
   )
 }
 
-export function LiveTileRenderer({ type, title, data, options = {} }: Props) {
+export function LiveTileRenderer({ type, title, data, options = {}, onRegionSelect, selectedRegion }: Props) {
   const opts = options as LiveTileOptions
   const decimals = opts.decimals ?? 1
   const unit = opts.unit ?? ''
@@ -149,18 +169,7 @@ export function LiveTileRenderer({ type, title, data, options = {} }: Props) {
     }
 
     case 'table':
-      return (
-        <div data-testid="tile-table" className="table-wrap" style={{ maxHeight: 240 }}>
-          <table className="data">
-            <thead><tr>{data.columns.map(c => <th key={c}>{c}</th>)}</tr></thead>
-            <tbody>
-              {data.rows.slice(0, 100).map((r, i) => (
-                <tr key={i}>{(r as unknown[]).map((c, j) => <td key={j}>{fmt(c, decimals)}</td>)}</tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )
+      return <TableTile data={data} />
 
     case 'grid': {
       const facetKey = (opts.facet_by ?? data.columns[0] ?? '')
@@ -206,10 +215,81 @@ export function LiveTileRenderer({ type, title, data, options = {} }: Props) {
       )
     }
 
+    case 'heatmap':
+      return (
+        <HeatmapTile
+          data={data}
+          title={title}
+          unit={opts.unit}
+          options={{
+            colorScheme: (opts.colorScheme as 'blue' | 'green' | 'red' | 'orange') ?? 'blue',
+            showValues: opts.showValues,
+          }}
+        />
+      )
+
+    case 'sparkline-kpi': {
+      const pts = data.rows.map(r => Number(r[1] ?? 0))
+      const cur = pts[pts.length - 1] ?? 0
+      const prev = pts.length > 1 ? pts[pts.length - 2] : null
+      const delta = prev !== null && prev !== 0 ? ((cur - prev) / Math.abs(prev)) * 100 : null
+      const dir: 'up' | 'down' | 'flat' | null =
+        delta === null ? null : delta > 0.5 ? 'up' : delta < -0.5 ? 'down' : 'flat'
+      return (
+        <SparklineKpi
+          points={pts}
+          current={cur}
+          previous={prev}
+          deltaPct={delta !== null ? Math.round(delta * 10) / 10 : null}
+          direction={dir}
+          label={title}
+        />
+      )
+    }
+
+    case 'map':
+      return (
+        <MapLibreMap
+          data={data}
+          title={title}
+          unit={unit}
+          colorScheme={(opts.colorScheme as 'blue' | 'green' | 'red' | 'orange') ?? 'blue'}
+          onRegionSelect={onRegionSelect}
+          selectedRegion={selectedRegion}
+        />
+      )
+
+    case 'map-adm2':
+      return (
+        <MapAdm2
+          data={data}
+          title={title}
+          unit={unit}
+          colorScheme={(opts.colorScheme as 'blue' | 'green' | 'red' | 'orange') ?? 'blue'}
+          onRegionSelect={onRegionSelect}
+          selectedRegion={selectedRegion}
+        />
+      )
+
+    case 'map-bivariate':
+      return (
+        <BivariateChoropleth
+          data={data}
+          title={title}
+          unit={unit}
+          colorScheme={(opts.colorScheme as 'classic' | 'teal-orange') ?? 'classic'}
+          x1_label={data.columns[1]?.replace(/_/g, ' ')}
+          x2_label={data.columns[2]?.replace(/_/g, ' ')}
+        />
+      )
+
+    case 'trade-flow-map':
+      return <TradeFlowMap />
+
     default:
       return (
         <div data-testid="tile-placeholder" style={{ padding: '16px 8px', textAlign: 'center', color: 'var(--muted)', fontSize: 12, border: '1px dashed var(--border)', borderRadius: 8 }}>
-          {type} — carte à intégrer (P-052)
+          {type}
         </div>
       )
   }
