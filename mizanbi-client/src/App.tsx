@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { I18N, LANGS, dirOf, type Lang } from './lib/i18n'
+import { I18N, LANGS, dirOf, type Lang, type Dict } from './lib/i18n'
 import { DEMO_USER } from './data/demo'
 import { isApiConfigured } from './lib/api'
 import { DEMO_ME, createAccountsService, type Me } from './lib/accounts'
@@ -25,43 +25,54 @@ import ChangePasswordModal from './components/ChangePasswordModal'
 import CookieBanner, { useCookieConsent } from './components/CookieBanner'
 
 export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms'
-export type View = 'all' | 'bi' | 'sig'
+export type Section = 'home' | 'bi' | 'sig' | 'settings'
 
-type NavItem = { page: Page; label: (t: (typeof I18N)['fr']) => string; icon: string }
-// Groups: BI analysis | SIG | Settings (admin at bottom)
-const NAV_BI: NavItem[] = [
-  { page: 'home', label: (t) => t.home, icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10' },
-  { page: 'dash', label: (t) => t.dashboards, icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z' },
-  { page: 'bulletins', label: (t) => t.bulletins, icon: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z' },
-  { page: 'bie', label: (t) => t.bie, icon: 'M3 21h18M6 21V11M11 21V4M16 21v-8M21 21V8' },
-  { page: 'bcd', label: (t) => t.bcd, icon: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' },
-  { page: 'canada', label: (t) => t.canada, icon: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' },
-  { page: 'canadanat', label: (t) => t.canadaNational, icon: 'M3 3h18v18H3zM3 9h18M9 21V9' },
-  { page: 'upload', label: (t) => t.import, icon: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12' },
+function pageSection(p: Page): Section {
+  if (p === 'home') return 'home'
+  if (['dash', 'bulletins', 'cert', 'upload', 'bie', 'bcd', 'canada', 'canadanat'].includes(p)) return 'bi'
+  if (['sig', 'ancient', 'geoai'].includes(p)) return 'sig'
+  return 'settings'
+}
+
+const SECTION_NAV: { id: Section; getLabel: (t: Dict) => string; icon: string; defaultPage: Page }[] = [
+  { id: 'home', getLabel: t => t.home, icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10', defaultPage: 'home' },
+  { id: 'bi', getLabel: t => t.voletBi, icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z', defaultPage: 'dash' },
+  { id: 'sig', getLabel: t => t.voletSig, icon: 'M9 20l-5.5-2.5v-13L9 7l6-2.5L20.5 7v13L15 17.5 9 20zM9 7v13M15 4.5v13', defaultPage: 'sig' },
+  { id: 'settings', getLabel: t => t.settingsSection, icon: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z', defaultPage: 'privacy' },
 ]
-const NAV_SIG: NavItem[] = [
-  { page: 'sig', label: (t) => t.sig, icon: 'M9 20l-5.5-2.5v-13L9 7l6-2.5L20.5 7v13L15 17.5 9 20zM9 7v13M15 4.5v13' },
-  { page: 'ancient', label: (t) => t.ancientMaps, icon: 'M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5' },
-  // GeoAI is accessible from within the SIG page, not shown as top-level nav item
+
+const BI_PAGES: { page: Page; getLabel: (t: Dict) => string }[] = [
+  { page: 'dash', getLabel: t => t.dashboards },
+  { page: 'bulletins', getLabel: t => t.bulletins },
+  { page: 'cert', getLabel: t => t.certificate },
+  { page: 'upload', getLabel: t => t.import },
+  { page: 'bie', getLabel: t => t.bie },
+  { page: 'bcd', getLabel: t => t.bcd },
+  { page: 'canada', getLabel: t => t.canada },
+  { page: 'canadanat', getLabel: t => t.canadaNational },
 ]
-const NAV_SETTINGS: NavItem[] = [
-  { page: 'cert', label: (t) => t.certificate, icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
-  { page: 'admin', label: (t) => t.admin.title, icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' },
+
+const SIG_PAGES: { page: Page; getLabel: (t: Dict) => string }[] = [
+  { page: 'sig', getLabel: t => t.sig },
+  { page: 'ancient', getLabel: t => t.ancientMaps },
+  { page: 'geoai', getLabel: t => t.geoai.title },
+]
+
+const SETTINGS_PAGES: { page: Page; getLabel: (t: Dict) => string; adminOnly: boolean }[] = [
+  { page: 'admin', getLabel: t => t.admin.title, adminOnly: true },
+  { page: 'privacy', getLabel: t => t.privacy.title, adminOnly: false },
+  { page: 'terms', getLabel: t => t.terms.title, adminOnly: false },
 ]
 
 export default function App() {
   const [lang, setLang] = useState<Lang>('fr')
   const [token, setToken] = useState<string | null>(() => {
     const tk = sessionStorage.getItem('mizan_token')
-    // Un token « demo » périmé n'ouvre pas de session quand l'API est configurée.
     return tk === 'demo' && isApiConfigured() ? null : tk
   })
   const [email, setEmail] = useState<string>(() => localStorage.getItem('mizan_email') || '')
-  // P-032 — Nom affiché : Robleh Hassan en mode démo (DEMO_USER), sinon l'email de connexion.
   const [userName, setUserName] = useState<string>(() => localStorage.getItem('mizan_user_name') || '')
   const [page, setPage] = useState<Page>('home')
-  const [view, setView] = useState<View>('all')
-  // P-028 : thème dynamique. Auto = suit la page et l'indicateur ; manuel = fixe.
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => loadThemeMode())
   const [cookieConsent, setCookieConsent] = useCookieConsent()
   const [showCookieBanner, setShowCookieBanner] = useState(cookieConsent === null)
@@ -73,9 +84,8 @@ export default function App() {
   const [chatMounted, setChatMounted] = useState(false)
 
   const t = I18N[lang]
+  const section = pageSection(page)
 
-  // P-038 — identité/rôle de l'utilisateur connecté : l'écran Comptes n'est proposé qu'aux admins
-  // (le serveur reste l'autorité : /auth/users* refuse tout autre rôle).
   const accounts = useMemo(() => createAccountsService(), [])
   const [me, setMe] = useState<Me | null>(null)
   const refreshMe = useCallback(() => {
@@ -86,9 +96,6 @@ export default function App() {
   useEffect(() => { refreshMe() }, [refreshMe])
   useEffect(() => { if (page === 'admin' && me && me.role !== 'admin') setPage('home') }, [page, me])
 
-  // Appliqué pendant le rendu (pas en effet différé) : les pages enfants lisent
-  // le thème courant via currentTheme() dans le même rendu, donc la carte et
-  // les KPI changent de couleurs en même temps que le fond.
   const resolvedThemeId = resolveTheme(themeMode, page)
   const resolvedTheme = applyTheme(resolvedThemeId, indicator)
 
@@ -116,9 +123,17 @@ export default function App() {
 
   const go = (p: string) => {
     setPage(p as Page)
-    if (p === 'sig' || p === 'ancient' || p === 'geoai') { setView('sig') }
-    else { setView('bi') }
     window.scrollTo(0, 0)
+  }
+
+  const goSection = (sid: Section) => {
+    if (sid === 'home') { go('home'); return }
+    if (sid === 'bi') { go('dash'); return }
+    if (sid === 'sig') { go('sig'); return }
+    if (sid === 'settings') {
+      const first = SETTINGS_PAGES.find(p => !p.adminOnly || me?.role === 'admin')
+      go(first?.page ?? 'privacy')
+    }
   }
 
   const enter = (tk: string, em: string) => {
@@ -151,28 +166,22 @@ export default function App() {
   }
 
   const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title }
-  const showBi = view !== 'sig'
-  const showSig = view !== 'bi'
+
+  const subItems = section === 'bi'
+    ? BI_PAGES
+    : section === 'sig'
+    ? SIG_PAGES
+    : section === 'settings'
+    ? SETTINGS_PAGES.filter(p => !p.adminOnly || me?.role === 'admin')
+    : []
 
   return (
     <div dir={dirOf(lang)} className="app">
       <nav className="sidebar" aria-label="Navigation principale">
         <div className="logo">M</div>
-        {NAV_BI.map((n) => (
-          <button key={n.page} title={n.label(t)} aria-label={n.label(t)} onClick={() => go(n.page)} className={`nav-btn${page === n.page ? ' active' : ''}`}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={n.icon} /></svg>
-          </button>
-        ))}
-        <div className="nav-sep" aria-hidden="true" />
-        {NAV_SIG.map((n) => (
-          <button key={n.page} title={n.label(t)} aria-label={n.label(t)} onClick={() => go(n.page)} className={`nav-btn${page === n.page ? ' active' : ''}`}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={n.icon} /></svg>
-          </button>
-        ))}
-        <div style={{ flex: 1 }} aria-hidden="true" />
-        {NAV_SETTINGS.filter((n) => n.page !== 'admin' || me?.role === 'admin').map((n) => (
-          <button key={n.page} title={n.label(t)} aria-label={n.label(t)} onClick={() => go(n.page)} className={`nav-btn${page === n.page ? ' active' : ''}`}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={n.icon} /></svg>
+        {SECTION_NAV.map((s) => (
+          <button key={s.id} title={s.getLabel(t)} aria-label={s.getLabel(t)} onClick={() => goSection(s.id)} className={`nav-btn${section === s.id ? ' active' : ''}`}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={s.icon} /></svg>
           </button>
         ))}
       </nav>
@@ -232,28 +241,33 @@ export default function App() {
         />
       )}
       <main>
-        {page === 'home' && (
-          <>
-            {showBi && <HomePage t={t} go={go} />}
-            {showSig && (
-              <div style={{ marginTop: showBi ? 28 : 0 }}>
-                <SigPage t={t} onIndicator={setIndicator} />
-              </div>
-            )}
-          </>
+        {subItems.length > 0 && (
+          <nav aria-label="Sous-navigation" style={{ display: 'flex', gap: 4, padding: '10px 20px', borderBottom: '1px solid var(--border)', background: 'var(--surface)', position: 'sticky', top: 56, zIndex: 9, flexWrap: 'wrap', backdropFilter: 'blur(10px)' }}>
+            {subItems.map((item) => (
+              <button
+                key={item.page}
+                onClick={() => go(item.page)}
+                className="btn-ghost"
+                style={{ fontSize: 13, padding: '5px 14px', ...(page === item.page ? { background: 'var(--brand)', color: '#fff', borderColor: 'transparent' } : {}) }}
+              >
+                {item.getLabel(t)}
+              </button>
+            ))}
+          </nav>
         )}
-        {page === 'dash' && showBi && <DashboardsPage t={t} />}
-        {page === 'upload' && showBi && <ImportPage t={t} />}
-        {page === 'bulletins' && showBi && <BulletinsPage t={t} />}
-        {page === 'cert' && showBi && <CertificatePage t={t} />}
-        {page === 'canada' && showBi && <CanadaPage t={t} onIndicator={setIndicator} />}
-        {page === 'canadanat' && showBi && <CanadaNationalPage t={t} />}
-        {page === 'bie' && showBi && <BiePage t={t} />}
-        {page === 'bcd' && showBi && <BcdPage t={t} />}
-        {page === 'geoai' && showBi && <GeoAIPage t={t} lang={lang} go={go} />}
-        {page === 'admin' && showBi && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
+        {page === 'home' && <HomePage t={t} go={go} />}
+        {page === 'dash' && <DashboardsPage t={t} />}
+        {page === 'upload' && <ImportPage t={t} />}
+        {page === 'bulletins' && <BulletinsPage t={t} />}
+        {page === 'cert' && <CertificatePage t={t} />}
+        {page === 'canada' && <CanadaPage t={t} onIndicator={setIndicator} />}
+        {page === 'canadanat' && <CanadaNationalPage t={t} />}
+        {page === 'bie' && <BiePage t={t} />}
+        {page === 'bcd' && <BcdPage t={t} />}
+        {page === 'geoai' && <GeoAIPage t={t} lang={lang} go={go} />}
+        {page === 'admin' && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
-        {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} onGeoAI={() => go('geoai')} />}
+        {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
         {page === 'privacy' && <PrivacyPage t={t} go={go} />}
         {page === 'terms' && <TermsPage t={t} go={go} />}
       </main>
@@ -282,9 +296,10 @@ export default function App() {
           </button>
         </div>
         <div className="chat-drawer-body">
-          {chatMounted && (showBi
-            ? <ChatPage t={t} />
-            : <p className="muted" style={{ padding: 16 }}>ChatBI — {t.voletBi}. {t.overview}.</p>
+          {chatMounted && (
+            section !== 'sig'
+              ? <ChatPage t={t} />
+              : <p className="muted" style={{ padding: 16 }}>ChatBI — {t.voletBi}.</p>
           )}
         </div>
       </aside>
