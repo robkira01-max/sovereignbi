@@ -267,7 +267,7 @@ export default function App() {
         {page === 'geoai' && <GeoAIPage t={t} lang={lang} go={go} />}
         {page === 'admin' && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
-        {page === 'sig' && <SigPage t={t} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
+        {page === 'sig' && <SigPage t={t} lang={lang} isEditor={me?.role === 'editor' || me?.role === 'admin'} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
         {page === 'privacy' && <PrivacyPage t={t} go={go} />}
         {page === 'terms' && <TermsPage t={t} go={go} />}
       </main>

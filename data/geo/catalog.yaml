@@ -8,7 +8,7 @@ layers:
     Arta, Dikhil, Obock, Tadjourah.'
   enabled: true
   feature_count: 6
-  file_path: frontend/src/data/dji_adm1.geojson
+  file_path: data/geo/dji_adm1.geojson
   format: geojson
   geometry_type: Polygon
   id: dj_adm1

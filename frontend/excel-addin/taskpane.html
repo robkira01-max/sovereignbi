@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SovereignBI</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", sans-serif; font-size: 13px; color: #1f2937; background: #f9fafb; }
+    header { background: #1a56db; color: #fff; padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+    header h1 { font-size: 15px; font-weight: 600; }
+    header span { font-size: 10px; opacity: 0.75; }
+    .section { padding: 12px 14px; border-bottom: 1px solid #e5e7eb; }
+    .section h2 { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; letter-spacing: 0.5px; }
+    button { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background 0.15s; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary { background: #1a56db; color: #fff; width: 100%; justify-content: center; }
+    .btn-primary:hover:not(:disabled) { background: #1447c0; }
+    .btn-secondary { background: #e5e7eb; color: #374151; width: 100%; justify-content: center; margin-top: 6px; }
+    .btn-secondary:hover:not(:disabled) { background: #d1d5db; }
+    .btn-success { background: #059669; color: #fff; width: 100%; justify-content: center; margin-top: 6px; }
+    .btn-success:hover:not(:disabled) { background: #047857; }
+    textarea, input[type="text"], input[type="url"] {
+      width: 100%; border: 1px solid #d1d5db; border-radius: 6px;
+      padding: 7px 10px; font-size: 13px; resize: vertical;
+      font-family: inherit; background: #fff;
+    }
+    textarea:focus, input:focus { outline: 2px solid #1a56db; border-color: transparent; }
+    .status { margin-top: 8px; padding: 6px 10px; border-radius: 6px; font-size: 12px; }
+    .status.info { background: #eff6ff; color: #1d4ed8; }
+    .status.success { background: #ecfdf5; color: #065f46; }
+    .status.error { background: #fef2f2; color: #991b1b; }
+    .disclaimer { font-size: 11px; color: #9ca3af; text-align: center; padding: 8px 14px; }
+    #result-zone { margin-top: 10px; max-height: 300px; overflow-y: auto; }
+    #result-zone .answer { background: #f0fdf4; border-left: 3px solid #059669; padding: 8px; border-radius: 4px; margin-bottom: 8px; font-size: 13px; }
+    #result-zone .error { background: #fef2f2; border-left: 3px solid #dc2626; padding: 8px; border-radius: 4px; color: #991b1b; }
+    #result-zone table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    #result-zone th { background: #f3f4f6; padding: 4px 6px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    #result-zone td { padding: 3px 6px; border-bottom: 1px solid #f3f4f6; }
+    #result-zone details { margin: 6px 0; }
+    #result-zone summary { cursor: pointer; color: #6b7280; font-size: 11px; }
+    #result-zone pre { font-size: 11px; background: #1f2937; color: #e5e7eb; padding: 8px; border-radius: 4px; overflow-x: auto; margin-top: 4px; }
+    #result-zone .grade { margin-top: 6px; font-size: 11px; color: #6b7280; }
+    #result-zone .note { font-size: 11px; color: #9ca3af; margin-top: 4px; }
+    label { display: block; font-size: 11px; color: #6b7280; margin-bottom: 3px; margin-top: 8px; }
+    label:first-child { margin-top: 0; }
+    details.settings-panel summary { cursor: pointer; font-size: 11px; color: #6b7280; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ SovereignBI</h1>
+  <span>IA locale · vos données restent chez vous</span>
+</header>
+
+<!-- Section 1: Envoi des données -->
+<div class="section">
+  <h2>1. Données</h2>
+  <button class="btn-primary" id="btn-send">📤 Envoyer la feuille active</button>
+  <div id="status" class="status info">Prêt. Envoyez vos données pour commencer.</div>
+</div>
+
+<!-- Section 2: Question -->
+<div class="section">
+  <h2>2. Question</h2>
+  <textarea id="question" rows="3" placeholder="Ex : Quel est le total par région ? Combien de personnes au total ?"></textarea>
+  <button class="btn-primary" id="btn-ask" style="margin-top:6px">🔍 Demander</button>
+</div>
+
+<!-- Section 3: Résultats -->
+<div class="section">
+  <h2>3. Résultats</h2>
+  <div id="result-zone"></div>
+  <button class="btn-success" id="btn-insert" disabled>📥 Insérer dans Excel</button>
+</div>
+
+<!-- Section 4: Paramètres -->
+<div class="section">
+  <details class="settings-panel">
+    <summary>⚙️ Paramètres</summary>
+    <label>URL de l'API SovereignBI</label>
+    <input type="url" id="api-url" placeholder="http://localhost:9000" />
+    <label>Clé API (X-Api-Key)</label>
+    <input type="text" id="api-key" placeholder="viewer-123" />
+    <button class="btn-secondary" id="btn-save-settings" style="margin-top:8px">💾 Sauvegarder</button>
+  </details>
+</div>
+
+<p class="disclaimer">🔒 SovereignBI traite vos données localement. Aucune donnée n'est envoyée vers des serveurs externes.</p>
+
+<script src="taskpane.js"></script>
+</body>
+</html>

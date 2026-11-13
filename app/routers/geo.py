@@ -33,7 +33,7 @@ _REPO_ROOT = Path(__file__).parent.parent.parent
 _CERD = _REPO_ROOT / "data" / "geo" / "cerd"
 
 _LEVEL_PATHS: dict[str, Path] = {
-    "adm1":                       _REPO_ROOT / "frontend" / "src" / "data" / "dji_adm1.geojson",
+    "adm1":                       _REPO_ROOT / "data" / "geo" / "dji_adm1.geojson",
     "adm2":                       _REPO_ROOT / "data" / "geo" / "dj_adm2.geojson",
     "quartiers":                  _REPO_ROOT / "data" / "geo" / "dj_quartiers.geojson",
     "structures_sante":           _REPO_ROOT / "data" / "geo" / "dj_structures_sante.geojson",

@@ -97,7 +97,7 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## Données géographiques
 
-- `frontend/src/data/dji_adm1.geojson` — 6 régions ADM1 (GADM, CC BY 4.0)
+- `data/geo/dji_adm1.geojson` — 6 régions ADM1 (GADM, CC BY 4.0)
 - `data/geo/dj_adm2.geojson` — 6 districts enrichis (pop/densité/superficie)
 - `data/geo/dj_quartiers.geojson` — 11 quartiers Djibouti-ville (**approximatifs**, OSM ODbL)
 - `tools/download_dj_geo.py` — téléchargement GADM v4.1 + OSM Overpass (run une fois)

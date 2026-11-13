@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import type { Dict } from '../lib/i18n'
+import type { Dict, Lang } from '../lib/i18n'
 import { PROVENANCE, QUARTIERS, REGIONS, TRADE_FLOWS, fmt } from '../data/demo'
 import DjiboutiMap from '../components/DjiboutiMap'
 import EcolesMap from '../components/EcolesMap'
 import StructuresSanteMap from '../components/StructuresSanteMap'
 import CerdEcolesMap from '../components/CerdEcolesMap'
+import { GeoCatalog } from '../components/GeoCatalog'
+import { GeoImport } from '../components/GeoImport'
+import { SpatialAnalysis } from '../components/SpatialAnalysis'
 import { colorForValue, currentTheme, scaleFor, textOnFill, type IndicatorId } from '../lib/theme'
 
 type Level = 'adm1' | 'adm2' | 'quartiers'
@@ -18,7 +21,7 @@ const INDICATORS: { id: IndicatorId; label: string; unit: string }[] = [
   { id: 'poverty', label: 'Pauvreté', unit: '%' },
 ]
 
-export default function SigPage({ t, onIndicator, onAncient, onGeoAI }: { t: Dict; onIndicator?: (i: IndicatorId) => void; onAncient?: () => void; onGeoAI?: () => void }) {
+export default function SigPage({ t, lang = 'fr', isEditor = false, onIndicator, onAncient, onGeoAI }: { t: Dict; lang?: Lang; isEditor?: boolean; onIndicator?: (i: IndicatorId) => void; onAncient?: () => void; onGeoAI?: () => void }) {
   const [level, setLevel] = useState<Level>('adm1')
   const [bivariate, setBivariate] = useState(false)
   const [selected, setSelected] = useState<string | null>(null)
@@ -204,6 +207,21 @@ export default function SigPage({ t, onIndicator, onAncient, onGeoAI }: { t: Dic
           <button className="btn-ghost" onClick={onGeoAI}>Ouvrir GeoAI →</button>
         </section>
       )}
+
+      <section className="card-solid" data-testid="geo-catalog-section">
+        <GeoCatalog t={t.geo_catalog} lang={lang} isEditor={isEditor} />
+      </section>
+
+      {isEditor && (
+        <section className="card-solid" data-testid="geo-import-section">
+          <GeoImport t={t.geo_import} />
+        </section>
+      )}
+
+      <section className="card-solid" data-testid="spatial-analysis-section">
+        <SpatialAnalysis t={t.spatial_analysis} lang={lang} />
+      </section>
+
       <p className="muted">Source : {PROVENANCE.unemployment.table} · {PROVENANCE.population.table} · CERD / INSTAD (2024)</p>
     </div>
   )
