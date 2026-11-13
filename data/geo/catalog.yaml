@@ -44,12 +44,14 @@ layers:
 - api_endpoint: /api/v1/geo/dj/quartiers
   coverage: Djibouti-Ville
   date_acquired: '2026-10-01'
-  description_en: '11 Djibouti City neighbourhoods: Centre-ville, Plateau du Serpent,
-    Arhiba, Farah Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh,
-    Quartier 7.'
-  description_fr: '11 quartiers de Djibouti-Ville : Centre-ville, Plateau du Serpent,
-    Arhiba, Farah Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh,
-    Quartier 7.'
+  description_en: '11 Djibouti City neighbourhoods with tentative commune attribution
+    (Boulaos / Ras-Dika / Balbala): Centre-ville, Plateau du Serpent, Arhiba, Farah
+    Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh, Quartier 7.
+    Commune field and density_km2 corrected 2026-11-13.'
+  description_fr: '11 quartiers de Djibouti-Ville avec attribution communale provisoire
+    (Boulaos / Ras-Dika / Balbala) : Centre-ville, Plateau du Serpent, Arhiba, Farah
+    Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh, Quartier
+    7. Champ commune et density_km2 corrigés le 2026-11-13.'
   enabled: true
   feature_count: 11
   file_path: data/geo/dj_quartiers.geojson
@@ -154,8 +156,13 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_communes
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'
-  description_en: 2 administrative communes of Djibouti city (Djibouti, Balbala).
-  description_fr: 2 communes administratives de Djibouti-ville (Djibouti, Balbala).
+  description_en: 'Balbala commune boundaries (4th and 5th arrondissements) from CERD
+    cadastre. Note: Djibouti-ville has 3 communes (Boulaos, Ras-Dika, Balbala) —
+    this dataset covers Balbala only; Boulaos and Ras-Dika limits not available in CERD.'
+  description_fr: 'Découpage communal de Balbala (4ème et 5ème arrondissements) issu
+    du cadastre CERD. Note : Djibouti-ville compte 3 communes (Boulaos, Ras-Dika,
+    Balbala) — ce dataset couvre Balbala uniquement ; les limites de Boulaos et
+    Ras-Dika ne sont pas disponibles dans le CERD.'
   enabled: true
   feature_count: 2
   file_path: data/geo/cerd/cerd_communes.geojson
@@ -165,11 +172,15 @@ layers:
   license: Données CERD fournies par le propriétaire du projet
   license_url: ''
   name_column: commune
-  name_en: Djibouti City — Communes
-  name_fr: Communes de Djibouti-ville
+  name_en: Djibouti City — Balbala Commune (CERD)
+  name_fr: Commune de Balbala — arrondissements (CERD)
   source: CERD, découpage communal
   status: draft
-  warnings: []
+  warnings:
+  - en: Balbala coverage only — Boulaos and Ras-Dika official limits must be obtained
+      from the Municipality of Djibouti.
+    fr: Couverture Balbala uniquement — les limites officielles de Boulaos et Ras-Dika
+      sont à obtenir auprès de la Mairie de Djibouti.
 - api_endpoint: /api/v1/geo/dj/cerd_ilots
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'

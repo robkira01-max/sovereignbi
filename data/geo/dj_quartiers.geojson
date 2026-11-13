@@ -10,9 +10,12 @@
         "name": "Centre-ville",
         "name_ar": "وسط المدينة",
         "population_est": 42000,
-        "density_km2": 42000,
+        "density_km2": 3516,
         "description": "Quartier colonial historique, port",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 11.95,
+        "commune": "Boulaos",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -48,9 +51,12 @@
         "name": "Plateau du Serpent",
         "name_ar": "هضبة الثعبان",
         "population_est": 28000,
-        "density_km2": 28000,
+        "density_km2": 3305,
         "description": "Quartier résidentiel sud",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 8.47,
+        "commune": "Ras-Dika",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -86,9 +92,12 @@
         "name": "Arhiba",
         "name_ar": "أرهيبا",
         "population_est": 55000,
-        "density_km2": 35000,
+        "density_km2": 3520,
         "description": "Quartier résidentiel dense",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 15.63,
+        "commune": "Ras-Dika",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -124,9 +133,12 @@
         "name": "Farah Waaberi",
         "name_ar": "فرح وابري",
         "population_est": 38000,
-        "density_km2": 38000,
+        "density_km2": 3499,
         "description": "Quartier central ouest",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 10.86,
+        "commune": "Boulaos",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -162,9 +174,12 @@
         "name": "Boulaos",
         "name_ar": "بولاوس",
         "population_est": 47000,
-        "density_km2": 32000,
+        "density_km2": 3189,
         "description": "Quartier résidentiel sud",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 14.74,
+        "commune": "Boulaos",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -200,9 +215,12 @@
         "name": "Ambouli",
         "name_ar": "عمبولي",
         "population_est": 22000,
-        "density_km2": 20000,
+        "density_km2": 1187,
         "description": "Secteur aéroport",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 18.54,
+        "commune": "Balbala",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -238,9 +256,12 @@
         "name": "PK12",
         "name_ar": "PK12",
         "population_est": 65000,
-        "density_km2": 28000,
+        "density_km2": 4274,
         "description": "Périphérie ouest",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 15.21,
+        "commune": "Balbala",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -276,9 +297,12 @@
         "name": "Balbala Nord",
         "name_ar": "بلبلة الشمالية",
         "population_est": 85000,
-        "density_km2": 22000,
+        "density_km2": 3405,
         "description": "Grand quartier populaire ouest",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 24.96,
+        "commune": "Balbala",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -314,9 +338,12 @@
         "name": "Balbala Sud",
         "name_ar": "بلبلة الجنوبية",
         "population_est": 72000,
-        "density_km2": 19000,
+        "density_km2": 2881,
         "description": "Extension urbaine sud-ouest",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 24.99,
+        "commune": "Balbala",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -352,9 +379,12 @@
         "name": "Hayableh",
         "name_ar": "حيابلة",
         "population_est": 48000,
-        "density_km2": 21000,
+        "density_km2": 2055,
         "description": "Quartier périphérique",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 23.36,
+        "commune": "Balbala",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
@@ -390,9 +420,12 @@
         "name": "Quartier 7",
         "name_ar": "حي 7",
         "population_est": 33000,
-        "density_km2": 25000,
+        "density_km2": 1590,
         "description": "Quartier nord-ouest",
-        "source": "OpenStreetMap contributors · ODbL"
+        "source": "OpenStreetMap contributors · ODbL",
+        "area_km2": 20.76,
+        "commune": "Boulaos",
+        "validation_status": "à valider"
       },
       "geometry": {
         "type": "Polygon",
