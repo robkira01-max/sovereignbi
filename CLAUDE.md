@@ -30,9 +30,9 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 ## État courant (2026-11-11)
 
 - **Tests** : 1517/1517 pytest + 274/274 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
-- **Dernière proposal** : P-054 SIG complet (GeoCatalog, GeoImport, SpatialAnalysis) — 2026-11-13
+- **Dernière proposal** : P-056 Validation cartographique Djibouti-ville — 2026-11-13
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
-- **Commit** : dernier commit `8999f3c` (à pousher sur origin/master)
+- **Commit** : dernier commit `b39e24e` (à pousher sur origin/master)
 - **CI GitHub Actions** : `.github/workflows/ci.yml` — lint + pytest + tsc + vitest + vite build + docker smoke, déclenché sur `master`
 - **Dockerfile + nginx.conf** : `mizanbi-client/Dockerfile` + `mizanbi-client/nginx.conf` — build nginx:alpine, SPA fallback, security headers
 - **Langue arabe supprimée** : `Lang = 'fr' | 'en'`, dictionnaire ar retiré, SIG_LANGS supprimé, dirOf simplifié

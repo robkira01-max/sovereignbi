@@ -143,6 +143,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Moyen — complète le volet SIG de mizanbi-client.
 **Statut :** ✅ Livré 2026-11-13 — `GeoCatalog.tsx`, `GeoImport.tsx`, `SpatialAnalysis.tsx` créés avec guard `isApiConfigured()`, i18n fr+en complétées (57 clés), intégrés dans `Sig.tsx` + `App.tsx` (prop `isEditor`), 17 tests Vitest. Commit `8999f3c`.
 
+## P-056 — Validation cartographique Djibouti-ville ✅ (livré 2026-11-13)
+
+**Raison :** Données géographiques `dj_quartiers.geojson` et `cerd_communes.geojson` contenaient deux erreurs : (1) `density_km2` = copie de `population_est` au lieu de la vraie valeur calculée ; (2) labels CERD "4/5 eme arrondissement" sans préciser la commune ; (3) catalogue indiquait 2 communes au lieu de 3 (Boulaos, Ras-Dika, Balbala). Le propriétaire a demandé une image cartographique de référence à soumettre aux autorités djiboutiennes pour validation.
+**Impact :** Moyen — exactitude des données, prérequis validation institutionnelle.
+**Livré :** `dj_quartiers.geojson` (+density_km2 UTM 38N, +area_km2, +commune attribution provisoire, +validation_status) ; `cerd_communes.geojson` (relabels Balbala 4ème/5ème +commune_nom +arrondissement +note) ; `catalog.yaml` (description 3 communes, warning Boulaos/Ras-Dika absents). Image PNG cartographique `/tmp/djibouti_admin_map.png` livrée pour validation terrain. 1517/1517 tests. Commit `b39e24e`.
+
 ## P-055 — Suppression frontend/ et finalisation CI
 
 **Raison :** `frontend/` devenu redondant une fois `mizanbi-client/` complet. Éliminer la dette de maintenance.
