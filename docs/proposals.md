@@ -141,7 +141,7 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 
 **Raison :** `frontend/` avait ces composants UI (import drag-and-drop, moteur DuckDB Spatial). `mizanbi-client/` a déjà le volet SIG cartographique mais pas l'interface d'administration des couches.
 **Impact :** Moyen — complète le volet SIG de mizanbi-client.
-**Statut :** 🔜 Prochaine — à démarrer après décision propriétaire.
+**Statut :** ✅ Livré 2026-11-13 — `GeoCatalog.tsx`, `GeoImport.tsx`, `SpatialAnalysis.tsx` créés avec guard `isApiConfigured()`, i18n fr+en complétées (57 clés), intégrés dans `Sig.tsx` + `App.tsx` (prop `isEditor`), 17 tests Vitest. Commit `8999f3c`.
 
 ## P-055 — Suppression frontend/ et finalisation CI
 
