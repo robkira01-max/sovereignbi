@@ -193,7 +193,7 @@ export default function SigPage({ t, lang = 'fr', isEditor = false, onIndicator,
           <div>
             <h3 style={{ margin: 0 }}>Carte SIG Djibouti-ville</h3>
             <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>
-              8 couches · communes, secteurs, typologies urbaines, voirie, équipements, écoles, transport
+              Communes et 91 quartiers officiels (admin_pol 2014) · secteurs, typologies, voirie, équipements, écoles, transport (CERD) · routes du centre (OSM)
             </p>
           </div>
           <span className="badge badge-ok">CERD</span>

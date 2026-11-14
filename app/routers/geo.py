@@ -37,6 +37,9 @@ _LEVEL_PATHS: dict[str, Path] = {
     "adm2":                       _REPO_ROOT / "data" / "geo" / "dj_adm2.geojson",
     "quartiers":                  _REPO_ROOT / "data" / "geo" / "dj_quartiers.geojson",
     "structures_sante":           _REPO_ROOT / "data" / "geo" / "dj_structures_sante.geojson",
+    # Découpage administratif officiel de Djibouti-ville (admin_pol, 2014)
+    "admin_quartiers":            _REPO_ROOT / "data" / "geo" / "admin_quartiers.geojson",
+    "admin_communes":             _REPO_ROOT / "data" / "geo" / "admin_communes.geojson",
     # CERD Djibouti-ville layers
     "cerd_equipements_scolaires": _CERD / "cerd_equipements_scolaires.geojson",
     "cerd_equipements_sociaux":   _CERD / "cerd_equipements_sociaux.geojson",
@@ -61,6 +64,8 @@ async def get_dj_geo(level: str) -> JSONResponse:
     - **adm2** : 6 districts enrichis (population, superficie, densité)
     - **quartiers** : 11 quartiers de Djibouti-ville (OSM, ODbL — délimitations approximatives)
     - **structures_sante** : 65 structures sanitaires avec GPS et effectifs (Ministère de la Santé 2020)
+    - **admin_quartiers** : 91 quartiers et cités de Djibouti-ville (admin_pol, photogrammétrie 1/2 500, 2014)
+    - **admin_communes** : 3 communes de Djibouti-ville (Ras-Dika, Boulaos, Balbala)
     """
     if level not in _VALID_LEVELS:
         raise HTTPException(

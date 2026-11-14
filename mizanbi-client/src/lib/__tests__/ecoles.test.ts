@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import ECOLES_GEO from '../../data/ecoles-djibouti.json'
-import { projectLonLat, djiboutiBounds, djiVilleBounds, buildDjiboutiVilleMap, getQuartierForPoint } from '../geo'
+import { projectLonLat, djiboutiBounds, getQuartierForPoint } from '../geo'
 
 interface EcoleProps {
   name: string; type: string; amenity: string | null
@@ -90,42 +90,14 @@ describe('i18n ecoles section', () => {
   })
 })
 
-describe('djiVilleBounds', () => {
-  it('returns bounds within Djibouti-ville lon/lat range', () => {
-    const b = djiVilleBounds()
-    expect(b.x0).toBeGreaterThan(42.9)
-    expect(b.x1).toBeLessThan(43.3)
-    expect(b.y0).toBeGreaterThan(11.4)
-    expect(b.y1).toBeLessThan(11.7)
-    expect(b.sc).toBeGreaterThan(0)
-    expect(b.k).toBeGreaterThan(0)
-  })
-})
-
-describe('buildDjiboutiVilleMap', () => {
-  it('returns 11 shapes for the 11 quartiers', () => {
-    const m = buildDjiboutiVilleMap()
-    expect(m.shapes).toHaveLength(11)
-  })
-
-  it('all shapes have non-empty d and name', () => {
-    const m = buildDjiboutiVilleMap()
-    for (const s of m.shapes) {
-      expect(s.d.length).toBeGreaterThan(0)
-      expect(s.name.length).toBeGreaterThan(0)
-    }
-  })
-
-  it('includes Centre-ville quartier', () => {
-    const m = buildDjiboutiVilleMap()
-    expect(m.shapes.some((s) => s.name === 'Centre-ville')).toBe(true)
-  })
-})
-
 describe('getQuartierForPoint', () => {
   it('returns null for a point outside Djibouti-ville', () => {
     // Obock region, far from Djibouti-ville
     expect(getQuartierForPoint(43.28, 11.98)).toBeNull()
+  })
+
+  it('resolves known points to official quartier names', () => {
+    expect(getQuartierForPoint(43.1535, 11.6083)).toBe('Plateau du Serpent')
   })
 
   it('Djibouti-district schools: majority fall within a quartier', () => {

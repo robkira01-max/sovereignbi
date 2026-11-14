@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import COMMUNES_GEO from '../data/cerd_communes.json'
+import COMMUNES_ADMIN from '../data/admin_communes.json'
+import QUARTIERS_ADMIN from '../data/admin_quartiers.json'
 import SECTEURS_GEO from '../data/cerd_secteurs.json'
 import TYPOLOGIES_GEO from '../data/cerd_typologies.json'
 import EQUIPEMENTS_GEO from '../data/cerd_equipements_sociaux.json'
@@ -8,10 +9,9 @@ import VOIRIE_GEO from '../data/cerd_voirie.json'
 import LIGNES_BUS_GEO from '../data/cerd_lignes_bus.json'
 import TERMINUS_GEO from '../data/cerd_terminus_bus.json'
 import OSM_VOIRIE_GEO from '../data/osm_centre_voirie.json'
-import OSM_LIEUX_GEO from '../data/osm_centre_lieux.json'
 
 import {
-  OSM_ROAD_STYLE, VILLE_BOUNDS, VILLE_PAD, VILLE_W, centroidOfPolygon, linePath, polygonPath, px, py,
+  COMMUNE_FILL, OSM_ROAD_STYLE, VILLE_BOUNDS, VILLE_PAD, VILLE_W, centroidOfPolygon, linePath, polygonPath, px, py, quartierLabel,
   type Coord, type GeoFeature,
 } from '../lib/villeGeo'
 
@@ -43,7 +43,8 @@ const EQUIP_COLORS: Record<string, string> = {
 }
 
 const LAYER_LABELS: Record<string, string> = {
-  centre:      'Centre-ville (OSM)',
+  quartiers:   'Quartiers (officiel)',
+  centre:      'Routes centre (OSM)',
   secteurs:    'Secteurs',
   typologies:  'Typologies urbaines',
   voirie:      'Voirie',
@@ -58,7 +59,7 @@ type HoveredFeature = { nom: string; detail: string; color: string }
 
 export default function DjiboutiVilleMap() {
   const [layers, setLayers] = useState<Record<Layer, boolean>>({
-    centre: true, secteurs: true, typologies: false, voirie: true, equipements: true, ecoles: false, bus: false,
+    quartiers: true, centre: true, secteurs: true, typologies: false, voirie: true, equipements: true, ecoles: false, bus: false,
   })
   const [hovered, setHovered] = useState<HoveredFeature | null>(null)
   const [view, setView] = useState<'map' | 'table'>('map')
@@ -98,15 +99,33 @@ export default function DjiboutiVilleMap() {
               role="img"
               aria-label="Carte SIG Djibouti-ville — données CERD"
             >
-              {/* Background communes */}
-              {feats<GeoFeature>(COMMUNES_GEO).map((f, i) => (
+              {/* Communes officielles (admin_pol) */}
+              {feats<GeoFeature>(COMMUNES_ADMIN).map((f, i) => (
                 <path key={`comm-${i}`}
                   d={polygonPath(f.geometry.coordinates, b)}
-                  fill="oklch(18% 0.03 265)"
+                  fill={COMMUNE_FILL[String(f.properties.nom)] ?? 'oklch(20% 0.03 265)'}
                   stroke="oklch(45% 0.08 265)"
                   strokeWidth={0.8}
                 />
               ))}
+
+              {/* Quartiers officiels (admin_pol) */}
+              {layers.quartiers && feats<GeoFeature>(QUARTIERS_ADMIN).map((f, i) => {
+                const nom = String(f.properties.nom)
+                const commune = String(f.properties.commune)
+                return (
+                  <path key={`q-${i}`}
+                    d={polygonPath(f.geometry.coordinates, b)}
+                    fill="oklch(28% 0.04 265 / .35)"
+                    stroke="oklch(55% 0.07 265)"
+                    strokeWidth={0.4}
+                    strokeLinejoin="round"
+                    style={{ cursor: 'pointer' }}
+                    onMouseEnter={() => setHovered({ nom, detail: `Quartier — commune de ${commune} · ${String(f.properties.superficie_ha)} ha`, color: 'oklch(75% 0.07 265)' })}
+                    onMouseLeave={() => setHovered(null)}
+                  />
+                )
+              })}
 
               {/* Centre-ville : voirie OSM (hors couverture CERD) */}
               {layers.centre && (['locale', 'tertiaire', 'secondaire', 'primaire'] as const).map(cl => (
@@ -117,17 +136,19 @@ export default function DjiboutiVilleMap() {
                   ))}
                 </g>
               ))}
-              {layers.centre && feats<GeoFeature>(OSM_LIEUX_GEO).map((f, i) => {
-                const c = f.geometry.coordinates as Coord
+              {layers.quartiers && feats<GeoFeature>(QUARTIERS_ADMIN).map((f, i) => {
+                const txt = quartierLabel(String(f.properties.nom), Number(f.properties.superficie_ha))
+                if (!txt) return null
+                const [clon, clat] = centroidOfPolygon(f.geometry.coordinates)
                 return (
-                  <text key={`lieu-${i}`}
-                    x={px(c[0], b).toFixed(1)} y={py(c[1], b).toFixed(1)}
+                  <text key={`ql-${i}`}
+                    x={px(clon, b).toFixed(1)} y={py(clat, b).toFixed(1)}
                     textAnchor="middle" dominantBaseline="middle"
-                    fontSize={6.5} fontStyle="italic" fill="oklch(82% 0.06 200)"
-                    stroke="oklch(12% 0.03 265)" strokeWidth={1.6} paintOrder="stroke"
+                    fontSize={5.5} fontStyle="italic" fill="oklch(82% 0.06 200)"
+                    stroke="oklch(12% 0.03 265)" strokeWidth={1.4} paintOrder="stroke"
                     style={{ pointerEvents: 'none', userSelect: 'none' }}
                   >
-                    {String(f.properties.nom)}
+                    {txt}
                   </text>
                 )
               })}
@@ -304,7 +325,7 @@ export default function DjiboutiVilleMap() {
 
             {layers.centre && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em' }}>Centre-ville (OSM)</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em' }}>Routes centre (OSM)</div>
                 {Object.entries(OSM_ROAD_STYLE).map(([k, s]) => (
                   <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}>
                     <span style={{ width: 16, height: Math.max(2, s.w * 2), background: s.color, flexShrink: 0, display: 'inline-block', borderRadius: 1 }} />
@@ -391,7 +412,7 @@ export default function DjiboutiVilleMap() {
 
       <p className="muted" style={{ fontSize: 11, marginTop: 4 }}>
         Source : CERD (Centre d'Études et de Recherches de Djibouti) · Données SIG Djibouti-ville · 8 couches géographiques (arrondissements 4 et 5, Balbala).
-        Centre-ville : © contributeurs OpenStreetMap (ODbL), extrait Geofabrik du 14/11/2026 — voirie et noms de quartiers, moins précis que les données CERD.
+        Communes et quartiers : admin_pol (cartographie photogrammétrique 1/2 500, 2014). Routes du centre : © contributeurs OpenStreetMap (ODbL), extrait Geofabrik du 14/11/2026, moins précises que les données CERD.
       </p>
     </div>
   )

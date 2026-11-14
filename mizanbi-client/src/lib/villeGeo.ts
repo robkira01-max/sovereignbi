@@ -1,4 +1,5 @@
 import COMMUNES_GEO from '../data/cerd_communes.json'
+import QUARTIERS_GEO from '../data/admin_quartiers.json'
 import OSM_VOIRIE_GEO from '../data/osm_centre_voirie.json'
 
 export type Coord = [number, number]
@@ -71,8 +72,9 @@ export function centroidOfPolygon(coords: unknown): Coord {
   return [xs.reduce((a, b) => a + b, 0) / xs.length, ys.reduce((a, b) => a + b, 0) / ys.length]
 }
 
-// Emprise fixe : communes CERD (Balbala) + voirie OSM du centre
+// Emprise fixe : quartiers officiels (admin_pol) + communes CERD (Balbala) + voirie OSM du centre
 export const VILLE_BOUNDS: Bounds = makeBounds([
+  ...(QUARTIERS_GEO as unknown as { features: GeoFeature[] }).features,
   ...(COMMUNES_GEO as unknown as { features: GeoFeature[] }).features,
   ...(OSM_VOIRIE_GEO as unknown as { features: GeoFeature[] }).features,
 ])
@@ -86,4 +88,16 @@ export function projectVille(lon: number, lat: number): { x: number; y: number }
 
 export function inVilleBounds(lon: number, lat: number): boolean {
   return lon >= VILLE_BOUNDS.x0 && lon <= VILLE_BOUNDS.x1 && lat >= VILLE_BOUNDS.y0 && lat <= VILLE_BOUNDS.y1
+}
+
+export const COMMUNE_FILL: Record<string, string> = {
+  'Ras-Dika': 'oklch(24% 0.05 230)',
+  'Boulaos':  'oklch(22% 0.04 265)',
+  'Balbala':  'oklch(21% 0.04 300)',
+}
+
+/** Libellé d'un quartier assez grand pour être affiché sans encombrer la carte. */
+export function quartierLabel(nom: string, superficieHa: number): string | null {
+  if (superficieHa < 6 || nom === 'Sans nom') return null
+  return nom.length > 20 ? nom.slice(0, 19) + '…' : nom
 }

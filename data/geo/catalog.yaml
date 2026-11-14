@@ -324,4 +324,58 @@ layers:
       before institutional use. Attribution "© OpenStreetMap contributors" is mandatory.
     fr: Données collaboratives, moins précises que le CERD — à valider avec la mairie
       avant usage institutionnel. Mention « © contributeurs OpenStreetMap » obligatoire.
+- api_endpoint: /api/v1/geo/dj/admin_quartiers
+  coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala
+  date_acquired: '2026-11-14'
+  description_en: 91 official neighbourhoods and housing estates (quartiers, cités,
+    lotissements) of the three communes of Djibouti-ville, from the admin_pol shapefile
+    (1/2,500 photogrammetric mapping, 2014). Attributes - name, commune, area in hectares.
+  description_fr: 91 quartiers, cités et lotissements officiels des trois communes
+    de Djibouti-ville, issus du shapefile admin_pol (cartographie photogrammétrique
+    1/2 500, 2014). Attributs - nom, commune, superficie en hectares.
+  enabled: true
+  feature_count: 91
+  file_path: data/geo/admin_quartiers.geojson
+  format: geojson
+  geometry_type: Polygon
+  id: admin_quartiers
+  license: Données fournies par le propriétaire du projet
+  license_url: ''
+  name_column: nom
+  name_en: Djibouti-ville neighbourhoods (admin_pol)
+  name_fr: Quartiers de Djibouti-ville (admin_pol)
+  source: admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31 (producer to be confirmed)
+  status: draft
+  warnings:
+  - en: Producer and reuse licence not documented, data dates from 2014 — confirm with
+      the owner/producer before any publication.
+    fr: Producteur et licence de réutilisation non documentés, données de 2014 — à
+      confirmer avec le propriétaire/producteur avant toute publication.
+- api_endpoint: /api/v1/geo/dj/admin_communes
+  coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala
+  date_acquired: '2026-11-14'
+  description_en: Footprint of the three communes of Djibouti-ville (Ras-Dika, Boulaos,
+    Balbala), dissolved from the admin_pol polygons. Fills the Boulaos and Ras-Dika
+    gap left by the CERD communes layer.
+  description_fr: Emprise des trois communes de Djibouti-ville (Ras-Dika, Boulaos,
+    Balbala), fusionnée à partir des polygones admin_pol. Comble l'absence de Boulaos
+    et Ras-Dika dans la couche communes du CERD.
+  enabled: true
+  feature_count: 3
+  file_path: data/geo/admin_communes.geojson
+  format: geojson
+  geometry_type: MultiPolygon
+  id: admin_communes
+  license: Données fournies par le propriétaire du projet
+  license_url: ''
+  name_column: nom
+  name_en: Djibouti-ville communes (admin_pol)
+  name_fr: Communes de Djibouti-ville (admin_pol)
+  source: admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31 (producer to be confirmed)
+  status: draft
+  warnings:
+  - en: Derived by dissolving polygons (includes unbuilt land) — not a legal boundary;
+      validate with the Municipality.
+    fr: Obtenu par fusion de polygones (inclut des terrains non bâtis) — ne constitue
+      pas une limite légale ; à valider avec la mairie.
 version: '1'

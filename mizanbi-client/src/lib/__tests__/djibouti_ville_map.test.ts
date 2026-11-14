@@ -13,7 +13,8 @@ import VOIRIE from '../../data/cerd_voirie.json'
 import LIGNES_BUS from '../../data/cerd_lignes_bus.json'
 import TERMINUS from '../../data/cerd_terminus_bus.json'
 import OSM_VOIRIE from '../../data/osm_centre_voirie.json'
-import OSM_LIEUX from '../../data/osm_centre_lieux.json'
+import QUARTIERS from '../../data/admin_quartiers.json'
+import COMMUNES_ADMIN from '../../data/admin_communes.json'
 
 type FC = { type: string; features: { type: string; geometry: { type: string; coordinates: unknown }; properties: Record<string, unknown> }[] }
 
@@ -167,7 +168,6 @@ describe('CERD GeoJSON geometry types', () => {
 
 describe('OSM centre-ville layers', () => {
   const voirie = asFC(OSM_VOIRIE)
-  const lieux = asFC(OSM_LIEUX)
 
   it('voirie: 1875 line features, all in the centre bbox (east of CERD Balbala)', () => {
     expect(voirie.features).toHaveLength(1875)
@@ -190,16 +190,35 @@ describe('OSM centre-ville layers', () => {
     const known = new Set(['primaire', 'secondaire', 'tertiaire', 'locale'])
     for (const f of voirie.features) expect(known.has(String(f.properties['classe']))).toBe(true)
   })
+})
 
-  it('lieux: named centre neighbourhoods, no Arabic residue or trailing slash', () => {
-    const noms = lieux.features.map((f) => String(f.properties['nom']))
-    expect(noms).toContain('Quartier 7')
-    expect(noms).toContain("Lotissement de l'Aérogare")
-    expect(noms).toContain('Le Plateau du Serpent')
+// ── Découpage officiel admin_pol ──────────────────────────────────────────────
+
+describe('admin_pol official quartiers and communes', () => {
+  const q = asFC(QUARTIERS)
+  const c = asFC(COMMUNES_ADMIN)
+
+  it('91 quartiers over the 3 communes, 3 communes', () => {
+    expect(q.features).toHaveLength(91)
+    expect(c.features.map((f) => f.properties['nom']).sort()).toEqual(['Balbala', 'Boulaos', 'Ras-Dika'])
+    const per: Record<string, number> = {}
+    for (const f of q.features) per[String(f.properties['commune'])] = (per[String(f.properties['commune'])] ?? 0) + 1
+    expect(per).toEqual({ Boulaos: 46, Balbala: 37, 'Ras-Dika': 8 })
+  })
+
+  it('quartier names are cleaned and include the centre (not covered by CERD)', () => {
+    const noms = q.features.map((f) => String(f.properties['nom']))
+    for (const n of ['Quartier 7', 'Plateau du Serpent', 'Centre Commercial et Administratif', 'Haramous']) expect(noms).toContain(n)
     for (const n of noms) {
-      expect(n.length).toBeGreaterThan(0)
-      expect(n).not.toMatch(/[\u0600-\u06FF]/)
-      expect(n).not.toMatch(/\/\s*$/)
+      expect(n).not.toMatch(/'\s/)
+      expect(n).not.toContain('Admnistratif')
     }
+  })
+
+  it('quartiers reach east of CERD Balbala coverage (lon > 43.14)', () => {
+    let maxLon = 0
+    function walk(x: unknown) { if (Array.isArray(x) && typeof x[0] === 'number') maxLon = Math.max(maxLon, x[0] as number); else if (Array.isArray(x)) x.forEach(walk) }
+    q.features.forEach((f) => walk(f.geometry.coordinates))
+    expect(maxLon).toBeGreaterThan(43.14)
   })
 })
