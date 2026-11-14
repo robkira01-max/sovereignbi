@@ -4,6 +4,7 @@ import { authHeaders, login } from '../api'
 
 function stubBrowser(opts: { token?: string | null; key?: string }) {
   vi.stubGlobal('sessionStorage', { getItem: (k: string) => (k === 'mizan_token' ? opts.token ?? null : null) })
+  // Une clé placée dans window (ancien mécanisme d'injection) ne doit jamais être lue.
   vi.stubGlobal('window', opts.key ? { __MIZAN_API_KEY__: opts.key } : {})
 }
 
@@ -11,7 +12,7 @@ beforeEach(() => stubBrowser({}))
 afterEach(() => vi.unstubAllGlobals())
 
 describe('authHeaders', () => {
-  it('sends nothing when anonymous and no runtime key', () => {
+  it('sends nothing when anonymous', () => {
     expect(authHeaders()).toEqual({})
   })
 
@@ -25,21 +26,18 @@ describe('authHeaders', () => {
     expect(authHeaders()).toEqual({})
   })
 
-  it('sends the runtime key value itself, not a role label', () => {
+  it('ignores any API key injected in window: a secret in the browser is readable by every user', () => {
     stubBrowser({ key: 'k-secret-123' })
-    expect(authHeaders()).toEqual({ 'X-Api-Key': 'k-secret-123' })
-  })
-
-  it('prefers Bearer and never sends both (backend 401s on an invalid X-Api-Key)', () => {
+    expect(authHeaders()).toEqual({})
     stubBrowser({ token: 'abc123', key: 'k-secret-123' })
     const h = authHeaders()
     expect(h).toEqual({ Authorization: 'Bearer abc123' })
     expect('X-Api-Key' in h).toBe(false)
   })
 
-  it('falls back to the runtime key when only the demo token is present', () => {
+  it('does not fall back to an injected key when only the demo token is present', () => {
     stubBrowser({ token: 'demo', key: 'k-secret-123' })
-    expect(authHeaders()).toEqual({ 'X-Api-Key': 'k-secret-123' })
+    expect(authHeaders()).toEqual({})
   })
 })
 

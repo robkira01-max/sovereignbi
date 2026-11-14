@@ -1,30 +1,34 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { I18N, LANGS, dirOf, type Lang, type Dict } from './lib/i18n'
 import { DEMO_USER } from './data/demo'
 import { isApiConfigured } from './lib/api'
 import { DEMO_ME, createAccountsService, type Me } from './lib/accounts'
 import { THEME_LIST, THEME_MODE_KEY, applyTheme, loadThemeMode, resolveTheme, type IndicatorId, type ThemeId, type ThemeMode } from './lib/theme'
 import LoginPage from './pages/Login'
-import HomePage from './pages/Home'
-import ChatPage from './pages/Chat'
-import DashboardsPage from './pages/Dashboards'
-import ImportPage from './pages/Import'
-import SigPage from './pages/Sig'
-import BulletinsPage from './pages/Bulletins'
-import CertificatePage from './pages/Certificate'
-import CanadaPage from './pages/Canada'
-import CanadaNationalPage from './pages/CanadaNational'
-import AncientMapsPage from './pages/AncientMaps'
-import BiePage from './pages/Bie'
-import BcdPage from './pages/Bcd'
-import GeoAIPage from './pages/GeoAI'
-import AdminPage from './pages/Admin'
 import LegalPage from './pages/LegalPage'
 import TermsGate from './components/TermsGate'
 import { acceptTerms, hasAcceptedTerms } from './lib/termsConsent'
 import type { LegalKind } from './lib/legalContent'
+import { startAnalytics, stopAnalytics } from './lib/analytics'
+import { documentTitle } from './lib/pageTitle'
 import ChangePasswordModal from './components/ChangePasswordModal'
 import CookieBanner, { useCookieConsent } from './components/CookieBanner'
+
+// Pages chargées à la demande : le premier chargement (connexion) ne télécharge plus les graphiques, cartes et jeux de données embarqués.
+const HomePage = lazy(() => import('./pages/Home'))
+const ChatPage = lazy(() => import('./pages/Chat'))
+const DashboardsPage = lazy(() => import('./pages/Dashboards'))
+const ImportPage = lazy(() => import('./pages/Import'))
+const SigPage = lazy(() => import('./pages/Sig'))
+const BulletinsPage = lazy(() => import('./pages/Bulletins'))
+const CertificatePage = lazy(() => import('./pages/Certificate'))
+const CanadaPage = lazy(() => import('./pages/Canada'))
+const CanadaNationalPage = lazy(() => import('./pages/CanadaNational'))
+const AncientMapsPage = lazy(() => import('./pages/AncientMaps'))
+const BiePage = lazy(() => import('./pages/Bie'))
+const BcdPage = lazy(() => import('./pages/Bcd'))
+const GeoAIPage = lazy(() => import('./pages/GeoAI'))
+const AdminPage = lazy(() => import('./pages/Admin'))
 
 export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms' | 'legal' | 'cookies'
 export type Section = 'home' | 'bi' | 'sig' | 'settings'
@@ -82,6 +86,11 @@ export default function App() {
   const [showCookieBanner, setShowCookieBanner] = useState(cookieConsent === null)
   const [cookieChoice, setCookieChoice] = useState<boolean | null>(cookieConsent)
   const [publicDoc, setPublicDoc] = useState<LegalKind | null>(null)
+  // Mesure d'audience : chargée uniquement après consentement ; un retrait arrête le script (rechargement si déjà actif).
+  useEffect(() => {
+    if (cookieChoice === true) startAnalytics()
+    else if (cookieChoice === false && stopAnalytics()) window.location.reload()
+  }, [cookieChoice])
   const [termsTick, setTermsTick] = useState(0)
   const [indicator, setIndicator] = useState<IndicatorId>('unemployment')
   const [themeMenuOpen, setThemeMenuOpen] = useState(false)
@@ -92,6 +101,13 @@ export default function App() {
 
   const t = I18N[lang]
   const section = pageSection(page)
+  const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title, legal: t.legalNotice.title, cookies: t.cookiesPolicy.title }
+  const legalTitles: Record<LegalKind, string> = { privacy: t.privacy.title, terms: t.terms.title, legal: t.legalNotice.title, cookies: t.cookiesPolicy.title }
+
+  // Un titre d'onglet par écran (accessibilité, historique, lecteurs d'écran).
+  useEffect(() => {
+    document.title = documentTitle(token ? pageTitle[page] : publicDoc ? legalTitles[publicDoc] : null)
+  }, [token, page, publicDoc, lang]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const accounts = useMemo(() => createAccountsService(), [])
   const [me, setMe] = useState<Me | null>(null)
@@ -184,7 +200,6 @@ export default function App() {
     )
   }
 
-  const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title, legal: t.legalNotice.title, cookies: t.cookiesPolicy.title }
 
   const subItems = section === 'bi'
     ? BI_PAGES
@@ -274,6 +289,7 @@ export default function App() {
             ))}
           </nav>
         )}
+        <Suspense fallback={<p role="status" aria-live="polite" className="muted" style={{ padding: 24 }}>{t.admin.loading}</p>}>
         {page === 'home' && <HomePage t={t} go={go} />}
         {page === 'dash' && <DashboardsPage t={t} />}
         {page === 'upload' && <ImportPage t={t} />}
@@ -287,6 +303,7 @@ export default function App() {
         {page === 'admin' && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
         {page === 'sig' && <SigPage t={t} lang={lang} isEditor={me?.role === 'editor' || me?.role === 'admin'} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
+        </Suspense>
         {(page === 'privacy' || page === 'terms' || page === 'legal' || page === 'cookies') && (
           <LegalPage kind={page} t={t} lang={lang} onBack={() => go('home')} onManageCookies={() => setShowCookieBanner(true)} cookieChoice={cookieChoice} />
         )}
@@ -321,7 +338,7 @@ export default function App() {
         <div className="chat-drawer-body">
           {chatMounted && (
             section !== 'sig'
-              ? <ChatPage t={t} />
+              ? <Suspense fallback={<p role="status" className="muted" style={{ padding: 16 }}>{t.admin.loading}</p>}><ChatPage t={t} /></Suspense>
               : <p className="muted" style={{ padding: 16 }}>ChatBI — {t.voletBi}.</p>
           )}
         </div>

@@ -1,22 +1,17 @@
 // Couche API MizanBI / SovereignBI.
 // VITE_API_BASE vide (par défaut) => mode démo, aucune requête réseau.
 // Aucune clé API, aucun token, aucun mot de passe en dur ici : l'authentification
-// se fait par POST /auth/login, le token est stocké en sessionStorage (mizan_token),
-// ou, à défaut, une clé d'API injectée au runtime (window.__MIZAN_API_KEY__).
+// se fait uniquement par POST /auth/login ; le jeton de session est stocké en
+// sessionStorage (mizan_token). Aucune clé API (X-Api-Key) n'est jamais fournie au
+// navigateur : une clé secrète livrée au client serait lisible par tout utilisateur.
 
 export const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, '') || ''
 
 export const isApiConfigured = (): boolean => API_BASE.length > 0
 
 export function authHeaders(): Record<string, string> {
-  // Le token de session (Bearer) a priorité : le backend rejette en 401 une requête
-  // portant une X-Api-Key invalide même si le Bearer est valide, donc on n'envoie
-  // jamais les deux. La clé runtime n'est jamais codée en dur ; son rôle
-  // (viewer/editor) est celui de la clé fournie par l'administrateur.
   const token = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('mizan_token') : null
-  if (token && token !== 'demo') return { Authorization: `Bearer ${token}` }
-  const runtimeKey = (typeof window !== 'undefined' && (window as unknown as { __MIZAN_API_KEY__?: string }).__MIZAN_API_KEY__) || ''
-  return runtimeKey ? { 'X-Api-Key': runtimeKey } : {}
+  return token && token !== 'demo' ? { Authorization: `Bearer ${token}` } : {}
 }
 
 /** HTTP error with the status and, when the backend sent one, its FastAPI `detail` string. */

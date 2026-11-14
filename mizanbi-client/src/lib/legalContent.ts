@@ -263,7 +263,7 @@ const COOKIES_FR: LegalDoc = {
     {
       title: '4. Consentement',
       paragraphs: [
-        'Le stockage local ci-dessus est strictement nécessaire : il ne requiert pas de consentement. Aucune catégorie facultative n’est active aujourd’hui. Si une fonction facultative (par exemple une mesure d’audience) était ajoutée, elle ne serait activée qu’après votre consentement, et cette page serait mise à jour.',
+        'Le stockage local ci-dessus est strictement nécessaire : il ne requiert pas de consentement. Aucune catégorie facultative n’est active par défaut. L’opérateur de l’instance peut activer une mesure d’audience sans cookie (Plausible ou Umami) ; elle ne se charge alors qu’après votre acceptation, et le retrait de votre consentement l’arrête.',
         'Le refus des éléments non essentiels ne doit pas empêcher l’accès aux fonctionnalités essentielles.',
       ],
     },
@@ -541,7 +541,7 @@ const COOKIES_EN: LegalDoc = {
     {
       title: '4. Consent',
       paragraphs: [
-        'The local storage above is strictly necessary: it does not require consent. No optional category is active today. If an optional feature (for example audience measurement) were added, it would be enabled only after your consent, and this page would be updated.',
+        'The local storage above is strictly necessary: it does not require consent. No optional category is active by default. The instance operator may enable cookieless audience measurement (Plausible or Umami); it then loads only after you accept, and withdrawing your consent stops it.',
         'Refusing non-essential items must not prevent access to essential features.',
       ],
     },

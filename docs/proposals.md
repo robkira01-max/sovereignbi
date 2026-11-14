@@ -173,6 +173,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Élevé — prérequis de toute diffusion à de vrais utilisateurs.
 **Livré :** pages Confidentialité / CGU / Cookies / Mentions légales fr+en (`legalContent.ts`, config unique `legalConfig.ts`, bandeau « version de travail », placeholders surlignés), accessibles avant connexion ; bannière corrigée + « Gérer mes cookies » ; `TermsGate` + `POST /compliance/consent/self` (allowlist de finalités `cgu|privacy:AAAA-MM`, identité de la session, pas d'IP) ; `/compliance/notice` reflète `LLM_PROVIDER` ; glyphes de cartes hébergés localement ; tests de garde (clés de stockage documentées, aucun tiers, garde-fou de publication). **Reste (propriétaire) :** compléter `legalConfig.ts`, validation par un juriste, durées de conservation, procédure d'incident, choix du fournisseur d'IA et du droit applicable, puis `draft: false`. **À relire par un humain :** la route `/compliance/consent/self` (contrôle d'accès).
 
+## P-062 — Durcissement web MizanBI et outil d'audit de lancement ✅ (livré 2026-11-14)
+
+**Raison :** Cahier des charges « points techniques 3 à 20 » du propriétaire. Audit : clé API injectable dans le navigateur, mesure d'audience appelée sans consentement, image OG en SVG (non rendue par LinkedIn/Facebook), sitemap invalide, favicons incomplets, « soft 404 », un seul titre pour toute l'application, 3,8 Mo de JavaScript au premier chargement.
+**Impact :** Élevé — sécurité (point 3), conformité cookies (point 5), partage et SEO (6-9, 15), performance (12).
+**Livré :** voir CLAUDE.md « Durcissement web » ; `tools/web_launch_audit.py` (15 tests, réutilisable sur tous les projets web) ; `tools/make_brand_assets.py`. Premier audit des sites déjà en ligne : Vigile (aucune balise OG, robots, sitemap ni page légale) et Code de la Route DJ (lien cassé `/fr/verify`, image de 493 Ko, pas de robots/sitemap/OG/pages légales). **Reste (propriétaire) :** décider site vitrine séparé vs application (URLs `/features`, `/pricing`, `/docs`, `/contact` impossibles dans l'application actuelle sans URL par page) ; renseigner `VITE_SITE_URL` en production ; Lighthouse sur l'URL publique ; HSTS et redirection HTTPS côté serveur de production (non vérifiables depuis le dépôt).
+
 ## P-060 — Carte ADM2/quartiers (`MapAdm2`) sur les quartiers officiels ✅ (livré 2026-11-14)
 
 **Raison :** Le niveau « quartiers » utilisait les 11 quartiers OSM approximatifs (avertissement « données approximatives »).

@@ -1,4 +1,6 @@
+# MizanBI : application privée (accès par connexion), non indexable.
+# On n'interdit PAS le crawl ici : Google doit lire la balise/l'en-tête « noindex »,
+# et LinkedIn/Facebook doivent pouvoir lire les balises Open Graph pour les aperçus.
+# robots.txt n'est pas une protection : les données sont protégées par l'authentification.
 User-agent: *
 Allow: /
-
-Sitemap: /sitemap.xml
