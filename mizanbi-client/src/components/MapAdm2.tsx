@@ -4,6 +4,7 @@ import { Protocol } from 'pmtiles'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { LiveTileData } from './LiveTileRenderer'
 import { ADM2_LEVELS, normName, escapeHtml, popupExtra, type Adm2Level } from '../lib/adm2Levels'
+import { GLYPHS_URL, MAP_TEXT_FONT } from '../lib/mapFonts'
 
 interface Props {
   data: LiveTileData
@@ -31,7 +32,7 @@ const PMTILES_URL =
 
 const MAP_STYLE = (pmtilesUrl: string): maplibregl.StyleSpecification => ({
   version: 8,
-  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  glyphs: GLYPHS_URL,
   sources: {
     protomaps: {
       type: 'vector',
@@ -143,7 +144,7 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
       map.addLayer({ id: 'adm2-label', type: 'symbol', source: 'adm2-regions',
         layout: {
           'text-field': ['format', ['get', '_label'], { 'font-scale': 1 }, '\n', {}, ['to-string', ['get', '_value']], { 'font-scale': 0.82 }],
-          'text-size': ADM2_LEVELS[level].labelSize, 'text-anchor': 'center',
+          'text-font': MAP_TEXT_FONT, 'text-size': ADM2_LEVELS[level].labelSize, 'text-anchor': 'center',
         },
         paint: { 'text-color': '#ffffff', 'text-halo-color': '#1e1b4b', 'text-halo-width': 1.5 } })
       map.on('mouseenter', 'adm2-fill', (e) => {

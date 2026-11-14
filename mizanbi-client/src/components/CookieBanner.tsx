@@ -15,9 +15,10 @@ interface Props {
   t: Dict
   onAccept: () => void
   onDecline: () => void
+  onPolicy: () => void
 }
 
-export default function CookieBanner({ t, onAccept, onDecline }: Props) {
+export default function CookieBanner({ t, onAccept, onDecline, onPolicy }: Props) {
   return (
     <div
       role="dialog"
@@ -41,7 +42,7 @@ export default function CookieBanner({ t, onAccept, onDecline }: Props) {
       <span style={{ flex: 1, minWidth: 220 }}>
         {t.cookies.message}{' '}
         <button
-          onClick={onDecline}
+          onClick={onPolicy}
           style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', color: 'var(--muted)', fontSize: 13, padding: 0 }}
         >
           {t.cookies.policy}

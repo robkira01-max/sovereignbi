@@ -167,6 +167,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Moyen — une seule source de vérité (`catalog.yaml`).
 **Livré :** `tools/sync_geo_attribution.py` → `geo_attribution.json` → composant `GeoSources` (3 cartes Djibouti-ville) ; `tests/test_geo_attribution_sync.py` échoue si désynchronisé. **Reste :** généraliser `GeoSources` aux autres cartes (`DjiboutiMap`, `EcolesMap`, `Bulletins`…). Commit `5a37e64`.
 
+## P-061 — Documents juridiques, cookies et acceptation des CGU ✅ (livré 2026-11-14)
+
+**Raison :** Le propriétaire a fourni quatre documents juridiques (confidentialité, CGU, cookies, mentions légales). L'audit a relevé : texte « les données ne quittent jamais votre serveur » faux avec un fournisseur d'IA externe, « cookie de session » inexact (le jeton est en `sessionStorage`), pages légales et bannière visibles seulement après connexion, lien « politique » de la bannière qui refusait au lieu d'ouvrir la page, polices de cartes chargées depuis un serveur tiers, aucune acceptation des CGU enregistrée.
+**Impact :** Élevé — prérequis de toute diffusion à de vrais utilisateurs.
+**Livré :** pages Confidentialité / CGU / Cookies / Mentions légales fr+en (`legalContent.ts`, config unique `legalConfig.ts`, bandeau « version de travail », placeholders surlignés), accessibles avant connexion ; bannière corrigée + « Gérer mes cookies » ; `TermsGate` + `POST /compliance/consent/self` (allowlist de finalités `cgu|privacy:AAAA-MM`, identité de la session, pas d'IP) ; `/compliance/notice` reflète `LLM_PROVIDER` ; glyphes de cartes hébergés localement ; tests de garde (clés de stockage documentées, aucun tiers, garde-fou de publication). **Reste (propriétaire) :** compléter `legalConfig.ts`, validation par un juriste, durées de conservation, procédure d'incident, choix du fournisseur d'IA et du droit applicable, puis `draft: false`. **À relire par un humain :** la route `/compliance/consent/self` (contrôle d'accès).
+
 ## P-060 — Carte ADM2/quartiers (`MapAdm2`) sur les quartiers officiels ✅ (livré 2026-11-14)
 
 **Raison :** Le niveau « quartiers » utilisait les 11 quartiers OSM approximatifs (avertissement « données approximatives »).

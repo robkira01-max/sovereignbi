@@ -9,6 +9,7 @@ import { Protocol } from 'pmtiles'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import djiGeojson from '../data/dj_adm1.json'
 import type { LiveTileData } from './LiveTileRenderer'
+import { GLYPHS_URL, MAP_TEXT_FONT } from '../lib/mapFonts'
 
 interface Props {
   data: LiveTileData
@@ -54,7 +55,7 @@ const PMTILES_URL =
 
 const BASE_STYLE = (pmtilesUrl: string): maplibregl.StyleSpecification => ({
   version: 8,
-  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  glyphs: GLYPHS_URL,
   sources: {
     protomaps: {
       type: 'vector',
@@ -164,7 +165,7 @@ export function BivariateChoropleth({ data, title, unit = '', x1_label, x2_label
       map.addLayer({ id: 'biv-outline', type: 'line', source: 'biv-regions',
         paint: { 'line-color': '#ffffff', 'line-width': 0.9, 'line-opacity': 0.7 } })
       map.addLayer({ id: 'biv-label', type: 'symbol', source: 'biv-regions',
-        layout: { 'text-field': ['get', '_instadName'], 'text-size': 10, 'text-anchor': 'center' },
+        layout: { 'text-field': ['get', '_instadName'], 'text-font': MAP_TEXT_FONT, 'text-size': 10, 'text-anchor': 'center' },
         paint: { 'text-color': '#ffffff', 'text-halo-color': '#0f172a', 'text-halo-width': 1.5 } })
 
       map.on('mouseenter', 'biv-fill', (e) => {

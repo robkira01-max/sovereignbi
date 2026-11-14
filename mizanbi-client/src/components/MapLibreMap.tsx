@@ -4,6 +4,7 @@ import { Protocol } from 'pmtiles'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import djiGeojson from '../data/dj_adm1.json'
 import type { LiveTileData } from './LiveTileRenderer'
+import { GLYPHS_URL, MAP_TEXT_FONT } from '../lib/mapFonts'
 
 interface Props {
   data: LiveTileData
@@ -32,7 +33,7 @@ const PMTILES_URL =
 
 const MAP_STYLE = (pmtilesUrl: string): maplibregl.StyleSpecification => ({
   version: 8,
-  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  glyphs: GLYPHS_URL,
   sources: {
     protomaps: {
       type: 'vector',
@@ -143,6 +144,7 @@ export function MapLibreMap({ data, title, unit = '', colorScheme = 'blue', onRe
           'text-field': ['format',
             ['get', '_instadName'], { 'font-scale': 1 }, '\n', {},
             ['to-string', ['get', '_value']], { 'font-scale': 0.85 }],
+          'text-font': MAP_TEXT_FONT,
           'text-size': 11,
           'text-anchor': 'center',
         },

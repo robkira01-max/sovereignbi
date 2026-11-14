@@ -3,15 +3,17 @@ import type { Dict, Lang } from '../lib/i18n'
 import { LANGS } from '../lib/i18n'
 import { DEMO_USER } from '../data/demo'
 import { isApiConfigured, login } from '../lib/api'
+import type { LegalKind } from '../lib/legalContent'
 
 interface Props {
   t: Dict
   lang: Lang
   setLang: (l: Lang) => void
   onEnter: (token: string, email: string) => void
+  onLegal: (kind: LegalKind) => void
 }
 
-export default function LoginPage({ t, lang, setLang, onEnter }: Props) {
+export default function LoginPage({ t, lang, setLang, onEnter, onLegal }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [err, setErr] = useState('')
@@ -76,6 +78,11 @@ export default function LoginPage({ t, lang, setLang, onEnter }: Props) {
           </>
         )}
         <div className="muted">{t.demoBadge} · {!isApiConfigured() ? t.off : t.live}</div>
+        <nav aria-label="Legal" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', fontSize: 12 }}>
+          {([['privacy', t.footer.privacy], ['terms', t.footer.terms], ['legal', t.footer.legal], ['cookies', t.footer.cookies]] as [LegalKind, string][]).map(([k, label]) => (
+            <button key={k} type="button" onClick={() => onLegal(k)} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{label}</button>
+          ))}
+        </nav>
       </form>
     </div>
   )

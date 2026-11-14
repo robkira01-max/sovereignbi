@@ -29,10 +29,11 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-14)
 
-- **Tests** : 1529/1529 pytest + 313/313 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
+- **Tests** : 1540/1540 pytest + 338/338 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
+- **Documents juridiques (P-061)** : confidentialité, CGU, cookies, mentions légales (fr/en) dans `mizanbi-client/src/lib/legalContent.ts`, valeurs propres à l'éditeur dans `legalConfig.ts` (UN seul endroit : placeholders `[À COMPLÉTER : …]` surlignés tant que `draft: true`). Accessibles avant connexion (liens sur le login). Fenêtre d'acceptation `TermsGate` (version `LEGAL.version`, enregistrée via `POST /compliance/consent/self`, identité tirée de la session). Quand les placeholders sont remplis et le texte validé par un juriste : `draft: false` (un test échoue s'il reste un placeholder). Les tests vérifient aussi que chaque clé de stockage local du code est documentée dans la page cookies et qu'aucun service tiers n'est chargé. Polices de cartes hébergées localement (`public/fonts/`, Apache 2.0).
 - **Attribution auto des cartes** : `data/geo/catalog.yaml` = source de vérité → `tools/sync_geo_attribution.py` génère `mizanbi-client/src/data/geo_attribution.json` (ne pas éditer à la main) → composant `GeoSources` (pieds de carte SIG). À relancer après tout changement du catalogue ; `tests/test_geo_attribution_sync.py` échoue si désynchronisé.
 - **Bâtiments OSM à la demande** : `data/geo/osm_batiments.geojson.gz` (98 239 empreintes ≥ 15 m², 1,9 Mo gz) servi pré-compressé par `/api/v1/geo/dj/osm_batiments` ; couche « Bâtiments (OSM) » de `DjiboutiVilleMap` chargée au cochage via `apiFetch`, rendue dans `BuildingsCanvas` (canvas, pas SVG — 98k nœuds figeraient le navigateur). En mode démo (VITE_API_BASE vide) : message « nécessite l'API ».
-- **Dernière proposal** : P-056 Validation cartographique Djibouti-ville — 2026-11-13
+- **Dernière proposal** : P-061 documents juridiques — 2026-11-14 (P-057 à P-061 : admin_pol, OSM centre+bâtiments, attribution auto, MapAdm2 quartiers officiels, juridique)
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
 - **Commit** : dernier commit (à pousher sur origin/master — 7 commits d'avance)
 - **CI GitHub Actions** : `.github/workflows/ci.yml` — lint + pytest + tsc + vitest + vite build + docker smoke, déclenché sur `master`

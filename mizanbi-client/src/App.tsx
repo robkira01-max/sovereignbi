@@ -19,12 +19,14 @@ import BiePage from './pages/Bie'
 import BcdPage from './pages/Bcd'
 import GeoAIPage from './pages/GeoAI'
 import AdminPage from './pages/Admin'
-import PrivacyPage from './pages/Privacy'
-import TermsPage from './pages/Terms'
+import LegalPage from './pages/LegalPage'
+import TermsGate from './components/TermsGate'
+import { acceptTerms, hasAcceptedTerms } from './lib/termsConsent'
+import type { LegalKind } from './lib/legalContent'
 import ChangePasswordModal from './components/ChangePasswordModal'
 import CookieBanner, { useCookieConsent } from './components/CookieBanner'
 
-export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms'
+export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms' | 'legal' | 'cookies'
 export type Section = 'home' | 'bi' | 'sig' | 'settings'
 
 function pageSection(p: Page): Section {
@@ -62,6 +64,8 @@ const SETTINGS_PAGES: { page: Page; getLabel: (t: Dict) => string; adminOnly: bo
   { page: 'admin', getLabel: t => t.admin.title, adminOnly: true },
   { page: 'privacy', getLabel: t => t.privacy.title, adminOnly: false },
   { page: 'terms', getLabel: t => t.terms.title, adminOnly: false },
+  { page: 'cookies', getLabel: t => t.cookiesPolicy.title, adminOnly: false },
+  { page: 'legal', getLabel: t => t.legalNotice.title, adminOnly: false },
 ]
 
 export default function App() {
@@ -76,6 +80,9 @@ export default function App() {
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => loadThemeMode())
   const [cookieConsent, setCookieConsent] = useCookieConsent()
   const [showCookieBanner, setShowCookieBanner] = useState(cookieConsent === null)
+  const [cookieChoice, setCookieChoice] = useState<boolean | null>(cookieConsent)
+  const [publicDoc, setPublicDoc] = useState<LegalKind | null>(null)
+  const [termsTick, setTermsTick] = useState(0)
   const [indicator, setIndicator] = useState<IndicatorId>('unemployment')
   const [themeMenuOpen, setThemeMenuOpen] = useState(false)
   const themeMenuRef = useRef<HTMLDivElement>(null)
@@ -157,15 +164,27 @@ export default function App() {
     setPage('home')
   }
 
+  const bannerNode = showCookieBanner && (
+    <CookieBanner
+      t={t}
+      onAccept={() => { setCookieConsent(true); setCookieChoice(true); setShowCookieBanner(false) }}
+      onDecline={() => { setCookieConsent(false); setCookieChoice(false); setShowCookieBanner(false) }}
+      onPolicy={() => (token ? go('cookies') : setPublicDoc('cookies'))}
+    />
+  )
+
   if (!token) {
     return (
       <div dir={dirOf(lang)}>
-        <LoginPage t={t} lang={lang} setLang={setLang} onEnter={enter} />
+        {publicDoc
+          ? <LegalPage kind={publicDoc} t={t} lang={lang} onBack={() => setPublicDoc(null)} onManageCookies={() => setShowCookieBanner(true)} cookieChoice={cookieChoice} />
+          : <LoginPage t={t} lang={lang} setLang={setLang} onEnter={enter} onLegal={setPublicDoc} />}
+        {bannerNode}
       </div>
     )
   }
 
-  const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title }
+  const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title, legal: t.legalNotice.title, cookies: t.cookiesPolicy.title }
 
   const subItems = section === 'bi'
     ? BI_PAGES
@@ -268,13 +287,17 @@ export default function App() {
         {page === 'admin' && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
         {page === 'sig' && <SigPage t={t} lang={lang} isEditor={me?.role === 'editor' || me?.role === 'admin'} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
-        {page === 'privacy' && <PrivacyPage t={t} go={go} />}
-        {page === 'terms' && <TermsPage t={t} go={go} />}
+        {(page === 'privacy' || page === 'terms' || page === 'legal' || page === 'cookies') && (
+          <LegalPage kind={page} t={t} lang={lang} onBack={() => go('home')} onManageCookies={() => setShowCookieBanner(true)} cookieChoice={cookieChoice} />
+        )}
       </main>
       <footer style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', fontSize: 12, color: 'var(--muted)', display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
         <span>© {new Date().getFullYear()} MizanBI</span>
         <button onClick={() => go('privacy')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.privacy}</button>
         <button onClick={() => go('terms')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.terms}</button>
+        <button onClick={() => go('legal')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.legal}</button>
+        <button onClick={() => go('cookies')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.cookies}</button>
+        <button onClick={() => setShowCookieBanner(true)} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 12, textDecoration: 'underline', padding: 0 }}>{t.footer.manageCookies}</button>
       </footer>
       {chatOpen && <div className="chat-drawer-overlay" onClick={() => setChatOpen(false)} aria-hidden="true" />}
       <aside
@@ -319,13 +342,15 @@ export default function App() {
           </svg>
         )}
       </button>
-      {showCookieBanner && (
-        <CookieBanner
+      {token && !hasAcceptedTerms(email) && termsTick >= 0 && (
+        <TermsGate
           t={t}
-          onAccept={() => { setCookieConsent(true); setShowCookieBanner(false) }}
-          onDecline={() => { setCookieConsent(false); setShowCookieBanner(false) }}
+          lang={lang}
+          onAccept={async () => { await acceptTerms(email, token); setTermsTick(n => n + 1) }}
+          onRefuse={logout}
         />
       )}
+      {bannerNode}
     </div>
   )
 }

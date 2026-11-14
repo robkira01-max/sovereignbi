@@ -29,6 +29,7 @@
 | python-pptx | 1.0 | MIT | Export dashboards PowerPoint (P-010) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
 | playwright | 1.44 | Apache 2.0 | Tests E2E navigateur (dev uniquement) |
+| Open Sans (glyphes PBF, plages 0-255 / 256-511 / 8192-8447) | — | Apache 2.0 | Polices des étiquettes de cartes, hébergées dans `mizanbi-client/public/fonts/` (aucun serveur de polices tiers) |
 
 ## Connecteurs optionnels (non installés par défaut — import lazy)
 

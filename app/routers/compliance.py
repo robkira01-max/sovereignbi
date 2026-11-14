@@ -3,8 +3,10 @@ from __future__ import annotations
 
 from dataclasses import asdict
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
+import os
+
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from pydantic import BaseModel, Field
 
 from app.compliance.models import (
     add_inventory_item,
@@ -64,6 +66,35 @@ def record_user_consent(body: ConsentRequest, _: str = Depends(_EDITOR)):
         granted=body.granted,
         ip_address=body.ip_address,
     )
+    return asdict(c)
+
+
+class SelfConsentRequest(BaseModel):
+    # Allowlist: "<document>:<YYYY-MM>" — pas de finalité libre écrite par le client.
+    purpose: str = Field(pattern=r"^(cgu|privacy):[0-9]{4}-[0-9]{2}$")
+    granted: bool = True
+
+
+@router.post("/consent/self")
+def record_self_consent(
+    body: SelfConsentRequest,
+    _: str = Depends(_VIEWER),
+    authorization: str | None = Header(default=None),
+):
+    """Enregistre l'acceptation des CGU / de la politique par l'utilisateur connecté.
+
+    L'identité vient de la session (jamais du corps de la requête) : un utilisateur
+    ne peut enregistrer un consentement qu'en son propre nom. Une clé API n'a pas
+    d'identité utilisateur, elle est refusée ici. L'adresse IP n'est pas conservée.
+    """
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(400, "Session utilisateur requise (connexion par email).")
+    from app.auth.security import verify_session  # lazy to avoid circular
+
+    user = verify_session(authorization[7:])
+    if not user:
+        raise HTTPException(401, "Session expirée ou invalide.")
+    c = record_consent(user_id=user["email"], purpose=body.purpose, granted=body.granted)
     return asdict(c)
 
 
@@ -130,18 +161,34 @@ def get_data_inventory(_: str = Depends(_VIEWER)):
     return [asdict(i) for i in list_inventory()]
 
 
+def _ai_processing() -> tuple[str, str]:
+    """(description du traitement IA, localisation des données) selon LLM_PROVIDER."""
+    provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
+    if provider == "ollama":
+        return (
+            "Traitement IA local (Ollama, aucun modèle externe)",
+            "Infrastructure de l'opérateur — aucune donnée transmise à des tiers",
+        )
+    return (
+        f"Traitement IA par un fournisseur externe ({provider}) : les questions et extraits de données "
+        "nécessaires à la réponse lui sont transmis",
+        "Infrastructure de l'opérateur ; les requêtes IA sont transmises au fournisseur externe configuré",
+    )
+
+
 @router.get("/notice")
 def privacy_notice(_: str = Depends(_VIEWER)):
     """Retourne l'avis de confidentialité en JSON (Loi 25 / PIPEDA)."""
+    ai_description, data_location = _ai_processing()
     return {
         "title": "Avis de confidentialité — MizanBI",
-        "version": "1.0",
+        "version": "1.1",
         "applicable_laws": ["Loi 25 (Québec)", "PIPEDA (Canada)"],
         "data_controller": "Opérateur de MizanBI",
-        "data_location": "Infrastructure locale de l'opérateur — aucune donnée transmise à des tiers",
+        "data_location": data_location,
         "purposes": [
             {"id": "analytics", "description": "Analyse des données chargées par l'utilisateur"},
-            {"id": "ai_processing", "description": "Traitement IA local (Ollama, aucun modèle externe)"},
+            {"id": "ai_processing", "description": ai_description},
         ],
         "retention": "Selon la politique de rétention configurée par l'opérateur",
         "rights": ["accès", "rectification", "suppression", "exportation", "retrait du consentement"],
