@@ -411,8 +411,9 @@ export default function DjiboutiVilleMap() {
       )}
 
       <p className="muted" style={{ fontSize: 11, marginTop: 4 }}>
-        Source : CERD (Centre d'Études et de Recherches de Djibouti) · Données SIG Djibouti-ville · 8 couches géographiques (arrondissements 4 et 5, Balbala).
-        Communes et quartiers : admin_pol (cartographie photogrammétrique 1/2 500, 2014). Routes du centre : © contributeurs OpenStreetMap (ODbL), extrait Geofabrik du 14/11/2026, moins précises que les données CERD.
+        Source : CERD (Centre d'Études et de Recherches de Djibouti) — communes et 91 quartiers (admin_pol, cartographie photogrammétrique 1/2 500, 2014) ;
+        secteurs, typologies, voirie, équipements, écoles et transport (arrondissements 4 et 5, Balbala).
+        Routes du centre : © contributeurs OpenStreetMap (ODbL), extrait Geofabrik du 14/11/2026, moins précises que les données CERD.
       </p>
     </div>
   )

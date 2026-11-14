@@ -339,18 +339,18 @@ layers:
   format: geojson
   geometry_type: Polygon
   id: admin_quartiers
-  license: Données fournies par le propriétaire du projet
+  license: Données CERD fournies par le propriétaire du projet
   license_url: ''
   name_column: nom
-  name_en: Djibouti-ville neighbourhoods (admin_pol)
-  name_fr: Quartiers de Djibouti-ville (admin_pol)
-  source: admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31 (producer to be confirmed)
+  name_en: Djibouti-ville neighbourhoods (CERD admin_pol)
+  name_fr: Quartiers de Djibouti-ville (CERD admin_pol)
+  source: CERD, admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31
   status: draft
   warnings:
-  - en: Producer and reuse licence not documented, data dates from 2014 — confirm with
-      the owner/producer before any publication.
-    fr: Producteur et licence de réutilisation non documentés, données de 2014 — à
-      confirmer avec le propriétaire/producteur avant toute publication.
+  - en: Data dates from 2014 — new estates built since may be missing; validate with
+      the Municipality before institutional use.
+    fr: Données de 2014 — les lotissements créés depuis peuvent manquer ; à valider
+      avec la mairie avant usage institutionnel.
 - api_endpoint: /api/v1/geo/dj/admin_communes
   coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala
   date_acquired: '2026-11-14'
@@ -366,12 +366,12 @@ layers:
   format: geojson
   geometry_type: MultiPolygon
   id: admin_communes
-  license: Données fournies par le propriétaire du projet
+  license: Données CERD fournies par le propriétaire du projet
   license_url: ''
   name_column: nom
-  name_en: Djibouti-ville communes (admin_pol)
-  name_fr: Communes de Djibouti-ville (admin_pol)
-  source: admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31 (producer to be confirmed)
+  name_en: Djibouti-ville communes (CERD admin_pol)
+  name_fr: Communes de Djibouti-ville (CERD admin_pol)
+  source: CERD, admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31
   status: draft
   warnings:
   - en: Derived by dissolving polygons (includes unbuilt land) — not a legal boundary;
