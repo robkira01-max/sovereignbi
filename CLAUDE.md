@@ -27,18 +27,22 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - **Licences** : MIT/Apache/BSD uniquement ; tenir `THIRD_PARTY.md` à jour.
 - **Code** : anglais. **UI + docs** : français (anglais second).
 
-## État courant (2026-11-11)
+## État courant (2026-11-14)
 
 - **Tests** : 1517/1517 pytest + 274/274 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
 - **Dernière proposal** : P-056 Validation cartographique Djibouti-ville — 2026-11-13
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
-- **Commit** : dernier commit `b39e24e` (à pousher sur origin/master)
+- **Commit** : dernier commit (à pousher sur origin/master — 7 commits d'avance)
 - **CI GitHub Actions** : `.github/workflows/ci.yml` — lint + pytest + tsc + vitest + vite build + docker smoke, déclenché sur `master`
 - **Dockerfile + nginx.conf** : `mizanbi-client/Dockerfile` + `mizanbi-client/nginx.conf` — build nginx:alpine, SPA fallback, security headers
 - **Langue arabe supprimée** : `Lang = 'fr' | 'en'`, dictionnaire ar retiré, SIG_LANGS supprimé, dirOf simplifié
-- **P-053 livré** : `lib/exports.ts` (tileDataToCsv, dashboardToBulletinHtml, triggerDownload), DemoDashboardDetail utilise pure JS, bouton CSV par tuile
 - **Frontend unique** : `mizanbi-client/` — `frontend/` supprimé (P-055, 2026-11-11), service Docker activé dans `docker-compose.server.yml`
-- **Reprise** — décisions propriétaire restantes : (1) relecture humaine de `app/auth/` (règle Sécurité, voir `docs/auth-review.md`) ; (2) vérifier le chemin LLM réel (`LLM_PROVIDER` pas setté sur Oracle) ; (3) rebuild image Oracle : `docker compose -f docker-compose.server.yml build mizanbi-client && docker compose -f docker-compose.server.yml up -d`
+- **Cartographie pro** : `tools/make_pro_maps.py` — cartes print-quality (cartopy + mapclassify + contextily) : population choroplèthe ADM1 (Fisher-Jenks), accès aux soins, Djibouti-ville communes+quartiers (CartoDB Positron z=15). Librairies installées dans le venv : `cartopy==0.26.0 mapclassify==2.11.0 contextily==1.7.1`.
+- **Reprise** — décisions propriétaire restantes :
+  - (1) relecture humaine de `app/auth/` (règle Sécurité, voir `docs/auth-review.md`)
+  - (2) setter `LLM_PROVIDER` sur Oracle (vide → IA silencieuse)
+  - (3) rebuild image Oracle : `docker compose -f docker-compose.server.yml build mizanbi-client && docker compose -f docker-compose.server.yml up -d`
+  - (4) limites communes Djibouti-ville (Boulaos + Ras-Dika) : demander au CERD ou Mairie — inexistantes dans les sources ouvertes
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack
