@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react'
-import { buildDjiboutiMap, buildDjiboutiVilleMap, projectLonLat, djiboutiBounds, djiVilleBounds } from '../lib/geo'
+import { buildDjiboutiMap, projectLonLat, djiboutiBounds } from '../lib/geo'
+import { VILLE_VIEWBOX, VILLE_RATIO, projectVille, inVilleBounds } from '../lib/villeGeo'
+import VilleBaseLayers from './VilleBaseLayers'
 import SANTE_GEO from '../data/dj_structures_sante.json'
 
 interface SanteFeature {
@@ -40,9 +42,7 @@ function labelForType(type: string): string {
 
 export default function StructuresSanteMap() {
   const geo        = useMemo(() => buildDjiboutiMap(), [])
-  const geoVille   = useMemo(() => buildDjiboutiVilleMap(), [])
   const bounds     = useMemo(() => djiboutiBounds(), [])
-  const villeB     = useMemo(() => djiVilleBounds(), [])
 
   const [view, setView]           = useState<'national' | 'ville' | 'table'>('national')
   const [filterType, setFilterType] = useState<string>('all')
@@ -59,10 +59,12 @@ export default function StructuresSanteMap() {
     [filterType],
   )
 
+  const inFrame = (s: SanteFeature) => inVilleBounds(s.geometry.coordinates[0], s.geometry.coordinates[1])
   const villeStructures = useMemo(
     () => filtered.filter(s => s.properties.region === 'djibouti_ville'),
     [filtered],
   )
+  const villeInFrame = villeStructures.filter(inFrame).length
 
   const regionTable = useMemo(() => {
     const c: Record<string, number> = {}
@@ -177,32 +179,21 @@ export default function StructuresSanteMap() {
         <div>
           <p className="muted" style={{ fontSize: 12, marginBottom: 10 }}>
             {villeStructures.length} structures dans Djibouti-ville ({filtered.length} national)
+            {villeStructures.length > villeInFrame && ` · ${villeStructures.length - villeInFrame} hors cadre (PK20 et au-delà), visibles dans le tableau`}
           </p>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-            <div style={{ position: 'relative', width: '100%', maxWidth: 340, flexShrink: 0, aspectRatio: geoVille.ratio }}>
-              <svg viewBox={geoVille.view} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+            <div style={{ position: 'relative', width: '100%', maxWidth: 560, flexShrink: 0, aspectRatio: VILLE_RATIO }}>
+              <svg viewBox={VILLE_VIEWBOX} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
                 role="img" aria-label="Structures de santé Djibouti-ville">
-                {geoVille.shapes.map(g => (
-                  <path key={g.key} d={g.d}
-                    fill="oklch(22% 0.04 265)" stroke="oklch(50% 0.08 265)"
-                    strokeWidth={0.6} strokeLinejoin="round" />
-                ))}
-                {geoVille.shapes.map(g => (
-                  <text key={`lbl-${g.key}`} x={g.x} y={g.y}
-                    textAnchor="middle" dominantBaseline="middle"
-                    fontSize={6} fill="oklch(70% 0.05 265)"
-                    style={{ pointerEvents: 'none', userSelect: 'none' }}>
-                    {g.name}
-                  </text>
-                ))}
-                {villeStructures.map((s, i) => {
-                  const { x, y } = projectLonLat(s.geometry.coordinates[0], s.geometry.coordinates[1], villeB)
+                <VilleBaseLayers />
+                {villeStructures.filter(inFrame).map((s, i) => {
+                  const { x, y } = projectVille(s.geometry.coordinates[0], s.geometry.coordinates[1])
                   const color = colorForType(s.properties.type)
                   const isHov = hovered?.properties.structure === s.properties.structure
                   return (
                     <circle key={`v-${i}`} cx={x} cy={y}
-                      r={isHov ? 7 : (s.properties.type === 'hôpital' ? 6 : 4)}
-                      fill={color} stroke="oklch(10% 0.02 265)" strokeWidth={0.5}
+                      r={isHov ? 10 : (s.properties.type === 'hôpital' ? 8 : 5.5)}
+                      fill={color} stroke="oklch(10% 0.02 265)" strokeWidth={0.8}
                       style={{ cursor: 'pointer', transition: 'r 0.1s' }}
                       onMouseEnter={() => setHovered(s)} onMouseLeave={() => setHovered(null)}>
                       <title>{`${s.properties.structure} — ${labelForType(s.properties.type)}`}</title>

@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react'
-import { buildDjiboutiMap, buildDjiboutiVilleMap, projectLonLat, djiboutiBounds, djiVilleBounds, getQuartierForPoint } from '../lib/geo'
+import { buildDjiboutiMap, projectLonLat, djiboutiBounds, getQuartierForPoint } from '../lib/geo'
+import { VILLE_VIEWBOX, VILLE_RATIO, projectVille, inVilleBounds } from '../lib/villeGeo'
+import VilleBaseLayers from './VilleBaseLayers'
 import ECOLES_GEO from '../data/ecoles-djibouti.json'
 import type { Dict } from '../lib/i18n'
 
@@ -70,9 +72,7 @@ interface Props { t: Dict }
 
 export default function EcolesMap({ t }: Props) {
   const geo = useMemo(() => buildDjiboutiMap(), [])
-  const geoVille = useMemo(() => buildDjiboutiVilleMap(), [])
   const bounds = useMemo(() => djiboutiBounds(), [])
-  const villeB = useMemo(() => djiVilleBounds(), [])
   const [filterType, setFilterType] = useState<string>('all')
   const [hovered, setHovered] = useState<EcoleFeature | null>(null)
   const [view, setView] = useState<'map' | 'ville' | 'table'>('map')
@@ -226,46 +226,25 @@ export default function EcolesMap({ t }: Props) {
           <p className="muted" style={{ fontSize: 12, marginBottom: 10 }}>{t.ecoles.villeNote}</p>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
             {/* Quartiers SVG */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: 340, flexShrink: 0, aspectRatio: geoVille.ratio }}>
+            <div style={{ position: 'relative', width: '100%', maxWidth: 560, flexShrink: 0, aspectRatio: VILLE_RATIO }}>
               <svg
-                viewBox={geoVille.view}
+                viewBox={VILLE_VIEWBOX}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
                 role="img"
                 aria-label={t.ecoles.villeTitle}
               >
-                {geoVille.shapes.map((g) => (
-                  <path
-                    key={g.key}
-                    d={g.d}
-                    fill="oklch(22% 0.04 265)"
-                    stroke="oklch(50% 0.08 265)"
-                    strokeWidth={0.6}
-                    strokeLinejoin="round"
-                  />
-                ))}
-                {geoVille.shapes.map((g) => (
-                  <text
-                    key={`lbl-${g.key}`}
-                    x={g.x}
-                    y={g.y}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fontSize={6}
-                    fill="oklch(70% 0.05 265)"
-                    style={{ pointerEvents: 'none', userSelect: 'none' }}
-                  >{g.name}</text>
-                ))}
-                {villeSchools.map((s, i) => {
-                  const { x, y } = projectLonLat(s.geometry.coordinates[0], s.geometry.coordinates[1], villeB)
+                <VilleBaseLayers />
+                {villeSchools.filter((s) => inVilleBounds(s.geometry.coordinates[0], s.geometry.coordinates[1])).map((s, i) => {
+                  const { x, y } = projectVille(s.geometry.coordinates[0], s.geometry.coordinates[1])
                   const color = colorForType(s.properties.type)
                   return (
                     <circle
                       key={`v-${s.properties.osm_id}-${i}`}
                       cx={x} cy={y}
-                      r={hovered?.properties.osm_id === s.properties.osm_id ? 5 : 3}
+                      r={hovered?.properties.osm_id === s.properties.osm_id ? 7 : 4.5}
                       fill={color}
                       stroke="oklch(10% 0.02 265)"
-                      strokeWidth={0.4}
+                      strokeWidth={0.7}
                       style={{ cursor: 'pointer', transition: 'r 0.1s' }}
                       onMouseEnter={() => setHovered(s)}
                       onMouseLeave={() => setHovered(null)}

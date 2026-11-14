@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import COMMUNES_GEO from '../data/cerd_communes.json'
 import SECTEURS_GEO from '../data/cerd_secteurs.json'
 import TYPOLOGIES_GEO from '../data/cerd_typologies.json'
@@ -10,67 +10,10 @@ import TERMINUS_GEO from '../data/cerd_terminus_bus.json'
 import OSM_VOIRIE_GEO from '../data/osm_centre_voirie.json'
 import OSM_LIEUX_GEO from '../data/osm_centre_lieux.json'
 
-// GeoJSON helpers
-type Coord = [number, number]
-type Rings = Coord[][]
-type GeoFeature = { type: 'Feature'; geometry: { type: string; coordinates: unknown }; properties: Record<string, unknown> }
-
-function walkCoords(c: unknown, cb: (pt: Coord) => void) {
-  if (Array.isArray(c) && c.length >= 2 && typeof c[0] === 'number') cb(c as Coord)
-  else if (Array.isArray(c)) c.forEach(x => walkCoords(x, cb))
-}
-
-interface Bounds { x0: number; x1: number; y0: number; y1: number; sc: number; H: number }
-
-function makeBounds(features: GeoFeature[], W = 500): Bounds {
-  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9
-  features.forEach(f => walkCoords(f.geometry.coordinates, ([x, y]) => {
-    x0 = Math.min(x0, x); x1 = Math.max(x1, x)
-    y0 = Math.min(y0, y); y1 = Math.max(y1, y)
-  }))
-  const k = Math.cos(((y0 + y1) / 2) * (Math.PI / 180))
-  const sc = W / ((x1 - x0) * k)
-  const H = (y1 - y0) * sc
-  return { x0, x1, y0, y1, sc, H }
-}
-
-function px(lon: number, b: Bounds) { return (lon - b.x0) * Math.cos(((b.y0 + b.y1) / 2) * Math.PI / 180) * b.sc }
-function py(lat: number, b: Bounds) { return (b.y1 - lat) * b.sc }
-
-function polygonPath(coords: unknown, b: Bounds): string {
-  const rings: Rings = []
-  if (Array.isArray(coords) && Array.isArray(coords[0]) && Array.isArray(coords[0][0])) {
-    if (typeof coords[0][0][0] === 'number') rings.push(...(coords as Rings))
-    else (coords as Rings[]).forEach(mp => rings.push(...mp))
-  }
-  return rings.map(ring =>
-    'M' + ring.map(([x, y]) => `${px(x, b).toFixed(1)} ${py(y, b).toFixed(1)}`).join('L') + 'Z'
-  ).join('')
-}
-
-function linePath(coords: unknown, b: Bounds): string {
-  if (!Array.isArray(coords) || coords.length === 0) return ''
-  // LineString: [[lon,lat], ...] — MultiLineString: [[[lon,lat], ...], ...]
-  const lines: Coord[][] = Array.isArray(coords[0][0])
-    ? (coords as Coord[][])
-    : [coords as Coord[]]
-  return lines.map(pts =>
-    'M' + pts.map(([x, y]) => `${px(x, b).toFixed(1)} ${py(y, b).toFixed(1)}`).join('L')
-  ).join('')
-}
-
-function centroidOfPolygon(coords: unknown): Coord {
-  const rings: Rings = []
-  if (Array.isArray(coords) && Array.isArray(coords[0]) && Array.isArray(coords[0][0])) {
-    if (typeof coords[0][0][0] === 'number') rings.push(coords[0] as Rings[0])
-    else rings.push((coords as Rings[])[0][0])
-  }
-  if (!rings.length) return [0, 0]
-  const ring = rings[0]
-  const xs = ring.map(p => p[0])
-  const ys = ring.map(p => p[1])
-  return [xs.reduce((a, b) => a + b, 0) / xs.length, ys.reduce((a, b) => a + b, 0) / ys.length]
-}
+import {
+  OSM_ROAD_STYLE, VILLE_BOUNDS, VILLE_PAD, VILLE_W, centroidOfPolygon, linePath, polygonPath, px, py,
+  type Coord, type GeoFeature,
+} from '../lib/villeGeo'
 
 // Color schemes
 const TYPO_COLORS: Record<string, string> = {
@@ -86,13 +29,6 @@ const VOIRIE_COLORS: Record<string, string> = {
   'Axe structurant revetu':   'oklch(70% 0.15 35)',
   'route secondaire revetue': 'oklch(55% 0.06 265)',
   '':                         'oklch(42% 0.04 265)',
-}
-
-const OSM_ROAD_STYLE: Record<string, { color: string; w: number; label: string }> = {
-  primaire:   { color: 'oklch(80% 0.12 200)', w: 1.2, label: 'Primaire' },
-  secondaire: { color: 'oklch(68% 0.10 200)', w: 0.8, label: 'Secondaire' },
-  tertiaire:  { color: 'oklch(58% 0.07 200)', w: 0.55, label: 'Tertiaire' },
-  locale:     { color: 'oklch(45% 0.04 200)', w: 0.35, label: 'Locale' },
 }
 
 const EQUIP_COLORS: Record<string, string> = {
@@ -128,14 +64,9 @@ export default function DjiboutiVilleMap() {
   const [view, setView] = useState<'map' | 'table'>('map')
   const [tableLayer, setTableLayer] = useState<'equipements' | 'ecoles'>('equipements')
 
-  const W = 700
-  const PAD = 10
-
-  // Emprise fixe = communes CERD (Balbala) + voirie OSM du centre, pour que le cadre ne bouge pas au (dé)cochage
-  const b = useMemo(() => makeBounds([
-    ...(COMMUNES_GEO as unknown as { features: GeoFeature[] }).features,
-    ...(OSM_VOIRIE_GEO as unknown as { features: GeoFeature[] }).features,
-  ], W), [])
+  const W = VILLE_W
+  const PAD = VILLE_PAD
+  const b = VILLE_BOUNDS
   const viewBox = `-${PAD} -${PAD} ${W + PAD * 2} ${b.H + PAD * 2}`
 
   const toggle = (l: Layer) => setLayers(prev => ({ ...prev, [l]: !prev[l] }))

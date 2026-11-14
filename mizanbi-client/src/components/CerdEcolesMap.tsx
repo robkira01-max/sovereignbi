@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
-import { buildDjiboutiVilleMap, projectLonLat, djiVilleBounds } from '../lib/geo'
+import { VILLE_VIEWBOX, VILLE_RATIO, projectVille } from '../lib/villeGeo'
+import VilleBaseLayers from './VilleBaseLayers'
 import CERD_GEO from '../data/cerd_ecoles.json'
 
 interface CerdFeature {
@@ -53,9 +54,6 @@ function labelForCat(cat: string): string {
 }
 
 export default function CerdEcolesMap() {
-  const geoVille  = useMemo(() => buildDjiboutiVilleMap(), [])
-  const villeB    = useMemo(() => djiVilleBounds(), [])
-
   const [filterCat, setFilterCat]   = useState<string>('all')
   const [hovered, setHovered]       = useState<typeof SCHOOLS[number] | null>(null)
   const [view, setView]             = useState<'map' | 'table'>('map')
@@ -113,30 +111,18 @@ export default function CerdEcolesMap() {
       {view === 'map' && (
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           {/* SVG quartiers map */}
-          <div style={{ position: 'relative', width: '100%', maxWidth: 340, flexShrink: 0, aspectRatio: geoVille.ratio }}>
-            <svg viewBox={geoVille.view} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+          <div style={{ position: 'relative', width: '100%', maxWidth: 560, flexShrink: 0, aspectRatio: VILLE_RATIO }}>
+            <svg viewBox={VILLE_VIEWBOX} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
               role="img" aria-label="Carte des établissements scolaires CERD Djibouti-ville">
-              {geoVille.shapes.map(g => (
-                <path key={g.key} d={g.d}
-                  fill="oklch(22% 0.04 265)" stroke="oklch(50% 0.08 265)"
-                  strokeWidth={0.6} strokeLinejoin="round" />
-              ))}
-              {geoVille.shapes.map(g => (
-                <text key={`lbl-${g.key}`} x={g.x} y={g.y}
-                  textAnchor="middle" dominantBaseline="middle"
-                  fontSize={6} fill="oklch(70% 0.05 265)"
-                  style={{ pointerEvents: 'none', userSelect: 'none' }}>
-                  {g.name}
-                </text>
-              ))}
+              <VilleBaseLayers />
               {filtered.map((s, i) => {
                 const [lon, lat] = s._centroid
-                const { x, y } = projectLonLat(lon, lat, villeB)
+                const { x, y } = projectVille(lon, lat)
                 const color = colorForCat(s.properties.sous_categ)
                 const isHov = hovered?.properties.nom === s.properties.nom
                 return (
                   <circle key={i} cx={x} cy={y}
-                    r={isHov ? 6 : 3.5}
+                    r={isHov ? 8 : 5}
                     fill={color} stroke="oklch(10% 0.02 265)" strokeWidth={0.5}
                     style={{ cursor: 'pointer', transition: 'r 0.1s' }}
                     onMouseEnter={() => setHovered(s)} onMouseLeave={() => setHovered(null)}>
