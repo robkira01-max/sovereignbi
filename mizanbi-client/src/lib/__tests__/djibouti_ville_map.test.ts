@@ -169,8 +169,8 @@ describe('OSM centre-ville layers', () => {
   const voirie = asFC(OSM_VOIRIE)
   const lieux = asFC(OSM_LIEUX)
 
-  it('voirie: 1679 line features, all in the centre bbox (east of CERD Balbala)', () => {
-    expect(voirie.features).toHaveLength(1679)
+  it('voirie: 1875 line features, all in the centre bbox (east of CERD Balbala)', () => {
+    expect(voirie.features).toHaveLength(1875)
     function walk(c: unknown, cb: (x: number, y: number) => void) {
       if (Array.isArray(c) && typeof c[0] === 'number') cb(c[0] as number, c[1] as number)
       else if (Array.isArray(c)) c.forEach((i) => walk(i, cb))
@@ -179,8 +179,8 @@ describe('OSM centre-ville layers', () => {
       expect(['LineString', 'MultiLineString']).toContain(f.geometry.type)
       walk(f.geometry.coordinates, (x, y) => {
         expect(x).toBeGreaterThanOrEqual(43.125)
-        expect(x).toBeLessThanOrEqual(43.17)
-        expect(y).toBeGreaterThanOrEqual(11.56)
+        expect(x).toBeLessThanOrEqual(43.185)
+        expect(y).toBeGreaterThanOrEqual(11.53)
         expect(y).toBeLessThanOrEqual(11.625)
       })
     }
@@ -194,6 +194,7 @@ describe('OSM centre-ville layers', () => {
   it('lieux: named centre neighbourhoods, no Arabic residue or trailing slash', () => {
     const noms = lieux.features.map((f) => String(f.properties['nom']))
     expect(noms).toContain('Quartier 7')
+    expect(noms).toContain("Lotissement de l'Aérogare")
     expect(noms).toContain('Le Plateau du Serpent')
     for (const n of noms) {
       expect(n.length).toBeGreaterThan(0)

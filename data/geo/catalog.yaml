@@ -298,16 +298,16 @@ layers:
   status: draft
   warnings: []
 - api_endpoint: ''
-  coverage: Djibouti-ville — centre (Ras-Dika, Plateau du Serpent, Arhiba, Quartiers 1-7)
+  coverage: Djibouti-ville — centre (Ras-Dika, Plateau du Serpent, Arhiba, Quartiers 1-7, Haramous, aéroport)
   date_acquired: '2026-11-14'
   description_en: OpenStreetMap road network (primary to residential, no footpaths)
-    for central Djibouti-ville, lon 43.125-43.170 / lat 11.560-11.625. Fills the gap
+    for central Djibouti-ville, lon 43.125-43.185 / lat 11.530-11.625. Fills the gap
     left by the CERD dataset, which only covers Balbala (4th and 5th arrondissements).
   description_fr: Réseau routier OpenStreetMap (primaire à résidentiel, sans sentiers)
-    du centre de Djibouti-ville, lon 43,125-43,170 / lat 11,560-11,625. Complète les
+    du centre de Djibouti-ville, lon 43,125-43,185 / lat 11,530-11,625. Complète les
     données CERD, qui ne couvrent que Balbala (4ème et 5ème arrondissements).
   enabled: true
-  feature_count: 1679
+  feature_count: 1875
   file_path: data/geo/osm_centre_voirie.geojson
   format: geojson
   geometry_type: LineString
