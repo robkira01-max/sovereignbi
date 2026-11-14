@@ -138,7 +138,7 @@ export default function AdminPage({ t, lang, service, me, onSelfChanged }: {
   const dateOf = (s: string | null) => (s ? s.slice(0, 10) : '—')
 
   return (
-    <div style={{ maxWidth: 980, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       <div>
         <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: '-.02em' }}>{a.title}</h1>
         <p style={{ margin: '4px 0 0', color: 'var(--muted)', fontSize: 13 }}>

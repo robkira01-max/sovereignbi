@@ -7,11 +7,11 @@ interface CerdFeature {
   geometry: { type: string; coordinates: number[][][] | number[][][][] }
   properties: {
     categorie: string
-    sous_categorie: string
+    sous_categ: string
     nom: string
-    code_primaire: string | null
-    code_cem: string | null
-    code_lycee: string | null
+    code_prima: number | null
+    code_cem: number | null
+    code_lycee: number | null
   }
 }
 
@@ -62,12 +62,12 @@ export default function CerdEcolesMap() {
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: SCHOOLS.length }
-    for (const s of SCHOOLS) { c[s.properties.sous_categorie] = (c[s.properties.sous_categorie] ?? 0) + 1 }
+    for (const s of SCHOOLS) { c[s.properties.sous_categ] = (c[s.properties.sous_categ] ?? 0) + 1 }
     return c
   }, [])
 
   const filtered = useMemo(
-    () => filterCat === 'all' ? SCHOOLS : SCHOOLS.filter(s => s.properties.sous_categorie === filterCat),
+    () => filterCat === 'all' ? SCHOOLS : SCHOOLS.filter(s => s.properties.sous_categ === filterCat),
     [filterCat],
   )
 
@@ -132,7 +132,7 @@ export default function CerdEcolesMap() {
               {filtered.map((s, i) => {
                 const [lon, lat] = s._centroid
                 const { x, y } = projectLonLat(lon, lat, villeB)
-                const color = colorForCat(s.properties.sous_categorie)
+                const color = colorForCat(s.properties.sous_categ)
                 const isHov = hovered?.properties.nom === s.properties.nom
                 return (
                   <circle key={i} cx={x} cy={y}
@@ -140,7 +140,7 @@ export default function CerdEcolesMap() {
                     fill={color} stroke="oklch(10% 0.02 265)" strokeWidth={0.5}
                     style={{ cursor: 'pointer', transition: 'r 0.1s' }}
                     onMouseEnter={() => setHovered(s)} onMouseLeave={() => setHovered(null)}>
-                    <title>{`${s.properties.nom} — ${labelForCat(s.properties.sous_categorie)}`}</title>
+                    <title>{`${s.properties.nom} — ${labelForCat(s.properties.sous_categ)}`}</title>
                   </circle>
                 )
               })}
@@ -152,11 +152,11 @@ export default function CerdEcolesMap() {
             {hovered ? (
               <div className="card-solid" style={{ padding: '10px 14px', fontSize: 13 }}>
                 <div style={{ fontWeight: 600, marginBottom: 4 }}>{hovered.properties.nom}</div>
-                <div style={{ color: colorForCat(hovered.properties.sous_categorie), fontWeight: 600, marginBottom: 4 }}>
-                  {labelForCat(hovered.properties.sous_categorie)}
+                <div style={{ color: colorForCat(hovered.properties.sous_categ), fontWeight: 600, marginBottom: 4 }}>
+                  {labelForCat(hovered.properties.sous_categ)}
                 </div>
-                {hovered.properties.code_primaire && (
-                  <div style={{ color: 'var(--muted)', fontSize: 12 }}>Code primaire : {hovered.properties.code_primaire}</div>
+                {hovered.properties.code_prima && (
+                  <div style={{ color: 'var(--muted)', fontSize: 12 }}>Code primaire : {hovered.properties.code_prima}</div>
                 )}
                 {hovered.properties.code_cem && (
                   <div style={{ color: 'var(--muted)', fontSize: 12 }}>Code CEM : {hovered.properties.code_cem}</div>
@@ -200,11 +200,11 @@ export default function CerdEcolesMap() {
                 <tr key={i}>
                   <td>{s.properties.nom}</td>
                   <td>
-                    <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: colorForCat(s.properties.sous_categorie), marginRight: 5 }} />
-                    {labelForCat(s.properties.sous_categorie)}
+                    <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: colorForCat(s.properties.sous_categ), marginRight: 5 }} />
+                    {labelForCat(s.properties.sous_categ)}
                   </td>
                   <td style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--muted)' }}>
-                    {s.properties.code_primaire ?? s.properties.code_cem ?? s.properties.code_lycee ?? '—'}
+                    {s.properties.code_prima ?? s.properties.code_cem ?? s.properties.code_lycee ?? '—'}
                   </td>
                 </tr>
               ))}

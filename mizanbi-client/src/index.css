@@ -101,9 +101,9 @@ main { padding: 28px; min-width: 0; overflow: auto; }
 .chat-drawer-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
 .chat-drawer-body > div { min-height: 0 !important; flex: 1; }
 @media (max-width: 600px) { .chat-drawer { width: 100vw; } }
-.hero { max-width: 1000px; margin: 0 auto 24px; display: flex; flex-direction: column; gap: 14px; }
+.hero { margin: 0 0 24px; display: flex; flex-direction: column; gap: 14px; }
 .hero h1 { margin: 0; font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
-.bento { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(120px, auto); gap: 14px; }
+.bento { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(120px, auto); gap: 14px; }
 .span2 { grid-column: span 2; grid-row: span 2; }
 .span4 { grid-column: span 4; }
 .table-wrap { max-height: 300px; overflow: auto; border: 1px solid var(--border); border-radius: 12px; }

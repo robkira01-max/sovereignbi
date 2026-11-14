@@ -87,7 +87,7 @@ export default function GeoAIPage({ t, lang, go }: { t: Dict; lang: Lang; go: (p
   const submit = (e: React.FormEvent) => { e.preventDefault(); ask(question) }
 
   return (
-    <div style={{ maxWidth: 820, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div>
         <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: '-.02em' }}>{g.title}</h1>
         <p style={{ margin: '4px 0 0', color: 'var(--muted)', fontSize: 13 }}>

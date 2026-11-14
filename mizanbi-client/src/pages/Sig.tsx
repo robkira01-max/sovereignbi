@@ -5,6 +5,7 @@ import DjiboutiMap from '../components/DjiboutiMap'
 import EcolesMap from '../components/EcolesMap'
 import StructuresSanteMap from '../components/StructuresSanteMap'
 import CerdEcolesMap from '../components/CerdEcolesMap'
+import DjiboutiVilleMap from '../components/DjiboutiVilleMap'
 import { GeoCatalog } from '../components/GeoCatalog'
 import { GeoImport } from '../components/GeoImport'
 import { SpatialAnalysis } from '../components/SpatialAnalysis'
@@ -185,6 +186,19 @@ export default function SigPage({ t, lang = 'fr', isEditor = false, onIndicator,
           <span className="badge badge-demo">MDS</span>
         </div>
         <StructuresSanteMap />
+      </section>
+
+      <section className="card-solid" data-testid="djibouti-ville-map-section">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Carte SIG Djibouti-ville</h3>
+            <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>
+              8 couches · communes, secteurs, typologies urbaines, voirie, équipements, écoles, transport
+            </p>
+          </div>
+          <span className="badge badge-ok">CERD</span>
+        </div>
+        <DjiboutiVilleMap />
       </section>
 
       <section className="card-solid" data-testid="cerd-ecoles-section">

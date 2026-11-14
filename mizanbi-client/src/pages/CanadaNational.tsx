@@ -107,7 +107,7 @@ export default function CanadaNationalPage({ t }: { t: Dict }) {
   }
 
   return (
-    <div style={{ maxWidth: 1080, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div id="canadanat-top">
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <span className="badge badge-ok">{t.statcanBadge}</span>
