@@ -12,6 +12,8 @@ import ECOLES from '../../data/cerd_ecoles.json'
 import VOIRIE from '../../data/cerd_voirie.json'
 import LIGNES_BUS from '../../data/cerd_lignes_bus.json'
 import TERMINUS from '../../data/cerd_terminus_bus.json'
+import OSM_VOIRIE from '../../data/osm_centre_voirie.json'
+import OSM_LIEUX from '../../data/osm_centre_lieux.json'
 
 type FC = { type: string; features: { type: string; geometry: { type: string; coordinates: unknown }; properties: Record<string, unknown> }[] }
 
@@ -157,6 +159,46 @@ describe('CERD GeoJSON geometry types', () => {
   it('terminus_bus features are Point', () => {
     for (const f of asFC(TERMINUS).features) {
       expect(f.geometry.type).toBe('Point')
+    }
+  })
+})
+
+// ── Centre-ville (OSM, hors couverture CERD) ──────────────────────────────────
+
+describe('OSM centre-ville layers', () => {
+  const voirie = asFC(OSM_VOIRIE)
+  const lieux = asFC(OSM_LIEUX)
+
+  it('voirie: 1679 line features, all in the centre bbox (east of CERD Balbala)', () => {
+    expect(voirie.features).toHaveLength(1679)
+    function walk(c: unknown, cb: (x: number, y: number) => void) {
+      if (Array.isArray(c) && typeof c[0] === 'number') cb(c[0] as number, c[1] as number)
+      else if (Array.isArray(c)) c.forEach((i) => walk(i, cb))
+    }
+    for (const f of voirie.features) {
+      expect(['LineString', 'MultiLineString']).toContain(f.geometry.type)
+      walk(f.geometry.coordinates, (x, y) => {
+        expect(x).toBeGreaterThanOrEqual(43.125)
+        expect(x).toBeLessThanOrEqual(43.17)
+        expect(y).toBeGreaterThanOrEqual(11.56)
+        expect(y).toBeLessThanOrEqual(11.625)
+      })
+    }
+  })
+
+  it('voirie classes are the 4 styled ones', () => {
+    const known = new Set(['primaire', 'secondaire', 'tertiaire', 'locale'])
+    for (const f of voirie.features) expect(known.has(String(f.properties['classe']))).toBe(true)
+  })
+
+  it('lieux: named centre neighbourhoods, no Arabic residue or trailing slash', () => {
+    const noms = lieux.features.map((f) => String(f.properties['nom']))
+    expect(noms).toContain('Quartier 7')
+    expect(noms).toContain('Le Plateau du Serpent')
+    for (const n of noms) {
+      expect(n.length).toBeGreaterThan(0)
+      expect(n).not.toMatch(/[\u0600-\u06FF]/)
+      expect(n).not.toMatch(/\/\s*$/)
     }
   })
 })

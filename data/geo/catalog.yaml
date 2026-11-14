@@ -297,4 +297,31 @@ layers:
   source: CERD, étude de typologies urbaines
   status: draft
   warnings: []
+- api_endpoint: ''
+  coverage: Djibouti-ville — centre (Ras-Dika, Plateau du Serpent, Arhiba, Quartiers 1-7)
+  date_acquired: '2026-11-14'
+  description_en: OpenStreetMap road network (primary to residential, no footpaths)
+    for central Djibouti-ville, lon 43.125-43.170 / lat 11.560-11.625. Fills the gap
+    left by the CERD dataset, which only covers Balbala (4th and 5th arrondissements).
+  description_fr: Réseau routier OpenStreetMap (primaire à résidentiel, sans sentiers)
+    du centre de Djibouti-ville, lon 43,125-43,170 / lat 11,560-11,625. Complète les
+    données CERD, qui ne couvrent que Balbala (4ème et 5ème arrondissements).
+  enabled: true
+  feature_count: 1679
+  file_path: data/geo/osm_centre_voirie.geojson
+  format: geojson
+  geometry_type: LineString
+  id: osm_centre_voirie
+  license: ODbL 1.0
+  license_url: https://opendatacommons.org/licenses/odbl/1-0/
+  name_column: nom
+  name_en: Central Djibouti-ville roads (OSM)
+  name_fr: Voirie du centre de Djibouti-ville (OSM)
+  source: © OpenStreetMap contributors, Geofabrik extract djibouti-latest (2026-11-14)
+  status: draft
+  warnings:
+  - en: Crowd-sourced, less precise than CERD data — validate with the Municipality
+      before institutional use. Attribution "© OpenStreetMap contributors" is mandatory.
+    fr: Données collaboratives, moins précises que le CERD — à valider avec la mairie
+      avant usage institutionnel. Mention « © contributeurs OpenStreetMap » obligatoire.
 version: '1'

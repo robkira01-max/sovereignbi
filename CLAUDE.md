@@ -29,7 +29,7 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-14)
 
-- **Tests** : 1517/1517 pytest + 274/274 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
+- **Tests** : 1517/1517 pytest + 305/305 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
 - **Dernière proposal** : P-056 Validation cartographique Djibouti-ville — 2026-11-13
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
 - **Commit** : dernier commit (à pousher sur origin/master — 7 commits d'avance)
@@ -43,6 +43,7 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
   - (2) setter `LLM_PROVIDER` sur Oracle (vide → IA silencieuse)
   - (3) rebuild image Oracle : `docker compose -f docker-compose.server.yml build mizanbi-client && docker compose -f docker-compose.server.yml up -d`
   - (4) limites communes Djibouti-ville (Boulaos + Ras-Dika) : demander au CERD ou Mairie — inexistantes dans les sources ouvertes
+  - (5) données CERD = Balbala seulement (arr. 4 et 5, lon 43.06–43.14) : demander au CERD/Mairie le même jeu pour les arr. 1–3 (centre). En attendant, `DjiboutiVilleMap` affiche le centre via OSM (ODbL, Geofabrik 2026-11-14) : `osm_centre_voirie.json` (1679 tronçons) + `osm_centre_lieux.json` (28 quartiers), couche `osm_centre_voirie` dans `catalog.yaml`. Les cartes santé/écoles « Djibouti-ville » utilisent encore l'ancien fond de 11 quartiers approximatifs (`dj-quartiers.json`).
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 
 ## Stack
