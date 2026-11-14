@@ -47,9 +47,14 @@ function polygonPath(coords: unknown, b: Bounds): string {
 }
 
 function linePath(coords: unknown, b: Bounds): string {
-  if (!Array.isArray(coords)) return ''
-  const pts = coords as Coord[]
-  return 'M' + pts.map(([x, y]) => `${px(x, b).toFixed(1)} ${py(y, b).toFixed(1)}`).join('L')
+  if (!Array.isArray(coords) || coords.length === 0) return ''
+  // LineString: [[lon,lat], ...] — MultiLineString: [[[lon,lat], ...], ...]
+  const lines: Coord[][] = Array.isArray(coords[0][0])
+    ? (coords as Coord[][])
+    : [coords as Coord[]]
+  return lines.map(pts =>
+    'M' + pts.map(([x, y]) => `${px(x, b).toFixed(1)} ${py(y, b).toFixed(1)}`).join('L')
+  ).join('')
 }
 
 function centroidOfPolygon(coords: unknown): Coord {
