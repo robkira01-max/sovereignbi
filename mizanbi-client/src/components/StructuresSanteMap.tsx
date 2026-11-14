@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { buildDjiboutiMap, projectLonLat, djiboutiBounds } from '../lib/geo'
 import { VILLE_VIEWBOX, VILLE_RATIO, projectVille, inVilleBounds } from '../lib/villeGeo'
 import VilleBaseLayers from './VilleBaseLayers'
+import GeoSources from './GeoSources'
 import SANTE_GEO from '../data/dj_structures_sante.json'
 
 interface SanteFeature {
@@ -276,9 +277,10 @@ export default function StructuresSanteMap() {
         </div>
       )}
 
-      <p className="muted" style={{ fontSize: 11, marginTop: 4 }}>
-        Source : Ministère de la Santé de Djibouti · 65 structures · Données démo (2024)
-      </p>
+      <GeoSources
+        layerIds={['dj_structures_sante', 'dj_adm1', 'admin_communes', 'admin_quartiers', 'osm_centre_voirie']}
+        note="65 structures · Données démo (2024)."
+      />
     </div>
   )
 }

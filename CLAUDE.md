@@ -29,7 +29,9 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 
 ## État courant (2026-11-14)
 
-- **Tests** : 1525/1525 pytest + 311/311 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
+- **Tests** : 1529/1529 pytest + 313/313 Vitest mizanbi-client · `tsc --noEmit` propre (mizanbi-client)
+- **Attribution auto des cartes** : `data/geo/catalog.yaml` = source de vérité → `tools/sync_geo_attribution.py` génère `mizanbi-client/src/data/geo_attribution.json` (ne pas éditer à la main) → composant `GeoSources` (pieds de carte SIG). À relancer après tout changement du catalogue ; `tests/test_geo_attribution_sync.py` échoue si désynchronisé.
+- **Bâtiments OSM à la demande** : `data/geo/osm_batiments.geojson.gz` (98 239 empreintes ≥ 15 m², 1,9 Mo gz) servi pré-compressé par `/api/v1/geo/dj/osm_batiments` ; couche « Bâtiments (OSM) » de `DjiboutiVilleMap` chargée au cochage via `apiFetch`, rendue dans `BuildingsCanvas` (canvas, pas SVG — 98k nœuds figeraient le navigateur). En mode démo (VITE_API_BASE vide) : message « nécessite l'API ».
 - **Dernière proposal** : P-056 Validation cartographique Djibouti-ville — 2026-11-13
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
 - **Commit** : dernier commit (à pousher sur origin/master — 7 commits d'avance)

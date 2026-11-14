@@ -1,0 +1,92 @@
+{
+  "admin_communes": {
+    "name": "Communes de Djibouti-ville (CERD admin_pol)",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "admin_quartiers": {
+    "name": "Quartiers de Djibouti-ville (CERD admin_pol)",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_communes": {
+    "name": "Commune de Balbala — arrondissements (CERD)",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_equipements_scolaires": {
+    "name": "Établissements scolaires de Djibouti-ville",
+    "provider": "CERD (Centre d'Études et de Recherche de Djibouti)",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_equipements_sociaux": {
+    "name": "Équipements socio-économiques de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_ilots": {
+    "name": "Îlots de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_lignes_bus": {
+    "name": "Lignes de bus de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_ouvrages": {
+    "name": "Ouvrages de franchissement de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_secteurs_adressage": {
+    "name": "Secteurs d'adressage de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_terminus_bus": {
+    "name": "Terminus de bus de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_typologies_urbaines": {
+    "name": "Typologies urbaines de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_voirie": {
+    "name": "Réseau routier de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "dj_adm1": {
+    "name": "Régions de Djibouti (ADM1)",
+    "provider": "GADM v4.1",
+    "license": "CC BY 4.0"
+  },
+  "dj_adm2": {
+    "name": "Districts de Djibouti (ADM2)",
+    "provider": "GADM v4.1 (gadm.org)",
+    "license": "CC BY 4.0"
+  },
+  "dj_quartiers": {
+    "name": "Quartiers de Djibouti-Ville",
+    "provider": "OpenStreetMap contributors (OSM Overpass)",
+    "license": "ODbL 1.0"
+  },
+  "dj_structures_sante": {
+    "name": "Structures sanitaires de Djibouti",
+    "provider": "Ministère de la Santé / INSTAD",
+    "license": "Données fournies par le propriétaire du projet"
+  },
+  "osm_batiments": {
+    "name": "Bâtiments de Djibouti-ville (OSM)",
+    "provider": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0"
+  },
+  "osm_centre_voirie": {
+    "name": "Voirie du centre de Djibouti-ville (OSM)",
+    "provider": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0"
+  }
+}

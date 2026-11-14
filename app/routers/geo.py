@@ -24,7 +24,7 @@ import json
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 router = APIRouter(prefix="/api/v1/geo", tags=["geo"])
 
@@ -40,6 +40,8 @@ _LEVEL_PATHS: dict[str, Path] = {
     # Découpage administratif officiel de Djibouti-ville (admin_pol, 2014)
     "admin_quartiers":            _REPO_ROOT / "data" / "geo" / "admin_quartiers.geojson",
     "admin_communes":             _REPO_ROOT / "data" / "geo" / "admin_communes.geojson",
+    # Empreintes de bâtiments OSM (fichier pré-compressé, servi tel quel)
+    "osm_batiments":              _REPO_ROOT / "data" / "geo" / "osm_batiments.geojson.gz",
     # CERD Djibouti-ville layers
     "cerd_equipements_scolaires": _CERD / "cerd_equipements_scolaires.geojson",
     "cerd_equipements_sociaux":   _CERD / "cerd_equipements_sociaux.geojson",
@@ -81,6 +83,14 @@ async def get_dj_geo(level: str) -> JSONResponse:
                 f"Fichier GeoJSON pour le niveau '{level}' introuvable. "
                 "Exécutez tools/download_dj_geo.py pour télécharger les données."
             ),
+        )
+
+    if path.suffix == ".gz":
+        # Gros fichier pré-compressé (bâtiments) : servi tel quel, le navigateur décompresse.
+        return Response(
+            content=path.read_bytes(),
+            media_type="application/geo+json",
+            headers={"Content-Encoding": "gzip", "Cache-Control": "public, max-age=86400"},
         )
 
     try:

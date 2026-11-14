@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { VILLE_VIEWBOX, VILLE_RATIO, projectVille } from '../lib/villeGeo'
 import VilleBaseLayers from './VilleBaseLayers'
+import GeoSources from './GeoSources'
 import CERD_GEO from '../data/cerd_ecoles.json'
 
 interface CerdFeature {
@@ -199,9 +200,10 @@ export default function CerdEcolesMap() {
         </div>
       )}
 
-      <p className="muted" style={{ fontSize: 11, marginTop: 4 }}>
-        Source : CERD (Centre d'Études et de Recherches de Djibouti) · 31 établissements · Djibouti-ville
-      </p>
+      <GeoSources
+        layerIds={['cerd_equipements_scolaires', 'admin_communes', 'admin_quartiers', 'osm_centre_voirie']}
+        note="31 établissements géoréférencés · Djibouti-ville."
+      />
     </div>
   )
 }

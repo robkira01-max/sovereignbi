@@ -82,3 +82,13 @@ def test_route_serves_admin_layers(client, level, n):
     r = client.get(f"/api/v1/geo/dj/{level}")
     assert r.status_code == 200
     assert len(r.json()["features"]) == n
+
+
+def test_osm_batiments_served_gzipped(client):
+    import gzip
+    r = client.get("/api/v1/geo/dj/osm_batiments")
+    assert r.status_code == 200
+    body = r.content
+    fc = json.loads(gzip.decompress(body) if body[:2] == b"\x1f\x8b" else body)
+    assert fc["type"] == "FeatureCollection"
+    assert len(fc["features"]) == 98239

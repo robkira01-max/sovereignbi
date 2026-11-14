@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import COMMUNES_ADMIN from '../data/admin_communes.json'
 import QUARTIERS_ADMIN from '../data/admin_quartiers.json'
 import SECTEURS_GEO from '../data/cerd_secteurs.json'
@@ -14,6 +14,9 @@ import {
   COMMUNE_FILL, OSM_ROAD_STYLE, VILLE_BOUNDS, VILLE_PAD, VILLE_W, centroidOfPolygon, linePath, polygonPath, px, py, quartierLabel,
   type Coord, type GeoFeature,
 } from '../lib/villeGeo'
+import GeoSources from './GeoSources'
+import BuildingsCanvas from './BuildingsCanvas'
+import { apiFetch, isApiConfigured } from '../lib/api'
 
 // Color schemes
 const TYPO_COLORS: Record<string, string> = {
@@ -45,6 +48,7 @@ const EQUIP_COLORS: Record<string, string> = {
 const LAYER_LABELS: Record<string, string> = {
   quartiers:   'Quartiers (officiel)',
   centre:      'Routes centre (OSM)',
+  batiments:   'Bâtiments (OSM)',
   secteurs:    'Secteurs',
   typologies:  'Typologies urbaines',
   voirie:      'Voirie',
@@ -59,8 +63,19 @@ type HoveredFeature = { nom: string; detail: string; color: string }
 
 export default function DjiboutiVilleMap() {
   const [layers, setLayers] = useState<Record<Layer, boolean>>({
-    quartiers: true, centre: true, secteurs: true, typologies: false, voirie: true, equipements: true, ecoles: false, bus: false,
+    quartiers: true, centre: true, batiments: false, secteurs: true, typologies: false, voirie: true, equipements: true, ecoles: false, bus: false,
   })
+  // Bâtiments : 98k empreintes chargées à la demande depuis l'API (jamais embarquées)
+  const [buildings, setBuildings] = useState<GeoFeature[] | 'loading' | 'error' | null>(null)
+  useEffect(() => {
+    if (!layers.batiments || buildings !== null) return
+    if (!isApiConfigured()) { setBuildings('error'); return }
+    setBuildings('loading')
+    apiFetch('/api/v1/geo/dj/osm_batiments')
+      .then(r => r.json())
+      .then(fc => setBuildings((fc as { features: GeoFeature[] }).features))
+      .catch(() => setBuildings('error'))
+  }, [layers.batiments, buildings])
   const [hovered, setHovered] = useState<HoveredFeature | null>(null)
   const [view, setView] = useState<'map' | 'table'>('map')
   const [tableLayer, setTableLayer] = useState<'equipements' | 'ecoles'>('equipements')
@@ -88,6 +103,14 @@ export default function DjiboutiVilleMap() {
             {LAYER_LABELS[l]}
           </label>
         ))}
+        {layers.batiments && buildings === 'loading' && (
+          <span className="muted" style={{ fontSize: 11 }}>chargement des bâtiments…</span>
+        )}
+        {layers.batiments && buildings === 'error' && (
+          <span style={{ fontSize: 11, color: 'var(--warn, #fbbf24)' }}>
+            Bâtiments indisponibles — cette couche (1,9 Mo) nécessite l'API MizanBI (VITE_API_BASE).
+          </span>
+        )}
       </div>
 
       {view === 'map' && (
@@ -294,6 +317,7 @@ export default function DjiboutiVilleMap() {
                 )
               })}
             </svg>
+            {layers.batiments && Array.isArray(buildings) && <BuildingsCanvas features={buildings} />}
           </div>
 
           {/* Legend + tooltip panel */}
@@ -410,11 +434,10 @@ export default function DjiboutiVilleMap() {
         </div>
       )}
 
-      <p className="muted" style={{ fontSize: 11, marginTop: 4 }}>
-        Source : CERD (Centre d'Études et de Recherches de Djibouti) — communes et 91 quartiers (admin_pol, cartographie photogrammétrique 1/2 500, 2014) ;
-        secteurs, typologies, voirie, équipements, écoles et transport (arrondissements 4 et 5, Balbala).
-        Routes du centre : © contributeurs OpenStreetMap (ODbL), extrait Geofabrik du 14/11/2026, moins précises que les données CERD.
-      </p>
+      <GeoSources
+        layerIds={['admin_communes', 'admin_quartiers', 'cerd_secteurs_adressage', 'cerd_typologies_urbaines', 'cerd_voirie', 'cerd_equipements_sociaux', 'cerd_equipements_scolaires', 'cerd_lignes_bus', 'cerd_terminus_bus', 'osm_centre_voirie', ...(layers.batiments ? ['osm_batiments'] : [])]}
+        note="Les routes OSM du centre sont moins précises que les données CERD (couverture CERD : arrondissements 4 et 5, Balbala)."
+      />
     </div>
   )
 }
