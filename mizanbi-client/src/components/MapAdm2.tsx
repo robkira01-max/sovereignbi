@@ -3,6 +3,7 @@ import * as maplibregl from 'maplibre-gl'
 import { Protocol } from 'pmtiles'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { LiveTileData } from './LiveTileRenderer'
+import { ADM2_LEVELS, normName, escapeHtml, popupExtra, type Adm2Level } from '../lib/adm2Levels'
 
 interface Props {
   data: LiveTileData
@@ -10,7 +11,7 @@ interface Props {
   unit?: string
   colorScheme?: 'blue' | 'green' | 'red' | 'orange'
   options?: {
-    level?: 'adm2' | 'quartiers'
+    level?: Adm2Level
     showLevelToggle?: boolean
   }
   onRegionSelect?: (regionName: string) => void
@@ -46,15 +47,10 @@ const MAP_STYLE = (pmtilesUrl: string): maplibregl.StyleSpecification => ({
   ],
 })
 
-const LEVEL_VIEW: Record<string, { center: [number, number]; zoom: number }> = {
-  adm2:      { center: [42.65, 11.85], zoom: 7.2 },
-  quartiers: { center: [43.11, 11.56], zoom: 10.5 },
-}
-
 function joinData(geojson: GeoJSON.FeatureCollection, data: LiveTileData, nameKey: string): GeoJSON.FeatureCollection {
   const valueMap: Record<string, number> = {}
   for (const row of data.rows) {
-    valueMap[String(row[0] ?? '')] = Number(row[1] ?? 0)
+    valueMap[normName(String(row[0] ?? ''))] = Number(row[1] ?? 0)
   }
   const values = Object.values(valueMap).filter(v => !isNaN(v))
   const minVal = values.length ? Math.min(...values) : 0
@@ -63,7 +59,7 @@ function joinData(geojson: GeoJSON.FeatureCollection, data: LiveTileData, nameKe
     ...geojson,
     features: geojson.features.map(feat => {
       const featureName = String((feat.properties as Record<string, unknown>)[nameKey] ?? '')
-      const val  = valueMap[featureName] ?? null
+      const val  = valueMap[normName(featureName)] ?? null
       const norm = val !== null && maxVal > minVal ? (val - minVal) / (maxVal - minVal) : 0
       return {
         ...feat,
@@ -83,7 +79,7 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
   const onRegionSelectRef = useRef(onRegionSelect)
   onRegionSelectRef.current = onRegionSelect
 
-  const [level, setLevel]       = useState<'adm2' | 'quartiers'>(options.level ?? 'adm2')
+  const [level, setLevel]       = useState<Adm2Level>(options.level ?? 'adm2')
   const [geoData, setGeoData]   = useState<GeoJSON.FeatureCollection | null>(null)
   const [geoError, setGeoError] = useState<string | null>(null)
 
@@ -97,7 +93,7 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
   useEffect(() => {
     setGeoData(null)
     setGeoError(null)
-    fetch(`/api/v1/geo/dj/${level}`)
+    fetch(`/api/v1/geo/dj/${ADM2_LEVELS[level].endpoint}`)
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
       .then((fc: GeoJSON.FeatureCollection) => setGeoData(fc))
       .catch(err => setGeoError(String(err)))
@@ -111,7 +107,7 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
-    const view = LEVEL_VIEW[level]
+    const view = ADM2_LEVELS[level]
     const map = new maplibregl.Map({
       container: containerRef.current,
       style:     MAP_STYLE(PMTILES_URL),
@@ -129,7 +125,7 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
   useEffect(() => {
     const map = mapRef.current
     if (!map || !geoData) return
-    const nameKey = 'name'
+    const nameKey = ADM2_LEVELS[level].nameKey
     const apply = () => {
       const joined = joinData(geoData, data, nameKey)
       if (map.getSource('adm2-regions')) {
@@ -147,7 +143,7 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
       map.addLayer({ id: 'adm2-label', type: 'symbol', source: 'adm2-regions',
         layout: {
           'text-field': ['format', ['get', '_label'], { 'font-scale': 1 }, '\n', {}, ['to-string', ['get', '_value']], { 'font-scale': 0.82 }],
-          'text-size': level === 'quartiers' ? 10 : 11, 'text-anchor': 'center',
+          'text-size': ADM2_LEVELS[level].labelSize, 'text-anchor': 'center',
         },
         paint: { 'text-color': '#ffffff', 'text-halo-color': '#1e1b4b', 'text-halo-width': 1.5 } })
       map.on('mouseenter', 'adm2-fill', (e) => {
@@ -156,9 +152,9 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
         if (!feat || !popupRef.current) return
         const p   = feat.properties as Record<string, unknown>
         const val = p._value !== null ? `${Number(p._value).toLocaleString('fr-FR')} ${unit}` : '—'
-        const pop = p.population_est ? `<br/>Pop. : ${Number(p.population_est).toLocaleString('fr-FR')}` : ''
+        const extra = popupExtra(level, p)
         popupRef.current.setLngLat(e.lngLat)
-          .setHTML(`<strong>${p._label}</strong><br/>${valueLabel}: <b>${val}</b>${pop}`)
+          .setHTML(`<strong>${escapeHtml(String(p._label))}</strong><br/>${escapeHtml(valueLabel)}: <b>${escapeHtml(val)}</b>${extra}`)
           .addTo(map)
       })
       map.on('mouseleave', 'adm2-fill', () => { map.getCanvas().style.cursor = ''; popupRef.current?.remove() })
@@ -170,7 +166,7 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
     }
     if (map.isStyleLoaded()) apply()
     else map.once('load', apply)
-    const view = LEVEL_VIEW[level]
+    const view = ADM2_LEVELS[level]
     map.flyTo({ center: view.center, zoom: view.zoom, duration: 800 })
   }, [geoData, data, colorLow, colorHigh, level, unit, valueLabel])
 
@@ -223,9 +219,9 @@ export function MapAdm2({ data, title, unit = '', colorScheme = 'blue', options 
           background: `linear-gradient(to right, ${colorLow}, ${colorHigh})`,
         }} />
         <span>{title} {unit ? `(${unit})` : ''} · bas → élevé</span>
-        {level === 'quartiers' && (
+        {ADM2_LEVELS[level].note && (
           <span style={{ marginLeft: 'auto', fontSize: '0.65rem', color: '#64748b' }}>
-            ⚠ Données approximatives OSM
+            {ADM2_LEVELS[level].note}
           </span>
         )}
       </div>

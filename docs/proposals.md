@@ -149,6 +149,30 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Moyen — exactitude des données, prérequis validation institutionnelle.
 **Livré :** `dj_quartiers.geojson` (+density_km2 UTM 38N, +area_km2, +commune attribution provisoire, +validation_status) ; `cerd_communes.geojson` (relabels Balbala 4ème/5ème +commune_nom +arrondissement +note) ; `catalog.yaml` (description 3 communes, warning Boulaos/Ras-Dika absents). Image PNG cartographique `/tmp/djibouti_admin_map.png` livrée pour validation terrain. 1517/1517 tests. Commit `b39e24e`.
 
+## P-057 — Découpage officiel CERD admin_pol (91 quartiers, 3 communes) ✅ (livré 2026-11-14)
+
+**Raison :** Les shapefiles CERD ne couvraient que Balbala (arr. 4 et 5) ; le centre-ville (Boulaos, Ras-Dika) n'avait que 11 quartiers OSM approximatifs en rectangles. Le propriétaire a fourni `admin_pol.shp` (CERD, photogrammétrie 1/2 500, 2014).
+**Impact :** Élevé — premier fond de carte complet et officiel de Djibouti-ville.
+**Livré :** conversion ITRF2005 → WGS84 (`.shx` régénéré), `data/geo/admin_quartiers.geojson` (91) + `admin_communes.geojson` (3), routes `/api/v1/geo/dj/admin_quartiers|admin_communes`, entrées `catalog.yaml` (licence CERD, `draft`), fond partagé `VilleBaseLayers` pour les 4 cartes Djibouti-ville, `getQuartierForPoint` sur les vrais quartiers. Commits `da5bda7`, `aaaa3cb`, `5be5dae`.
+
+## P-058 — Routes et bâtiments OSM de Djibouti-ville ✅ (livré 2026-11-14)
+
+**Raison :** Complément en attendant les données CERD des arrondissements 1 à 3 (voirie du centre absente).
+**Impact :** Moyen — voirie du centre (1 875 tronçons) + 98 239 bâtiments (ODbL, Geofabrik 2026-11-14).
+**Livré :** `osm_centre_voirie` (embarquée), `osm_batiments.geojson.gz` (1,9 Mo, servi pré-compressé, chargé au cochage, rendu canvas), catalogue + attribution ODbL. Commits `810b8c3`, `71d6bb0`, `5a37e64`. **Reste :** vérification visuelle de la couche bâtiments contre l'API réelle (après redéploiement Oracle).
+
+## P-059 — Attribution automatique des sources de cartes ✅ (livré 2026-11-14)
+
+**Raison :** Les pieds de carte « Source : … » étaient codés en dur dans chaque composant ; une correction de licence demandait d'éditer plusieurs fichiers.
+**Impact :** Moyen — une seule source de vérité (`catalog.yaml`).
+**Livré :** `tools/sync_geo_attribution.py` → `geo_attribution.json` → composant `GeoSources` (3 cartes Djibouti-ville) ; `tests/test_geo_attribution_sync.py` échoue si désynchronisé. **Reste :** généraliser `GeoSources` aux autres cartes (`DjiboutiMap`, `EcolesMap`, `Bulletins`…). Commit `5a37e64`.
+
+## P-060 — Carte ADM2/quartiers (`MapAdm2`) sur les quartiers officiels ✅ (livré 2026-11-14)
+
+**Raison :** Le niveau « quartiers » utilisait les 11 quartiers OSM approximatifs (avertissement « données approximatives »).
+**Impact :** Moyen — 91 quartiers officiels, jointure tolérante aux accents/casse/apostrophes (`lib/adm2Levels.ts`), popup échappé (commune, superficie).
+**Livré :** `MapAdm2` sur `admin_quartiers` (propriété `nom`), 7 tests Vitest. **Attention :** les jeux de données existants clés sur les anciens noms (« Balbala Nord », « Centre-ville »…) ne se joindront plus ; les tuiles `map-adm2` au niveau quartiers doivent utiliser les noms officiels. `dj_quartiers` reste dans le catalogue (non utilisé par le client).
+
 ## P-055 — Suppression frontend/ et finalisation CI
 
 **Raison :** `frontend/` devenu redondant une fois `mizanbi-client/` complet. Éliminer la dette de maintenance.
