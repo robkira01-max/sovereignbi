@@ -10,7 +10,13 @@ Ce que le mode strict retire des prompts :
 
 Ce qui part encore : la question de l'utilisateur, les noms de tables et de colonnes, le modèle sémantique
 (mesures, filtres, synonymes écrits par l'administrateur), les questions/SQL des exemples d'apprentissage.
-Le mode strict réduit la fuite ; il ne remplace pas un modèle local. Défaut : désactivé.
+Le mode strict réduit la fuite ; il ne remplace pas un modèle local.
+
+Activation (SOVEREIGN_AI_STRICT) :
+- `1`/`true`/`yes`/`on` : actif ; `0`/`false`/`no`/`off` : désactivé explicitement ;
+- vide, absent ou valeur non reconnue : **automatique** — actif dès que LLM_PROVIDER n'est pas `ollama` (fournisseur
+  externe, y compris une valeur mal orthographiée : dans le doute, on protège), inactif avec le modèle local.
+Désactiver explicitement le mode avec un fournisseur externe est possible mais signalé au démarrage.
 """
 from __future__ import annotations
 
@@ -18,10 +24,25 @@ import os
 import re
 
 _TRUE = {"1", "true", "yes", "on"}
+_FALSE = {"0", "false", "no", "off"}
+
+
+def external_provider() -> bool:
+    """Vrai si le LLM n'est pas le modèle local (tout ce qui n'est pas « ollama », fautes de frappe comprises)."""
+    return os.environ.get("LLM_PROVIDER", "ollama").strip().lower() != "ollama"
+
+
+def explicitly_disabled() -> bool:
+    return os.environ.get("SOVEREIGN_AI_STRICT", "").strip().lower() in _FALSE
 
 
 def strict() -> bool:
-    return os.environ.get("SOVEREIGN_AI_STRICT", "").strip().lower() in _TRUE
+    v = os.environ.get("SOVEREIGN_AI_STRICT", "").strip().lower()
+    if v in _TRUE:
+        return True
+    if v in _FALSE:
+        return False
+    return external_provider()            # automatique : actif avec un fournisseur externe
 
 
 _QUOTED = re.compile(r"'[^']*'|\"[^\"]*\"")

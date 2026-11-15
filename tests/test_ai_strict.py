@@ -47,16 +47,39 @@ def ask(store, llm, question="chômage par ville ?", **kw):
 
 # ── politique ────────────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize("val,expected", [("1", True), ("true", True), ("YES", True), (" on ", True),
-                                          ("0", False), ("", False), ("non", False), ("2", False)])
-def test_strict_flag_parsing(monkeypatch, val, expected):
-    monkeypatch.setenv("SOVEREIGN_AI_STRICT", val)
+@pytest.fixture(autouse=True)
+def _clean_env(monkeypatch):
+    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
+    monkeypatch.delenv("LLM_PROVIDER", raising=False)
+
+
+@pytest.mark.parametrize("provider,val,expected", [
+    # local : inactif par défaut, activable à la main
+    (None, None, False), ("ollama", "", False), ("Ollama", None, False), ("ollama", "1", True), ("ollama", " on ", True),
+    ("ollama", "0", False), ("ollama", "2", False), ("ollama", "peut-être", False),
+    # externe : ACTIF par défaut (même avec une valeur vide ou ambiguë), désactivable seulement explicitement
+    ("kimi", None, True), ("kimi", "", True), ("KIMI", None, True), ("kimi", "1", True), ("kimi", "yes", True),
+    ("kimi", "0", False), ("kimi", "false", False), ("kimi", " NO ", False), ("kimi", "off", False),
+    ("kimi", "2", True), ("kimi", "peut-être", True),
+    # fournisseur inconnu ou mal orthographié = externe : dans le doute, on protège
+    ("kimmi", None, True), ("openai", None, True),
+])
+def test_strict_activation_matrix(monkeypatch, provider, val, expected):
+    if provider is not None:
+        monkeypatch.setenv("LLM_PROVIDER", provider)
+    if val is not None:
+        monkeypatch.setenv("SOVEREIGN_AI_STRICT", val)
     assert ai_policy.strict() is expected
 
 
-def test_strict_is_off_by_default(monkeypatch):
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
-    assert ai_policy.strict() is False
+def test_explicitly_disabled_is_only_true_for_a_clear_off_value(monkeypatch):
+    assert ai_policy.explicitly_disabled() is False
+    for v in ("0", "false", "No", " off "):
+        monkeypatch.setenv("SOVEREIGN_AI_STRICT", v)
+        assert ai_policy.explicitly_disabled() is True
+    for v in ("", "1", "2", "x"):
+        monkeypatch.setenv("SOVEREIGN_AI_STRICT", v)
+        assert ai_policy.explicitly_disabled() is False
 
 
 def test_redact_error_removes_quoted_values_and_truncates():
@@ -76,7 +99,7 @@ def test_local_answer_is_deterministic_and_data_free_of_the_model():
 # ── ce qui part vers le modèle ──────────────────────────────────────────────
 
 def test_baseline_without_strict_sends_sample_rows_and_results(store, monkeypatch):
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")
     llm = RecordingLLM()
     ask(store, llm)
     sql_prompt, answer_prompt = llm.calls[0][1], llm.calls[1][1]
@@ -106,7 +129,7 @@ def test_strict_single_value_answer_is_local(store, monkeypatch):
 
 def test_strict_redacts_values_quoted_in_error_messages_sent_back_for_a_retry(store, monkeypatch):
     bad = "SELECT CAST(ville AS INTEGER) FROM chomage"
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")
     llm = RecordingLLM(bad)
     ask(store, llm)
     assert any(SECRET in p for _, p in llm.calls[1:]), "le test doit prouver que l'erreur cite bien la valeur sans mode strict"
@@ -121,7 +144,7 @@ def test_strict_withholds_document_extracts(store, monkeypatch):
         chunk_count = 1
         def search(self, q, k=3): return ["c"]
         def format_context(self, chunks): return "EXTRAIT-CONFIDENTIEL-DOC"
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")
     llm = RecordingLLM(); ask(store, llm, doc_store=Docs())
     assert "EXTRAIT-CONFIDENTIEL-DOC" in llm.everything
     monkeypatch.setenv("SOVEREIGN_AI_STRICT", "1")
@@ -134,6 +157,7 @@ def test_schema_description_in_strict_has_no_values(store, monkeypatch):
     d = store.schema_description()
     assert "Table chomage(ville VARCHAR, taux DOUBLE)" in d and SECRET not in d and "exemples" not in d
     monkeypatch.delenv("SOVEREIGN_AI_STRICT")
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")
     assert SECRET in store.schema_description()
 
 
@@ -143,7 +167,7 @@ def test_chat_history_keeps_only_user_turns_in_strict(monkeypatch):
     from app.routers.chatbot import Turn, _build_history_prompt
     hist = [Turn(role="user", content="Quel est le taux ?"), Turn(role="assistant", content=f"À {SECRET} il est de 987.65"),
             Turn(role="user", content="Et en 2023 ?")]
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")
     assert SECRET in _build_history_prompt(hist)
     monkeypatch.setenv("SOVEREIGN_AI_STRICT", "1")
     h = _build_history_prompt(hist)
@@ -179,7 +203,7 @@ def test_insight_route_is_refused_in_strict_and_never_calls_the_model(client, mo
 
 def test_insight_cache_is_bypassed_in_strict(monkeypatch):
     from app.dashboards import insight
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")
     insight.set_cached("tt", "sql", "texte")
     assert insight.get_cached("tt", "sql") == "texte"
     monkeypatch.setenv("SOVEREIGN_AI_STRICT", "1")
@@ -189,28 +213,29 @@ def test_insight_cache_is_bypassed_in_strict(monkeypatch):
 # ── transparence ────────────────────────────────────────────────────────────
 
 def test_privacy_notice_reflects_strict_mode(client, monkeypatch):
+    note = lambda: client.get("/compliance/notice", headers=VIEWER).json()      # noqa: E731
     monkeypatch.setenv("LLM_PROVIDER", "kimi")
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
-    n = client.get("/compliance/notice", headers=VIEWER).json()
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")                              # désactivé explicitement
+    n = note()
     assert n["ai_strict_mode"] is False and "extraits de données" in n["purposes"][1]["description"]
-    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "1")
-    n = client.get("/compliance/notice", headers=VIEWER).json()
+    monkeypatch.delenv("SOVEREIGN_AI_STRICT")                                    # défaut avec un fournisseur externe : actif
+    n = note()
     assert n["ai_strict_mode"] is True
     d = n["purposes"][1]["description"]
     assert "mode strict" in d and "aucune ligne de données" in d
-    monkeypatch.setenv("LLM_PROVIDER", "ollama")
-    assert "local" in client.get("/compliance/notice", headers=VIEWER).json()["purposes"][1]["description"]
+    monkeypatch.setenv("LLM_PROVIDER", "ollama")                                 # local : rien n'est transmis
+    n = note()
+    assert n["ai_strict_mode"] is False and "local" in n["purposes"][1]["description"]
 
 
-def test_startup_warns_when_an_external_llm_runs_without_strict(monkeypatch):
+def test_startup_warns_only_when_strict_is_explicitly_disabled_with_an_external_llm(monkeypatch):
     from app.startup import validate_env
-    monkeypatch.setenv("LLM_PROVIDER", "kimi")
     monkeypatch.setenv("KIMI_BASE_URL", "https://api.example.org/v1")
     monkeypatch.setenv("KIMI_API_KEY", "k")
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT", raising=False)
-    assert any("SOVEREIGN_AI_STRICT" in w for w in validate_env())
-    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "1")
-    assert not any("SOVEREIGN_AI_STRICT" in w for w in validate_env())
+    has = lambda: any("SOVEREIGN_AI_STRICT" in w for w in validate_env())        # noqa: E731
+    monkeypatch.setenv("LLM_PROVIDER", "kimi")
+    assert has() is False                                                        # défaut : protégé, rien à signaler
+    monkeypatch.setenv("SOVEREIGN_AI_STRICT", "0")
+    assert has() is True                                                         # désactivé à la main : signalé
     monkeypatch.setenv("LLM_PROVIDER", "ollama")
-    monkeypatch.delenv("SOVEREIGN_AI_STRICT")
-    assert not any("SOVEREIGN_AI_STRICT" in w for w in validate_env())
+    assert has() is False                                                        # local : pas concerné
