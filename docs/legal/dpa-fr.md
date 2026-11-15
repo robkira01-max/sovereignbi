@@ -28,7 +28,7 @@ Fourniture d'une plateforme d'analyse (questions en langage naturel, tableaux de
 - Sauvegardes : objectifs RTO / RPO `[À COMPLÉTER : valeurs réellement testées — le code documente RPO < 24 h ; aucune restauration n'est testée automatiquement]`.
 
 ## 5. Sous-traitants ultérieurs et transferts
-Liste en annexe A. Le client est informé de tout changement `[À COMPLÉTER : préavis]` et peut s'y opposer. Aucun transfert hors du lieu d'hébergement choisi, **sauf** si le client active un fournisseur d'IA externe (annexe B) : dans ce cas, le texte des questions et des extraits de données utiles à la réponse quitte l'hébergement. Mode « IA locale » : aucun transfert.
+Liste en annexe A. Le client est informé de tout changement `[À COMPLÉTER : préavis]` et peut s'y opposer. Aucun transfert hors du lieu d'hébergement choisi, **sauf** si le client active un fournisseur d'IA externe (annexe B) : dans ce cas, le texte des questions et des extraits de données utiles à la réponse quitte l'hébergement. Mode « IA locale » : aucun transfert. Mode « strict » (`SOVEREIGN_AI_STRICT`) avec un fournisseur externe : seuls la question, les noms de tables et de colonnes et le modèle sémantique sont transmis — aucune ligne de données, aucun résultat, aucun extrait de document. Sans le mode strict, des lignes d'exemple, des résultats et des extraits peuvent être transmis. `[À COMPLÉTER : mode retenu pour ce client]`
 
 ## 6. Localisation des données
 Hébergement : `[À COMPLÉTER : fournisseur, région]` (décision en suspens du propriétaire).
@@ -53,7 +53,7 @@ Notification au client **sans délai injustifié et au plus tard 72 h** après l
 | IA (si externe) | `[À COMPLÉTER : Kimi / Groq / autre]` ou aucun (Ollama local) | questions, extraits | `[À COMPLÉTER]` |
 
 ### Annexe B — Flux sortants du code
-Fournisseur d'IA configuré par `LLM_PROVIDER` ; SMTP si `SMTP_HOST` défini ; sources publiques optionnelles (Comtrade, StatCan…) lorsque le client les active : aucune donnée du client n'y est envoyée. `tests/test_network_isolation.py` liste les URL de base autorisées.
+Fournisseur d'IA configuré par `LLM_PROVIDER` (contenu transmis selon `SOVEREIGN_AI_STRICT`, voir §5) ; SMTP si `SMTP_HOST` défini ; sources publiques optionnelles (Comtrade, StatCan…) lorsque le client les active : aucune donnée du client n'y est envoyée. `tests/test_network_isolation.py` liste les URL de base autorisées.
 
 ### Annexe C — Données traitées par l'éditeur comme responsable
 Compte (e-mail, rôle, dates), sessions (hachées), consentements (aucune IP conservée), demandes d'accès, abonnements courriel, journal d'audit. Rétention : `[À COMPLÉTER]`.

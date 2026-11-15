@@ -41,6 +41,12 @@ def validate_env() -> list[str]:
         if ollama_url and not ollama_url.startswith(("http://", "https://")):
             warnings.append(f"OLLAMA_URL={ollama_url!r} — doit commencer par http:// ou https://")
     elif provider == "kimi":
+        from app import ai_policy
+        if not ai_policy.strict():
+            warnings.append(
+                "LLM externe actif sans SOVEREIGN_AI_STRICT : des lignes de données (exemples, résultats, insights) "
+                "sont transmises au fournisseur. Activer SOVEREIGN_AI_STRICT=1 pour ne transmettre que la question et le schéma."
+            )
         if not os.environ.get("KIMI_BASE_URL"):
             warnings.append("KIMI_BASE_URL non définie — requis quand LLM_PROVIDER=kimi")
         if not os.environ.get("KIMI_API_KEY"):

@@ -65,6 +65,12 @@ L'IA génère du SQL à partir des questions des utilisateurs. Un contenu malvei
 
 **Ce qui n'est pas protégé** : un LLM très obéissant qui génère un SELECT valide sur une mauvaise table — raison pour laquelle la liste blanche de tables est stricte.
 
+### Mode strict de l'IA (`SOVEREIGN_AI_STRICT=1`)
+
+Sans ce mode, l'IA reçoit des **données du client** : 3 lignes d'exemple par table (prompt SQL), jusqu'à 50 lignes de résultat (rédaction de la réponse), des extraits de documents importés, les lignes de chaque tuile (insights, demandés automatiquement à l'ouverture d'un tableau de bord), les réponses précédentes du chat et les messages d'erreur de la base (qui citent parfois des valeurs). Avec un fournisseur externe, tout cela quitte l'hébergement.
+
+Le mode strict supprime ces flux : seuls partent la **question**, les **noms de tables et de colonnes**, le **modèle sémantique** (écrit par l'administrateur) et les **questions/SQL des exemples d'apprentissage**. La réponse est alors rédigée localement (« 2 lignes (colonnes : …) ») et les insights IA sont désactivés (HTTP 403). Limites : il réduit la fuite sans la supprimer (les noms de colonnes et les questions peuvent être sensibles) ; la qualité des réponses est moindre (pas de phrase rédigée, pas d'exemples de valeurs pour deviner les formats) ; il ne remplace pas un modèle local. Au démarrage, un avertissement signale un LLM externe sans mode strict ; l'avis de confidentialité (`/compliance/notice`) indique le mode actif.
+
 ## 7. Journalisation
 
 - Les actions d'audit sont enregistrées dans `data/audit.jsonl` (chaîne SHA-256)

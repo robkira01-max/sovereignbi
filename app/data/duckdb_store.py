@@ -6,6 +6,7 @@ from pathlib import Path
 import duckdb
 import pandas as pd
 
+from app import ai_policy
 from app.security import row_policy
 
 
@@ -58,11 +59,13 @@ class DataStore:
             cols = self.con.execute(
                 "SELECT column_name, data_type FROM information_schema.columns "
                 "WHERE table_name = ? ORDER BY ordinal_position", [t]).fetchall()
+            lines.append(f"Table {t}({', '.join(f'{c} {d}' for c, d in cols)})")
+            if ai_policy.strict():      # mode strict : le schéma seul, jamais de valeurs (SOVEREIGN_AI_STRICT)
+                continue
             try:    # les exemples partent dans le prompt de l'IA : ils doivent respecter la sécurité par ligne
                 sample = self.con.execute(row_policy.apply(f'SELECT * FROM "{t}" LIMIT 3')).fetchall()
             except row_policy.AccessDenied:
                 sample = "(table protégée : exemples masqués)"
-            lines.append(f"Table {t}({', '.join(f'{c} {d}' for c, d in cols)})")
             lines.append(f"  exemples : {sample}")
         return "\n".join(lines)
 

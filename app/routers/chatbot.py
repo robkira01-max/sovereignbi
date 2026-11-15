@@ -15,6 +15,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field, field_validator
 
+from app import ai_policy
 from app.llm import get_llm_client
 from app.security.rbac import RequireRole
 
@@ -84,10 +85,12 @@ def _is_data_question(question: str, has_tables: bool) -> bool:
 
 
 def _build_history_prompt(history: list[Turn]) -> str:
-    if not history:
+    if not history or (ai_policy.strict() and not any(t.role == "user" for t in history)):
         return ""
     lines = ["<historique>"]
     for t in history[-_MAX_HISTORY:]:
+        if ai_policy.strict() and t.role != "user":     # les réponses précédentes contiennent des valeurs du client
+            continue
         role = "user" if t.role == "user" else "assistant"
         lines.append(f"<tour role='{role}'>{t.content}</tour>")
     lines.append("</historique>")

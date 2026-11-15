@@ -6,6 +6,7 @@ from typing import TypedDict
 import yaml
 from langgraph.graph import END, StateGraph
 
+from app import ai_policy
 from app.data.duckdb_store import DataStore
 from app.llm.ollama_client import LLM
 from app.security.sql_guard import SQLGuardError, validate_sql
@@ -79,7 +80,7 @@ def build_graph(
             if examples:
                 few_shot_text = format_few_shot(examples)
         doc_context = ""
-        if doc_store is not None and doc_store.chunk_count > 0:
+        if doc_store is not None and doc_store.chunk_count > 0 and not ai_policy.strict():
             chunks = doc_store.search(state["question"], k=3)
             if chunks:
                 doc_context = doc_store.format_context(chunks)
@@ -90,7 +91,8 @@ def build_graph(
             prompt += f"{few_shot_text}\n\n"
         prompt += f"###QUESTION###\n{state['question']}\n###END_QUESTION###"
         if state.get("error"):
-            prompt += f"\n\nTa requête précédente a échoué :\n{state['sql']}\nErreur : {state['error']}\nCorrige-la."
+            err = ai_policy.redact_error(state["error"]) if ai_policy.strict() else state["error"]
+            prompt += f"\n\nTa requête précédente a échoué :\n{state['sql']}\nErreur : {err}\nCorrige-la."
         return {"sql": extract_sql(llm.complete(SQL_SYSTEM, prompt)), "error": None}
 
     def validate_execute(state: State) -> State:
@@ -121,8 +123,11 @@ def build_graph(
                 "answer": "Mode dry-run : requête générée, non exécutée.",
                 "confidence": {"score": cs.score, "label": cs.label, "explanation": cs.explanation},
             }
-        preview = {"colonnes": state["columns"], "lignes": state["rows"][:50]}
-        text = llm.complete(ANSWER_SYSTEM, f"Question : {state['question']}\nRésultats : {preview}")
+        if ai_policy.strict():       # aucune ligne de résultat n'est envoyée au modèle
+            text = ai_policy.local_answer(state["columns"], state["rows"])
+        else:
+            preview = {"colonnes": state["columns"], "lignes": state["rows"][:50]}
+            text = llm.complete(ANSWER_SYSTEM, f"Question : {state['question']}\nRésultats : {preview}")
         few_shot_count = 0
         if retriever is not None:
             try:

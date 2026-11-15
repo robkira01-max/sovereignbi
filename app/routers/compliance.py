@@ -163,11 +163,20 @@ def get_data_inventory(_: str = Depends(_VIEWER)):
 
 def _ai_processing() -> tuple[str, str]:
     """(description du traitement IA, localisation des données) selon LLM_PROVIDER."""
+    from app import ai_policy
+
     provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
     if provider == "ollama":
         return (
             "Traitement IA local (Ollama, aucun modèle externe)",
             "Infrastructure de l'opérateur — aucune donnée transmise à des tiers",
+        )
+    if ai_policy.strict():
+        return (
+            f"Traitement IA par un fournisseur externe ({provider}) en mode strict : seules la question, les noms de "
+            "tables et de colonnes et le modèle sémantique lui sont transmis — aucune ligne de données, aucun résultat, "
+            "aucun extrait de document",
+            "Infrastructure de l'opérateur ; les questions et le schéma sont transmis au fournisseur externe configuré",
         )
     return (
         f"Traitement IA par un fournisseur externe ({provider}) : les questions et extraits de données "
@@ -178,6 +187,8 @@ def _ai_processing() -> tuple[str, str]:
 
 @router.get("/notice")
 def privacy_notice(_: str = Depends(_VIEWER)):
+    from app.ai_policy import strict as ai_strict
+
     """Retourne l'avis de confidentialité en JSON (Loi 25 / PIPEDA)."""
     ai_description, data_location = _ai_processing()
     return {
@@ -190,6 +201,7 @@ def privacy_notice(_: str = Depends(_VIEWER)):
             {"id": "analytics", "description": "Analyse des données chargées par l'utilisateur"},
             {"id": "ai_processing", "description": ai_description},
         ],
+        "ai_strict_mode": ai_strict(),
         "retention": "Selon la politique de rétention configurée par l'opérateur",
         "rights": ["accès", "rectification", "suppression", "exportation", "retrait du consentement"],
         "contact": "Adressez vos demandes à l'opérateur de l'instance MizanBI",

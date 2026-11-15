@@ -342,6 +342,10 @@ def tile_insight(dashboard_id: str, tile_id: str, request: Request, _: str = Dep
     if not tile.sql_pinned:
         raise HTTPException(422, "Cette tuile n'a pas de SQL épinglé.")
 
+    from app import ai_policy
+    if ai_policy.strict():     # les lignes de la tuile partiraient vers le modèle : refusé en mode strict
+        raise HTTPException(403, "Insights IA désactivés (mode strict : aucune donnée n'est envoyée au modèle).")
+
     from app.dashboards.insight import generate_insight, get_cached, set_cached
     cached = get_cached(tile_id, tile.sql_pinned)
     if cached:

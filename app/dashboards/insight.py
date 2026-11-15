@@ -5,6 +5,7 @@ import hashlib
 import time
 from typing import Optional
 
+from app import ai_policy
 from app.security import row_policy
 
 _CACHE: dict[str, tuple[str, float]] = {}
@@ -16,7 +17,7 @@ def _key(tile_id: str, sql: str) -> str:
 
 
 def get_cached(tile_id: str, sql: str) -> Optional[str]:
-    if row_policy.active():     # texte dérivé des lignes, non partageable entre périmètres (P-068)
+    if row_policy.active() or ai_policy.strict():     # texte dérivé des lignes : non partageable entre périmètres (P-068) ; jamais en mode strict
         return None
     entry = _CACHE.get(_key(tile_id, sql))
     if entry is None:
@@ -29,7 +30,7 @@ def get_cached(tile_id: str, sql: str) -> Optional[str]:
 
 
 def set_cached(tile_id: str, sql: str, text: str) -> None:
-    if row_policy.active():
+    if row_policy.active() or ai_policy.strict():
         return
     _CACHE[_key(tile_id, sql)] = (text, time.monotonic())
 
