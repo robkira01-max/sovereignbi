@@ -415,8 +415,10 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 | **P-002 Bulletin HTML** | GET /export/bulletin — HTML auto-suffisant, tables, insights, disclaimer | 8061c6d |
 
 
-## P-069 — Jeux de données certifiés (pastille « validé par … ») 📋 (proposée 2026-11-15)
+## P-069 — Jeux de données certifiés ✅ API livrée 2026-11-15 (pastille dans le client : à faire)
 
 **Raison :** dernière partie de l'idée 4 du benchmark, séparée de P-068 : afficher une pastille sur une table ou un indicateur quand l'institut (ex. INSTAD) l'a validé, liée au certificat de précision existant (`app/accuracy/certificate.py`, HMAC).
 **Impact :** Moyen (confiance, diffusion officielle) ; Faible en développement (registre signé + affichage).
-**Statut :** proposée, **ne pas implémenter sans accord**.
+**Livré :** registre `app/certification/registry.py` + `POST /certification` (admin : table, institution, référence de la validation, date de fin optionnelle), `POST /certification/{id}/revoke`, `GET /certification` et `GET /certification/{table}` (viewer : pastille `certified | stale | expired | revoked | tampered | none`, sans donnée de ligne), `GET /certification/{table}/history` (admin). **L'empreinte du contenu (lignes + schéma, indépendante de l'ordre) est calculée à la certification : dès que les données changent, la pastille passe à « stale »** (une certification ne couvre jamais des données qu'elle n'a pas vues). Signature HMAC (même secret que le certificat de précision) : toute modification du fichier de registre donne `tampered`. Historique conservé, audit sans le nom de l'institution, fichier en 0600, registre illisible jamais écrasé. 20 tests.
+**Ce que la pastille ne prouve PAS :** un administrateur du serveur enregistre qu'une institution a validé ; **MizanBI ne vérifie pas l'institution** (message renvoyé à chaque appel). La confiance est celle accordée à l'administrateur. La signature n'est pas vérifiable par un tiers sans le secret du serveur. Ne pas la présenter comme une certification officielle de l'INSTAD tant que l'INSTAD n'a pas confirmé par écrit le processus.
+**Limites / reste :** **aucun affichage de la pastille dans le client React** (l'API est prête) ; l'empreinte relit toute la table (coût proportionnel à sa taille à chaque consultation de la liste) ; pas de lien avec les tuiles/bulletins ni les exports SDMX ; une table remplacée par des données identiques reste « certified » (c'est voulu) ; pas de signature asymétrique (clé publique) pour une vérification externe.
