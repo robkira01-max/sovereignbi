@@ -6,7 +6,7 @@ import ATTR from '../../data/geo_attribution.json'
 const USED = [
   'admin_communes', 'admin_quartiers', 'cerd_secteurs_adressage', 'cerd_typologies_urbaines',
   'cerd_voirie', 'cerd_equipements_sociaux', 'cerd_equipements_scolaires', 'cerd_lignes_bus',
-  'cerd_terminus_bus', 'osm_centre_voirie', 'dj_structures_sante', 'dj_adm1', 'osm_batiments',
+  'cerd_terminus_bus', 'osm_centre_voirie', 'dj_structures_sante', 'dj_adm1', 'cerd_batiments', 'cerd_routes', 'cerd_hydro', 'cerd_rail', 'cerd_sites',
 ]
 
 describe('geo_attribution.json (généré depuis catalog.yaml)', () => {

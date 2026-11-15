@@ -159,7 +159,7 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 
 **Raison :** Complément en attendant les données CERD des arrondissements 1 à 3 (voirie du centre absente).
 **Impact :** Moyen — voirie du centre (1 875 tronçons) + 98 239 bâtiments (ODbL, Geofabrik 2026-11-14).
-**Livré :** `osm_centre_voirie` (embarquée), `osm_batiments.geojson.gz` (1,9 Mo, servi pré-compressé, chargé au cochage, rendu canvas), catalogue + attribution ODbL. Commits `810b8c3`, `71d6bb0`, `5a37e64`. **Reste :** vérification visuelle de la couche bâtiments contre l'API réelle (après redéploiement Oracle).
+**Livré :** `osm_centre_voirie` (embarquée), `osm_batiments.geojson.gz` (remplacé le 2026-11-15 par le levé CERD, voir P-063), catalogue + attribution ODbL. Commits `810b8c3`, `71d6bb0`, `5a37e64`. **Reste :** vérification visuelle de la couche bâtiments contre l'API réelle (après redéploiement Oracle).
 
 ## P-059 — Attribution automatique des sources de cartes ✅ (livré 2026-11-14)
 
@@ -178,6 +178,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Raison :** Cahier des charges « points techniques 3 à 20 » du propriétaire. Audit : clé API injectable dans le navigateur, mesure d'audience appelée sans consentement, image OG en SVG (non rendue par LinkedIn/Facebook), sitemap invalide, favicons incomplets, « soft 404 », un seul titre pour toute l'application, 3,8 Mo de JavaScript au premier chargement.
 **Impact :** Élevé — sécurité (point 3), conformité cookies (point 5), partage et SEO (6-9, 15), performance (12).
 **Livré :** voir CLAUDE.md « Durcissement web » ; `tools/web_launch_audit.py` (15 tests, réutilisable sur tous les projets web) ; `tools/make_brand_assets.py`. Premier audit des sites déjà en ligne : Vigile (aucune balise OG, robots, sitemap ni page légale) et Code de la Route DJ (lien cassé `/fr/verify`, image de 493 Ko, pas de robots/sitemap/OG/pages légales). **Reste (propriétaire) :** décider site vitrine séparé vs application (URLs `/features`, `/pricing`, `/docs`, `/contact` impossibles dans l'application actuelle sans URL par page) ; renseigner `VITE_SITE_URL` en production ; Lighthouse sur l'URL publique ; HSTS et redirection HTTPS côté serveur de production (non vérifiables depuis le dépôt).
+
+## P-063 — Levé topographique CERD 1/2 500 (bâtiments, routes, hydro, rail, sites) ✅ (livré 2026-11-15)
+
+**Raison :** Le propriétaire a fourni l'archive complète du levé photogrammétrique CERD (même projet que `admin_pol`, 2014) : 112 417 bâtiments typés, routes, hydrographie, voie ferrée, réseaux. Plus précis et mieux classé que les données OSM.
+**Impact :** Élevé — fond officiel complet de Djibouti-ville, bâtiments par usage (écoles, mosquées, santé, administrations, commerces…).
+**Livré :** `tools/convert_cerd_topo.py`, 5 couches `cerd_*.geojson.gz` + catalogue (licence CERD, `draft`, avertissement « levé de 2014 »), routes API, `lib/topoLayers.ts` + `TopoCanvas`, légende des catégories, attribution automatique ; l'OSM des bâtiments est supprimé (l'OSM des routes du centre reste). 16 tests pytest + 6 Vitest. **Reste :** intégrer si besoin `centre_lin` (axes, noms RN1/RN2…), `contour` (courbes de niveau), `road_lin`, `utilit_*`, `vegetation` ; valider la licence par écrit.
 
 ## P-060 — Carte ADM2/quartiers (`MapAdm2`) sur les quartiers officiels ✅ (livré 2026-11-14)
 

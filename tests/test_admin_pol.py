@@ -84,11 +84,36 @@ def test_route_serves_admin_layers(client, level, n):
     assert len(r.json()["features"]) == n
 
 
-def test_osm_batiments_served_gzipped(client):
-    import gzip
-    r = client.get("/api/v1/geo/dj/osm_batiments")
+import gzip
+
+_TOPO = {"cerd_batiments": 86776, "cerd_routes": 1155, "cerd_hydro": 1554, "cerd_rail": 201, "cerd_sites": 1408}
+
+
+@pytest.mark.parametrize("level,n", list(_TOPO.items()))
+def test_cerd_topo_layers_served_gzipped(client, level, n):
+    r = client.get(f"/api/v1/geo/dj/{level}")
     assert r.status_code == 200
     body = r.content
     fc = json.loads(gzip.decompress(body) if body[:2] == b"\x1f\x8b" else body)
     assert fc["type"] == "FeatureCollection"
-    assert len(fc["features"]) == 98239
+    assert len(fc["features"]) == n
+
+
+def test_cerd_buildings_are_typed_and_inside_the_city():
+    fc = json.loads(gzip.decompress((_GEO / "cerd_batiments.geojson.gz").read_bytes()))
+    cats = {f["properties"]["cat"] for f in fc["features"]}
+    assert {"habitat", "education", "religion", "sante", "administration", "commerce"} <= cats
+    assert all("type" in f["properties"] for f in fc["features"])
+    for f in fc["features"][:2000]:
+        for lon, lat in _walk(f["geometry"]["coordinates"]):
+            assert 43.0 < lon < 43.25 and 11.45 < lat < 11.7
+    types = {f["properties"]["type"] for f in fc["features"]}
+    assert "Mosquée" in types and not any("?" in t or "ordinare" in t for t in types)
+
+
+def test_osm_buildings_layer_was_replaced_by_the_official_survey():
+    import yaml
+    ids = {la["id"] for la in yaml.safe_load((_GEO / "catalog.yaml").read_text())["layers"]}
+    assert "osm_batiments" not in ids
+    assert set(_TOPO) <= ids
+    assert not (_GEO / "osm_batiments.geojson.gz").exists()

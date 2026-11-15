@@ -443,7 +443,7 @@ def check_404(c: Ctx) -> list[Result]:
     if r.error:
         return [Result("404", WARN, f"test 404 impossible ({r.error})")]
     if r.status == 404:
-        home = re.search(r"""href=["'](/|%s/?)["']""" % re.escape(c.origin), r.text)
+        home = re.search(r"""href=["'](/|/[a-z]{2}(?:-[A-Za-z]{2})?/?|%s/?)["']""" % re.escape(c.origin), r.text)  # « / » ou accueil localisé (/fr)
         return [Result("404", PASS if home else WARN, "vrai code 404 avec lien de retour à l'accueil" if home else "vrai code 404 mais sans lien de retour à l'accueil")]
     if r.status == 200:
         return [Result("404", FAIL, "« soft 404 » : une URL inexistante répond 200 (contenu de l'accueil ?)")]

@@ -54,3 +54,23 @@ describe('villeGeo paths', () => {
     expect(d.endsWith('Z')).toBe(true)
   })
 })
+
+describe('sea background', () => {
+  it('covers the whole viewBox', async () => {
+    const { SEA_RECT, VILLE_BOUNDS, VILLE_W, VILLE_PAD } = await import('../villeGeo')
+    expect(SEA_RECT.x).toBe(-VILLE_PAD)
+    expect(SEA_RECT.width).toBe(VILLE_W + VILLE_PAD * 2)
+    expect(SEA_RECT.height).toBeCloseTo(VILLE_BOUNDS.H + VILLE_PAD * 2, 5)
+  })
+})
+
+describe('land patch (south-west corner outside the survey)', () => {
+  it('is a non-empty rectangle inside the frame, bottom-left', async () => {
+    const { LAND_PATCH, SEA_RECT } = await import('../villeGeo')
+    expect(LAND_PATCH.width).toBeGreaterThan(0)
+    expect(LAND_PATCH.height).toBeGreaterThan(0)
+    expect(LAND_PATCH.x).toBe(SEA_RECT.x)
+    expect(LAND_PATCH.y + LAND_PATCH.height).toBeCloseTo(SEA_RECT.y + SEA_RECT.height, 5)
+    expect(LAND_PATCH.x + LAND_PATCH.width).toBeLessThan(SEA_RECT.width / 2)
+  })
+})

@@ -101,3 +101,19 @@ export function quartierLabel(nom: string, superficieHa: number): string | null 
   if (superficieHa < 6 || nom === 'Sans nom') return null
   return nom.length > 20 ? nom.slice(0, 19) + '…' : nom
 }
+
+/** Mer : fond uniforme de toute la carte (le polygone « ligne côtière » du levé, découpé par feuilles, n'est pas utilisé). */
+export const SEA_FILL = 'oklch(30% 0.06 225)'
+export const SEA_RECT = { x: -VILLE_PAD, y: -VILLE_PAD, width: VILLE_W + VILLE_PAD * 2, height: VILLE_BOUNDS.H + VILLE_PAD * 2 }
+
+/** Terre hors levé : le coin sud-ouest du cadre (sud de Balbala, lon < 43,094 / lat < 11,522) est de la terre
+ *  mais n'est couvert ni par les communes ni par le levé ; sans ce rectangle il apparaîtrait en mer.
+ *  (Les limites régionales GADM ont été essayées : trop grossières, elles débordent en mer sur la côte est.) */
+export const LAND_FILL = 'oklch(19% 0.03 290)'
+export const LAND_PATCH = (() => {
+  const x0 = -VILLE_PAD
+  const x1 = px(43.105, VILLE_BOUNDS)
+  const y0 = py(11.5445, VILLE_BOUNDS)
+  const y1 = VILLE_BOUNDS.H + VILLE_PAD
+  return { x: x0, y: y0, width: Math.max(0, x1 - x0), height: Math.max(0, y1 - y0) }
+})()

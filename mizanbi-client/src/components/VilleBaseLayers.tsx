@@ -3,7 +3,7 @@ import COMMUNES_ADMIN from '../data/admin_communes.json'
 import QUARTIERS_ADMIN from '../data/admin_quartiers.json'
 import OSM_VOIRIE_GEO from '../data/osm_centre_voirie.json'
 import {
-  COMMUNE_FILL, OSM_ROAD_STYLE, VILLE_BOUNDS, centroidOfPolygon, linePath, polygonPath, px, py, quartierLabel,
+  COMMUNE_FILL, OSM_ROAD_STYLE, LAND_FILL, LAND_PATCH, SEA_FILL, SEA_RECT, VILLE_BOUNDS, centroidOfPolygon, linePath, polygonPath, px, py, quartierLabel,
   type GeoFeature,
 } from '../lib/villeGeo'
 
@@ -20,6 +20,8 @@ export default function VilleBaseLayers({ labels = true }: { labels?: boolean })
 
   return (
     <g>
+      <rect {...SEA_RECT} fill={SEA_FILL} />
+      <rect {...LAND_PATCH} fill={LAND_FILL} />
       {feats(COMMUNES_ADMIN).map((f, i) => (
         <path key={`comm-${i}`} d={polygonPath(f.geometry.coordinates, b)}
           fill={COMMUNE_FILL[String(f.properties.nom)] ?? 'oklch(20% 0.03 265)'} stroke="oklch(45% 0.08 265)" strokeWidth={0.8} />

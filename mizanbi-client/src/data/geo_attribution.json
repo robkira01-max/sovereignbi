@@ -9,6 +9,11 @@
     "provider": "CERD",
     "license": "Données CERD fournies par le propriétaire du projet"
   },
+  "cerd_batiments": {
+    "name": "Bâtiments de Djibouti-ville (CERD 2014)",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
   "cerd_communes": {
     "name": "Commune de Balbala — arrondissements (CERD)",
     "provider": "CERD",
@@ -21,6 +26,11 @@
   },
   "cerd_equipements_sociaux": {
     "name": "Équipements socio-économiques de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_hydro": {
+    "name": "Hydrographie de Djibouti-ville (CERD 2014)",
     "provider": "CERD",
     "license": "Données CERD fournies par le propriétaire du projet"
   },
@@ -39,8 +49,23 @@
     "provider": "CERD",
     "license": "Données CERD fournies par le propriétaire du projet"
   },
+  "cerd_rail": {
+    "name": "Voie ferrée de Djibouti-ville (CERD 2014)",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_routes": {
+    "name": "Emprises routières de Djibouti-ville (CERD 2014)",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
   "cerd_secteurs_adressage": {
     "name": "Secteurs d'adressage de Djibouti-ville",
+    "provider": "CERD",
+    "license": "Données CERD fournies par le propriétaire du projet"
+  },
+  "cerd_sites": {
+    "name": "Sites et emprises de Djibouti-ville (CERD 2014)",
     "provider": "CERD",
     "license": "Données CERD fournies par le propriétaire du projet"
   },
@@ -78,11 +103,6 @@
     "name": "Structures sanitaires de Djibouti",
     "provider": "Ministère de la Santé / INSTAD",
     "license": "Données fournies par le propriétaire du projet"
-  },
-  "osm_batiments": {
-    "name": "Bâtiments de Djibouti-ville (OSM)",
-    "provider": "© OpenStreetMap contributors",
-    "license": "ODbL 1.0"
   },
   "osm_centre_voirie": {
     "name": "Voirie du centre de Djibouti-ville (OSM)",

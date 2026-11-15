@@ -11,11 +11,12 @@ import TERMINUS_GEO from '../data/cerd_terminus_bus.json'
 import OSM_VOIRIE_GEO from '../data/osm_centre_voirie.json'
 
 import {
-  COMMUNE_FILL, OSM_ROAD_STYLE, VILLE_BOUNDS, VILLE_PAD, VILLE_W, centroidOfPolygon, linePath, polygonPath, px, py, quartierLabel,
+  COMMUNE_FILL, OSM_ROAD_STYLE, LAND_FILL, LAND_PATCH, SEA_FILL, SEA_RECT, VILLE_BOUNDS, VILLE_PAD, VILLE_W, centroidOfPolygon, linePath, polygonPath, px, py, quartierLabel,
   type Coord, type GeoFeature,
 } from '../lib/villeGeo'
 import GeoSources from './GeoSources'
-import BuildingsCanvas from './BuildingsCanvas'
+import TopoCanvas from './TopoCanvas'
+import { BUILDING_CATS, TOPO_LAYERS, type TopoId, type TopoStatus } from '../lib/topoLayers'
 import { apiFetch, isApiConfigured } from '../lib/api'
 
 // Color schemes
@@ -48,7 +49,11 @@ const EQUIP_COLORS: Record<string, string> = {
 const LAYER_LABELS: Record<string, string> = {
   quartiers:   'Quartiers (officiel)',
   centre:      'Routes centre (OSM)',
-  batiments:   'Bâtiments (OSM)',
+  batiments:   'Bâtiments (CERD 2014)',
+  routes:      'Routes (CERD 2014)',
+  hydro:       'Hydrographie',
+  rail:        'Voie ferrée',
+  sites:       'Sites (cimetières, stades…)',
   secteurs:    'Secteurs',
   typologies:  'Typologies urbaines',
   voirie:      'Voirie',
@@ -63,19 +68,24 @@ type HoveredFeature = { nom: string; detail: string; color: string }
 
 export default function DjiboutiVilleMap() {
   const [layers, setLayers] = useState<Record<Layer, boolean>>({
-    quartiers: true, centre: true, batiments: false, secteurs: true, typologies: false, voirie: true, equipements: true, ecoles: false, bus: false,
+    quartiers: true, centre: true, batiments: false, routes: false, hydro: false, rail: false, sites: false, secteurs: true, typologies: false, voirie: true, equipements: true, ecoles: false, bus: false,
   })
-  // Bâtiments : 98k empreintes chargées à la demande depuis l'API (jamais embarquées)
-  const [buildings, setBuildings] = useState<GeoFeature[] | 'loading' | 'error' | null>(null)
+  // Levé topographique CERD : couches lourdes chargées à la demande depuis l'API (jamais embarquées)
+  const TOPO_BY_LAYER: Partial<Record<Layer, TopoId>> = { batiments: 'cerd_batiments', routes: 'cerd_routes', hydro: 'cerd_hydro', rail: 'cerd_rail', sites: 'cerd_sites' }
+  const [topo, setTopo] = useState<Partial<Record<TopoId, TopoStatus>>>({})
   useEffect(() => {
-    if (!layers.batiments || buildings !== null) return
-    if (!isApiConfigured()) { setBuildings('error'); return }
-    setBuildings('loading')
-    apiFetch('/api/v1/geo/dj/osm_batiments')
-      .then(r => r.json())
-      .then(fc => setBuildings((fc as { features: GeoFeature[] }).features))
-      .catch(() => setBuildings('error'))
-  }, [layers.batiments, buildings])
+    for (const [layer, id] of Object.entries(TOPO_BY_LAYER) as [Layer, TopoId][]) {
+      if (!layers[layer] || topo[id] !== undefined) continue
+      if (!isApiConfigured()) { setTopo(t => ({ ...t, [id]: 'error' })); continue }
+      setTopo(t => ({ ...t, [id]: 'loading' }))
+      apiFetch(`/api/v1/geo/dj/${id}`)
+        .then(r => r.json())
+        .then(fc => setTopo(t => ({ ...t, [id]: (fc as { features: GeoFeature[] }).features })))
+        .catch(() => setTopo(t => ({ ...t, [id]: 'error' })))
+    }
+  }, [layers, topo]) // eslint-disable-line react-hooks/exhaustive-deps
+  const topoLoading = Object.entries(TOPO_BY_LAYER).some(([l, id]) => layers[l as Layer] && topo[id as TopoId] === 'loading')
+  const topoError = Object.entries(TOPO_BY_LAYER).some(([l, id]) => layers[l as Layer] && topo[id as TopoId] === 'error')
   const [hovered, setHovered] = useState<HoveredFeature | null>(null)
   const [view, setView] = useState<'map' | 'table'>('map')
   const [tableLayer, setTableLayer] = useState<'equipements' | 'ecoles'>('equipements')
@@ -103,12 +113,10 @@ export default function DjiboutiVilleMap() {
             {LAYER_LABELS[l]}
           </label>
         ))}
-        {layers.batiments && buildings === 'loading' && (
-          <span className="muted" style={{ fontSize: 11 }}>chargement des bâtiments…</span>
-        )}
-        {layers.batiments && buildings === 'error' && (
+        {topoLoading && <span className="muted" style={{ fontSize: 11 }}>chargement du levé CERD…</span>}
+        {topoError && (
           <span style={{ fontSize: 11, color: 'var(--warn, #fbbf24)' }}>
-            Bâtiments indisponibles — cette couche (1,9 Mo) nécessite l'API MizanBI (VITE_API_BASE).
+            Couches du levé CERD indisponibles — elles nécessitent l'API MizanBI (VITE_API_BASE).
           </span>
         )}
       </div>
@@ -122,6 +130,10 @@ export default function DjiboutiVilleMap() {
               role="img"
               aria-label="Carte SIG Djibouti-ville — données CERD"
             >
+              {/* Mer : fond uniforme */}
+              <rect {...SEA_RECT} fill={SEA_FILL} />
+              <rect {...LAND_PATCH} fill={LAND_FILL} />
+
               {/* Communes officielles (admin_pol) */}
               {feats<GeoFeature>(COMMUNES_ADMIN).map((f, i) => (
                 <path key={`comm-${i}`}
@@ -317,7 +329,11 @@ export default function DjiboutiVilleMap() {
                 )
               })}
             </svg>
-            {layers.batiments && Array.isArray(buildings) && <BuildingsCanvas features={buildings} />}
+            {TOPO_LAYERS.map(def => {
+              const layer = (Object.entries(TOPO_BY_LAYER).find(([, id]) => id === def.id)?.[0]) as Layer
+              const data = topo[def.id]
+              return layers[layer] && Array.isArray(data) ? <TopoCanvas key={def.id} def={def} features={data} /> : null
+            })}
           </div>
 
           {/* Legend + tooltip panel */}
@@ -367,6 +383,18 @@ export default function DjiboutiVilleMap() {
                   <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}>
                     <span style={{ width: 16, height: 2, background: v, flexShrink: 0, display: 'inline-block', borderRadius: 1 }} />
                     <span style={{ color: 'var(--muted)' }}>{k}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {layers.batiments && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em' }}>Bâtiments (CERD)</div>
+                {Object.values(BUILDING_CATS).map(c => (
+                  <div key={c.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}>
+                    <span style={{ width: 10, height: 10, borderRadius: 2, background: c.color, flexShrink: 0, display: 'inline-block' }} />
+                    <span style={{ color: 'var(--muted)' }}>{c.label}</span>
                   </div>
                 ))}
               </div>
@@ -435,7 +463,7 @@ export default function DjiboutiVilleMap() {
       )}
 
       <GeoSources
-        layerIds={['admin_communes', 'admin_quartiers', 'cerd_secteurs_adressage', 'cerd_typologies_urbaines', 'cerd_voirie', 'cerd_equipements_sociaux', 'cerd_equipements_scolaires', 'cerd_lignes_bus', 'cerd_terminus_bus', 'osm_centre_voirie', ...(layers.batiments ? ['osm_batiments'] : [])]}
+        layerIds={['admin_communes', 'admin_quartiers', 'cerd_secteurs_adressage', 'cerd_typologies_urbaines', 'cerd_voirie', 'cerd_equipements_sociaux', 'cerd_equipements_scolaires', 'cerd_lignes_bus', 'cerd_terminus_bus', 'osm_centre_voirie', ...TOPO_LAYERS.filter(d => layers[(Object.entries(TOPO_BY_LAYER).find(([, id]) => id === d.id)?.[0]) as Layer]).map(d => d.id)]}
         note="Les routes OSM du centre sont moins précises que les données CERD (couverture CERD : arrondissements 4 et 5, Balbala)."
       />
     </div>

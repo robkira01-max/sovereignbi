@@ -120,7 +120,8 @@ def test_cerd_catalog_entries_have_required_fields():
     import yaml
     catalog = yaml.safe_load(CATALOG.read_text())
     cerd_entries = [l for l in catalog["layers"] if l["id"].startswith("cerd_")]
-    assert len(cerd_entries) == 10, f"Expected 10 CERD layers, got {len(cerd_entries)}"
+    # 10 couches du dossier SIG initial + 5 couches du levé topographique 1/2 500 (bâtiments, routes, hydro, rail, sites)
+    assert len(cerd_entries) == 15, f"Expected 15 CERD layers, got {len(cerd_entries)}"
     for entry in cerd_entries:
         for field in ("id", "api_endpoint", "source", "status", "geometry_type"):
             assert field in entry, f"CERD layer {entry['id']} missing field: {field}"

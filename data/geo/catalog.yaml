@@ -378,31 +378,101 @@ layers:
       validate with the Municipality.
     fr: Obtenu par fusion de polygones (inclut des terrains non bâtis) — ne constitue
       pas une limite légale ; à valider avec la mairie.
-- api_endpoint: /api/v1/geo/dj/osm_batiments
-  coverage: Djibouti-ville — Balbala et centre (lon 43.06-43.20, lat 11.51-11.63)
-  date_acquired: '2026-11-14'
-  description_en: 98,239 OpenStreetMap building footprints over Djibouti-ville (sheds
-    under 15 m2 removed, geometry simplified). Served pre-gzipped (1.9 MB) and loaded
-    on demand by the SIG map; not bundled in the frontend.
-  description_fr: 98 239 empreintes de bâtiments OpenStreetMap sur Djibouti-ville
-    (abris de moins de 15 m2 retirés, géométrie simplifiée). Servies pré-compressées
-    (1,9 Mo) et chargées à la demande par la carte SIG ; non embarquées dans le frontend.
+- api_endpoint: /api/v1/geo/dj/cerd_batiments
+  coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
+  date_acquired: '2026-11-15'
+  description_en: 86,776 building footprints from the CERD survey (>= 12 m2), classified by use with the detailed type.
+  description_fr: 86 776 empreintes de bâtiments du levé CERD (≥ 12 m²), classées par usage (habitat, éducation, santé, administration, commerce, industrie, réseaux, culture, religion, ruines) avec le type détaillé.
   enabled: true
-  feature_count: 98239
-  file_path: data/geo/osm_batiments.geojson.gz
+  feature_count: 86776
+  file_path: data/geo/cerd_batiments.geojson.gz
   format: geojson
   geometry_type: Polygon
-  id: osm_batiments
-  license: ODbL 1.0
-  license_url: https://opendatacommons.org/licenses/odbl/1-0/
-  name_column: nom
-  name_en: Djibouti-ville buildings (OSM)
-  name_fr: Bâtiments de Djibouti-ville (OSM)
-  source: © OpenStreetMap contributors, Geofabrik extract djibouti-latest (2026-11-14)
+  id: cerd_batiments
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: type
+  name_en: Djibouti-ville buildings (CERD 2014)
+  name_fr: Bâtiments de Djibouti-ville (CERD 2014)
+  source: CERD, levé photogrammétrique 1/2 500 (ITRF2005, 2014-01-31)
   status: draft
-  warnings:
-  - en: Crowd-sourced footprints, completeness varies by area. Gzip file — spatial
-      analyses (geo/analyze) cannot read it.
-    fr: Empreintes collaboratives, complétude variable selon les zones. Fichier gzip —
-      les analyses spatiales (geo/analyze) ne peuvent pas le lire.
+  warnings: &id001
+  - en: Survey dated 2014 — buildings and roads built since are missing. Gzip file served on demand; spatial analyses (geo/analyze) cannot read it.
+    fr: Levé de 2014 — les constructions et routes postérieures manquent. Fichier gzip servi à la demande ; les analyses spatiales (geo/analyze) ne peuvent pas le lire.
+- api_endpoint: /api/v1/geo/dj/cerd_routes
+  coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
+  date_acquired: '2026-11-15'
+  description_en: '1,155 road surfaces: paved, unpaved, tracks, bridges, improved roads.'
+  description_fr: '1 155 emprises de routes : revêtues, non revêtues, pistes, ponts, voies aménagées.'
+  enabled: true
+  feature_count: 1155
+  file_path: data/geo/cerd_routes.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_routes
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: type
+  name_en: Djibouti-ville road surfaces (CERD 2014)
+  name_fr: Emprises routières de Djibouti-ville (CERD 2014)
+  source: CERD, levé photogrammétrique 1/2 500 (ITRF2005, 2014-01-31)
+  status: draft
+  warnings: *id001
+- api_endpoint: /api/v1/geo/dj/cerd_hydro
+  coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
+  date_acquired: '2026-11-15'
+  description_en: 'Wadis, canals, lakes and ponds, water, oil and gas tanks: 1,554 features (the sea is the map background).'
+  description_fr: 'Oueds, canaux, lacs et mares, réservoirs d''eau, de pétrole et de gaz : 1 557 entités.'
+  enabled: true
+  feature_count: 1554
+  file_path: data/geo/cerd_hydro.geojson.gz
+  format: geojson
+  geometry_type: Geometry
+  id: cerd_hydro
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: type
+  name_en: Djibouti-ville hydrography (CERD 2014)
+  name_fr: Hydrographie de Djibouti-ville (CERD 2014)
+  source: CERD, levé photogrammétrique 1/2 500 (ITRF2005, 2014-01-31)
+  status: draft
+  warnings: *id001
+- api_endpoint: /api/v1/geo/dj/cerd_rail
+  coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
+  date_acquired: '2026-11-15'
+  description_en: 'Railway, platforms and railway bridges: 201 segments.'
+  description_fr: 'Voie ferrée, plates-formes et ponts ferroviaires : 201 tronçons.'
+  enabled: true
+  feature_count: 201
+  file_path: data/geo/cerd_rail.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: cerd_rail
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: type
+  name_en: Djibouti-ville railway (CERD 2014)
+  name_fr: Voie ferrée de Djibouti-ville (CERD 2014)
+  source: CERD, levé photogrammétrique 1/2 500 (ITRF2005, 2014-01-31)
+  status: draft
+  warnings: *id001
+- api_endpoint: /api/v1/geo/dj/cerd_sites
+  coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
+  date_acquired: '2026-11-15'
+  description_en: 'Cemeteries, quarries, free zones and depots, stadiums, car parks, parks, heliports, magazines: 1,408 sites.'
+  description_fr: 'Cimetières, carrières, zones franches et dépôts, stades, parkings, parcs, héliports, poudrières : 1 408 sites.'
+  enabled: true
+  feature_count: 1408
+  file_path: data/geo/cerd_sites.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: cerd_sites
+  license: Données CERD fournies par le propriétaire du projet
+  license_url: ''
+  name_column: type
+  name_en: Djibouti-ville sites and land uses (CERD 2014)
+  name_fr: Sites et emprises de Djibouti-ville (CERD 2014)
+  source: CERD, levé photogrammétrique 1/2 500 (ITRF2005, 2014-01-31)
+  status: draft
+  warnings: *id001
 version: '1'

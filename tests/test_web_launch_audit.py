@@ -304,3 +304,13 @@ def test_fail_on_warn_makes_warnings_fatal(bad):
         assert wla.main([s.base, "--no-color", "--fail-on", "warn"]) == 1
     finally:
         s.close()
+
+
+def test_404_home_link_may_be_a_localized_home():
+    # Sites multilingues : la page 404 renvoie vers /fr (ou /en-CA), pas vers « / ».
+    page = "<html><body><a href='/fr'>Accueil</a>introuvable</body></html>"
+    s = Site(lambda base: {"/": (200, HTML, b"<html></html>")}, fallback=(404, HTML, page.encode()))
+    try:
+        assert run(s)["404"].status == wla.PASS
+    finally:
+        s.close()

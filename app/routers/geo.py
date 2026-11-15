@@ -40,8 +40,12 @@ _LEVEL_PATHS: dict[str, Path] = {
     # Découpage administratif officiel de Djibouti-ville (admin_pol, 2014)
     "admin_quartiers":            _REPO_ROOT / "data" / "geo" / "admin_quartiers.geojson",
     "admin_communes":             _REPO_ROOT / "data" / "geo" / "admin_communes.geojson",
-    # Empreintes de bâtiments OSM (fichier pré-compressé, servi tel quel)
-    "osm_batiments":              _REPO_ROOT / "data" / "geo" / "osm_batiments.geojson.gz",
+    # Levé topographique CERD 1/2 500 (2014) : fichiers pré-compressés, servis tels quels
+    "cerd_batiments":             _REPO_ROOT / "data" / "geo" / "cerd_batiments.geojson.gz",
+    "cerd_routes":                _REPO_ROOT / "data" / "geo" / "cerd_routes.geojson.gz",
+    "cerd_hydro":                 _REPO_ROOT / "data" / "geo" / "cerd_hydro.geojson.gz",
+    "cerd_rail":                  _REPO_ROOT / "data" / "geo" / "cerd_rail.geojson.gz",
+    "cerd_sites":                 _REPO_ROOT / "data" / "geo" / "cerd_sites.geojson.gz",
     # CERD Djibouti-ville layers
     "cerd_equipements_scolaires": _CERD / "cerd_equipements_scolaires.geojson",
     "cerd_equipements_sociaux":   _CERD / "cerd_equipements_sociaux.geojson",
@@ -68,6 +72,7 @@ async def get_dj_geo(level: str) -> JSONResponse:
     - **structures_sante** : 65 structures sanitaires avec GPS et effectifs (Ministère de la Santé 2020)
     - **admin_quartiers** : 91 quartiers et cités de Djibouti-ville (admin_pol, photogrammétrie 1/2 500, 2014)
     - **admin_communes** : 3 communes de Djibouti-ville (Ras-Dika, Boulaos, Balbala)
+    - **cerd_batiments | cerd_routes | cerd_hydro | cerd_rail | cerd_sites** : levé topographique CERD 1/2 500 (2014), gzip
     """
     if level not in _VALID_LEVELS:
         raise HTTPException(
