@@ -7,6 +7,8 @@ import { apiJson, isApiConfigured } from '../lib/api'
 import { currentTheme } from '../lib/theme'
 import DjiboutiMap from '../components/DjiboutiMap'
 import SourceAttribution from '../components/SourceAttribution'
+import CertificationBadge from '../components/CertificationBadge'
+import { fetchCertifications } from '../lib/certification'
 
 interface Props {
   t: Dict
@@ -24,6 +26,8 @@ export default function HomePage({ t, go }: Props) {
     retry: false,
     staleTime: 60_000,
   })
+  // Pastille de validation : échec (non connecté, droits, serveur) = pas de pastille, jamais d'erreur affichée.
+  const certs = useQuery({ queryKey: ['certification'], queryFn: fetchCertifications, enabled: isApiConfigured(), retry: false, staleTime: 60_000 })
   const tables = health.data?.tables?.length ? health.data.tables : DEMO_TABLES
   const apiStatus = !isApiConfigured() ? t.off : health.isError ? t.off : health.data ? t.live : '…'
 
@@ -165,7 +169,12 @@ export default function HomePage({ t, go }: Props) {
         <div className="card-solid span4" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ fontWeight: 600 }}>{t.tables}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {tables.map((tb) => <span key={tb} className="pill">{tb}</span>)}
+            {tables.map((tb) => (
+              <span key={tb} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                <span className="pill">{tb}</span>
+                <CertificationBadge info={certs.data?.[tb]} t={t} />
+              </span>
+            ))}
           </div>
           <div className="muted">
             {t.demoBadge} — {REGIONS.map((r) => `${r.name} ${fmt(r.population)} hab.`).join(' · ')} — Total : {fmt(TOTAL_POPULATION)} hab.
