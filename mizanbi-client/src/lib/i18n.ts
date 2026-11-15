@@ -209,6 +209,11 @@ const fr = {
     manageCookies: 'Gérer mes cookies',
   },
   dashboard: {
+    sdmxButton: '↓ SDMX', sdmxTitle: 'Export SDMX-CSV', sdmxStructure: 'Identifiant du jeu (AGENCE:ID(VERSION))', sdmxUnit: "Unité (code, ex. PCT)", sdmxFreq: 'Périodicité',
+    sdmxFreqAuto: 'Automatique', sdmxFreqA: 'annuelle', sdmxFreqS: 'semestrielle', sdmxFreqQ: 'trimestrielle', sdmxFreqM: 'mensuelle', sdmxFreqW: 'hebdomadaire', sdmxFreqD: 'quotidienne',
+    sdmxDownload: 'Télécharger', sdmxCancel: 'Annuler', sdmxError: "Export SDMX impossible.",
+    sdmxErrStructure: 'Format attendu : AGENCE:IDENTIFIANT(1.0)', sdmxErrUnit: 'Lettres, chiffres, _ . - (40 max.)',
+    sdmxNote: "SDMX-CSV 2.0, agence par défaut MIZANBI : remplacez-la par celle de votre institut. La périodicité ne sert que si la colonne de temps est une date. Fichier non validé avec un registre SDMX officiel.",
     title: "Tableaux de bord",
     tagsFilterPlaceholder: "Filtrer par tag…",
     noDashboards: "Aucun tableau de bord.",
@@ -517,6 +522,11 @@ const en: Dict = {
     manageCookies: 'Manage my cookies',
   },
   dashboard: {
+    sdmxButton: '↓ SDMX', sdmxTitle: 'SDMX-CSV export', sdmxStructure: 'Dataset identifier (AGENCY:ID(VERSION))', sdmxUnit: 'Unit (code, e.g. PCT)', sdmxFreq: 'Frequency',
+    sdmxFreqAuto: 'Automatic', sdmxFreqA: 'annual', sdmxFreqS: 'semi-annual', sdmxFreqQ: 'quarterly', sdmxFreqM: 'monthly', sdmxFreqW: 'weekly', sdmxFreqD: 'daily',
+    sdmxDownload: 'Download', sdmxCancel: 'Cancel', sdmxError: 'SDMX export failed.',
+    sdmxErrStructure: 'Expected format: AGENCY:IDENTIFIER(1.0)', sdmxErrUnit: 'Letters, digits, _ . - (40 max.)',
+    sdmxNote: 'SDMX-CSV 2.0, default agency MIZANBI: replace it with your institute\'s. Frequency only matters if the time column is a date. File not validated with an official SDMX registry.',
     title: 'Dashboards',
     tagsFilterPlaceholder: 'Filter by tag…',
     noDashboards: 'No dashboards.',

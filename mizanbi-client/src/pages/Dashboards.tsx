@@ -13,6 +13,7 @@ import {
 import { DEMO_DASHBOARDS } from '../data/demo'
 import DemoTileRenderer from '../components/TileRenderer'
 import { LiveTileRenderer } from '../components/LiveTileRenderer'
+import SdmxExportButton from '../components/SdmxExportButton'
 import { tileDataToCsv, dashboardToBulletinHtml, triggerDownload } from '../lib/exports'
 
 const TILE_TYPES = ['kpi', 'bar', 'line', 'pie', 'table', 'map', 'map-adm2', 'map-bivariate', 'heatmap', 'grid']
@@ -474,6 +475,7 @@ function LiveDashboardPage({ t }: { t: Dict }) {
                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', fontSize: 10, padding: '0 3px', lineHeight: 1 }}>
                   ↓ CSV
                 </button>
+                <SdmxExportButton dashId={selected.id} tileId={tile.id} t={t.dashboard} onError={setError} />
                 <button onClick={() => removeTile(tile.id)} title={t.dashboard.deleteTile}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', fontSize: 15, padding: '0 3px', lineHeight: 1 }}>×</button>
               </div>
