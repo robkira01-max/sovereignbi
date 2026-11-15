@@ -42,6 +42,7 @@ from app.routers.addin import router as addin_router
 from app.routers.sync import router as sync_router
 from app.routers.semantic import router as semantic_router
 from app.routers.sdmx import router as sdmx_router
+from app.routers.privacy_ops import router as privacy_ops_router
 from app.routers.subscriptions import router as subscriptions_router
 from app.routers.chatbot import router as chatbot_router
 from app.routers.trade_flows import router as trade_flows_router
@@ -159,6 +160,7 @@ app.include_router(addin_router)
 app.include_router(sync_router)
 app.include_router(semantic_router)
 app.include_router(sdmx_router)
+app.include_router(privacy_ops_router)
 app.include_router(subscriptions_router)
 app.include_router(chatbot_router)
 app.include_router(trade_flows_router)
