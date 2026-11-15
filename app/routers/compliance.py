@@ -187,6 +187,7 @@ def _ai_processing() -> tuple[str, str]:
 
 @router.get("/notice")
 def privacy_notice(_: str = Depends(_VIEWER)):
+    from app.ai_policy import external_provider
     from app.ai_policy import strict as ai_strict
 
     """Retourne l'avis de confidentialité en JSON (Loi 25 / PIPEDA)."""
@@ -201,6 +202,8 @@ def privacy_notice(_: str = Depends(_VIEWER)):
             {"id": "analytics", "description": "Analyse des données chargées par l'utilisateur"},
             {"id": "ai_processing", "description": ai_description},
         ],
+        "ai_provider": os.environ.get("LLM_PROVIDER", "ollama").strip().lower() or "ollama",
+        "ai_external": external_provider(),
         "ai_strict_mode": ai_strict(),
         "retention": "Selon la politique de rétention configurée par l'opérateur",
         "rights": ["accès", "rectification", "suppression", "exportation", "retrait du consentement"],

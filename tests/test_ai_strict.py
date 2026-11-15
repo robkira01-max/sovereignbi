@@ -223,9 +223,14 @@ def test_privacy_notice_reflects_strict_mode(client, monkeypatch):
     assert n["ai_strict_mode"] is True
     d = n["purposes"][1]["description"]
     assert "mode strict" in d and "aucune ligne de données" in d
+    assert n["ai_provider"] == "kimi" and n["ai_external"] is True
     monkeypatch.setenv("LLM_PROVIDER", "ollama")                                 # local : rien n'est transmis
     n = note()
     assert n["ai_strict_mode"] is False and "local" in n["purposes"][1]["description"]
+    assert n["ai_provider"] == "ollama" and n["ai_external"] is False
+    monkeypatch.setenv("LLM_PROVIDER", "kimmi")                                  # faute de frappe : externe, donc protégé
+    n = note()
+    assert n["ai_external"] is True and n["ai_strict_mode"] is True
 
 
 def test_startup_warns_only_when_strict_is_explicitly_disabled_with_an_external_llm(monkeypatch):

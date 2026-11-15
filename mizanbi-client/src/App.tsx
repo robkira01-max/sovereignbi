@@ -1,3 +1,4 @@
+import AiModeBadge from './components/AiModeBadge'
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { I18N, LANGS, dirOf, type Lang, type Dict } from './lib/i18n'
 import { DEMO_USER } from './data/demo'
@@ -227,6 +228,7 @@ export default function App() {
               <button key={l} onClick={() => setLang(l)} className={`lang-btn${lang === l ? ' active' : ''}`}>{l.toUpperCase()}</button>
             ))}
           </div>
+          {me && <AiModeBadge t={t} />}
           <div ref={themeMenuRef} style={{ position: 'relative' }}>
             <button className="btn-ghost theme-btn" onClick={() => setThemeMenuOpen((o) => !o)} aria-haspopup="menu" aria-expanded={themeMenuOpen} aria-label={t.theme} title={t.theme}>
               <span className="theme-swatch" style={{ background: resolvedTheme.swatch[0] }} />

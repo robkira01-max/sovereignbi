@@ -139,3 +139,8 @@ table.data tr:nth-child(even) td { background: var(--surface); }
 .cert-ok   { color: oklch(82% 0.15 155); background: oklch(30% 0.09 155 / 0.45); }          /* teintes fixes comme .badge-ok : le thème ne doit pas changer le sens */
 .cert-warn { color: oklch(82% 0.15 65);  background: oklch(34% 0.08 55 / 0.45); }
 .cert-bad  { color: oklch(78% 0.17 25); background: oklch(30% 0.12 25 / 0.35); }
+
+/* Indicateur du mode IA (en-tête) : icône + texte, teintes fixes comme .badge-ok / .badge-demo */
+.ai-badge { display: inline-flex; align-items: center; gap: 4px; font: 600 11px system-ui, sans-serif; padding: 4px 9px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; cursor: help; }
+.ai-ok   { color: oklch(82% 0.15 155); background: oklch(30% 0.09 155 / 0.45); }
+.ai-warn { color: oklch(82% 0.15 65);  background: oklch(34% 0.08 55 / 0.55); }
