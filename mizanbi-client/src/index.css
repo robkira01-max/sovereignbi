@@ -136,6 +136,6 @@ table.data tr:nth-child(even) td { background: var(--surface); }
 
 /* Pastille de certification (P-069) : icône + texte, la couleur ne porte jamais seule le sens */
 .cert-badge { display: inline-flex; align-items: center; gap: 4px; font: 600 11px system-ui, sans-serif; padding: 3px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; cursor: help; }
-.cert-ok   { color: var(--accent-soft); background: oklch(30% 0.09 155 / 0.35); }
-.cert-warn { color: var(--warning);     background: oklch(30% 0.09 55 / 0.35); }
+.cert-ok   { color: oklch(82% 0.15 155); background: oklch(30% 0.09 155 / 0.45); }          /* teintes fixes comme .badge-ok : le thème ne doit pas changer le sens */
+.cert-warn { color: oklch(82% 0.15 65);  background: oklch(34% 0.08 55 / 0.45); }
 .cert-bad  { color: oklch(78% 0.17 25); background: oklch(30% 0.12 25 / 0.35); }

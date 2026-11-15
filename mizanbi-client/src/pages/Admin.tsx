@@ -6,6 +6,7 @@ import {
   type Account, type AccountErrorCode, type AccountsService, type Me, type Role,
 } from '../lib/accounts'
 import { fmt } from '../lib/geoai'
+import CertificationAdmin from '../components/CertificationAdmin'
 
 // P-038 — Écran administrateur : gestion des comptes (rôles, activation, mots de passe).
 // Mode connecté : /auth/users* (le serveur applique les règles et l'audit).
@@ -249,6 +250,7 @@ export default function AdminPage({ t, lang, service, me, onSelfChanged }: {
           </div>
         )}
       </div>
+      <CertificationAdmin t={t} />
     </div>
   )
 }

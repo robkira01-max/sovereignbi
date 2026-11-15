@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { badgeFor, indexByTable, type CertInfo } from '../certification'
+import { badgeFor, buildCertifyBody, indexByTable, toValidUntil, type CertInfo } from '../certification'
+import CertificationAdmin from '../../components/CertificationAdmin'
 import { I18N } from '../i18n'
 import CertificationBadge from '../../components/CertificationBadge'
 
@@ -75,5 +76,47 @@ describe('CertificationBadge', () => {
     const html = renderToStaticMarkup(createElement(CertificationBadge, { info: { ...base, certifier: '<img src=x onerror=alert(1)>' }, t: I18N.fr }))
     expect(html).not.toContain('<img')
     expect(html).toContain('&lt;img')
+  })
+})
+
+
+describe('toValidUntil / buildCertifyBody', () => {
+  it('turns a day into end of day UTC, empty into null, anything else into undefined', () => {
+    expect(toValidUntil('2027-03-31')).toBe('2027-03-31T23:59:59+00:00')
+    expect(toValidUntil('')).toBeNull()
+    expect(toValidUntil('  ')).toBeNull()
+    for (const bad of ['demain', '31/03/2027', '2027-13-45', '2027-3-1', '2027-03-31T00:00']) expect(toValidUntil(bad)).toBeUndefined()
+  })
+  const ok = { table: 'pib', certifier: ' INSTAD ', reference: ' Note 14 ', validUntil: '' }
+  it('trims fields and builds the request body', () => {
+    expect(buildCertifyBody(ok)).toEqual({ table: 'pib', certifier: 'INSTAD', reference: 'Note 14', valid_until: null })
+    expect(buildCertifyBody({ ...ok, validUntil: '2027-01-01' })?.valid_until).toBe('2027-01-01T23:59:59+00:00')
+  })
+  it('refuses a missing table, institution or reference, and a bad date', () => {
+    for (const bad of [{ table: '' }, { certifier: '  ' }, { reference: '' }, { validUntil: 'bientôt' }]) {
+      expect(buildCertifyBody({ ...ok, ...bad })).toBeNull()
+    }
+  })
+})
+
+describe('CertificationAdmin', () => {
+  it('in demo mode (no API) shows the notice and no form, so nothing can be recorded', () => {
+    const html = renderToStaticMarkup(createElement(CertificationAdmin, { t: I18N.fr }))
+    expect(html).toContain(I18N.fr.admin.certSection)
+    expect(html).toContain('mode démo')            // l'apostrophe est échappée en HTML : on teste un fragment sans apostrophe
+    expect(html).not.toContain('<form')
+    expect(html).not.toContain('<input')
+  })
+  it('fr and en define every admin certification text', () => {
+    const keys = Object.keys(I18N.fr.admin).filter((k) => k.startsWith('cert')) as (keyof typeof I18N.fr.admin)[]
+    expect(keys.length).toBe(18)
+    for (const k of keys) {
+      expect(I18N.en.admin[k]).toBeTruthy()
+    }
+    expect(Object.keys(I18N.en.admin).filter((k) => k.startsWith('cert')).sort()).toEqual(keys.map(String).sort())
+  })
+  it('the intro states that the institution is not verified', () => {
+    expect(I18N.fr.admin.certIntro).toContain('ne vérifie pas')
+    expect(I18N.en.admin.certIntro).toContain('does not verify')
   })
 })

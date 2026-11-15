@@ -7,6 +7,7 @@ export type CertStatus = 'certified' | 'stale' | 'expired' | 'revoked' | 'tamper
 
 export interface CertInfo {
   table: string
+  certification_id?: string
   status: CertStatus
   certifier?: string
   reference?: string
@@ -71,4 +72,42 @@ export function badgeFor(c: CertInfo | undefined, t: CertLabels): Badge | null {
 export async function fetchCertifications(): Promise<Record<string, CertInfo>> {
   if (!isApiConfigured()) return {}
   return indexByTable(await apiJson<CertResponse>('/certification'))
+}
+
+// ── Administration (admin) : enregistrer / révoquer une validation ──────────
+
+export interface CertifyInput { table: string; certifier: string; reference: string; validUntil: string }
+
+/** « 2027-03-31 » → fin de journée UTC ; vide → null ; format inattendu → undefined (à refuser). */
+export function toValidUntil(day: string): string | null | undefined {
+  const d = day.trim()
+  if (!d) return null
+  return /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(Date.parse(d)) ? `${d}T23:59:59+00:00` : undefined
+}
+
+/** Corps de la requête, ou null si un champ obligatoire manque ou si la date est invalide. */
+export function buildCertifyBody(i: CertifyInput): { table: string; certifier: string; reference: string; valid_until: string | null } | null {
+  const certifier = i.certifier.trim()
+  const reference = i.reference.trim()
+  const until = toValidUntil(i.validUntil)
+  if (!i.table || !certifier || !reference || until === undefined) return null
+  return { table: i.table, certifier, reference, valid_until: until }
+}
+
+const jsonInit = (body: unknown): RequestInit => ({
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body),
+})
+
+export async function certifyTable(i: CertifyInput): Promise<void> {
+  const body = buildCertifyBody(i)
+  if (!body) throw new Error('invalid')
+  await apiJson('/certification', jsonInit(body))
+}
+
+export async function revokeCertification(id: string, reason: string): Promise<void> {
+  const r = reason.trim()
+  if (!r) throw new Error('invalid')
+  await apiJson(`/certification/${encodeURIComponent(id)}/revoke`, jsonInit({ reason: r }))
 }
