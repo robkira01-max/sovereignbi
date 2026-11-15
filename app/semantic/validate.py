@@ -5,6 +5,7 @@ Retourne une liste de problèmes sans jamais lever : l'appelant décide quoi en 
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 import sqlglot
@@ -12,6 +13,13 @@ from sqlglot import exp
 
 from app.semantic.model import SemanticModel
 from app.semantic.resolver import normalize
+
+
+# Codelist SDMX CL_FREQ (périodicités usuelles)
+SDMX_FREQUENCIES = {"A": "annuelle", "S": "semestrielle", "Q": "trimestrielle", "M": "mensuelle",
+                    "W": "hebdomadaire", "D": "quotidienne", "H": "horaire", "B": "jours ouvrés", "N": "à la minute"}
+_CODE_RE = re.compile(r"^[A-Z][A-Z0-9_]{0,63}$")
+_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 @dataclass(frozen=True)
@@ -76,6 +84,24 @@ def validate_model(model: SemanticModel) -> list[Issue]:
             issues.append(Issue("warning", "no_description", f"mesure « {m.name} » sans description"))
     for f in model.filters:
         check_sql("filtre", f.name, f.sql, f.tables)
+
+    # 2b. Métadonnées d'indicateur (P-066)
+    codes: dict[str, str] = {}
+    for m in model.metrics:
+        if m.code:
+            if not _CODE_RE.match(m.code):
+                issues.append(Issue("error", "bad_indicator_code", f"mesure « {m.name} » : code « {m.code} » invalide (A-Z, 0-9 et _, commence par une lettre)"))
+            elif m.code in codes:
+                issues.append(Issue("error", "duplicate_indicator_code", f"code « {m.code} » utilisé par « {codes[m.code]} » et « {m.name} »"))
+            codes[m.code] = m.name
+        if m.frequency and m.frequency not in SDMX_FREQUENCIES:
+            issues.append(Issue("error", "bad_frequency", f"mesure « {m.name} » : périodicité « {m.frequency} » inconnue (attendu : {', '.join(SDMX_FREQUENCIES)})"))
+        if m.last_updated and not _DATE_RE.match(m.last_updated):
+            issues.append(Issue("error", "bad_date", f"mesure « {m.name} » : last_updated « {m.last_updated} » doit être AAAA-MM-JJ"))
+        if m.code and not m.source.strip():
+            issues.append(Issue("warning", "indicator_without_source", f"indicateur « {m.code} » sans source"))
+        if m.code and not (m.definition.strip() or m.description.strip()):
+            issues.append(Issue("warning", "indicator_without_definition", f"indicateur « {m.code} » sans définition"))
 
     # 3. Synonymes de valeurs : table et colonne existantes
     for v in model.value_synonyms:

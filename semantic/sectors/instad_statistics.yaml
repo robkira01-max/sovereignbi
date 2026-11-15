@@ -17,6 +17,12 @@ metrics:
     sql: "SUM(pib_courant_mrd_usd)"
     tables: ["indicateurs_macro"]
     description: "PIB courant de Djibouti en milliards USD"
+    code: "PIB_TOTAL"
+    source: "INSTAD — données fictives d'illustration"
+    frequency: "A"
+    topic: "economie"
+    definition: "Valeur de la production de biens et services produite sur le territoire, aux prix courants."
+    last_updated: "2026-11-15"
 
   - name: "pib_par_habitant"
     aliases:
@@ -25,6 +31,12 @@ metrics:
     sql: "AVG(pib_par_habitant_usd)"
     tables: ["indicateurs_macro"]
     description: "PIB par habitant en USD courants"
+    code: "PIB_PAR_HABITANT"
+    source: "INSTAD — données fictives d'illustration"
+    frequency: "A"
+    topic: "economie"
+    definition: "PIB courant rapporté à la population."
+    last_updated: "2026-11-15"
 
   - name: "taux_croissance_pib"
     aliases:
@@ -33,6 +45,12 @@ metrics:
     sql: "AVG(croissance_pib_pct)"
     tables: ["indicateurs_macro"]
     description: "Taux de croissance annuel du PIB en %"
+    code: "CROISSANCE_PIB"
+    source: "INSTAD — données fictives d'illustration"
+    frequency: "A"
+    topic: "economie"
+    definition: "Variation annuelle du PIB en volume."
+    last_updated: "2026-11-15"
 
   - name: "taux_inflation"
     aliases:
@@ -41,6 +59,12 @@ metrics:
     sql: "AVG(inflation_pct)"
     tables: ["indicateurs_macro"]
     description: "Taux d'inflation annuel en %"
+    code: "INFLATION"
+    source: "INSTAD — données fictives d'illustration"
+    frequency: "A"
+    topic: "economie"
+    definition: "Variation annuelle de l'indice des prix à la consommation."
+    last_updated: "2026-11-15"
 
   - name: "dette_publique"
     aliases:

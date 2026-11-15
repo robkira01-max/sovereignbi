@@ -534,6 +534,72 @@ def tile_export_csv(dashboard_id: str, tile_id: str, request: Request, _: str = 
     )
 
 
+@router.get("/dashboards/{dashboard_id}/tiles/{tile_id}/export/sdmx-csv")
+def tile_export_sdmx_csv(
+    dashboard_id: str,
+    tile_id: str,
+    request: Request,
+    structure_id: str | None = Query(None, max_length=120, description="AGENCE:IDENTIFIANT(VERSION)"),
+    time_col: str | None = Query(None, max_length=80),
+    value_col: str | None = Query(None, max_length=80),
+    unit: str | None = Query(None, max_length=40, description="Code d'unité (attribut UNIT_MEASURE)"),
+    freq: str | None = Query(None, pattern="^[ASQMWDHBN]$"),
+    _: str = Depends(_VIEWER),
+):
+    """Export SDMX-CSV 2.0 du résultat d'une tuile (STRUCTURE, STRUCTURE_ID, ACTION, dimensions, TIME_PERIOD, OBS_VALUE)."""
+    from decimal import Decimal
+
+    from app.sdmx.csv_format import SdmxError, default_structure_id, write_sdmx_csv
+
+    _validate_id(dashboard_id, "dashboard_id")
+    _validate_id(tile_id, "tile_id")
+    p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
+    if not p.exists():
+        raise HTTPException(404, f"Dashboard '{dashboard_id}' introuvable.")
+    d = load_dashboard(p)
+    tile = next((t for t in d.tiles if t.id == tile_id), None)
+    if tile is None:
+        raise HTTPException(404, f"Tuile '{tile_id}' introuvable.")
+    sql = (tile.sql_pinned or tile.metric or "").strip()
+    if not sql:
+        raise HTTPException(422, "Cette tuile n'a pas de SQL exécutable.")
+
+    store = request.app.state.store
+    try:
+        safe_sql = validate_sql(sql, store.tables)
+        columns, rows = store.execute(safe_sql)
+    except SQLGuardError as exc:
+        raise HTTPException(422, f"Requête SQL non autorisée : {exc}") from exc
+    except Exception as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+    def numeric(i: int) -> bool:
+        vals = [r[i] for r in rows if r[i] is not None]
+        return bool(vals) and all(isinstance(v, (int, float, Decimal)) and not isinstance(v, bool) for v in vals)
+
+    time_names = {"annee", "année", "year", "periode", "période", "period", "date", "mois", "month", "trimestre", "time_period"}
+    if time_col is None:
+        time_col = next((c for c in columns if c.lower() in time_names), None)
+    if value_col is None:
+        cand = [c for i, c in enumerate(columns) if c != time_col and numeric(i)]
+        if not cand:
+            raise HTTPException(422, "Aucune colonne numérique trouvée pour OBS_VALUE : précisez value_col.")
+        value_col = cand[-1]
+    try:
+        text = write_sdmx_csv(
+            columns, rows,
+            structure_id=structure_id or default_structure_id(f"{dashboard_id}_{tile_id}"),
+            value_col=value_col, time_col=time_col, unit=unit, freq=freq,
+        )
+    except SdmxError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    return Response(
+        content=text.encode("utf-8"),
+        media_type="application/vnd.sdmx.data+csv; version=2.0; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{dashboard_id}-{tile_id}.sdmx.csv"'},
+    )
+
+
 @router.put("/dashboards/{dashboard_id}/tiles/{tile_id}/note", status_code=200)
 def set_tile_note(
     dashboard_id: str,

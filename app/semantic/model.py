@@ -31,6 +31,14 @@ class MetricInfo:
     description: str = ""
     join_required: bool = False
     unit: str = ""
+    # Métadonnées d'indicateur (P-066) : tout est facultatif ; `code` rend la mesure publiable (SDMX).
+    code: str = ""           # identifiant stable, ex. « PIB_TOTAL » (A-Z, 0-9, _)
+    source: str = ""         # producteur ou publication d'origine
+    frequency: str = ""      # périodicité SDMX : A, S, Q, M, W, D, H, B, N
+    definition: str = ""     # définition statistique
+    methodology: str = ""    # méthode de calcul, couverture, exclusions
+    topic: str = ""          # thème (économie, démographie…)
+    last_updated: str = ""   # date de dernière mise à jour des données (AAAA-MM-JJ)
 
 
 @dataclass
@@ -105,6 +113,13 @@ def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
             description=m.get("description", ""),
             join_required=bool(m.get("join_required", False)),
             unit=str(m.get("unit", "") or ""),
+            code=str(m.get("code", "") or ""),
+            source=str(m.get("source", "") or ""),
+            frequency=str(m.get("frequency", "") or ""),
+            definition=str(m.get("definition", "") or ""),
+            methodology=str(m.get("methodology", "") or ""),
+            topic=str(m.get("topic", "") or ""),
+            last_updated=str(m.get("last_updated", "") or ""),
         )
         for m in raw.get("metrics", [])
     ]

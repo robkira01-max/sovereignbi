@@ -85,3 +85,32 @@ def resolve_question(request: Request, q: str = Query(..., min_length=1, max_len
     """Aperçu : quels termes métier du modèle actif sont reconnus dans une question (sans appeler le LLM)."""
     model = _active_model(request)
     return {"question": q, "terms": [t.__dict__ for t in resolve_terms(model, q)]}
+
+
+def _indicator_dict(m) -> dict:
+    from app.semantic.validate import SDMX_FREQUENCIES
+    meta = {
+        "code": m.code, "name": m.name, "aliases": m.aliases, "unit": m.unit, "source": m.source,
+        "frequency": m.frequency, "frequency_label": SDMX_FREQUENCIES.get(m.frequency, ""),
+        "definition": m.definition or m.description, "methodology": m.methodology,
+        "topic": m.topic, "last_updated": m.last_updated,
+    }
+    missing = [k for k in ("source", "frequency", "unit", "methodology", "last_updated") if not meta[k]]
+    return {**meta, "complete": not missing, "missing": missing}
+
+
+@router.get("/indicators")
+def list_indicators(request: Request, topic: str | None = Query(None, max_length=80), _: str = Depends(_VIEWER)):
+    """Catalogue des indicateurs publiables du modèle actif (mesures qui portent un `code`) avec leurs métadonnées."""
+    items = [_indicator_dict(m) for m in _active_model(request).metrics if m.code]
+    if topic:
+        items = [i for i in items if i["topic"].lower() == topic.lower()]
+    return {"count": len(items), "indicators": items}
+
+
+@router.get("/indicators/{code}")
+def get_indicator(code: str, request: Request, _: str = Depends(_VIEWER)):
+    for m in _active_model(request).metrics:
+        if m.code and m.code == code:
+            return _indicator_dict(m)
+    raise HTTPException(404, "Indicateur introuvable.")
