@@ -179,6 +179,30 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Impact :** Élevé — sécurité (point 3), conformité cookies (point 5), partage et SEO (6-9, 15), performance (12).
 **Livré :** voir CLAUDE.md « Durcissement web » ; `tools/web_launch_audit.py` (15 tests, réutilisable sur tous les projets web) ; `tools/make_brand_assets.py`. Premier audit des sites déjà en ligne : Vigile (aucune balise OG, robots, sitemap ni page légale) et Code de la Route DJ (lien cassé `/fr/verify`, image de 493 Ko, pas de robots/sitemap/OG/pages légales). **Reste (propriétaire) :** décider site vitrine séparé vs application (URLs `/features`, `/pricing`, `/docs`, `/contact` impossibles dans l'application actuelle sans URL par page) ; renseigner `VITE_SITE_URL` en production ; Lighthouse sur l'URL publique ; HSTS et redirection HTTPS côté serveur de production (non vérifiables depuis le dépôt).
 
+## P-065 — Mesures réutilisables et synonymes dans la couche sémantique 📋 (proposée 2026-11-15)
+
+**Raison :** Inspiré de DAX (Power BI) et des couches sémantiques (Wren AI, dbt) : définir une fois chaque mesure (taux de chômage, chiffre d'affaires…) avec ses synonymes, pour que « chômage », « sans-emploi » et « taux de chômage » renvoient au même calcul. Gain mesuré de +17 à +23 points de précision avec une couche sémantique (PLAN.md §1.2).
+**Impact :** Élevé — précision de l'IA ; Moyen en développement (extension de `semantic/model.yaml`, tests d'éval).
+**Statut :** proposée, **ne pas implémenter sans accord du propriétaire**.
+
+## P-066 — Métadonnées d'indicateurs et import/export SDMX 📋 (proposée 2026-11-15)
+
+**Raison :** Les instituts de statistique (cible INSTAD) échangent via SDMX (.Stat Suite, MIT). Associer à chaque indicateur sa source, périodicité, définition et unité ; importer/exporter en SDMX-CSV/ML.
+**Impact :** Élevé pour le marché institutionnel ; Moyen/Élevé en développement.
+**Statut :** proposée, **ne pas implémenter sans accord**.
+
+## P-067 — Abonnements par courriel et résumés automatiques 📋 (proposée 2026-11-15)
+
+**Raison :** Inspiré des abonnements Power BI et de Tableau Pulse : bulletin envoyé à date fixe, « les chiffres du jour » sans poser de question. S'appuie sur le Bulletin HTML (P-002) et le moteur d'alertes existants.
+**Impact :** Moyen — valeur d'usage immédiate ; Faible/Moyen en développement (envoi de courriels à configurer).
+**Statut :** proposée, **ne pas implémenter sans accord**.
+
+## P-068 — Sécurité par ligne et jeux de données certifiés 📋 (proposée 2026-11-15)
+
+**Raison :** Un utilisateur ne voit que sa région ou son périmètre (à vérifier d'abord : l'existence d'une sécurité par ligne dans le code n'est pas confirmée) ; pastille « validé par l'INSTAD » sur chaque source, liée au certificat de précision.
+**Impact :** Élevé pour banques et administrations ; Moyen/Élevé en développement.
+**Statut :** proposée, **ne pas implémenter sans accord**.
+
 ## P-064 — Contrat de traitement des données (DPA), incidents, export/suppression 📋 (proposée 2026-11-15)
 
 **Raison :** Pour vendre à des banques, ONG et administrations, les CGU ne suffisent pas : il faut un DPA (responsable/sous-traitant, instructions du client, mesures de sécurité, sous-traitants techniques, transferts internationaux, suppression/restitution, gestion des incidents). Audit du dépôt : mesures de sécurité réelles et documentées, mais aucun outil de purge/export de compte (le registre de demandes accepte « delete »/« export » sans procédure), aucune procédure ni registre d'incident, sauvegardes seulement en objectifs (RTO < 1 h, RPO < 24 h). La politique de confidentialité nomme l'entreprise responsable du traitement même pour les données importées par le client (à scinder : responsable pour comptes/journaux, sous-traitant pour les données importées).

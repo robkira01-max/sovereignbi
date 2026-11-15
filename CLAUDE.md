@@ -52,6 +52,7 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
   - (6) juridique : compléter `mizanbi-client/src/lib/legalConfig.ts` (entité, contacts, hébergeur, fournisseur d'IA, droit applicable, conservation), faire valider par un juriste, puis `draft: false` ; préparer un DPA pour banques/ONG/administrations (rôles responsable/sous-traitant, sous-traitants, transferts, incidents)
   - (7) web : `VITE_SITE_URL` (URL publique, aperçus de partage) + `VITE_API_BASE` au build du client ; HSTS/redirection HTTPS côté serveur de production ; Lighthouse sur l'URL publique
   - (8) levé CERD : licence par écrit ; couches du zip non intégrées (`centre_lin`, `contour`, `road_lin`, `utilit_*`, `vegetation`) ; l'archive `ESRI_Shapefile_ok.zip` (859 Mo) peut être supprimée du disque
+- **Benchmark mondial (2026-11-15)** : `docs/benchmark-2026-11.md` (Power BI et 4 autres familles, aspect par aspect, 16 idées priorisées) ; propositions P-065 à P-068 (mesures + synonymes, SDMX + métadonnées, abonnements courriel, sécurité par ligne) en attente d'accord
 - **Projets voisins (même session, 2026-11-15)** : Code de la Route DJ (`c6806da`, poussé) et Loiyale ex-Vigile (`/home/kali/loi25`, dépôt privé `robkira01-max/loiyale`, https://loiyale.vercel.app) ont reçu pages légales, SEO/partage, vraie 404 et en-têtes de sécurité ; DeepfakeDetector et PlagiatDetect supprimés (archives du code dans `~/Downloads/archives_projets/`)
 - **Clés à setter** : `COMTRADE_API_KEY` (UN Comtrade Plus, ligne commentée dans `.env`)
 

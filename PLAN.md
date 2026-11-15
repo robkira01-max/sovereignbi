@@ -46,16 +46,18 @@ Règles techniques :
 | Acteur | Positionnement | Déploiement / licence | Prix indicatif | Limite pour nous |
 |---|---|---|---|---|
 | ThoughtSpot | Recherche en langage naturel, entreprise | SaaS | 100 k–500 k$+/an | Cher, déploiement 3–6 mois |
-| Power BI Copilot | Intégré à Microsoft Fabric | Cloud | Capacité Fabric F64 ≈ 6 400 $/mois + licences | Dépend du modèle sémantique existant, données dans le cloud Microsoft |
+| Power BI Copilot | Intégré à Microsoft Fabric | Cloud | Pro ≈ 14 $ et Premium par utilisateur ≈ 24 $ par utilisateur/mois ; Copilot exige une capacité Fabric (F64 ≈ 5 000–8 400 $/mois selon la formule ; seuil contesté entre sources, nov. 2026) | Dépend du modèle sémantique existant, données dans le cloud Microsoft |
 | Tableau Pulse | Digests de métriques automatisés | SaaS | n.d. | N'interroge que les données modélisées Tableau |
 | Querio, Hex, Sigma, Omni, Looker+Gemini | Analytique conversationnelle moderne | SaaS | Querio ≈ 14 k$/an ; Hex 36–75 $/éditeur/mois | Cloud ; couche sémantique lourde (Looker) |
-| **Wren AI** | BI générative **open core** : couche sémantique (MDL), RBAC, dashboards, 22+ sources | Cœur Apache 2.0 + parties AGPL-3.0 | Gratuit / commercial | Concurrent direct n°1 ; support Ollama non confirmé dans ce que j'ai lu |
+| **Wren AI** | BI générative **open core** : couche sémantique (MDL), RBAC, dashboards, 22+ sources | Cœur Apache 2.0 + parties AGPL-3.0 | Gratuit / commercial | Mis à jour nov. 2026 : l'interface de chat a été retirée (juin 2026), l'offre ouverte est une couche sémantique + CLI ; l'application complète (UI, tableaux de bord, gouvernance) est payante ; Ollama/vLLM annoncés (source éditeur). Moins un concurrent direct qu'une brique inspirante |
 | **Vanna** (≈ 20 k étoiles) | Bibliothèque text-to-SQL par RAG | MIT | Gratuit | Pas de gouvernance, sémantique à curer à la main |
-| Metabase | BI classique, IA en ajout | AGPL v3 ; white-label et embedding interactif **dès Pro (575 $/mois)** ; Enterprise ≈ 20 k$/an | Voir gauche | Licence contraignante pour la revente |
+| Metabase | BI classique, IA en ajout | AGPL v3 ; white-label et embedding interactif **dès Pro (575 $/mois)** ; Enterprise ≈ 20 k$/an | Voir gauche | Licence contraignante pour la revente. Nov. 2026 : IA livrée dans la version ouverte (Metabase 60, avril 2026), clé de modèle fournie par l'utilisateur ; intégration du chat réservée aux offres payantes |
 | Apache Superset | BI open source | **Apache 2.0**, SDK d'embedding | Gratuit | Pas conversationnel |
 | Cube Core | Couche sémantique + API SQL/REST/GraphQL | Apache 2.0 / MIT | Gratuit | Contrôles d'accès avancés probablement commerciaux (à vérifier) |
 
-Note : le comparatif de prix provient d'un blog éditeur (Querio) qui indique qu'aucun de ces outils n'offre d'auto-hébergement documenté. Power BI Report Server existe pourtant en on-premise, sans Copilot à ma connaissance : **à vérifier avant d'écrire « jamais offline » dans le marketing**.
+Note : le comparatif de prix provient d'un blog éditeur (Querio) qui indique qu'aucun de ces outils n'offre d'auto-hébergement documenté. Power BI Report Server existe pourtant en on-premise, sans Copilot à ma connaissance : **à vérifier avant d'écrire « jamais offline » dans le marketing** (nov. 2026 : aucune source trouvée sur Copilot dans Report Server).
+
+**Analyse détaillée (nov. 2026)** : voir `docs/benchmark-2026-11.md` (cinq familles d'équivalents, comparaison aspect par aspect avec Power BI, 16 idées dont l'ordre de priorité : mesures réutilisables + synonymes, métadonnées d'indicateurs + SDMX, abonnements par courriel + résumés automatiques, sécurité par ligne + jeux de données certifiés ; propositions P-065 à P-068 dans `docs/proposals.md`).
 
 ### 1.2 État de l'art de la précision text-to-SQL
 - **BIRD** : annonce Google Gemini-SQL2 à **80,04 %** (juin 2026), vs ≈ 77,2 % (Gemini-SQL précédent), ≈ 76,5 % (AWS Q-SQL), ≈ 70,1 % (Claude Opus 4.6), humain 92,96 %. *Aucun rapport technique ni API publié : non vérifiable.*
