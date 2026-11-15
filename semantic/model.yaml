@@ -5,11 +5,13 @@ metrics:
     aliases: ["CA", "revenu", "chiffre d affaires"]
     sql: "SUM(montant_ht)"
     tables: ["ventes_detail"]
+    unit: "CAD"
     description: "Somme des montants hors taxes de toutes les lignes de vente"
   - name: "panier moyen"
     aliases: ["valeur moyenne par commande"]
     sql: "SUM(montant_ht) / COUNT(DISTINCT id_commande)"
     tables: ["ventes_detail"]
+    unit: "CAD"
     description: "Montant moyen par commande"
   - name: "nombre de commandes"
     aliases: ["volume de commandes"]
@@ -20,6 +22,7 @@ metrics:
     aliases: []
     sql: "COUNT(*) FILTER (WHERE statut = 'retourne') * 1.0 / NULLIF(COUNT(*), 0)"
     tables: ["ventes_detail"]
+    unit: "ratio (0 à 1)"
     description: "Part des ventes retournées"
   - name: "marge brute"
     aliases: ["marge"]
@@ -27,6 +30,29 @@ metrics:
     tables: ["ventes_detail", "produits"]
     description: "Marge brute totale après déduction des coûts d'achat"
     join_required: true
+
+filters:
+  - name: "ventes confirmées"
+    aliases: ["commandes confirmées", "ventes validées"]
+    sql: "statut = 'confirme'"
+    tables: ["ventes_detail"]
+    description: "Exclut les ventes retournées, annulées ou en cours"
+  - name: "ventes retournées"
+    aliases: ["retours", "produits retournés"]
+    sql: "statut = 'retourne'"
+    tables: ["ventes_detail"]
+    description: "Ventes dont le statut est retourné"
+  - name: "ventes en ligne"
+    aliases: ["commerce en ligne", "e-commerce"]
+    sql: "canal = 'en_ligne'"
+    tables: ["ventes_detail"]
+    description: "Ventes réalisées sur le canal en ligne"
+
+value_synonyms:
+  - {table: ventes_detail, column: region, value: "Québec", synonyms: ["QC", "Quebec", "Qc"]}
+  - {table: ventes_detail, column: region, value: "Ontario", synonyms: ["ON", "Ont"]}
+  - {table: ventes_detail, column: region, value: "BC", synonyms: ["Colombie-Britannique", "Colombie Britannique"]}
+  - {table: ventes_detail, column: region, value: "Alberta", synonyms: ["AB"]}
 
 tables:
   - name: ventes_detail
@@ -37,7 +63,7 @@ tables:
       - {name: id_client, type: varchar, description: "Identifiant du client — jointure avec clients.id_client"}
       - {name: id_vendeur, type: varchar, description: "Identifiant du vendeur — jointure avec employes.id_employe"}
       - {name: date_vente, type: date, description: "Date de la vente — utiliser pour les filtres temporels"}
-      - {name: region, type: varchar, description: "Région canadienne : Ontario, Québec, BC, Alberta, Manitoba"}
+      - {name: region, type: varchar, description: "Région canadienne : Ontario, Québec, BC, Alberta, Manitoba", aliases: ["province de la vente"]}
       - {name: canal, type: varchar, description: "Canal de vente : en_ligne, magasin, telephone"}
       - {name: code_produit, type: varchar, description: "Code produit — jointure avec produits.code_produit"}
       - {name: nom_produit, type: varchar, description: "Nom du produit vendu"}

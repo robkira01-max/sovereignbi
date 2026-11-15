@@ -177,14 +177,19 @@ app.state.query_cache = query_cache
 def get_graph():
     global _graph
     if _graph is None:
-        active_text = getattr(app.state, "active_semantic_text", None)
-        if active_text:
-            from app.semantic.model import SemanticModel
-            sem = SemanticModel(schema_version="2")
-            sem._raw_text = active_text  # passed through if pipeline supports it
+        from app.semantic.model import load_model, model_to_prompt_text
+
+        # Modèle actif : secteur choisi par l'éditeur, sinon semantic/model.yaml. Le texte complet
+        # (mesures, tables, jointures, règles) est transmis au LLM, et le modèle sert à reconnaître
+        # les termes métier de chaque question (P-065).
+        sector_id = getattr(app.state, "active_sector_id", None)
+        if sector_id:
+            from app.semantic.sectors import load_sector
+            model = load_sector(sector_id)
         else:
-            sem = load_semantic()
-        _graph = build_graph(get_llm_client(), store, sem, doc_store=doc_store)
+            model = load_model()
+        sem = model_to_prompt_text(model) if (model.tables or model.metrics or model.glossary) else load_semantic()
+        _graph = build_graph(get_llm_client(), store, sem, doc_store=doc_store, model=model)
     return _graph
 
 

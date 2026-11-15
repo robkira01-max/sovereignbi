@@ -53,12 +53,25 @@ def build_graph(
     linker=None,
     retriever=None,
     doc_store=None,
+    model=None,
 ):
+    """`semantic` : texte de contexte. `model` : SemanticModel dont les termes (mesures, filtres,
+    synonymes) sont reconnus dans chaque question et injectés avec leur définition exacte (P-065)."""
+    from app.semantic.model import SemanticModel, model_to_prompt_text
+    from app.semantic.resolver import format_resolved, resolve_terms
+
+    if isinstance(semantic, SemanticModel):  # ne jamais imprimer l'objet lui-même dans le prompt
+        model = model or semantic
+        semantic = model_to_prompt_text(semantic)
+
     def generate_sql(state: State) -> State:
         if linker is not None:
             context = linker.get_relevant_context(state["question"])
         else:
             context = semantic
+        resolved = format_resolved(resolve_terms(model, state["question"]))
+        if resolved:
+            context = f"{resolved}\n\n{context}"
         few_shot_text = ""
         if retriever is not None:
             from app.learning.few_shot import format_few_shot

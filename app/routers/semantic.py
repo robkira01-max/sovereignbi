@@ -1,11 +1,13 @@
 """Semantic sector switcher — GET/POST /semantic/sectors."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from app.security.rbac import RequireRole
 from app.semantic.sectors import list_sectors, load_sector, sector_exists
-from app.semantic.model import model_to_prompt_text
+from app.semantic.model import SemanticModel, load_model, model_to_prompt_text
+from app.semantic.resolver import resolve_terms
+from app.semantic.validate import validate_model
 
 router = APIRouter(prefix="/semantic", tags=["semantic"])
 
@@ -57,3 +59,29 @@ def deactivate_sector(request: Request, _: str = Depends(_EDITOR)):
     import app.main as _main
     _main._graph = None
     return {"activated": "default"}
+
+
+def _active_model(request: Request) -> SemanticModel:
+    sector_id = getattr(request.app.state, "active_sector_id", None)
+    return load_sector(sector_id) if sector_id else load_model()
+
+
+@router.get("/validate")
+def validate_active_model(request: Request, _: str = Depends(_VIEWER)):
+    """Contrôle du modèle sémantique actif : doublons, alias ambigus, SQL invalide, colonnes inconnues."""
+    model = _active_model(request)
+    issues = validate_model(model)
+    return {
+        "sector_id": getattr(request.app.state, "active_sector_id", None) or "default",
+        "ok": not any(i.level == "error" for i in issues),
+        "errors": sum(i.level == "error" for i in issues),
+        "warnings": sum(i.level == "warning" for i in issues),
+        "issues": [i.as_dict() for i in issues],
+    }
+
+
+@router.get("/resolve")
+def resolve_question(request: Request, q: str = Query(..., min_length=1, max_length=500), _: str = Depends(_VIEWER)):
+    """Aperçu : quels termes métier du modèle actif sont reconnus dans une question (sans appeler le LLM)."""
+    model = _active_model(request)
+    return {"question": q, "terms": [t.__dict__ for t in resolve_terms(model, q)]}

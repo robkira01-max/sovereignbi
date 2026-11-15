@@ -12,6 +12,7 @@ class ColumnInfo:
     name: str
     type: str
     description: str
+    aliases: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -29,6 +30,26 @@ class MetricInfo:
     tables: list[str]
     description: str = ""
     join_required: bool = False
+    unit: str = ""
+
+
+@dataclass
+class FilterInfo:
+    """Filtre nommé réutilisable (« ventes confirmées » = statut = 'confirme')."""
+    name: str
+    sql: str
+    aliases: list[str] = field(default_factory=list)
+    tables: list[str] = field(default_factory=list)
+    description: str = ""
+
+
+@dataclass
+class ValueSynonym:
+    """Synonymes d'une valeur de colonne (« QC », « Quebec » → region = 'Québec')."""
+    table: str
+    column: str
+    value: str
+    synonyms: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -47,6 +68,8 @@ class SemanticModel:
     joins: list[JoinInfo] = field(default_factory=list)
     rules: list[str] = field(default_factory=list)
     glossary: list[dict] = field(default_factory=list)
+    filters: list[FilterInfo] = field(default_factory=list)
+    value_synonyms: list[ValueSynonym] = field(default_factory=list)
 
 
 def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
@@ -65,6 +88,7 @@ def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
                     name=c["name"],
                     type=c.get("type", "varchar"),
                     description=c.get("description", ""),
+                    aliases=list(c.get("aliases", []) or []),
                 )
                 for c in t.get("columns", [])
             ],
@@ -80,8 +104,28 @@ def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
             tables=m.get("tables", []),
             description=m.get("description", ""),
             join_required=bool(m.get("join_required", False)),
+            unit=str(m.get("unit", "") or ""),
         )
         for m in raw.get("metrics", [])
+    ]
+
+    filters = [
+        FilterInfo(
+            name=f["name"],
+            sql=f["sql"],
+            aliases=list(f.get("aliases", []) or []),
+            tables=list(f.get("tables", []) or []),
+            description=f.get("description", ""),
+        )
+        for f in raw.get("filters", []) or []
+    ]
+
+    value_synonyms = [
+        ValueSynonym(
+            table=v["table"], column=v["column"], value=str(v["value"]),
+            synonyms=[str(x) for x in (v.get("synonyms", []) or [])],
+        )
+        for v in raw.get("value_synonyms", []) or []
     ]
 
     joins = [
@@ -101,6 +145,8 @@ def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
         joins=joins,
         rules=raw.get("rules", []),
         glossary=raw.get("glossary", []),
+        filters=filters,
+        value_synonyms=value_synonyms,
     )
 
 
@@ -112,13 +158,27 @@ def model_to_prompt_text(model: SemanticModel) -> str:
         parts.append("Métriques :")
         for m in model.metrics:
             aliases = f" (alias : {', '.join(m.aliases)})" if m.aliases else ""
-            parts.append(f"  {m.name}{aliases} = {m.sql}")
+            unit = f" [{m.unit}]" if m.unit else ""
+            parts.append(f"  {m.name}{aliases}{unit} = {m.sql}")
+
+    if model.filters:
+        parts.append("Filtres nommés (à utiliser dans WHERE) :")
+        for f in model.filters:
+            aliases = f" (alias : {', '.join(f.aliases)})" if f.aliases else ""
+            parts.append(f"  {f.name}{aliases} : {f.sql}")
+
+    if model.value_synonyms:
+        parts.append("Synonymes de valeurs :")
+        for v in model.value_synonyms:
+            if v.synonyms:
+                parts.append(f"  {v.table}.{v.column} = '{v.value}' (aussi : {', '.join(v.synonyms)})")
 
     if model.tables:
         parts.append("Tables :")
         for t in model.tables:
             col_str = ", ".join(
-                f"{c.name} ({c.description})" if c.description else c.name
+                (f"{c.name} ({c.description})" if c.description else c.name)
+                + (f" [alias : {', '.join(c.aliases)}]" if c.aliases else "")
                 for c in t.columns
             )
             parts.append(f"  {t.name} : {col_str}")
