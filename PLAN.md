@@ -166,6 +166,9 @@ Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~
 ### Sprint H5 — Chatbot universel ✅ (2026-10-19)
 `POST /api/v1/chatbot` : routeur intelligent SQL/général — détecte automatiquement si la question porte sur les données (`_DATA_PATTERNS`) ou sur un sujet général, historique de conversation (10 tours max), réponse unifiée `ChatResponse` (answer, mode, sql, columns, rows, confidence). `ChatPage.tsx` réécrite : bulles de conversation, badge mode data/général, SQL dépliable, case « Analyser les données ». 18 tests (12 Python + 6 seed). 945/945 tests.
 
+### Sprint H14 — P-067 Abonnements courriel ✅ (2026-11-15)
+Abonnements quotidiens/hebdomadaires/mensuels à un bulletin de tableau de bord, envoi planifié (échéance calculée, une tentative par échéance), SMTP STARTTLS ou boîte d'envoi locale, désabonnement par jeton HMAC (GET formulaire, POST suppression). 1683 pytest. **Limites** : non testé contre un vrai SMTP, pas de double opt-in, pas d'interface, une seule instance. En attente d'accord : P-064, P-068.
+
 ### Sprint H13 — P-066 Métadonnées d'indicateurs et SDMX-CSV ✅ (2026-11-15)
 Métadonnées d'indicateur sur les mesures (code, source, périodicité SDMX, définition, méthodologie, thème, mise à jour) validées et exposées (`GET /semantic/indicators`) ; `app/sdmx/csv_format.py` (SDMX-CSV 2.0 écriture/lecture, périodes SDMX, anti-injection de formules) ; export SDMX-CSV d'une tuile ; `POST /sdmx/import` (éditeur, préfixe `sdmx_` forcé). 1655 pytest. **Limites** : pas de SDMX-ML ni d'API REST SDMX, pas de DSD/codelists réelles, non validé avec un registre SDMX officiel, pas de bouton dans le client. Proposées en attente d'accord : P-064, P-067, P-068.
 

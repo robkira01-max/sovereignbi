@@ -42,6 +42,7 @@ from app.routers.addin import router as addin_router
 from app.routers.sync import router as sync_router
 from app.routers.semantic import router as semantic_router
 from app.routers.sdmx import router as sdmx_router
+from app.routers.subscriptions import router as subscriptions_router
 from app.routers.chatbot import router as chatbot_router
 from app.routers.trade_flows import router as trade_flows_router
 from app.routers.mcp import router as mcp_router
@@ -81,6 +82,12 @@ async def lifespan(app: FastAPI):
     scheduler = CronScheduler()
     scheduler.start()
     app.state.scheduler = scheduler
+    if os.environ.get("SOVEREIGN_SUBSCRIPTIONS", "1") != "0":
+        from app.routers.dashboards import _DASHBOARDS_DIR
+        from app.subscriptions.service import run_due
+
+        # Le planificateur appelle la tâche chaque minute ; l'échéance réelle est décidée par `is_due`.
+        scheduler.add_job("subscriptions", "every:60", lambda: run_due(app.state.store, _DASHBOARDS_DIR))
     yield
     scheduler.stop()
 
@@ -152,6 +159,7 @@ app.include_router(addin_router)
 app.include_router(sync_router)
 app.include_router(semantic_router)
 app.include_router(sdmx_router)
+app.include_router(subscriptions_router)
 app.include_router(chatbot_router)
 app.include_router(trade_flows_router)
 app.include_router(mcp_router)
