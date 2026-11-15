@@ -175,7 +175,7 @@ Règles table/colonne/périmètre, réécriture SQL à un seul point d'étrangle
 ### Sprint H15 — P-064 Vie privée opérationnelle ✅ volet technique (2026-11-15)
 Export et suppression de compte (admin, confirmation par e-mail, dernier admin protégé), registre d'incidents avec alerte 72 h, DPA brouillon + procédure d'incident. 1698 pytest. **Reste** : juriste, version anglaise, relecture sécurité d'`erase_account`. P-068 (sécurité par ligne) : constat fait, décisions de conception demandées.
 
-### Sprint H14 — P-067 Abonnements courriel ✅ (2026-11-15)
+### Sprint H14 — P-067 Abonnements courriel ✅ (2026-11-15) — écran de gestion ajouté au client le même jour (407 Vitest) ; correctif de la sous-navigation qui masquait la barre d'outils des tableaux de bord
 Abonnements quotidiens/hebdomadaires/mensuels à un bulletin de tableau de bord, envoi planifié (échéance calculée, une tentative par échéance), SMTP STARTTLS ou boîte d'envoi locale, désabonnement par jeton HMAC (GET formulaire, POST suppression). 1683 pytest. **Limites** : non testé contre un vrai SMTP, pas de double opt-in, pas d'interface, une seule instance. En attente d'accord : P-064, P-068.
 
 ### Sprint H13 — P-066 Métadonnées d'indicateurs et SDMX-CSV ✅ (2026-11-15) — bouton d'export « ↓ SDMX » ajouté au client le même jour (393 Vitest)

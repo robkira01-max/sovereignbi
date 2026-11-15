@@ -14,6 +14,7 @@ import { DEMO_DASHBOARDS } from '../data/demo'
 import DemoTileRenderer from '../components/TileRenderer'
 import { LiveTileRenderer } from '../components/LiveTileRenderer'
 import SdmxExportButton from '../components/SdmxExportButton'
+import SubscriptionsPanel from '../components/SubscriptionsPanel'
 import { tileDataToCsv, dashboardToBulletinHtml, triggerDownload } from '../lib/exports'
 
 const TILE_TYPES = ['kpi', 'bar', 'line', 'pie', 'table', 'map', 'map-adm2', 'map-bivariate', 'heatmap', 'grid']
@@ -92,7 +93,7 @@ function DemoDashboardDetail({ t, dash, onBack }: {
 
 // ── Live mode (API available) ─────────────────────────────────────────────────
 
-function LiveDashboardPage({ t }: { t: Dict }) {
+function LiveDashboardPage({ t, canSubscribe }: { t: Dict; canSubscribe: boolean }) {
   const [summaries, setSummaries] = useState<DashboardSummary[]>([])
   const [selected, setSelected] = useState<Dashboard | null>(null)
   const [tiles, setTiles] = useState<Tile[]>([])
@@ -110,6 +111,7 @@ function LiveDashboardPage({ t }: { t: Dict }) {
   const [saving, setSaving] = useState(false)
   const [exporting, setExporting] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
+  const [showSubs, setShowSubs] = useState(false)
   const [newTile, setNewTile] = useState({ id: '', type: 'kpi', title: '' })
   const dragIdx = useRef<number | null>(null)
 
@@ -392,10 +394,17 @@ function LiveDashboardPage({ t }: { t: Dict }) {
         <button data-testid="export-pptx-btn" onClick={exportPptx} disabled={exporting} className="btn" style={{ fontSize: 12, padding: '6px 14px', background: 'oklch(48% 0.17 295)', opacity: exporting ? 0.6 : 1 }}>
           {exporting ? '…' : t.dashboard.exportPptx}
         </button>
+        {canSubscribe && (
+          <button data-testid="subscriptions-btn" onClick={() => setShowSubs(v => !v)} aria-expanded={showSubs} className="btn" style={{ fontSize: 12, padding: '6px 14px', background: 'oklch(50% 0.12 230)' }}>
+            {t.dashboard.subButton}
+          </button>
+        )}
         <button onClick={() => setShowAdd(v => !v)} className="btn" style={{ fontSize: 12, padding: '6px 14px' }}>
           {t.dashboard.addTile}
         </button>
       </div>
+
+      {canSubscribe && showSubs && <SubscriptionsPanel dashId={selected.id} t={t.dashboard} />}
 
       {error && (
         <div style={{ background: 'oklch(18% 0.06 25 / 0.7)', border: '1px solid var(--danger)', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: 'oklch(85% 0.12 25)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -547,7 +556,7 @@ function LiveDashboardPage({ t }: { t: Dict }) {
 
 // ── Page entry point ──────────────────────────────────────────────────────────
 
-export default function DashboardsPage({ t }: { t: Dict }) {
+export default function DashboardsPage({ t, canSubscribe = false }: { t: Dict; canSubscribe?: boolean }) {
   const live = isApiConfigured()
   const [demoActive, setDemoActive] = useState<(typeof DEMO_DASHBOARDS)[0] | null>(null)
 
@@ -564,5 +573,5 @@ export default function DashboardsPage({ t }: { t: Dict }) {
     )
   }
 
-  return <LiveDashboardPage t={t} />
+  return <LiveDashboardPage t={t} canSubscribe={canSubscribe} />
 }

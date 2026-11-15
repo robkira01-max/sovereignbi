@@ -276,7 +276,7 @@ export default function App() {
       )}
       <main>
         {subItems.length > 0 && (
-          <nav aria-label="Sous-navigation" style={{ display: 'flex', gap: 4, padding: '10px 20px', borderBottom: '1px solid var(--border)', background: 'var(--surface)', position: 'sticky', top: 56, zIndex: 9, flexWrap: 'wrap', backdropFilter: 'blur(10px)' }}>
+          <nav aria-label="Sous-navigation" style={{ display: 'flex', gap: 4, padding: '10px 20px', borderBottom: '1px solid var(--border)', background: 'var(--surface)', position: 'sticky', top: 0, zIndex: 9, flexWrap: 'wrap', backdropFilter: 'blur(10px)' }}>
             {subItems.map((item) => (
               <button
                 key={item.page}
@@ -291,7 +291,7 @@ export default function App() {
         )}
         <Suspense fallback={<p role="status" aria-live="polite" className="muted" style={{ padding: 24 }}>{t.admin.loading}</p>}>
         {page === 'home' && <HomePage t={t} go={go} />}
-        {page === 'dash' && <DashboardsPage t={t} />}
+        {page === 'dash' && <DashboardsPage t={t} canSubscribe={me?.role === 'editor' || me?.role === 'admin'} />}
         {page === 'upload' && <ImportPage t={t} />}
         {page === 'bulletins' && <BulletinsPage t={t} />}
         {page === 'cert' && <CertificatePage t={t} />}
