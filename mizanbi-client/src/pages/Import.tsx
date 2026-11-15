@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
 import type { Dict } from '../lib/i18n'
 import { apiFetch, isApiConfigured } from '../lib/api'
+import SdmxImport from '../components/SdmxImport'
 
-export default function ImportPage({ t }: { t: Dict }) {
+export default function ImportPage({ t, canImportSdmx = false }: { t: Dict; canImportSdmx?: boolean }) {
   const [dragging, setDragging] = useState(false)
   const [msg, setMsg] = useState('')
   const [ok, setOk] = useState(true)
@@ -60,6 +61,7 @@ export default function ImportPage({ t }: { t: Dict }) {
           {msg}
         </div>
       )}
+      {canImportSdmx && <SdmxImport t={t.sdmxImport} onLoaded={(tb) => setCreated((c) => [...new Set([...c, tb])])} />}
       {created.length > 0 && (
         <section className="card" style={{ padding: 20 }}>
           <h2 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 600 }}>{t.created}</h2>

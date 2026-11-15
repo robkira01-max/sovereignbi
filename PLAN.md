@@ -178,7 +178,7 @@ Export et suppression de compte (admin, confirmation par e-mail, dernier admin p
 ### Sprint H14 — P-067 Abonnements courriel ✅ (2026-11-15) — écran de gestion ajouté au client le même jour (407 Vitest) ; correctif de la sous-navigation qui masquait la barre d'outils des tableaux de bord
 Abonnements quotidiens/hebdomadaires/mensuels à un bulletin de tableau de bord, envoi planifié (échéance calculée, une tentative par échéance), SMTP STARTTLS ou boîte d'envoi locale, désabonnement par jeton HMAC (GET formulaire, POST suppression). 1683 pytest. **Limites** : non testé contre un vrai SMTP, pas de double opt-in, pas d'interface, une seule instance. En attente d'accord : P-064, P-068.
 
-### Sprint H13 — P-066 Métadonnées d'indicateurs et SDMX-CSV ✅ (2026-11-15) — bouton d'export « ↓ SDMX » ajouté au client le même jour (393 Vitest)
+### Sprint H13 — P-066 Métadonnées d'indicateurs et SDMX-CSV ✅ (2026-11-15) — boutons d'export « ↓ SDMX » et d'import SDMX-CSV (vérifier puis charger) ajoutés au client le même jour (418 Vitest)
 Métadonnées d'indicateur sur les mesures (code, source, périodicité SDMX, définition, méthodologie, thème, mise à jour) validées et exposées (`GET /semantic/indicators`) ; `app/sdmx/csv_format.py` (SDMX-CSV 2.0 écriture/lecture, périodes SDMX, anti-injection de formules) ; export SDMX-CSV d'une tuile ; `POST /sdmx/import` (éditeur, préfixe `sdmx_` forcé). 1655 pytest. **Limites** : pas de SDMX-ML ni d'API REST SDMX, pas de DSD/codelists réelles, non validé avec un registre SDMX officiel, bouton d'export ajouté ensuite (pas d'import dans le client). Proposées en attente d'accord : P-064, P-067, P-068.
 
 ### Sprint H12 — P-065 Couche sémantique : mesures, filtres et synonymes ✅ (2026-11-15)

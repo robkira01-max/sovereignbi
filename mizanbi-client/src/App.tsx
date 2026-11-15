@@ -292,7 +292,7 @@ export default function App() {
         <Suspense fallback={<p role="status" aria-live="polite" className="muted" style={{ padding: 24 }}>{t.admin.loading}</p>}>
         {page === 'home' && <HomePage t={t} go={go} />}
         {page === 'dash' && <DashboardsPage t={t} canSubscribe={me?.role === 'editor' || me?.role === 'admin'} />}
-        {page === 'upload' && <ImportPage t={t} />}
+        {page === 'upload' && <ImportPage t={t} canImportSdmx={me?.role === 'editor' || me?.role === 'admin'} />}
         {page === 'bulletins' && <BulletinsPage t={t} />}
         {page === 'cert' && <CertificatePage t={t} />}
         {page === 'canada' && <CanadaPage t={t} onIndicator={setIndicator} />}
