@@ -9,6 +9,7 @@ from pathlib import Path
 
 import structlog
 
+from app.security import row_policy
 from app.subscriptions import mailer, store
 
 log = structlog.get_logger()
@@ -35,7 +36,8 @@ def send_one(sub: store.Subscription, store_data, dashboards_dir: Path, now: dat
         if not p.exists():
             raise mailer.MailError("Tableau de bord introuvable (supprimé ?).")
         d = load_dashboard(p)
-        body = generate_bulletin_html(d, store_data)
+        with row_policy.as_principal(None):   # un courriel ne part jamais avec les droits de celui qui déclenche l'envoi (P-068)
+            body = generate_bulletin_html(d, store_data)
         url = unsubscribe_url(sub)
         footer_html = (f'<p style="font-size:12px;color:#6b7280">Pour ne plus recevoir ce bulletin : '
                        f'<a href="{_html.escape(url)}">se désabonner</a>.</p>') if url else \

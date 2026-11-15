@@ -18,6 +18,7 @@ from pathlib import Path
 
 from app.auth import security as sec
 from app.compliance import models
+from app.security import row_policy
 from app.subscriptions import store as subs
 
 
@@ -87,6 +88,7 @@ def erase_account(user_id: int, confirm_email: str) -> dict:
         sessions = c.execute("DELETE FROM sessions WHERE user_id=?", (user_id,)).rowcount
         c.execute("DELETE FROM users WHERE id=?", (user_id,))
 
+    scopes_deleted = row_policy.delete_user_scopes(user_id)
     pseudo = "erased:" + hashlib.sha256(email.lower().encode()).hexdigest()[:10]
     consents = _lines(models.CONSENT_PATH)
     kept = [r for r in consents if r.get("user_id") != email]
@@ -104,4 +106,4 @@ def erase_account(user_id: int, confirm_email: str) -> dict:
     for sid in removed_subs:
         subs.remove(sid)
     return {"user_id": user_id, "sessions_deleted": sessions, "consents_deleted": len(consents) - len(kept),
-            "requests_pseudonymised": pseudonymised, "subscriptions_deleted": len(removed_subs)}
+            "requests_pseudonymised": pseudonymised, "subscriptions_deleted": len(removed_subs), "scopes_deleted": scopes_deleted}

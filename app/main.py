@@ -42,6 +42,10 @@ from app.routers.addin import router as addin_router
 from app.routers.sync import router as sync_router
 from app.routers.semantic import router as semantic_router
 from app.routers.sdmx import router as sdmx_router
+from app.routers.row_security import router as row_security_router
+from app.security.principal_mw import PrincipalMiddleware
+from app.security import row_policy
+import structlog
 from app.routers.privacy_ops import router as privacy_ops_router
 from app.routers.subscriptions import router as subscriptions_router
 from app.routers.chatbot import router as chatbot_router
@@ -69,6 +73,9 @@ from app.auth.router import router as auth_router
 from app.auth.users_router import router as users_router
 
 
+log = structlog.get_logger()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_auth_db()
@@ -80,6 +87,17 @@ async def lifespan(app: FastAPI):
     seed_dir = os.environ.get("SOVEREIGN_SEED_DIR", "")
     if seed_dir:
         seed_store(app.state.store, seed_dir)
+    try:
+        pols = row_policy.load_policies()
+        if pols:
+            loaded = {t.lower() for t in app.state.store.tables}
+            log.info("row_policies_active", count=len(pols))
+            for p in pols:
+                if p.table not in loaded:
+                    log.warning("row_policy_table_missing", table=p.table)
+            app.state.query_cache.invalidate()        # entrées écrites avant l'activation : jamais servies
+    except row_policy.RowPolicyError as e:
+        log.error("row_policies_invalid", error=str(e))
     scheduler = CronScheduler()
     scheduler.start()
     app.state.scheduler = scheduler
@@ -128,6 +146,7 @@ app = FastAPI(
 
 # Middleware stack (applied in reverse order — last added = outermost)
 app.add_middleware(ApiVersionMiddleware)
+app.add_middleware(PrincipalMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(
@@ -160,6 +179,7 @@ app.include_router(addin_router)
 app.include_router(sync_router)
 app.include_router(semantic_router)
 app.include_router(sdmx_router)
+app.include_router(row_security_router)
 app.include_router(privacy_ops_router)
 app.include_router(subscriptions_router)
 app.include_router(chatbot_router)
@@ -218,6 +238,12 @@ class AskRequest(BaseModel):
     use_cache: bool = True
 
 
+@app.exception_handler(row_policy.AccessDenied)
+async def _row_policy_denied(request, exc):
+    from fastapi.responses import JSONResponse
+    return JSONResponse({"detail": str(exc)}, status_code=403)
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "tables": sorted(store.tables)}
@@ -272,7 +298,8 @@ def ask(req: AskRequest, _: str = Depends(_VIEWER)):
         raise HTTPException(400, "Aucune donnée chargée. Utilisez /upload d'abord.")
 
     table_names = frozenset(store.tables)
-    if req.use_cache and not req.dry_run:
+    use_cache = req.use_cache and not row_policy.active()      # le cache n'est pas par utilisateur : jamais avec sécurité par ligne
+    if use_cache and not req.dry_run:
         cached = query_cache.get(req.question, table_names)
         if cached is not None:
             cache_hits_total.inc()
@@ -295,7 +322,7 @@ def ask(req: AskRequest, _: str = Depends(_VIEWER)):
         "confidence": s.get("confidence"),
         "cached": False,
     }
-    if req.use_cache and not req.dry_run and not s.get("error"):
+    if use_cache and not req.dry_run and not s.get("error"):
         query_cache.set(req.question, table_names, result)
     return result
 

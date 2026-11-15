@@ -112,7 +112,8 @@ def export_pdf_cached(
 
     store = request.app.state.store
     cache = getattr(request.app.state, "query_cache", None)
-    if cache is None:
+    from app.security import row_policy
+    if cache is None or row_policy.active():       # le cache n'est pas par utilisateur (P-068)
         raise _HTTPException(503, "Cache non disponible.")
     table_names = frozenset(store.tables)
     cached = cache.get(req.question, table_names)

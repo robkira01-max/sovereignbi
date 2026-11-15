@@ -195,11 +195,14 @@ def _tool_list_tables(store: Any) -> dict:
                 "WHERE table_name = ? ORDER BY ordinal_position",
                 [t],
             ).fetchall()
-            cnt = store.con.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()
+            try:       # compte filtré par la sécurité par ligne ; null si la table est protégée pour cet appelant
+                cnt = store.execute(f'SELECT COUNT(*) FROM "{t}"')[1][0][0]
+            except PermissionError:
+                cnt = None
             tables.append({
                 "name": t,
                 "columns": [{"name": c, "type": dt} for c, dt in cols],
-                "row_count": cnt[0] if cnt else 0,
+                "row_count": cnt,
             })
         return _tool_text(json.dumps(tables, ensure_ascii=False))
     except Exception as exc:

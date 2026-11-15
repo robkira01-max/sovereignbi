@@ -6,6 +6,8 @@ from pathlib import Path
 import duckdb
 import pandas as pd
 
+from app.security import row_policy
+
 
 def _safe_name(stem: str) -> str:
     name = re.sub(r"\W+", "_", stem.strip().lower()).strip("_")
@@ -27,6 +29,7 @@ class DataStore:
 
     def load_dataframe(self, name: str, df: pd.DataFrame) -> str:
         name = _safe_name(name)
+        row_policy.check_can_replace(name)
         df = df.copy()
         df.columns = [_safe_name(str(c)) for c in df.columns]
         self.con.register("_tmp_df", df)
@@ -55,11 +58,14 @@ class DataStore:
             cols = self.con.execute(
                 "SELECT column_name, data_type FROM information_schema.columns "
                 "WHERE table_name = ? ORDER BY ordinal_position", [t]).fetchall()
-            sample = self.con.execute(f'SELECT * FROM "{t}" LIMIT 3').fetchall()
+            try:    # les exemples partent dans le prompt de l'IA : ils doivent respecter la sécurité par ligne
+                sample = self.con.execute(row_policy.apply(f'SELECT * FROM "{t}" LIMIT 3')).fetchall()
+            except row_policy.AccessDenied:
+                sample = "(table protégée : exemples masqués)"
             lines.append(f"Table {t}({', '.join(f'{c} {d}' for c, d in cols)})")
             lines.append(f"  exemples : {sample}")
         return "\n".join(lines)
 
     def execute(self, sql: str) -> tuple[list[str], list[tuple]]:
-        cur = self.con.execute(sql)
+        cur = self.con.execute(row_policy.apply(sql))     # seul passage vers DuckDB : sécurité par ligne (P-068)
         return [d[0] for d in cur.description], cur.fetchall()

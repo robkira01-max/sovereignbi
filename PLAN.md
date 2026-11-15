@@ -166,6 +166,9 @@ Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~
 ### Sprint H5 — Chatbot universel ✅ (2026-10-19)
 `POST /api/v1/chatbot` : routeur intelligent SQL/général — détecte automatiquement si la question porte sur les données (`_DATA_PATTERNS`) ou sur un sujet général, historique de conversation (10 tours max), réponse unifiée `ChatResponse` (answer, mode, sql, columns, rows, confidence). `ChatPage.tsx` réécrite : bulles de conversation, badge mode data/général, SQL dépliable, case « Analyser les données ». 18 tests (12 Python + 6 seed). 945/945 tests.
 
+### Sprint H16 — P-068 Sécurité par ligne ✅ (2026-11-15)
+Règles table/colonne/périmètre, réécriture SQL à un seul point d'étranglement (`DataStore.execute`), identité par middleware, périmètres par compte, échec fermé (clés API viewer/editor, planificateur, courriels, jetons de partage refusés), caches partagés coupés, diagnostic admin. Relue par `security-reviewer` (aucun contournement ; 7 constats corrigés). 1743 pytest. **Reste** : relecture du propriétaire ; P-069 (jeux de données certifiés) en attente d'accord.
+
 ### Sprint H15 — P-064 Vie privée opérationnelle ✅ volet technique (2026-11-15)
 Export et suppression de compte (admin, confirmation par e-mail, dernier admin protégé), registre d'incidents avec alerte 72 h, DPA brouillon + procédure d'incident. 1698 pytest. **Reste** : juriste, version anglaise, relecture sécurité d'`erase_account`. P-068 (sécurité par ligne) : constat fait, décisions de conception demandées.
 

@@ -1,0 +1,6 @@
+# Exemple de règles de sécurité par ligne (P-068). Copier vers data/row_policies.yaml
+# (ou pointer SOVEREIGN_ROW_POLICIES vers le fichier). Un fichier vide, mal formé ou une clé
+# mal orthographiée est refusé : on ne retombe jamais sur « tout le monde voit tout ».
+# Puis donner un périmètre à chaque compte :  PUT /security/users/{id}/scopes/region  {"values": ["Obock"]}
+policies:
+  - {table: ventes, column: region, scope: region}
