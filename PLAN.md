@@ -166,6 +166,9 @@ Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~
 ### Sprint H5 — Chatbot universel ✅ (2026-10-19)
 `POST /api/v1/chatbot` : routeur intelligent SQL/général — détecte automatiquement si la question porte sur les données (`_DATA_PATTERNS`) ou sur un sujet général, historique de conversation (10 tours max), réponse unifiée `ChatResponse` (answer, mode, sql, columns, rows, confidence). `ChatPage.tsx` réécrite : bulles de conversation, badge mode data/général, SQL dépliable, case « Analyser les données ». 18 tests (12 Python + 6 seed). 945/945 tests.
 
+### Livrables de mise en service ✅ (2026-11-15)
+`docs/mise-en-service.md` (checklist vérifiable, contrôlée contre le code par un test), `docs/courrier-instad-validation.md` (brouillon, non envoyé), `.env.example` complété. Restent à faire par le propriétaire : décisions de la section 0 de la checklist, envoi du courrier, relectures de sécurité, juriste, restauration de sauvegarde testée, mesure de précision.
+
 ### Sprint H19 — P-071 Vérification d'intégrité du journal d'audit ✅ (2026-11-15)
 `verify_audit_chain`, `GET /audit/verify` (admin, méta-audité), `tools/verify_audit.py`, ancrage externe (`entries` + `head`), 32 tests dont les limites verrouillées, DPA/procédure d'incident/sécurité corrigés. **Limite** : chaîne non signée (HMAC = migration à décider). 1847 pytest.
 

@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DPA = (ROOT / "docs/legal/dpa-fr.md").read_text(encoding="utf-8")
-INCIDENT_DOC = (ROOT / "docs/incident-procedure.md").read_text(encoding="utf-8")
+INCIDENT_DOC = (ROOT / "docs/incident-procedure.md").read_text(encoding="utf-8") + "\n" + (ROOT / "docs/mise-en-service.md").read_text(encoding="utf-8")
 
 
 def _source() -> str:
@@ -15,7 +15,7 @@ def _source() -> str:
 
 
 def test_every_setting_named_in_the_dpa_exists_in_the_code():
-    names = set(re.findall(r"\b(?:KIMI_[A-Z_]+|SOVEREIGN_[A-Z_]+|LLM_PROVIDER|OLLAMA_URL|SMTP_[A-Z]+)\b", DPA + INCIDENT_DOC))
+    names = set(re.findall(r"\b(?:KIMI_[A-Z_]+|SOVEREIGN_[A-Z_]+|LLM_PROVIDER|OLLAMA_URL|SMTP_[A-Z]+|ADMIN_PASSWORD)\b", DPA + INCIDENT_DOC))
     assert {"SOVEREIGN_AI_STRICT", "KIMI_BASE_URL", "KIMI_MODEL", "LLM_PROVIDER", "OLLAMA_URL"} <= names     # l'annexe D est bien lue
     src = _source()
     missing = sorted(n for n in names if n not in src)
