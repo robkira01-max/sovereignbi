@@ -77,6 +77,7 @@ Le mode strict supprime ces flux : seuls partent la **question**, les **noms de 
 
 - Les actions d'audit sont enregistrées dans `data/audit.jsonl` (chaîne SHA-256)
 - Aucune donnée sensible n'est loguée (les payloads ne sont pas journalisés)
+- **Intégrité du journal** : `GET /audit/verify` (admin) et `python tools/verify_audit.py` recalculent la chaîne. Ils détectent une entrée modifiée, supprimée au milieu ou insérée ; **pas** la suppression des dernières entrées sans ancrage (noter `entries` et `head` hors du serveur), **ni** une réécriture complète par quelqu'un qui peut écrire le fichier (chaîne non signée, voir P-071)
 
 ## 8. Mises à jour
 

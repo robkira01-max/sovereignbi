@@ -42,6 +42,7 @@ from app.routers.addin import router as addin_router
 from app.routers.sync import router as sync_router
 from app.routers.semantic import router as semantic_router
 from app.routers.sdmx import router as sdmx_router
+from app.routers.audit import router as audit_router
 from app.routers.certification import router as certification_router
 from app.routers.row_security import router as row_security_router
 from app.security.principal_mw import PrincipalMiddleware
@@ -180,6 +181,7 @@ app.include_router(addin_router)
 app.include_router(sync_router)
 app.include_router(semantic_router)
 app.include_router(sdmx_router)
+app.include_router(audit_router)
 app.include_router(certification_router)
 app.include_router(row_security_router)
 app.include_router(privacy_ops_router)

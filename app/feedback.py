@@ -141,3 +141,76 @@ def load_audit(path: Path | None = None) -> list[AuditEntry]:
         except (json.JSONDecodeError, TypeError):
             continue
     return entries
+
+
+# ── Vérification d'intégrité de la chaîne (P-071) ───────────────────────────
+
+_HEX64 = frozenset("0123456789abcdef")
+_ENTRY_KEYS = {"timestamp", "action", "details", "hash"}
+
+
+@dataclass
+class AuditVerification:
+    valid: bool
+    entries: int
+    head: str                       # hash de la dernière entrée valide ("" si journal vide)
+    first_break: dict | None        # {"line": n, "reason": "..."} ; jamais le contenu de l'entrée
+    anchor_checked: bool = False
+    anchor_ok: bool | None = None
+
+
+def verify_audit_chain(path: Path | None = None, anchor_entries: int | None = None,
+                       anchor_hash: str | None = None) -> AuditVerification:
+    """Recalcule la chaîne SHA-256 ligne par ligne, comme `record_audit` l'écrit.
+
+    Détecte : contenu modifié, entrée supprimée ou insérée au milieu, suppression au début, ligne illisible,
+    champs inattendus. **Ne détecte pas** : (1) la suppression des dernières entrées, sauf avec un ancrage
+    (`anchor_entries` + `anchor_hash` relevés plus tôt et conservés à l'extérieur du serveur) ; (2) une réécriture
+    complète par quelqu'un qui peut écrire le fichier : la chaîne n'est pas signée par un secret, elle est
+    recalculable. C'est une preuve d'altération maladroite ou accidentelle, pas une preuve contre un attaquant
+    qui contrôle le serveur.
+    """
+    p = path or AUDIT_PATH
+    if not p.exists():
+        return AuditVerification(True, 0, "", None, anchor_entries is not None,
+                                 (anchor_entries == 0) if anchor_entries is not None else None)
+    with _audit_lock, p.open("r", encoding="utf-8") as f:           # même verrou que l'écriture : pas de ligne à moitié écrite
+        if fcntl is not None:
+            fcntl.flock(f, fcntl.LOCK_SH)
+        lines = f.read().splitlines()
+    prev = ""
+    count = 0
+    anchor_seen: str | None = None
+    for n, raw in enumerate(lines, 1):
+        if not raw.strip():
+            continue
+        try:
+            d = json.loads(raw)
+        except json.JSONDecodeError:
+            return _broken(count, prev, n, "ligne illisible (JSON invalide)", anchor_entries, anchor_hash, anchor_seen)
+        if not isinstance(d, dict) or set(d) != _ENTRY_KEYS:
+            return _broken(count, prev, n, "champs inattendus ou manquants", anchor_entries, anchor_hash, anchor_seen)
+        stored = d["hash"]
+        if not isinstance(stored, str) or len(stored) != 64 or not set(stored) <= _HEX64:
+            return _broken(count, prev, n, "empreinte mal formée", anchor_entries, anchor_hash, anchor_seen)
+        content = json.dumps({"timestamp": d["timestamp"], "action": d["action"], "details": d["details"]},
+                             ensure_ascii=False, sort_keys=True)
+        if _sha256(prev + content) != stored:
+            return _broken(count, prev, n, "empreinte incorrecte : entrée modifiée, ou entrée précédente supprimée/insérée",
+                           anchor_entries, anchor_hash, anchor_seen)
+        prev = stored
+        count += 1
+        if anchor_entries is not None and count == anchor_entries:
+            anchor_seen = stored
+    if anchor_entries is None:
+        anchor_ok = None
+    elif anchor_entries == 0:
+        anchor_ok = True
+    else:                                       # l'entrée n° anchor_entries doit exister et porter l'empreinte notée
+        anchor_ok = anchor_seen is not None and anchor_seen == (anchor_hash or "")
+    return AuditVerification(anchor_ok is not False, count, prev, None, anchor_entries is not None, anchor_ok)
+
+
+def _broken(count, prev, line, reason, anchor_entries, anchor_hash, anchor_seen) -> AuditVerification:
+    return AuditVerification(False, count, prev, {"line": line, "reason": reason}, anchor_entries is not None,
+                             False if anchor_entries is not None else None)

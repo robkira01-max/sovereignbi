@@ -166,6 +166,9 @@ Langues officielles du secteur humanitaire. `i18n.ts` (dictionnaires ar/en/es, ~
 ### Sprint H5 — Chatbot universel ✅ (2026-10-19)
 `POST /api/v1/chatbot` : routeur intelligent SQL/général — détecte automatiquement si la question porte sur les données (`_DATA_PATTERNS`) ou sur un sujet général, historique de conversation (10 tours max), réponse unifiée `ChatResponse` (answer, mode, sql, columns, rows, confidence). `ChatPage.tsx` réécrite : bulles de conversation, badge mode data/général, SQL dépliable, case « Analyser les données ». 18 tests (12 Python + 6 seed). 945/945 tests.
 
+### Sprint H19 — P-071 Vérification d'intégrité du journal d'audit ✅ (2026-11-15)
+`verify_audit_chain`, `GET /audit/verify` (admin, méta-audité), `tools/verify_audit.py`, ancrage externe (`entries` + `head`), 32 tests dont les limites verrouillées, DPA/procédure d'incident/sécurité corrigés. **Limite** : chaîne non signée (HMAC = migration à décider). 1847 pytest.
+
 ### Sprint H18 — P-070 Mode strict de l'IA ✅ (2026-11-15)
 `SOVEREIGN_AI_STRICT=1` : schéma + question seulement vers le modèle (plus d'exemples de lignes, résultats, extraits de documents, insights, réponses d'historique, valeurs d'erreurs) ; réponse locale ; avis de confidentialité, DPA et avertissement de démarrage. 22 tests, 1785 pytest. **Décision du propriétaire : actif par défaut avec un LLM externe** (automatique selon `LLM_PROVIDER`, `SOVEREIGN_AI_STRICT=0` pour désactiver, avertissement au démarrage), 1798 pytest. **Outil `eval.compare_strict` livré (12 tests), mesure toujours à faire** (modèle visé requis) ; prévenir le pilote Djibouti du changement de réponses. **Pastille du mode IA dans l'en-tête livrée (3 états vérifiés en navigateur, 429 Vitest).** **Annexe D du DPA (fournisseur d'IA) livrée** avec test de cohérence DPA/code ; P-071 (vérification du journal d'audit) proposée.
 
