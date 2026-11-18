@@ -38,7 +38,7 @@ Lis `PLAN.md` en entier avant toute action : c'est la source de vérité (benchm
 - **Dernière proposal** : P-072 carte imprimable Djibouti-ville (PDF) — 2026-11-18 (P-057 à P-072 livrés). P-054 était déjà livré (2026-11-13)
 - **Carte imprimable (P-072)** : `.venv/bin/python tools/make_djibouti_ville_map.py [sortie.pdf] [--commune Balbala|Boulaos|Ras-Dika] [--no-licence-warning]` → PDF A3 paysage (communes, 91 quartiers, bâtiments par usage, routes, hydro, rail, échelle, légende, sources). Lit seulement `data/geo/`, aucun réseau. La ligne rouge « licence CERD non confirmée » est ajoutée par défaut : ne la retirer que si la licence est confirmée par écrit. Test de couverture : `tests/test_geo_cerd_coverage.py` + test Vitest `djibouti_ville_map.test.ts` (échouent volontairement si des données CERD arrivent pour le centre : mettre à jour note UI, `catalog.yaml` et item (5) ci-dessous)
 - **mizanbi-client** : `mizanbi-client/` — frontend standalone React (recharts, pdfjs, StatCan/BIE/BCD), `npm test` / `npm run build` depuis `mizanbi-client/`
-- **Commit** : poussé jusqu'à `2f6f948` (2026-11-15) ; travail du 2026-11-18 (P-072 + précision couverture CERD) commité localement, **non poussé**
+- **Commit** : tout poussé sur origin/master (`30cf2bd`, 2026-11-18)
 - **CI GitHub Actions** : `.github/workflows/ci.yml` — lint + pytest + tsc + vitest + vite build + docker smoke, déclenché sur `master`
 - **Dockerfile + nginx.conf** : `mizanbi-client/Dockerfile` + `mizanbi-client/nginx.conf` — build nginx:alpine, SPA fallback, security headers
 - **Langue arabe supprimée** : `Lang = 'fr' | 'en'`, dictionnaire ar retiré, SIG_LANGS supprimé, dirOf simplifié
