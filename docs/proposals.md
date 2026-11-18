@@ -450,6 +450,12 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 **Pas fait (décision à prendre) :** signature par secret (HMAC) ou ancrage automatique hors du serveur ; changer le format casserait la chaîne existante (migration à prévoir). Aucun affichage dans l'interface.
 
 
+## P-072 — Carte imprimable de Djibouti-ville (PDF) + précision de la couverture CERD ✅ (livré 2026-11-18, à la demande du propriétaire)
+
+**Raison :** le propriétaire a demandé une carte propre à imprimer. En la produisant, le contrôle par commune a montré que « couverture CERD : Balbala seulement » est **vrai pour les couches CERD anciennes** (voirie, îlots, équipements, secteurs, typologies, bus) mais **faux pour le levé topographique** (bâtiments, routes, hydro, rail : 3 communes, centre compris).
+**Livré :** `tools/make_djibouti_ville_map.py` (PDF A3, vue d'ensemble ou `--commune`, `--no-licence-warning`) ; catalogue `osm_centre_voirie`, note de `DjiboutiVilleMap.tsx` et item (5) de `CLAUDE.md` corrigés ; `tests/test_geo_cerd_coverage.py` (12 tests) + 1 test Vitest qui échouent volontairement quand des données CERD du centre arrivent. 1859 pytest, 430 Vitest.
+**Pas fait / à décider :** la couche OSM du centre reste cochée par défaut (`centre: true`) ; la décocher maintenant que le levé topographique couvre le centre. Licence CERD toujours non confirmée par écrit (la carte porte l'avertissement par défaut). Le script n'a pas de test unitaire propre (génération vérifiée à l'œil sur les 5 PDF).
+
 ## Livrables de mise en service (2026-11-15)
 
 `docs/mise-en-service.md` : checklist à cocher par installation (décisions préalables, secrets, IA, accès par ligne, courriel, conformité, journal, sauvegardes, réseau, recette, exploitation), chaque case avec une commande ou un contrôle vérifiable ; **contrôlée par `tests/test_dpa_consistency.py`** (chaque route et chaque variable citées existent dans le code). Elle signale deux choses jamais faites : la **restauration d'une sauvegarde** et la **mesure de précision du modèle retenu**. `docs/courrier-instad-validation.md` : brouillon de courrier (non envoyé) demandant à l'INSTAD une confirmation **écrite** avant l'usage de la mention « validé par l'INSTAD », avec formulaire de réponse. `.env.example` complété (`LLM_PROVIDER`, `KIMI_*`, chemins facultatifs).

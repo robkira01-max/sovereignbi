@@ -164,7 +164,7 @@ describe('CERD GeoJSON geometry types', () => {
   })
 })
 
-// ── Centre-ville (OSM, hors couverture CERD) ──────────────────────────────────
+// ── Centre-ville (OSM, hors couverture de la couche CERD « Voirie ») ──────────────────────────────────
 
 describe('OSM centre-ville layers', () => {
   const voirie = asFC(OSM_VOIRIE)
@@ -184,6 +184,28 @@ describe('OSM centre-ville layers', () => {
         expect(y).toBeLessThanOrEqual(11.625)
       })
     }
+  })
+
+  it('the older CERD layers stay west of the centre (matches the map note: CERD « Voirie » = Balbala only)', () => {
+    // If CERD data for the centre arrives, this fails on purpose: update the note in
+    // DjiboutiVilleMap.tsx, the osm_centre_voirie catalog entry and CLAUDE.md together.
+    function maxLon(c: unknown): number {
+      if (Array.isArray(c) && typeof c[0] === 'number') return c[0] as number
+      return Array.isArray(c) ? Math.max(...c.map(maxLon)) : -Infinity
+    }
+    const layers = { VOIRIE, EQUIPEMENTS, ECOLES, LIGNES_BUS, TERMINUS, SECTEURS, TYPOLOGIES }
+    for (const [name, raw] of Object.entries(layers)) {
+      const hi = Math.max(...asFC(raw).features.map((f) => maxLon(f.geometry.coordinates)))
+      expect(hi, name).toBeLessThanOrEqual(43.14)
+    }
+    // ... while the OSM centre layer lives east of them.
+    const osmLo = Math.min(...voirie.features.map((f) => {
+      const xs: number[] = []
+      const walk = (c: unknown) => { if (Array.isArray(c) && typeof c[0] === 'number') xs.push(c[0] as number); else if (Array.isArray(c)) c.forEach(walk) }
+      walk(f.geometry.coordinates)
+      return Math.min(...xs)
+    }))
+    expect(osmLo).toBeGreaterThanOrEqual(43.125)
   })
 
   it('voirie classes are the 4 styled ones', () => {
@@ -206,7 +228,7 @@ describe('admin_pol official quartiers and communes', () => {
     expect(per).toEqual({ Boulaos: 46, Balbala: 37, 'Ras-Dika': 8 })
   })
 
-  it('quartier names are cleaned and include the centre (not covered by CERD)', () => {
+  it('quartier names are cleaned and include the centre (admin_pol covers it, unlike the older CERD layers)', () => {
     const noms = q.features.map((f) => String(f.properties['nom']))
     for (const n of ['Quartier 7', 'Plateau du Serpent', 'Centre Commercial et Administratif', 'Haramous']) expect(noms).toContain(n)
     for (const n of noms) {

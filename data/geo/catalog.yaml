@@ -302,10 +302,14 @@ layers:
   date_acquired: '2026-11-14'
   description_en: OpenStreetMap road network (primary to residential, no footpaths)
     for central Djibouti-ville, lon 43.125-43.185 / lat 11.530-11.625. Fills the gap
-    left by the CERD dataset, which only covers Balbala (4th and 5th arrondissements).
+    left by the older CERD road layer (cerd_voirie), which only covers Balbala (4th
+    and 5th arrondissements). The CERD topographic survey roads (cerd_routes) cover
+    all three communes.
   description_fr: Réseau routier OpenStreetMap (primaire à résidentiel, sans sentiers)
-    du centre de Djibouti-ville, lon 43,125-43,185 / lat 11,530-11,625. Complète les
-    données CERD, qui ne couvrent que Balbala (4ème et 5ème arrondissements).
+    du centre de Djibouti-ville, lon 43,125-43,185 / lat 11,530-11,625. Complète
+    l'ancienne couche CERD de voirie (cerd_voirie), qui ne couvre que Balbala (4ème et
+    5ème arrondissements). Les routes du levé topographique CERD (cerd_routes)
+    couvrent les 3 communes.
   enabled: true
   feature_count: 1875
   file_path: data/geo/osm_centre_voirie.geojson

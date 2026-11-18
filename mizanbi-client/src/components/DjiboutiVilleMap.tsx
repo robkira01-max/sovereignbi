@@ -162,7 +162,7 @@ export default function DjiboutiVilleMap() {
                 )
               })}
 
-              {/* Centre-ville : voirie OSM (hors couverture CERD) */}
+              {/* Centre-ville : voirie OSM (hors couverture de la couche CERD « Voirie », limitée à Balbala) */}
               {layers.centre && (['locale', 'tertiaire', 'secondaire', 'primaire'] as const).map(cl => (
                 <g key={`osm-${cl}`} fill="none" stroke={OSM_ROAD_STYLE[cl].color}
                   strokeWidth={OSM_ROAD_STYLE[cl].w} strokeLinecap="round" strokeLinejoin="round">
@@ -464,7 +464,7 @@ export default function DjiboutiVilleMap() {
 
       <GeoSources
         layerIds={['admin_communes', 'admin_quartiers', 'cerd_secteurs_adressage', 'cerd_typologies_urbaines', 'cerd_voirie', 'cerd_equipements_sociaux', 'cerd_equipements_scolaires', 'cerd_lignes_bus', 'cerd_terminus_bus', 'osm_centre_voirie', ...TOPO_LAYERS.filter(d => layers[(Object.entries(TOPO_BY_LAYER).find(([, id]) => id === d.id)?.[0]) as Layer]).map(d => d.id)]}
-        note="Les routes OSM du centre sont moins précises que les données CERD (couverture CERD : arrondissements 4 et 5, Balbala)."
+        note="Les routes OSM du centre sont moins précises que les données CERD. La couche CERD « Voirie » ne couvre que Balbala (arrondissements 4 et 5) ; les « Routes (CERD 2014) » du levé topographique couvrent les 3 communes."
       />
     </div>
   )
