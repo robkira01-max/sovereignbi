@@ -47,14 +47,6 @@ _LEVEL_PATHS: dict[str, Path] = {
     "cerd_hydro":                 _REPO_ROOT / "data" / "geo" / "cerd_hydro.geojson.gz",
     "cerd_rail":                  _REPO_ROOT / "data" / "geo" / "cerd_rail.geojson.gz",
     "cerd_sites":                 _REPO_ROOT / "data" / "geo" / "cerd_sites.geojson.gz",
-    # Couches thématiques JICA (hydrogéologie, climat, points d'eau) — licence non confirmée, voir catalog.yaml
-    "jica_systemes_aquiferes":    _JICA / "jica_systemes_aquiferes.geojson.gz",
-    "jica_debit_aquiferes":       _JICA / "jica_debit_aquiferes.geojson.gz",
-    "jica_pluie_moyenne":         _JICA / "jica_pluie_moyenne.geojson.gz",
-    "jica_etp":                   _JICA / "jica_etp.geojson.gz",
-    "jica_etr":                   _JICA / "jica_etr.geojson.gz",
-    "jica_zones_climatiques":     _JICA / "jica_zones_climatiques.geojson.gz",
-    "jica_points_eau":            _JICA / "jica_points_eau.geojson.gz",
     # CERD Djibouti-ville layers
     "cerd_equipements_scolaires": _CERD / "cerd_equipements_scolaires.geojson",
     "cerd_equipements_sociaux":   _CERD / "cerd_equipements_sociaux.geojson",
@@ -68,6 +60,17 @@ _LEVEL_PATHS: dict[str, Path] = {
     "cerd_typologies_urbaines":   _CERD / "cerd_typologies_urbaines.geojson",
 }
 
+def _register_jica_layers() -> None:
+    """Couches JICA : une entrée par fichier présent dans data/geo/jica ET déclaré dans le catalogue (source de vérité)."""
+    from app.geo_catalog.registry import load_catalog
+    declared = {l.id for l in load_catalog().layers if l.id.startswith("jica_") and l.enabled}
+    for lid in sorted(declared):
+        f = _JICA / f"{lid}.geojson.gz"
+        if f.exists():
+            _LEVEL_PATHS[lid] = f
+
+
+_register_jica_layers()
 _VALID_LEVELS = frozenset(_LEVEL_PATHS)
 
 

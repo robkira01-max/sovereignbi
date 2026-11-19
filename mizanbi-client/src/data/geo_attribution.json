@@ -104,6 +104,36 @@
     "provider": "Ministère de la Santé / INSTAD",
     "license": "Données fournies par le propriétaire du projet"
   },
+  "jica_agropastoral": {
+    "name": "Unités agropastorales",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_agropastoral_composite": {
+    "name": "Agropastoral — points composites",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_alerte_crue": {
+    "name": "Stations d'alerte de crue",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_altimetrie": {
+    "name": "Altimétrie (lignes)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_bathymetrie": {
+    "name": "Bathymétrie",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_cote_frontieres": {
+    "name": "Côte et frontières",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
   "jica_debit_aquiferes": {
     "name": "Débit des aquifères (classes)",
     "provider": "JICA (source indiquée par le propriétaire",
@@ -119,8 +149,68 @@
     "provider": "JICA (source indiquée par le propriétaire",
     "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
   },
+  "jica_failles": {
+    "name": "Failles",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_failles_favorables": {
+    "name": "Zones de failles favorables",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_forets": {
+    "name": "Forêts",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_formation_points_eau": {
+    "name": "Formations de points d'eau",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_fracturation": {
+    "name": "Fracturation (golfe, Dalha)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_geologie_formations": {
+    "name": "Géologie — formations (noms de fichiers JICA)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_hydrographie": {
+    "name": "Réseau hydrographique (oueds)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_iles": {
+    "name": "Îles",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_localites": {
+    "name": "Villages, villes et localités",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_plans_eau": {
+    "name": "Lacs, sebkhas, nappes saumâtres",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_pluie_mai": {
+    "name": "Pluie moyenne — mai",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
   "jica_pluie_moyenne": {
     "name": "Pluie moyenne annuelle (mm)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_points_cotes": {
+    "name": "Points cotés",
     "provider": "JICA (source indiquée par le propriétaire",
     "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
   },
@@ -129,13 +219,38 @@
     "provider": "JICA (source indiquée par le propriétaire",
     "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
   },
+  "jica_reseau_routier": {
+    "name": "Routes, pistes et chemin de fer",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_sismicite": {
+    "name": "Sismicité (épicentres)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_sols_regions": {
+    "name": "Sols — Arta et Ali Sabieh (fichier national corrompu)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
   "jica_systemes_aquiferes": {
     "name": "Systèmes aquifères",
     "provider": "JICA (source indiquée par le propriétaire",
     "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
   },
+  "jica_vegetation_regions": {
+    "name": "Végétation par région",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
   "jica_zones_climatiques": {
     "name": "Zones climatiques",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_zones_hydrogeo": {
+    "name": "Zones prioritaires, résistivité, recharge",
     "provider": "JICA (source indiquée par le propriétaire",
     "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
   },

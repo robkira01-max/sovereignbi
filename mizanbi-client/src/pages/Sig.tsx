@@ -216,8 +216,8 @@ export default function SigPage({ t, lang = 'fr', isEditor = false, onIndicator,
       <section className="card-solid" data-testid="jica-section">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
           <div>
-            <h3 style={{ margin: 0 }}>Hydrogéologie, climat et points d’eau — Djibouti</h3>
-            <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>Aquifères, pluviométrie, ETP/ETR, zones climatiques, 1 223 points d’eau (5 régions) · source JICA</p>
+            <h3 style={{ margin: 0 }}>Données thématiques JICA — Djibouti</h3>
+            <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>Hydrogéologie, climat, géologie, topographie, végétation, sols, réseau, sismicité · 30 couches · source JICA (noms provisoires)</p>
           </div>
           <span className="badge badge-demo">JICA</span>
         </div>

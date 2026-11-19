@@ -679,4 +679,653 @@ layers:
       agreement. Data ~2007-2008.'
     fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
       écrit. Données ~2007-2008.'
+- api_endpoint: /api/v1/geo/dj/jica_geologie_formations
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Formations géologiques ; le code de classe est le nom du fichier
+    d'origine (légende JICA attendue).
+  description_fr: Formations géologiques ; le code de classe est le nom du fichier
+    d'origine (légende JICA attendue).
+  enabled: true
+  feature_count: 59
+  file_path: data/geo/jica/jica_geologie_formations.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_geologie_formations
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Geology — formations (JICA file names)
+  name_fr: Géologie — formations (noms de fichiers JICA)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_failles
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Failles (lignes).
+  description_fr: Failles (lignes).
+  enabled: true
+  feature_count: 1358
+  file_path: data/geo/jica/jica_failles.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: jica_failles
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Faults
+  name_fr: Failles
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_failles_favorables
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Polygones « FAILLEFAVORABLE » (sens exact à confirmer par la JICA).
+  description_fr: Polygones « FAILLEFAVORABLE » (sens exact à confirmer par la JICA).
+  enabled: true
+  feature_count: 300
+  file_path: data/geo/jica/jica_failles_favorables.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_failles_favorables
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Favourable fault zones
+  name_fr: Zones de failles favorables
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_fracturation
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Linéaments de fracturation (3 fichiers sources).
+  description_fr: Linéaments de fracturation (3 fichiers sources).
+  enabled: true
+  feature_count: 2109
+  file_path: data/geo/jica/jica_fracturation.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: jica_fracturation
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Fracturing (gulf, Dalha)
+  name_fr: Fracturation (golfe, Dalha)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_altimetrie
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: '5 469 lignes d''altimétrie (courbes de niveau probables : à confirmer).'
+  description_fr: '5 469 lignes d''altimétrie (courbes de niveau probables : à confirmer).'
+  enabled: true
+  feature_count: 5469
+  file_path: data/geo/jica/jica_altimetrie.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: jica_altimetrie
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Altimetry (lines)
+  name_fr: Altimétrie (lignes)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_points_cotes
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 493 points cotés.
+  description_fr: 493 points cotés.
+  enabled: true
+  feature_count: 493
+  file_path: data/geo/jica/jica_points_cotes.geojson.gz
+  format: geojson
+  geometry_type: Point
+  id: jica_points_cotes
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Spot heights
+  name_fr: Points cotés
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_hydrographie
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Hydro, oueds principaux et majeurs (3 fichiers sources).
+  description_fr: Hydro, oueds principaux et majeurs (3 fichiers sources).
+  enabled: true
+  feature_count: 10784
+  file_path: data/geo/jica/jica_hydrographie.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: jica_hydrographie
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Hydrographic network (wadis)
+  name_fr: Réseau hydrographique (oueds)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_plans_eau
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Lacs, sebkhas et nappes saumâtres (3 fichiers sources).
+  description_fr: Lacs, sebkhas et nappes saumâtres (3 fichiers sources).
+  enabled: true
+  feature_count: 27
+  file_path: data/geo/jica/jica_plans_eau.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_plans_eau
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Lakes, salt flats, brackish aquifers
+  name_fr: Lacs, sebkhas, nappes saumâtres
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_reseau_routier
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Routes, pistes (1 et 2) et chemin de fer.
+  description_fr: Routes, pistes (1 et 2) et chemin de fer.
+  enabled: true
+  feature_count: 716
+  file_path: data/geo/jica/jica_reseau_routier.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: jica_reseau_routier
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Roads, tracks and railway
+  name_fr: Routes, pistes et chemin de fer
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_localites
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Villages, villes, chefs-lieux, postes administratifs et localités.
+  description_fr: Villages, villes, chefs-lieux, postes administratifs et localités.
+  enabled: true
+  feature_count: 569
+  file_path: data/geo/jica/jica_localites.geojson.gz
+  format: geojson
+  geometry_type: Point
+  id: jica_localites
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: NAME1_
+  name_en: Villages, towns and localities
+  name_fr: Villages, villes et localités
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_vegetation_regions
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 'Cartes de végétation régionales (projection absente : UTM 38N supposée,
+    voir avertissement).'
+  description_fr: 'Cartes de végétation régionales (projection absente : UTM 38N supposée,
+    voir avertissement).'
+  enabled: true
+  feature_count: 89
+  file_path: data/geo/jica/jica_vegetation_regions.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_vegetation_regions
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Vegetation by region
+  name_fr: Végétation par région
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+  - en: 'Missing projection in ALISABIEH_VEG.shp, ARTA_VEG.shp, DIKHIL.shp, DJIBOUTI_VEG.shp,
+      OBOCK_VEG.shp, TADJOURAH_VEG.shp: UTM 38N assumed (bounds consistent) — to be
+      confirmed.'
+    fr: 'Projection absente dans ALISABIEH_VEG.shp, ARTA_VEG.shp, DIKHIL.shp, DJIBOUTI_VEG.shp,
+      OBOCK_VEG.shp, TADJOURAH_VEG.shp : UTM 38N supposée (emprise cohérente) — à
+      confirmer.'
+- api_endpoint: /api/v1/geo/dj/jica_agropastoral
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Unités agropastorales ; code de classe = nom du fichier (légende
+    JICA attendue). 6 fichiers illisibles ignorés.
+  description_fr: Unités agropastorales ; code de classe = nom du fichier (légende
+    JICA attendue). 6 fichiers illisibles ignorés.
+  enabled: true
+  feature_count: 730
+  file_path: data/geo/jica/jica_agropastoral.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_agropastoral
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Agropastoral units
+  name_fr: Unités agropastorales
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_agropastoral_composite
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 513 points « composite ».
+  description_fr: 513 points « composite ».
+  enabled: true
+  feature_count: 513
+  file_path: data/geo/jica/jica_agropastoral_composite.geojson.gz
+  format: geojson
+  geometry_type: Point
+  id: jica_agropastoral_composite
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: nom
+  name_en: Agropastoral — composite points
+  name_fr: Agropastoral — points composites
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_forets
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 9 polygones de forêts.
+  description_fr: 9 polygones de forêts.
+  enabled: true
+  feature_count: 9
+  file_path: data/geo/jica/jica_forets.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_forets
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Forests
+  name_fr: Forêts
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_sols_regions
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Unités de sols d'Arta (descriptions) et d'Ali Sabieh (sans attributs,
+    projection supposée UTM 38N).
+  description_fr: Unités de sols d'Arta (descriptions) et d'Ali Sabieh (sans attributs,
+    projection supposée UTM 38N).
+  enabled: true
+  feature_count: 54
+  file_path: data/geo/jica/jica_sols_regions.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_sols_regions
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: Descriptio
+  name_en: Soils — Arta and Ali Sabieh (national file corrupt)
+  name_fr: Sols — Arta et Ali Sabieh (fichier national corrompu)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+  - en: 'Missing projection in Nm_sols_Ali-sabieh.shp: UTM 38N assumed (bounds consistent)
+      — to be confirmed.'
+    fr: 'Projection absente dans Nm_sols_Ali-sabieh.shp : UTM 38N supposée (emprise
+      cohérente) — à confirmer.'
+- api_endpoint: /api/v1/geo/dj/jica_pluie_mai
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 9 polygones de pluie moyenne (champ Pluiemoyen) ; période exacte
+    à confirmer.
+  description_fr: 9 polygones de pluie moyenne (champ Pluiemoyen) ; période exacte
+    à confirmer.
+  enabled: true
+  feature_count: 8
+  file_path: data/geo/jica/jica_pluie_mai.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_pluie_mai
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: Pluiemoyen
+  name_en: Mean rainfall — May
+  name_fr: Pluie moyenne — mai
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_zones_hydrogeo
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Zones prioritaires, résistivité < 20, zones sans géophysique, recharge
+    (sens exact à confirmer).
+  description_fr: Zones prioritaires, résistivité < 20, zones sans géophysique, recharge
+    (sens exact à confirmer).
+  enabled: true
+  feature_count: 63
+  file_path: data/geo/jica/jica_zones_hydrogeo.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_zones_hydrogeo
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Priority, resistivity and recharge zones
+  name_fr: Zones prioritaires, résistivité, recharge
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_formation_points_eau
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 76 points (champ typepoint).
+  description_fr: 76 points (champ typepoint).
+  enabled: true
+  feature_count: 76
+  file_path: data/geo/jica/jica_formation_points_eau.geojson.gz
+  format: geojson
+  geometry_type: Point
+  id: jica_formation_points_eau
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: typepoint
+  name_en: Water-point formations
+  name_fr: Formations de points d'eau
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_alerte_crue
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Stations de base, pluviomètres possibles, répéteur, débit/pluie.
+  description_fr: Stations de base, pluviomètres possibles, répéteur, débit/pluie.
+  enabled: true
+  feature_count: 15
+  file_path: data/geo/jica/jica_alerte_crue.geojson.gz
+  format: geojson
+  geometry_type: Point
+  id: jica_alerte_crue
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Flood-alert stations
+  name_fr: Stations d'alerte de crue
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_sismicite
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 2 462 événements (champs NOM, MAGCOR) ; projection supposée UTM
+    38N.
+  description_fr: 2 462 événements (champs NOM, MAGCOR) ; projection supposée UTM
+    38N.
+  enabled: true
+  feature_count: 2462
+  file_path: data/geo/jica/jica_sismicite.geojson.gz
+  format: geojson
+  geometry_type: Point
+  id: jica_sismicite
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: NOM
+  name_en: Seismicity (epicentres)
+  name_fr: Sismicité (épicentres)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+  - en: 'Missing projection in XYsismo_mar_25.shp: UTM 38N assumed (bounds consistent)
+      — to be confirmed.'
+    fr: 'Projection absente dans XYsismo_mar_25.shp : UTM 38N supposée (emprise cohérente)
+      — à confirmer.'
+- api_endpoint: /api/v1/geo/dj/jica_bathymetrie
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Isobathes (champ bathy).
+  description_fr: Isobathes (champ bathy).
+  enabled: true
+  feature_count: 9
+  file_path: data/geo/jica/jica_bathymetrie.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: jica_bathymetrie
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: bathy
+  name_en: Bathymetry
+  name_fr: Bathymétrie
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_iles
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Îles (3 jeux sources).
+  description_fr: Îles (3 jeux sources).
+  enabled: true
+  feature_count: 18
+  file_path: data/geo/jica/jica_iles.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_iles
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Islands
+  name_fr: Îles
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
+- api_endpoint: /api/v1/geo/dj/jica_cote_frontieres
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: Trait de côte et frontières.
+  description_fr: Trait de côte et frontières.
+  enabled: true
+  feature_count: 13
+  file_path: data/geo/jica/jica_cote_frontieres.geojson.gz
+  format: geojson
+  geometry_type: LineString
+  id: jica_cote_frontieres
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: source_file
+  name_en: Coast and borders
+  name_fr: Côte et frontières
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
+  - en: 'Provisional name and classes: JICA legends pending.'
+    fr: 'Nom et classes provisoires : en attente des légendes de la JICA.'
 version: '1'
