@@ -459,3 +459,227 @@ App connectée au backend SovereignBI via `VITE_API_BASE`. Pas de MapLibre — c
 ## Livrables de mise en service (2026-11-15)
 
 `docs/mise-en-service.md` : checklist à cocher par installation (décisions préalables, secrets, IA, accès par ligne, courriel, conformité, journal, sauvegardes, réseau, recette, exploitation), chaque case avec une commande ou un contrôle vérifiable ; **contrôlée par `tests/test_dpa_consistency.py`** (chaque route et chaque variable citées existent dans le code). Elle signale deux choses jamais faites : la **restauration d'une sauvegarde** et la **mesure de précision du modèle retenu**. `docs/courrier-instad-validation.md` : brouillon de courrier (non envoyé) demandant à l'INSTAD une confirmation **écrite** avant l'usage de la mention « validé par l'INSTAD », avec formulaire de réponse. `.env.example` complété (`LLM_PROVIDER`, `KIMI_*`, chemins facultatifs).
+
+---
+
+## P-078 — Remplacement de Kimi pour le marché canadien : modèle local par défaut, option hébergée au Canada
+
+> Brouillon à coller dans `docs/proposals.md`. Je n'ai pas vu ce fichier : adapter l'en-tête à son format.
+
+- [ ] En attente d'accord (règle CLAUDE.md : hors plan, ne jamais implémenter sans accord)
+
+## Raison
+
+- Kimi (via Groq) est un fournisseur externe. Même en mode strict (P-070), le schéma et la question quittent l'infrastructure du client, hors Canada. Pour des clients soumis à la Loi 25 ou du secteur public canadien, c'est un transfert à documenter et un point de friction à l'achat.
+- Le pack Audit (P-073 à P-077, décision D-1) exige une IA locale.
+- La précision text-to-SQL n'a jamais été mesurée (`eval.compare_strict` existe mais exige le modèle visé). Le choix du remplaçant doit se fonder sur une mesure, pas sur des comparatifs de blogues.
+
+## Décision proposée
+
+1. **Par défaut : Ollama local** avec un modèle sous licence MIT ou Apache 2.0 (cohérent avec la règle « Licences » de CLAUDE.md).
+2. **Option : fournisseur hébergé au Canada** (candidat : Cohere via Bell AI Fabric) pour les clients sans GPU, activé par contrat, jamais par défaut.
+3. **Kimi** : conservé uniquement pour le pilote Djibouti existant, retiré des déploiements canadiens. **DeepSeek** reste dev uniquement (`tools/dev_llm.py`), inchangé.
+
+## Contenu
+
+### A. Banc d'essai (d'abord, avant tout changement de code produit)
+
+- Jeu de questions : 60 à 100, **majorité en français**, le reste en anglais, sur des données synthétiques canadiennes (budgets municipaux, comptes publics). Inclure des questions destructives (doivent être refusées) et des questions avec synonymes de la couche sémantique.
+- Modèles candidats (à confirmer au moment du test, la liste évolue vite) :
+  - famille Qwen3-Coder (Apache 2.0), plusieurs tailles ;
+  - OmniSQL 14B (Apache 2.0) ;
+  - un modèle généraliste Apache 2.0 de taille comparable ;
+  - Kimi, comme référence de comparaison.
+- Mode : strict (schéma + question seulement) pour tous, puis ouvert pour Kimi seulement.
+- Mesures par modèle : exactitude d'exécution (résultat identique à la requête de référence), taux de SQL invalide après 3 tentatives, taux de refus des requêtes destructives, latence médiane et p95, mémoire GPU/RAM, qualité des réponses en français.
+- Outils : `python -m eval.run_eval` et `python -m eval.compare_strict`. Consigner le matériel de référence utilisé (aucune promesse de performance universelle).
+- Point d'attention : certains modèles text-to-SQL spécialisés sont entraînés sur des questions en anglais seulement ; le français doit être testé explicitement.
+
+### B. Fournisseur hébergé au Canada (optionnel)
+
+- Ajouter une valeur de `LLM_PROVIDER` pour le fournisseur retenu, derrière l'abstraction existante.
+- Soumis au mode strict (`ai_policy.strict()`) : aucune ligne de données, résultat ni extrait de document envoyé.
+- Toute nouvelle URL de base est ajoutée au lookahead de `tests/test_network_isolation.py` (règle CLAUDE.md).
+- Avant d'écrire du code : vérifier par écrit les conditions du fournisseur (rétention des requêtes, entraînement sur les données clients, lieu de traitement, juridiction applicable, sous-traitants) et la licence d'usage. La résidence canadienne des données n'implique pas, à elle seule, l'absence d'accès par des autorités étrangères : à traiter dans le contrat et le DPA.
+
+### C. Alignement produit et conformité
+
+- `LLM_PROVIDER` : valeur par défaut `ollama` pour toute nouvelle installation.
+- `AiModeBadge` : distinguer « IA locale », « externe (Canada) » et « externe (hors Canada) ».
+- `legalConfig.ts` : renseigner le fournisseur d'IA ; `docs/legal/dpa-fr.md` : ajouter le sous-traitant et les transferts le cas échéant.
+- `THIRD_PARTY.md` : licences du ou des modèles retenus (les licences de modèles et les obligations de redistribution se vérifient une à une).
+- Documenter le matériel minimal par taille de modèle dans `docs/` (guide d'installation).
+
+## Critères d'acceptation
+
+- Un rapport de banc d'essai versionné (`docs/eval-llm-2026-11.md`) avec les mesures ci-dessus, le matériel et les dates.
+- Un modèle local par défaut retenu, avec un seuil d'exactitude fixé à l'avance par le propriétaire (aucun seuil annoncé tant que la mesure n'est pas faite).
+- Une installation neuve sans variable d'environnement démarre en mode local, sans appel réseau externe (test d'isolation réseau vert).
+- Si l'option hébergée est livrée : une requête n'emporte que schéma et question (test dédié), et le badge l'indique correctement.
+- Suite verte : pytest, Vitest, `py_compile`.
+
+## Impact
+
+- Code : petit (nouveau fournisseur optionnel, badge, réglages). Le gros du travail est la mesure.
+- Effet pour un client sans GPU : le mode local peut être lent ou imprécis sur petit matériel. D'où l'option hébergée.
+- Changement visible pour le pilote Djibouti : aucun, tant que Kimi y reste configuré.
+
+## Dépendances et risques
+
+- Dépend de P-070 (mode strict) et P-065 (couche sémantique, dont le gain reste à mesurer).
+- Risque : aucun modèle local ne répond au seuil sur le matériel cible. Dans ce cas, l'option hébergée devient le chemin principal pour ces clients, avec les conditions contractuelles ci-dessus.
+- Les comparatifs de modèles trouvés en ligne (blogues) ne sont pas des sources fiables : seul le banc d'essai maison fait foi.
+
+---
+
+## Propositions P-073 à P-077 — Pack Audit (intégration AuditCalc dans MizanBI)
+
+
+## Contexte et décision de cadrage
+
+AuditCalc (cahier des charges v1.0, 2026-11-19) est intégré à MizanBI comme **pack optionnel « Audit »**, sous forme de modules dans le même dépôt. Il ne devient pas un produit séparé.
+
+Déjà couvert par MizanBI (retiré du périmètre AuditCalc) : authentification et rôles, sécurité par ligne, tableaux de bord, exports PDF/Excel/bulletin, journal d'audit chaîné, certification de jeux de données, pages légales, déploiement Docker.
+
+À construire (le cœur d'AuditCalc) : moteur de formules versionnées en Decimal, import et qualité des données, moteur de règles de contrôle, gestionnaire de preuves, rapport d'audit documenté.
+
+**Principe central (non négociable)** : aucun résultat financier n'est publié sans formule identifiable, données sources, méthode de calcul, version du moteur et possibilité de reproduction.
+
+### Décisions transversales à valider
+
+- **D-1 IA locale pour le pack Audit.** Les données d'audit ne quittent jamais l'infrastructure. Le pack exige `LLM_PROVIDER=ollama`. Avec un fournisseur externe (Kimi), les fonctions IA du pack sont désactivées, même en mode strict. Le calcul reste déterministe, sans IA.
+- **D-2 Distinction calcul certifié / exploration.** Un chiffre issu d'un run versionné reçoit la pastille « calculé » (liée à P-069). Un chiffre issu du text-to-SQL est étiqueté « exploratoire, non certifié ».
+- **D-3 Lecture des données.** Toute lecture passe par `DataStore.execute` (sécurité par ligne P-068). Aucun `store.con.execute` pour des lignes. Tables du pack préfixées `audit_` (même logique que `sdmx_`).
+- **D-4 Licences.** MIT/Apache/BSD uniquement. Éviter PyMuPDF (AGPL). Mettre à jour `THIRD_PARTY.md`.
+- **D-5 Positionnement.** « Pack audit » optionnel de MizanBI, pas un nouveau produit. Il vise un autre acheteur (audit interne) que la BI souveraine Loi 25 : le valider avec un premier utilisateur avant de développer au-delà de P-075.
+
+### Hors périmètre (volontairement)
+
+Authentification et rôles (déjà faits), assistant IA dédié, tableaux de bord dédiés, packaging, PDF scannés et OCR, pack France (M57, M4, M21, M22), multi-utilisateur avancé, PostgreSQL, Qdrant. Ils pourront faire l'objet de propositions ultérieures.
+
+### Prérequis recommandés avant données réelles
+
+Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propositions, mais le pack Audit promet la restauration testée et la reproductibilité :
+1. Tester la restauration d'une sauvegarde.
+2. Mesurer la précision text-to-SQL sur le modèle visé (`eval.run_eval`).
+3. Relecture humaine de `app/auth/` et test d'intrusion tiers.
+
+---
+
+## P-073 — Moteur de formules financières versionnées
+
+- [ ] En attente d'accord
+
+**Raison.** C'est le cœur d'AuditCalc : des chiffres reproductibles et traçables. MizanBI a des mesures sémantiques (P-065), mais pas de registre de formules versionnées ni de runs reproductibles.
+
+**Contenu.**
+- `app/financial/` : registre lu depuis `rules/financial/*.yaml`. Chaque formule : code, version, variables, unités, précision, règle pour valeurs manquantes, comportement en division par zéro, négatifs.
+- Calcul en `decimal.Decimal` hors pandas ; mode d'arrondi explicite et documenté ; montants sérialisés en chaînes dans l'API.
+- Tables `audit_analysis_runs` (`engine_version`, `ruleset_version`, `input_snapshot_hash`, statut) et `audit_calculation_results`.
+- Première bibliothèque : 8 formules budgétaires et 3 formules de recettes (taux d'exécution, dépassement, écart budget/réalisé, taux de recouvrement…). Les autres familles (dette, trésorerie, performance, comparaison) viennent plus tard.
+- Exposition dans la couche sémantique : une mesure peut pointer vers une formule du registre. Le chat appelle le moteur au lieu de générer le calcul en SQL.
+- Routes : lister les formules, détail d'une formule, lancer un calcul, lire un résultat, comparer. Toutes derrière `RequireRole`.
+
+**Critères d'acceptation (tests de référence).**
+- Budget 120 M, dépenses 114 M → 95 % d'exécution.
+- Budget 50 M, dépenses 57 M → 114 %.
+- Recettes prévues 60 M, encaissées 54 M → 90 % de recouvrement.
+- Modifier une formule crée une nouvelle version, l'ancienne reste consultable.
+- Même analyse et mêmes paramètres → même résultat (et même hash).
+- Division par zéro et données manquantes traitées explicitement, jamais en silence.
+
+**Impact.** Nouveau module et 2 tables. Aucune modification des routes existantes. Dépendance : P-065 (couche sémantique), P-069 (pastille).
+
+---
+
+## P-074 — Import tabulaire et contrôle de qualité des données
+
+- [ ] En attente d'accord
+
+**Raison.** Sans données normalisées et contrôlées, les formules et les règles ne valent rien. Le périmètre est volontairement limité à CSV/XLSX, sans PDF ni OCR (risque technique élevé, reporté).
+
+**Contenu.**
+- Import CSV et XLSX (openpyxl, MIT) : aperçu, détection de colonnes, mapping, reconnaissance des dates, montants et devises.
+- Conservation de l'original, empreinte SHA-256, table `audit_documents`. Original jamais écrasé.
+- Sécurité des fichiers : vérification réelle du type, limite de taille, noms neutralisés, protection contre la traversée de chemins (réutiliser le garde de l'import géo P-024), refus des exécutables.
+- Table normalisée `audit_financial_records` (date, compte, montants Decimal, devise, exercice, document source).
+- Contrôles qualité : valeurs manquantes, doublons, dates invalides, devises inconnues, montants non numériques, totaux incohérents, colonnes manquantes, valeurs hors limites. **Aucune correction silencieuse** ; chaque anomalie est listée et résoluble (`resolve`) avec justification.
+
+**Critères d'acceptation.**
+- Données sans devise → erreur ou validation requise.
+- Réimport du même fichier → même empreinte, détecté comme doublon.
+- Fichier aberrant (faux type, archive piégée, nom hostile) → refusé et journalisé.
+
+**Impact.** 2 tables, 1 routeur. Dépendance : P-073 pour consommer les enregistrements normalisés.
+
+---
+
+## P-075 — Moteur de règles de contrôle d'audit (10 contrôles)
+
+- [ ] En attente d'accord
+
+**Raison.** Détecter des opérations à examiner, de façon explicable. On commence à 10 contrôles, pas 30 : la pertinence se valide avec de vrais utilisateurs avant d'en ajouter.
+
+**Contenu.**
+- `app/audit_rules/` : règles lues depuis `rules/audit/*.yaml` (code, version, paramètres, seuils, description, interprétation).
+- Exécution déterministe en SQL paramétré via `DataStore.execute`. Aucune IA dans la détection.
+- AUD001 factures identiques ; AUD002 paiements répétés ; AUD003 dépenses supérieures au budget ; AUD004 paiement le week-end ; AUD005 fractionnement potentiel ; AUD006 montant inhabituel ; AUD007 coordonnées bancaires communes ; AUD008 absence de justificatif ; AUD009 paiement hors période ; AUD010 écriture déséquilibrée.
+- Table `audit_findings` : rattachée à un run, une règle et sa version, avec gravité et statut.
+- Formulation : « signal de risque à examiner », jamais « fraude ». Pas de conclusion automatique.
+
+**Critères d'acceptation.**
+- Deux factures strictement identiques → signalement.
+- Deux paiements distincts de même montant → pas de conclusion automatique.
+- Dépenses sans budget disponible → signalement à examiner.
+- Chaque anomalie renvoie à une règle identifiable et à sa version.
+- AUD004 est présenté comme indicatif, pas comme une irrégularité.
+
+**Impact.** 1 module, 1 table. AUD007 manipule des données personnelles : masquage par défaut, accès éditeur/admin, mention dans le registre de vie privée et le DPA.
+
+---
+
+## P-076 — Gestionnaire de preuves et revue humaine des anomalies
+
+- [ ] En attente d'accord
+
+**Raison.** Relier chaque conclusion à ses sources et exiger une validation humaine. Réutilise la chaîne d'audit P-071 au lieu de créer un nouveau journal.
+
+**Contenu.**
+- Tables `audit_evidence` et `audit_finding_evidence` (relation N–N) : document, page ou ligne, empreinte.
+- Route de vérification d'intégrité d'une preuve (recalcul du SHA-256 et comparaison).
+- Revue humaine d'une anomalie : statuts nouveau → en revue → confirmé / écarté, **justification obligatoire**, auteur et date. Rôles existants : editor revoit, admin valide ou révoque.
+- Chaque action (import, run, revue, vérification) est écrite dans le journal chaîné P-071. Rappel de la limite connue : la chaîne n'est pas signée ; ancrer `entries` et `head` hors du serveur.
+
+**Critères d'acceptation.**
+- Modifier un fichier de preuve sur le disque fait échouer la vérification.
+- Une anomalie ne peut pas passer « confirmée » sans justification et sans preuve liée.
+- Aucun écrasement silencieux de données originales.
+
+**Impact.** 2 tables. Dépendance : P-071 (chaîne), P-068 (sécurité par ligne).
+
+---
+
+## P-077 — Rapport d'audit documenté
+
+- [ ] En attente d'accord
+
+**Raison.** Le livrable final. Réutilise l'infrastructure d'export existante (PDF, Excel, bulletin HTML) au lieu d'un nouveau moteur de rapports.
+
+**Contenu.**
+- Gabarit « rapport d'audit » : méthodologie, version du moteur et des règles, sources avec empreintes, formules et calculs, anomalies avec statut de revue, limites, annexes.
+- **Refus de publier** un résultat qui n'a pas de run, de formule, de version et de données sources (application du principe central).
+- Mention fixe : l'outil fournit des signaux de risque ; il ne remplace ni un auditeur légal ni une institution de contrôle.
+- Application de la décision D-1 : si `LLM_PROVIDER` n'est pas `ollama`, aucune fonction IA du pack n'est active ; la pastille `AiModeBadge` l'indique.
+
+**Critères d'acceptation.**
+- Générer deux fois le même rapport depuis le même run donne le même contenu chiffré.
+- Un rapport sans run valide est refusé avec un message explicite.
+- Le PDF indique la version du moteur, des règles et les empreintes des sources.
+
+**Impact.** Extension de l'export existant, aucun nouveau service. Dépendance : P-073 à P-076.
+
+---
+
+## Ordre et dépendances
+
+P-073 → P-074 → P-075 → P-076 → P-077. P-073 et P-074 peuvent avancer en parallèle après la définition des tables. Après P-075, faire valider l'utilité des contrôles par un premier utilisateur (D-5) avant P-076/P-077.
