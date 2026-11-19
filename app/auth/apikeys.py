@@ -182,3 +182,25 @@ def _touch(row: sqlite3.Row) -> None:
                       (_iso(_now()), row["id"], _iso(_now() - timedelta(seconds=LAST_USED_MIN_INTERVAL_S))))
     except sqlite3.OperationalError:
         pass        # base occupée : l'horodatage n'est pas critique, l'authentification ne doit pas échouer pour autant
+
+
+def rotate_key(key_id: int, user_id: int) -> tuple[dict, str]:
+    """Rotation atomique : vérifie que l'ancienne clé est ACTIVE et au propriétaire, crée la nouvelle et révoque l'ancienne
+    dans une seule transaction (deux rotations concurrentes ne produisent jamais deux nouvelles clés)."""
+    raw = KEY_PREFIX + secrets.token_urlsafe(32)
+    now = _now()
+    with closing(sec._conn()) as c, c:
+        c.execute("BEGIN IMMEDIATE")
+        old = c.execute("SELECT * FROM api_keys WHERE id=? AND user_id=?", (key_id, user_id)).fetchone()
+        if old is None:
+            raise KeyError_("Clé introuvable.")
+        if _status(old) != "active":
+            raise KeyError_("Seule une clé active peut être renouvelée.")
+        if c.execute("SELECT count(*) FROM api_keys WHERE user_id=? AND created_at > ?",
+                     (user_id, _iso(now - timedelta(hours=24)))).fetchone()[0] >= MAX_CREATED_PER_DAY:
+            raise KeyError_("Trop de clés créées aujourd'hui : réessayez plus tard.")
+        ttl = max(1, min(MAX_TTL_DAYS, (datetime.fromisoformat(old["expires_at"]) - datetime.fromisoformat(old["created_at"])).days or 1))
+        cur = c.execute("INSERT INTO api_keys (user_id, key_prefix, key_hash, label, created_at, expires_at) VALUES (?,?,?,?,?,?)",
+                        (user_id, raw[:PREFIX_LEN], _digest(raw), old["label"], _iso(now), _iso(now + timedelta(days=ttl))))
+        c.execute("UPDATE api_keys SET revoked_at=?, revoked_by=?, revoked_reason='rotation' WHERE id=?", (_iso(now), user_id, key_id))
+        return _public(c.execute("SELECT * FROM api_keys WHERE id=?", (cur.lastrowid,)).fetchone()), raw

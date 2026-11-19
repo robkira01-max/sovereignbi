@@ -1,4 +1,5 @@
 import os
+import sqlite3
 import tempfile
 import time
 from contextlib import asynccontextmanager
@@ -45,6 +46,7 @@ from app.routers.sdmx import router as sdmx_router
 from app.routers.audit import router as audit_router
 from app.routers.certification import router as certification_router
 from app.routers.audit_data import router as audit_data_router
+from app.workspace.router import router as workspace_router
 from app.routers.audit_rules import router as audit_rules_router
 from app.routers.financial import router as financial_router
 from app.routers.row_security import router as row_security_router
@@ -174,6 +176,7 @@ app.add_middleware(GZipMiddleware, minimum_size=512)
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(keys_router)
+app.include_router(workspace_router)
 app.include_router(v1_router)
 app.include_router(admin_router)
 app.include_router(dashboards_router)
@@ -264,6 +267,13 @@ _trusted.set_model_provider(_active_model)
 async def _protected_table_handler(request, exc):
     from fastapi.responses import JSONResponse
     return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+
+@app.exception_handler(sqlite3.OperationalError)
+async def _sqlite_busy_handler(request, exc):
+    # Base d'authentification verrouillée (clés, comptes) : 503 maîtrisé, sans détail interne (P-083, F6).
+    from fastapi.responses import JSONResponse
+    return JSONResponse(status_code=503, content={"detail": "Base d'authentification occupée, réessayez."})
 
 
 @app.exception_handler(ReservedTableError)

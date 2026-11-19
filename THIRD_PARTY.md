@@ -24,7 +24,7 @@
 | fpdf2 | 2.7 | MIT | Génération de PDF (export résultats) |
 | pymysql | 1.1 | MIT | Connecteur MySQL (pure Python, aucun driver système) |
 | pymssql | 2.3 | LGPL v2.1 (FreeTDS) | Connecteur SQL Server — usage dynamique uniquement (driver), non embarqué dans le produit livré. Même raisonnement que psycopg2. |
-| pypdf | 4.0 | MIT | Extraction texte PDF (RAG documentaire) |
+| pypdf | ≥6.21 | BSD-3-Clause | Extraction texte PDF (RAG documentaire) et indexation des PDF de l'espace de travail (P-086a) |
 | python-docx | 1.1 | MIT | Extraction texte DOCX (RAG documentaire) |
 | python-pptx | 1.0 | MIT | Export dashboards PowerPoint (P-010) |
 | defusedxml | 0.7 | PSF-2.0 | Lecture XML sécurisée (parseur Justice Canada, XLSX) — anti XXE / bombes d'entités (P-074) |

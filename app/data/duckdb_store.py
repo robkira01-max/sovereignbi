@@ -24,6 +24,7 @@ RESERVED_TABLES = frozenset({"audit_analysis_runs", "audit_calculation_results",
 UPLOAD_BLOCKED = RESERVED_TABLES | {"audit_financial_records"}
 
 
+WORKSPACE_NAMESPACE = "workspace_"     # espace de travail (P-086a) : tables internes, jamais créées ni remplacées par un upload
 AUDIT_NAMESPACE = "audit_"     # préfixe réservé au pack Audit : jamais créé par un upload (donc source « de confiance »)
 
 
@@ -46,7 +47,7 @@ class DataStore:
         existing = self.con.execute(
             "SELECT table_name FROM information_schema.tables WHERE table_schema='main'"
         ).fetchall()
-        self.tables: set[str] = {row[0] for row in existing if row[0] not in RESERVED_TABLES}
+        self.tables: set[str] = {row[0] for row in existing if row[0] not in RESERVED_TABLES and not row[0].startswith(WORKSPACE_NAMESPACE)}
         # Tables du pack Audit créées PAR LE CODE du produit pendant ce démarrage : seules elles sont de confiance.
         # Une table `audit_*` retrouvée dans un fichier persistant n'est jamais de confiance d'office.
         self.trusted: set[str] = set()
@@ -68,8 +69,8 @@ class DataStore:
     def assert_user_loadable(self, name: str) -> str:
         """Nom effectif et autorisé pour un dépôt utilisateur (upload, synchro, connecteur) ; lève sinon. Un seul contrôle partagé."""
         name = _safe_name(name)
-        if name in UPLOAD_BLOCKED or name.startswith(AUDIT_NAMESPACE):
-            raise ReservedTableError(f"« {name} » est un nom réservé (pack Audit) : choisissez un autre nom de table.")
+        if name in UPLOAD_BLOCKED or name.startswith((AUDIT_NAMESPACE, WORKSPACE_NAMESPACE)):
+            raise ReservedTableError(f"« {name} » est un nom réservé (pack Audit ou espace de travail) : choisissez un autre nom de table.")
         if name in self.tables:
             from app.financial import trusted
             trusted.check_can_replace(name)

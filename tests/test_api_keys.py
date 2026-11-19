@@ -286,6 +286,9 @@ def test_production_startup_refuses_test_keys_default_keys_and_missing_or_far_de
     with pytest.raises(lk.LegacyConfigError, match="lointaine"):
         lk.enforce_production_config()
     monkeypatch.setenv("SOVEREIGN_LEGACY_KEYS_DEADLINE", (date.today() + timedelta(days=30)).isoformat())
+    with pytest.raises(lk.LegacyConfigError, match="VAULT_KEY"):
+        lk.enforce_production_config()                                       # secret du coffre obligatoire
+    monkeypatch.setenv("SOVEREIGN_VAULT_KEY", "secret-serveur-" + "a" * 30)
     lk.enforce_production_config()                                           # configuration valide : démarre
     for bad in ("test-viewer-key-s6", "test-editor-key-s6", "test-admin-key-sprint3", "change_me_admin"):
         monkeypatch.setenv("SOVEREIGN_VIEWER_KEY", bad)
@@ -334,6 +337,7 @@ ALLOWED_WRITERS = {
     "app/cache/persistent_cache.py": "cache SQLite séparé",
     "app/rag/doc_store.py": "magasin documentaire séparé",
     "app/compliance/account_data.py": "base d'authentification (SQLite), pas le DataStore",
+    "app/workspace/service.py": "tables workspace_* (réservées, connexion directe) ; chemins disque uniquement via paths.py",
     "app/geo_catalog/importer.py": "connexion DuckDB privée en mémoire, jamais le DataStore partagé",
     "app/geo_catalog/spatial_engine.py": "connexion DuckDB privée en mémoire, jamais le DataStore partagé",
 }
@@ -410,3 +414,32 @@ def test_caller_cannot_overwrite_identity_fields_in_the_audit_details(tmp_path):
 def test_duplicate_api_key_headers_resolve_to_the_first_one_in_the_middleware():
     from app.security.principal_mw import _first_headers
     assert _first_headers([(b"x-api-key", b"A"), (b"x-api-key", b"B")])[b"x-api-key"] == b"A"
+
+
+def test_legacy_fingerprint_is_keyed_and_production_requires_long_keys(monkeypatch):
+    import hashlib
+
+    from app.security import legacy_keys as lk
+    monkeypatch.setenv("SOVEREIGN_VAULT_KEY", "secret-serveur-" + "a" * 30)
+    a = lk.fingerprint("test-editor-key-s6")
+    assert a != hashlib.sha256(b"test-editor-key-s6").hexdigest()[:8]          # plus un SHA-256 nu
+    monkeypatch.setenv("SOVEREIGN_VAULT_KEY", "autre-secret-" + "b" * 30)
+    assert lk.fingerprint("test-editor-key-s6") != a
+    monkeypatch.setenv("APP_ENV", "production")
+    monkeypatch.setenv("SOVEREIGN_ADMIN_KEY", "courte-mais-pas-par-defaut")
+    monkeypatch.setenv("SOVEREIGN_EDITOR_KEY", "")
+    monkeypatch.setenv("SOVEREIGN_VIEWER_KEY", "")
+    monkeypatch.setenv("SOVEREIGN_LEGACY_KEYS_DEADLINE", (date.today() + timedelta(days=30)).isoformat())
+    with pytest.raises(lk.LegacyConfigError, match="trop courte"):
+        lk.enforce_production_config()
+
+
+def test_rotation_is_atomic_and_refuses_inactive_keys(env):
+    c, _ = env
+    _, s = person(c, "editor", "rot@example.org")
+    k = new_key(c, s)
+    n = c.post(f"/auth/keys/{k['id']}/rotate", headers=s)
+    assert n.status_code == 201
+    again = c.post(f"/auth/keys/{k['id']}/rotate", headers=s)                      # ancienne déjà révoquée
+    assert again.status_code == 409
+    assert len([x for x in c.get("/auth/keys", headers=s).json() if x["status"] == "active"]) == 1

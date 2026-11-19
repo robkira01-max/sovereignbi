@@ -48,6 +48,14 @@ def _audit(action: str, **details) -> None:
         pass
 
 
+def _audit_strict(action: str, **details) -> None:
+    """Création et rotation : sans trace, pas de clé (échec fermé). La révocation reste tolérante : elle réduit l'exposition."""
+    try:
+        record_audit(action, details)
+    except OSError:
+        raise HTTPException(503, "Journal d'audit indisponible : action refusée.") from None
+
+
 @router.post("", status_code=201)
 def create_key(body: KeyCreate, response: Response, uid: int = Depends(_me)) -> dict:
     _no_store(response)
@@ -55,7 +63,7 @@ def create_key(body: KeyCreate, response: Response, uid: int = Depends(_me)) -> 
         rec, raw = apikeys.create_key(uid, body.label, body.ttl_days)
     except KeyError_ as e:
         raise HTTPException(422, str(e)) from None
-    _audit("api_key_created", user_id=uid, target_key_id=rec["id"], key_ref=rec["key_prefix"], expires_at=rec["expires_at"])
+    _audit_strict("api_key_created", user_id=uid, target_key_id=rec["id"], key_ref=rec["key_prefix"], expires_at=rec["expires_at"])
     return {**rec, "key": raw, "notice": "Copiez cette clé maintenant : elle ne sera plus jamais affichée."}
 
 
@@ -92,15 +100,9 @@ def revoke(key_id: int, response: Response, body: KeyRevoke | None = None, uid: 
 def rotate(key_id: int, response: Response, uid: int = Depends(_me)) -> dict:
     """Crée une nouvelle clé (mêmes libellé et durée) puis révoque l'ancienne. Seul le propriétaire fait tourner sa clé."""
     _no_store(response)
-    old = apikeys.get_key(key_id)
-    if old is None or old["user_id"] != uid:
-        raise HTTPException(404, "Clé introuvable.")
-    from datetime import datetime
-    ttl = max(1, min(apikeys.MAX_TTL_DAYS, (datetime.fromisoformat(old["expires_at"]) - datetime.fromisoformat(old["created_at"])).days or 1))
     try:
-        rec, raw = apikeys.create_key(uid, old["label"], ttl)
+        rec, raw = apikeys.rotate_key(key_id, uid)
     except KeyError_ as e:
-        raise HTTPException(422, str(e)) from None
-    apikeys.revoke_key(key_id, uid, "rotation")
-    _audit("api_key_rotated", user_id=uid, old_key_id=key_id, target_key_id=rec["id"], key_ref=rec["key_prefix"])
+        raise HTTPException(404 if "introuvable" in str(e) else 409, str(e)) from None
+    _audit_strict("api_key_rotated", user_id=uid, old_key_id=key_id, target_key_id=rec["id"], key_ref=rec["key_prefix"])
     return {**rec, "key": raw, "notice": "Copiez cette clé maintenant : elle ne sera plus jamais affichée."}

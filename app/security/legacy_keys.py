@@ -18,6 +18,7 @@ ENV_ROLES = ("admin", "editor", "viewer")
 KNOWN_TEST_KEYS = frozenset({"test-viewer-key-s6", "test-editor-key-s6", "test-admin-key-sprint3"})
 DEFAULT_KEYS = frozenset({"change_me_admin", "change_me_editor", "change_me_viewer", "admin", "secret", "viewer", "editor"})
 MAX_DEADLINE_DAYS = 180
+MIN_PROD_KEY_LEN = 32
 
 
 class LegacyConfigError(RuntimeError):
@@ -61,7 +62,10 @@ def read_only() -> bool:
 
 
 def fingerprint(raw_key: str) -> str:
-    return hashlib.sha256(raw_key.encode()).hexdigest()[:8]
+    """Empreinte courte pour le journal : HMAC avec le secret serveur (SOVEREIGN_VAULT_KEY), jamais un SHA-256 nu.
+    Sans le secret, elle ne permet pas de confirmer hors ligne une hypothèse sur la clé."""
+    secret = os.environ.get("SOVEREIGN_VAULT_KEY", "").encode() or b"mizanbi-dev-fingerprint"
+    return hmac.new(secret, raw_key.encode(), hashlib.sha256).hexdigest()[:8]
 
 
 def match_role(raw_key: str) -> str | None:
@@ -112,6 +116,9 @@ def enforce_production_config() -> None:
         val = os.environ.get(f"SOVEREIGN_{role.upper()}_KEY", "")
         if val in KNOWN_TEST_KEYS or val in DEFAULT_KEYS or val.startswith("change_me"):
             raise LegacyConfigError(f"SOVEREIGN_{role.upper()}_KEY est une clé de test ou par défaut : refusée en production.")
+    for role in configured_roles():
+        if len(os.environ.get(f"SOVEREIGN_{role.upper()}_KEY", "")) < MIN_PROD_KEY_LEN:
+            raise LegacyConfigError(f"SOVEREIGN_{role.upper()}_KEY trop courte (minimum {MIN_PROD_KEY_LEN} caractères en production).")
     if configured_roles():
         d = deadline()
         today = datetime.now(tz=timezone.utc).date()
@@ -119,3 +126,5 @@ def enforce_production_config() -> None:
             raise LegacyConfigError("Clés héritées présentes sans SOVEREIGN_LEGACY_KEYS_DEADLINE : échéance obligatoire en production.")
         if d > today + timedelta(days=MAX_DEADLINE_DAYS):
             raise LegacyConfigError(f"SOVEREIGN_LEGACY_KEYS_DEADLINE trop lointaine (maximum {MAX_DEADLINE_DAYS} jours).")
+    if not os.environ.get("SOVEREIGN_VAULT_KEY", "").strip():
+        raise LegacyConfigError("SOVEREIGN_VAULT_KEY est obligatoire en production (empreintes du journal, coffre des identifiants).")
