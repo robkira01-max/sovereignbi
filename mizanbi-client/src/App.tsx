@@ -30,14 +30,18 @@ const BiePage = lazy(() => import('./pages/Bie'))
 const BcdPage = lazy(() => import('./pages/Bcd'))
 const GeoAIPage = lazy(() => import('./pages/GeoAI'))
 const AdminPage = lazy(() => import('./pages/Admin'))
+const AuditDataPage = lazy(() => import('./pages/AuditData'))
+const AuditRulesPage = lazy(() => import('./pages/AuditRules'))
+const FinancialPage = lazy(() => import('./pages/Financial'))
 
-export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'admin' | 'privacy' | 'terms' | 'legal' | 'cookies'
-export type Section = 'home' | 'bi' | 'sig' | 'settings'
+export type Page = 'home' | 'dash' | 'upload' | 'sig' | 'bulletins' | 'cert' | 'canada' | 'canadanat' | 'ancient' | 'bie' | 'bcd' | 'geoai' | 'auditdata' | 'auditrules' | 'financial' | 'admin' | 'privacy' | 'terms' | 'legal' | 'cookies'
+export type Section = 'home' | 'bi' | 'sig' | 'audit' | 'settings'
 
 function pageSection(p: Page): Section {
   if (p === 'home') return 'home'
   if (['dash', 'bulletins', 'cert', 'upload', 'bie', 'bcd', 'canada', 'canadanat'].includes(p)) return 'bi'
   if (['sig', 'ancient', 'geoai'].includes(p)) return 'sig'
+  if (['auditdata', 'auditrules', 'financial'].includes(p)) return 'audit'
   return 'settings'
 }
 
@@ -45,6 +49,7 @@ const SECTION_NAV: { id: Section; getLabel: (t: Dict) => string; icon: string; d
   { id: 'home', getLabel: t => t.home, icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10', defaultPage: 'home' },
   { id: 'bi', getLabel: t => t.voletBi, icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z', defaultPage: 'dash' },
   { id: 'sig', getLabel: t => t.voletSig, icon: 'M9 20l-5.5-2.5v-13L9 7l6-2.5L20.5 7v13L15 17.5 9 20zM9 7v13M15 4.5v13', defaultPage: 'sig' },
+  { id: 'audit', getLabel: t => t.audit.nav, icon: 'M9 12l2 2 4-4M12 3l8 3v6c0 4.5-3.2 8.2-8 9-4.8-.8-8-4.5-8-9V6z', defaultPage: 'auditdata' },
   { id: 'settings', getLabel: t => t.settingsSection, icon: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z', defaultPage: 'privacy' },
 ]
 
@@ -63,6 +68,12 @@ const SIG_PAGES: { page: Page; getLabel: (t: Dict) => string }[] = [
   { page: 'sig', getLabel: t => t.sig },
   { page: 'ancient', getLabel: t => t.ancientMaps },
   { page: 'geoai', getLabel: t => t.geoai.title },
+]
+
+const AUDIT_PAGES: { page: Page; getLabel: (t: Dict) => string }[] = [
+  { page: 'auditdata', getLabel: t => t.audit.data_nav },
+  { page: 'auditrules', getLabel: t => t.audit.rules_nav },
+  { page: 'financial', getLabel: t => t.audit.fin_nav },
 ]
 
 const SETTINGS_PAGES: { page: Page; getLabel: (t: Dict) => string; adminOnly: boolean }[] = [
@@ -102,7 +113,7 @@ export default function App() {
 
   const t = I18N[lang]
   const section = pageSection(page)
-  const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title, legal: t.legalNotice.title, cookies: t.cookiesPolicy.title }
+  const pageTitle: Record<Page, string> = { home: t.home, dash: t.dashboards, upload: t.import, sig: t.sig, bulletins: t.bulletins, cert: t.certificate, canada: t.canada, canadanat: t.canadaNational, ancient: t.ancientMaps, bie: t.bie, bcd: t.bcd, geoai: t.geoai.title, auditdata: `${t.audit.nav} — ${t.audit.data_nav}`, auditrules: `${t.audit.nav} — ${t.audit.rules_nav}`, financial: `${t.audit.nav} — ${t.audit.fin_nav}`, admin: t.admin.title, privacy: t.privacy.title, terms: t.terms.title, legal: t.legalNotice.title, cookies: t.cookiesPolicy.title }
   const legalTitles: Record<LegalKind, string> = { privacy: t.privacy.title, terms: t.terms.title, legal: t.legalNotice.title, cookies: t.cookiesPolicy.title }
 
   // Un titre d'onglet par écran (accessibilité, historique, lecteurs d'écran).
@@ -154,6 +165,7 @@ export default function App() {
     if (sid === 'home') { go('home'); return }
     if (sid === 'bi') { go('dash'); return }
     if (sid === 'sig') { go('sig'); return }
+    if (sid === 'audit') { go('auditdata'); return }
     if (sid === 'settings') {
       const first = SETTINGS_PAGES.find(p => !p.adminOnly || me?.role === 'admin')
       go(first?.page ?? 'privacy')
@@ -206,6 +218,8 @@ export default function App() {
     ? BI_PAGES
     : section === 'sig'
     ? SIG_PAGES
+    : section === 'audit'
+    ? AUDIT_PAGES
     : section === 'settings'
     ? SETTINGS_PAGES.filter(p => !p.adminOnly || me?.role === 'admin')
     : []
@@ -302,6 +316,9 @@ export default function App() {
         {page === 'bie' && <BiePage t={t} />}
         {page === 'bcd' && <BcdPage t={t} />}
         {page === 'geoai' && <GeoAIPage t={t} lang={lang} go={go} />}
+        {page === 'auditdata' && <AuditDataPage a={t.audit} lang={lang} role={me?.role ?? 'viewer'} />}
+        {page === 'auditrules' && <AuditRulesPage a={t.audit} lang={lang} role={me?.role ?? 'viewer'} />}
+        {page === 'financial' && <FinancialPage a={t.audit} lang={lang} role={me?.role ?? 'viewer'} />}
         {page === 'admin' && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
         {page === 'sig' && <SigPage t={t} lang={lang} isEditor={me?.role === 'editor' || me?.role === 'admin'} onIndicator={setIndicator} onAncient={() => go('ancient')} />}

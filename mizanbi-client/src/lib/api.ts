@@ -16,7 +16,7 @@ export function authHeaders(): Record<string, string> {
 
 /** HTTP error with the status and, when the backend sent one, its FastAPI `detail` string. */
 export class ApiError extends Error {
-  constructor(public status: number, public detail?: string) {
+  constructor(public status: number, public detail?: string, public code?: string) {
     super(`HTTP ${status}`)
     this.name = 'ApiError'
   }
@@ -30,11 +30,18 @@ export async function apiFetch(path: string, init: RequestInit = {}): Promise<Re
   })
   if (!res.ok) {
     let detail: string | undefined
+    let code: string | undefined
     try {
       const body = (await res.json()) as { detail?: unknown }
       if (typeof body.detail === 'string') detail = body.detail
+      else if (body.detail && typeof body.detail === 'object') {
+        // Erreurs structurées {code, message} (import, calculs) : on garde le message lisible et le code.
+        const d = body.detail as { code?: unknown; message?: unknown }
+        if (typeof d.message === 'string') detail = d.message
+        if (typeof d.code === 'string') code = d.code
+      }
     } catch { /* non-JSON error body */ }
-    throw new ApiError(res.status, detail)
+    throw new ApiError(res.status, detail, code)
   }
   return res
 }

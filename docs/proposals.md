@@ -717,7 +717,13 @@ Statut : **en attente d'accord** (hors plan : ne rien implémenter sans accord).
 
 ## P-079 — Interface minimale du pack Audit (mizanbi-client)
 
-- [ ] En attente d'accord
+- [x] **Livrée 2026-11-19** (code + tests ; **acceptation en attente d'une session d'essai avec un auditeur/analyste**, qui conditionne P-076/P-077).
+  - Écrans : Données (dépôt, correspondance, simulation/import, anomalies, intégrité), Contrôles (AUD001–010, paramètres par règle, signalements), Formules (calcul, « Reproduire », comparaison). Menu « Pack Audit », fr/en, rôles viewer/editor/admin.
+  - Vérifié en navigateur réel (données fictives, serveur isolé) : dépôt → simulation → import (2 erreurs détectées) → résolution admin avec justification ≥ 10 car. → contrôles (AUD003/AUD004 signalés, autres « non applicable » avec cause) → BUD001 114 M / 120 M = 95,00 % → Reproduire = « Résultat identique ». Un éditeur ne voit pas la résolution des erreurs bloquantes ; le serveur refuse (403) upload/import/résolution/contrôles/formules à un viewer.
+  - Défaut trouvé et corrigé pendant la vérification : la réponse du dépôt est `{duplicate, document{…}}` (l'id était lu au mauvais endroit) ; ajout d'un message « doublon détecté » ; test ajouté.
+  - Écarts : limite de dépôt 20 Mo ; paramètres saisis règle par règle ; blocage « anomalie bloquante » non imposé par le serveur (lignes exclues + avertissement) ; AUD007 non applicable (pas de champ bancaire) ; « Reproduire » limité aux valeurs saisies explicitement.
+  - Non vérifié : accessibilité clavier/Lighthouse ; session Bearer réelle (le test a utilisé des clés API jetables via un harnais retiré ensuite).
+  - Tests : Vitest 461, pytest 2221, tsc et build propres.
 
 ### Raison
 
