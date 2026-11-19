@@ -6,6 +6,7 @@ import EcolesMap from '../components/EcolesMap'
 import StructuresSanteMap from '../components/StructuresSanteMap'
 import CerdEcolesMap from '../components/CerdEcolesMap'
 import DjiboutiVilleMap from '../components/DjiboutiVilleMap'
+import JicaThemesMap from '../components/JicaThemesMap'
 import { GeoCatalog } from '../components/GeoCatalog'
 import { GeoImport } from '../components/GeoImport'
 import { SpatialAnalysis } from '../components/SpatialAnalysis'
@@ -210,6 +211,17 @@ export default function SigPage({ t, lang = 'fr', isEditor = false, onIndicator,
           <span className="badge badge-demo">CERD</span>
         </div>
         <CerdEcolesMap />
+      </section>
+
+      <section className="card-solid" data-testid="jica-section">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Hydrogéologie, climat et points d’eau — Djibouti</h3>
+            <p className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>Aquifères, pluviométrie, ETP/ETR, zones climatiques, 1 223 points d’eau (5 régions) · source JICA</p>
+          </div>
+          <span className="badge badge-demo">JICA</span>
+        </div>
+        <JicaThemesMap />
       </section>
 
       {onGeoAI && (

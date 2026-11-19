@@ -32,6 +32,7 @@ _LICENCE_MAP: dict[str, str] = {
     "streamlit": "Apache-2.0",
     "plotly": "MIT",
     "pytest": "MIT",
+    "defusedxml": "PSF-2.0",
     "fpdf2": "MIT",
     "pymysql": "MIT",
     "pymssql": "LGPL-2.1",

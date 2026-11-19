@@ -27,6 +27,7 @@
 | pypdf | 4.0 | MIT | Extraction texte PDF (RAG documentaire) |
 | python-docx | 1.1 | MIT | Extraction texte DOCX (RAG documentaire) |
 | python-pptx | 1.0 | MIT | Export dashboards PowerPoint (P-010) |
+| defusedxml | 0.7 | PSF-2.0 | Lecture XML sécurisée (parseur Justice Canada, XLSX) — anti XXE / bombes d'entités (P-074) |
 | pytest | 8.0 | MIT | Tests (dev uniquement) |
 | playwright | 1.44 | Apache 2.0 | Tests E2E navigateur (dev uniquement) |
 | Open Sans (glyphes PBF, plages 0-255 / 256-511 / 8192-8447) | — | Apache 2.0 | Polices des étiquettes de cartes, hébergées dans `mizanbi-client/public/fonts/` (aucun serveur de polices tiers) |
