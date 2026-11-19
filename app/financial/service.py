@@ -30,6 +30,8 @@ class TableBinding(BaseModel):
     table: str = Field(pattern=_IDENT)
     column: str = Field(pattern=_IDENT)
     agg: Literal["sum"] = "sum"
+    # Filtres d'égalité (colonne → valeur) : périmètre du calcul (entité, exercice, devise). Valeurs texte ou entières seulement.
+    where: dict[str, str | int] = Field(default_factory=dict, max_length=8)
 
 
 def _to_decimal(name: str, value: str | int) -> Decimal:
@@ -54,7 +56,22 @@ def _bind(store, name: str, b: TableBinding) -> tuple[Decimal | None, dict]:
         raise CalculationError("unknown_column", f"Colonne inconnue pour « {name} » : {b.table}.{b.column}.")
     cname, ctype = col[0], str(col[1]).upper()
     qtab, qcol = real.replace('"', '""'), cname.replace('"', '""')     # défense en profondeur (identifiants déjà filtrés)
-    source = {"table": real, "column": cname, "agg": b.agg}
+    source: dict = {"table": real, "column": cname, "agg": b.agg}
+    clauses = []
+    for wcol, wval in sorted(b.where.items()):
+        if not re.match(_IDENT, wcol) or isinstance(wval, bool) or (isinstance(wval, int) and abs(wval) > 10**15) or (isinstance(wval, str) and ("\x00" in wval or len(wval) > 200)):
+            raise CalculationError("invalid_filter", f"Filtre invalide sur « {name} ».")
+        real_col = next((c for c, _ in cols if c.lower() == wcol.lower()), None)
+        if real_col is None:
+            raise CalculationError("unknown_column", f"Colonne de filtre inconnue pour « {name} » : {real}.{wcol}.")
+        literal = str(int(wval)) if isinstance(wval, int) else "'" + wval.replace("'", "''") + "'"
+        clauses.append(f'"{real_col.replace(chr(34), chr(34) * 2)}" = {literal}')
+    if b.where:
+        source["where"] = {k: b.where[k] for k in sorted(b.where)}      # périmètre visible dans le run
+    # Empreinte du CONTENU réel de la table au moment du calcul (agrégat de hachages de lignes, pas le nom du fichier) :
+    # un changement de données change l'empreinte du run, donc son result_hash.
+    from app.certification.registry import fingerprint
+    source["table_fingerprint"], source["table_rows"] = fingerprint(store, real)
     if _NATIVE.match(ctype):
         expr = f'"{qcol}"'
     elif ctype in _FLOAT:
@@ -63,7 +80,8 @@ def _bind(store, name: str, b: TableBinding) -> tuple[Decimal | None, dict]:
     else:
         raise CalculationError("unsupported_column", f"{real}.{cname} est de type {ctype} : seule une colonne numérique est acceptée.")
     try:
-        _, rows = store.execute(f'SELECT sum({expr}) FROM "{qtab}"')
+        where_sql = (" WHERE " + " AND ".join(clauses)) if clauses else ""
+        _, rows = store.execute(f'SELECT sum({expr}) FROM "{qtab}"{where_sql}')
     except duckdb.Error:      # dépassement de capacité, NaN/inf non convertible… : refus maîtrisé, pas de 500
         raise CalculationError("aggregation_failed", f"Agrégation impossible sur {real}.{cname} (valeurs hors limites ?).") from None
     total = rows[0][0] if rows else None

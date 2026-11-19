@@ -11,14 +11,18 @@ Dans le doute (aucune mesure liée, plusieurs formules possibles), on renvoie No
 """
 from __future__ import annotations
 
+import re
 from decimal import Decimal
+
+from pydantic import ValidationError
 
 from app.financial.engine import CalculationError
 from app.financial.registry import RegistryError, get_registry
 from app.financial.service import TableBinding, perform_run
 from app.security import row_policy
 from app.security.actor import audit_soft
-from app.semantic.resolver import resolve_terms
+from app.financial.trusted import untrusted_reason
+from app.semantic.resolver import normalize, resolve_terms
 
 CALCULATED = "calculated"
 EXPLORATORY = "exploratory"
@@ -49,6 +53,30 @@ def _blocked(message: str, **extra) -> dict:
     return {"provenance": UNAVAILABLE, "answer": message, "error": None, **extra}
 
 
+_IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
+_MAX_SHOWN = 8
+
+
+def _scope_value(store, table: str, column: str, question: str):
+    """Valeur de la dimension citée dans la question : (valeur, None) ou (None, valeurs possibles).
+
+    Les valeurs candidates viennent des données (lecture par `DataStore.execute`, sécurité par ligne). Une valeur est
+    retenue seulement si UNE SEULE valeur existante apparaît dans la question ; aucune ou plusieurs : on demande."""
+    _, rows = store.execute(f'SELECT DISTINCT "{column}" FROM "{table}" WHERE "{column}" IS NOT NULL ORDER BY 1 LIMIT 500')
+    values = [r[0] for r in rows]
+    q = normalize(question).split()
+    hits = []
+    for v in values:
+        vt = normalize(str(v)).split()
+        if vt and any(q[i:i + len(vt)] == vt for i in range(len(q) - len(vt) + 1)):
+            hits.append((v, vt))
+    hits = [h for h in hits if not any(h is not o and len(o[1]) > len(h[1]) and any(o[1][i:i + len(h[1])] == h[1] for i in range(len(o[1]) - len(h[1]) + 1)) for o in hits)]
+    if len(hits) == 1:
+        v = hits[0][0]
+        return (v if isinstance(v, int | str) and not isinstance(v, bool) else str(v)), None
+    return None, [str(v) for v in values[:_MAX_SHOWN]]
+
+
 def route_formula(model, question: str, store, *, actor: str, role: str) -> dict | None:
     """None → chemin exploratoire (text-to-SQL). Sinon dict de réponse (calculée ou bloquée, avec la raison)."""
     if model is None or not question or not store.tables:
@@ -76,7 +104,42 @@ def route_formula(model, question: str, store, *, actor: str, role: str) -> dict
         return _blocked(f"Pour calculer « {fv.label} » ({fv.code} v{fv.version}), il manque : {names}. "
                         "Renseignez-les dans l'écran Formules ; je ne les devine pas.", missing=[v.name for v in missing], **base)
 
-    bindings = {name: TableBinding(table=b["table"], column=b["column"]) for name, b in metric.formula_inputs.items()}
+    tables = sorted({b["table"] for b in metric.formula_inputs.values()})
+    if not tables or not all(_IDENT.match(t) for t in tables):
+        return _blocked("Configuration de la mesure invalide : aucun chiffre calculé.", **base)
+    for t in tables:       # « Calculé » : jamais depuis une table déposée par un utilisateur
+        reason = untrusted_reason(store, t)
+        if reason:
+            audit_soft("chat_formula_refused", formula=fv.code, reason="untrusted_source", actor=actor)
+            return _blocked(f"« {fv.label} » n'est pas calculé : {reason}. Aucun chiffre « Calculé » n'est donné.", **base)
+
+    scope: dict[str, str | int] = {}
+    asks: list[str] = []
+    try:
+        for dim in metric.formula_scope:
+            col = dim["column"]
+            if not _IDENT.match(col):
+                return _blocked("Configuration de la mesure invalide : aucun chiffre calculé.", **base)
+            val, options = _scope_value(store, tables[0], col, question)
+            if val is None:
+                asks.append(f"{dim['label']} (valeurs possibles : {', '.join(options)})" if options else dim["label"])
+            else:
+                scope[col] = val
+    except row_policy.AccessDenied:
+        return _blocked("Accès refusé aux données nécessaires à ce calcul.", reason="access_denied", **base)
+    except Exception as exc:       # colonne ou table absente des données chargées : on ne devine pas, on n'invente rien
+        audit_soft("chat_formula_refused", formula=fv.code, reason="scope_unreadable", error=type(exc).__name__, actor=actor)
+        return _blocked("Les dimensions de cette mesure sont introuvables dans les données chargées : aucun chiffre calculé.", **base)
+    if asks:
+        return _blocked(f"Pour calculer « {fv.label} » ({fv.code} v{fv.version}), précisez : {' ; '.join(asks)}. "
+                        "Je ne choisis pas à votre place.", missing_scope=[d["column"] for d in metric.formula_scope if d["column"] not in scope], **base)
+
+    try:
+        bindings = {name: TableBinding(table=b["table"], column=b["column"], agg=b.get("agg", "sum"),
+                                       where={**scope, **(b.get("filters") or {})})
+                    for name, b in metric.formula_inputs.items()}
+    except ValidationError:
+        return _blocked("Configuration de la mesure invalide (filtre ou agrégation) : aucun chiffre calculé.", **base)
     try:
         run = perform_run(store, actor=actor, is_admin=role == "admin", formula_code=fv.code, version=fv.version,
                           inputs={}, from_table=bindings, via="chat")
@@ -96,7 +159,8 @@ def route_formula(model, question: str, store, *, actor: str, role: str) -> dict
     audit_soft("chat_formula_answer", formula=fv.code, version=fv.version, run_id=run["run_id"], actor=actor)
     return {
         "provenance": CALCULATED,
-        "answer": f"{fv.label} : {format_number(res['value'])}{unit}. Formule {fv.code} v{fv.version}, run {run['run_id']}.",
+        "answer": f"{fv.label}{(' (' + ', '.join(f'{k} = {v}' for k, v in scope.items()) + ')') if scope else ''} : "
+                  f"{format_number(res['value'])}{unit}. Formule {fv.code} v{fv.version}, run {run['run_id']}.",
         "error": None, "run_id": run["run_id"], "value": res["value"], "unit": fv.result_unit,
-        "inputs": run["inputs"], **base,
+        "inputs": run["inputs"], "scope": scope, **base,
     }

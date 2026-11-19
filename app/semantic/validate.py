@@ -114,15 +114,35 @@ def validate_model(model: SemanticModel) -> list[Issue]:
         for m in model.metrics:
             if m.formula and known is not None and m.formula not in known:
                 issues.append(Issue("error", "unknown_formula", f"mesure « {m.name} » : formule « {m.formula} » absente du registre"))
-            if m.formula_inputs and not m.formula:
-                issues.append(Issue("error", "formula_inputs_without_formula", f"mesure « {m.name} » : formula_inputs sans formula"))
+            if (m.formula_inputs or m.formula_scope) and not m.formula:
+                issues.append(Issue("error", "formula_inputs_without_formula", f"mesure « {m.name} » : formula_inputs/formula_scope sans formula"))
             if m.formula and m.formula in (known or ()):
-                variables = {v.name for v in get_registry().get(m.formula).variables}
+                from app.certification.registry import history
+                from app.financial.trusted import is_audit_namespace
+                variables = {v.name: v for v in get_registry().get(m.formula).variables}
                 for var, b in m.formula_inputs.items():
+                    tbl, col = b.get("table"), b.get("column")
                     if var not in variables:
                         issues.append(Issue("error", "unknown_formula_variable", f"mesure « {m.name} » : « {var} » n'est pas une variable de {m.formula}"))
-                    elif b.get("table") not in table_cols or b.get("column") not in table_cols.get(b.get("table"), ()):
-                        issues.append(Issue("error", "unknown_column", f"mesure « {m.name} » : {b.get('table')}.{b.get('column')} absent du modèle"))
+                    elif tbl not in table_cols or col not in table_cols.get(tbl, ()):
+                        issues.append(Issue("error", "unknown_column", f"mesure « {m.name} » : {tbl}.{col} absent du modèle"))
+                    if b.get("agg") != "sum":
+                        issues.append(Issue("error", "unsupported_aggregation", f"mesure « {m.name} » : agrégation « {b.get('agg')} » non supportée (seule « sum » l'est)"))
+                    for fcol in b.get("filters", {}):
+                        if fcol not in table_cols.get(tbl, ()):
+                            issues.append(Issue("error", "unknown_column", f"mesure « {m.name} » : filtre sur {tbl}.{fcol} absent du modèle"))
+                    # La source d'un chiffre « Calculé » ne peut pas être une table déposée par un utilisateur :
+                    # pack Audit (préfixe audit_) ou jeu certifié (P-069), jamais un upload libre.
+                    if tbl and not is_audit_namespace(tbl) and not history(tbl):
+                        issues.append(Issue("error", "untrusted_formula_source", f"mesure « {m.name} » : la table « {tbl} » n'est ni du pack Audit (préfixe audit_) ni un jeu certifié"))
+                for b in m.formula_inputs.values():
+                    overlap = set(b.get("filters", {})) & {d["column"] for d in m.formula_scope}
+                    if overlap:
+                        issues.append(Issue("error", "scope_filter_overlap", f"mesure « {m.name} » : « {sorted(overlap)[0]} » est à la fois filtre fixe et dimension demandée"))
+                tables_used = {b.get("table") for b in m.formula_inputs.values()}
+                for sc in m.formula_scope:
+                    if not all(sc["column"] in table_cols.get(t, ()) for t in tables_used if t):
+                        issues.append(Issue("error", "unknown_column", f"mesure « {m.name} » : dimension « {sc['column']} » absente d'une table source"))
 
     # 3. Synonymes de valeurs : table et colonne existantes
     for v in model.value_synonyms:

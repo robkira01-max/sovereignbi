@@ -24,24 +24,24 @@ CASES = Path(__file__).with_name("formula_routing.jsonl")
 MODEL = """
 schema_version: "2"
 tables:
-  - name: budget
+  - name: audit_budget
     columns: [{name: realise, type: bigint}, {name: vote, type: bigint}, {name: encaisse, type: bigint}]
 metrics:
   - name: "taux d'exécution budgétaire"
     aliases: ["exécution du budget"]
     sql: "SUM(realise) / SUM(vote)"
-    tables: [budget]
+    tables: [audit_budget]
     formula: BUD001
     formula_inputs:
-      depenses: {table: budget, column: realise}
-      budget_vote: {table: budget, column: vote}
+      depenses: {table: audit_budget, column: realise}
+      budget_vote: {table: audit_budget, column: vote}
   - name: "taux de recouvrement"
     sql: "SUM(encaisse)"
-    tables: [budget]
+    tables: [audit_budget]
     formula: REC001
   - name: "total voté"
     sql: "SUM(vote)"
-    tables: [budget]
+    tables: [audit_budget]
 """
 
 
@@ -54,7 +54,7 @@ def evaluate() -> list[dict]:
     for line in CASES.read_text(encoding="utf-8").splitlines():
         case = json.loads(line)
         store = DataStore()
-        store.load_dataframe("budget", pd.DataFrame({"realise": pd.Series([114000000], dtype="int64"),
+        store.load_trusted_table("audit_budget", pd.DataFrame({"realise": pd.Series([114000000], dtype="int64"),
                                                      "vote": pd.Series([120000000], dtype="int64"),
                                                      "encaisse": pd.Series([5], dtype="int64")}))
         r = route_formula(model, case["question"], store, actor=f"api_key:{case['role']}", role=case["role"])

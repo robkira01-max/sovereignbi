@@ -43,7 +43,11 @@ class MetricInfo:
     formula: str = ""
     # P-080 : variable de la formule → colonne numérique dont on prend la somme (ex. {"depenses": {"table": "budget", "column": "realise"}}).
     # Sans lien déclaré, le chat demande la valeur au lieu de la deviner.
-    formula_inputs: dict[str, dict[str, str]] = field(default_factory=dict)
+    # Chaque entrée : {"table", "column", "agg" ("sum"), "filters" (égalités fixes, ex. {"devise": "DJF"})}.
+    formula_inputs: dict[str, dict] = field(default_factory=dict)
+    # Dimensions que l'utilisateur doit préciser dans la question (entité, exercice…) : [{"column", "label"}].
+    # Valeur absente ou ambiguë : le chat pose la question, il ne devine pas.
+    formula_scope: list[dict[str, str]] = field(default_factory=list)
 
 
 @dataclass
@@ -127,9 +131,13 @@ def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
             last_updated=str(m.get("last_updated", "") or ""),
             formula=str(m.get("formula", "") or ""),
             formula_inputs={
-                str(k): {"table": str((v or {}).get("table", "")), "column": str((v or {}).get("column", ""))}
+                str(k): {"table": str((v or {}).get("table", "")), "column": str((v or {}).get("column", "")),
+                         "agg": str((v or {}).get("agg", "sum") or "sum").lower(),
+                         "filters": {str(fk): fv for fk, fv in ((v or {}).get("filters", {}) or {}).items()}}
                 for k, v in (m.get("formula_inputs", {}) or {}).items()
             },
+            formula_scope=[{"column": str(x.get("column", "")), "label": str(x.get("label", "") or x.get("column", ""))}
+                           for x in (m.get("formula_scope", []) or [])],
         )
         for m in raw.get("metrics", [])
     ]

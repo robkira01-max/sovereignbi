@@ -31,6 +31,49 @@ metrics:
     description: "Marge brute totale après déduction des coûts d'achat"
     join_required: true
 
+  # --- Mesures CALCULÉES (P-080) : le chat appelle le moteur de formules versionnées (rules/financial/) ---
+  # Source : table SYNTHÉTIQUE du pack Audit (data/audit_reference/, activée par SOVEREIGN_AUDIT_REFERENCE_DIR).
+  # Un exercice et une entité doivent figurer dans la question ; sinon le chat les demande.
+  - name: "taux d'exécution budgétaire"
+    aliases: ["exécution du budget", "taux d'exécution du budget", "exécution budgétaire"]
+    sql: "SUM(depenses) / SUM(budget_vote) * 100"
+    tables: ["audit_ref_budget"]
+    unit: "%"
+    description: "Part du budget voté qui a été dépensée"
+    formula: BUD001
+    formula_inputs:
+      depenses: {table: audit_ref_budget, column: depenses, agg: sum, filters: {devise: DJF}}
+      budget_vote: {table: audit_ref_budget, column: budget_vote, agg: sum, filters: {devise: DJF}}
+    formula_scope:
+      - {column: entite, label: "entité"}
+      - {column: exercice, label: "exercice"}
+  - name: "dépassement budgétaire"
+    aliases: ["dépassement du budget", "dépassement de crédits"]
+    sql: "GREATEST(SUM(depenses) - SUM(budget_vote), 0)"
+    tables: ["audit_ref_budget"]
+    unit: "monnaie (DJF)"
+    description: "Montant dépensé au-delà du budget voté"
+    formula: BUD002
+    formula_inputs:
+      depenses: {table: audit_ref_budget, column: depenses, agg: sum, filters: {devise: DJF}}
+      budget_vote: {table: audit_ref_budget, column: budget_vote, agg: sum, filters: {devise: DJF}}
+    formula_scope:
+      - {column: entite, label: "entité"}
+      - {column: exercice, label: "exercice"}
+  - name: "taux de recouvrement"
+    aliases: ["recouvrement des recettes", "taux de recouvrement des recettes"]
+    sql: "SUM(recettes_encaissees) / SUM(recettes_prevues) * 100"
+    tables: ["audit_ref_budget"]
+    unit: "%"
+    description: "Part des recettes prévues qui a été encaissée"
+    formula: REC001
+    formula_inputs:
+      recettes_encaissees: {table: audit_ref_budget, column: recettes_encaissees, agg: sum, filters: {devise: DJF}}
+      recettes_prevues: {table: audit_ref_budget, column: recettes_prevues, agg: sum, filters: {devise: DJF}}
+    formula_scope:
+      - {column: entite, label: "entité"}
+      - {column: exercice, label: "exercice"}
+
 filters:
   - name: "ventes confirmées"
     aliases: ["commandes confirmées", "ventes validées"]
@@ -55,6 +98,16 @@ value_synonyms:
   - {table: ventes_detail, column: region, value: "Alberta", synonyms: ["AB"]}
 
 tables:
+  - name: audit_ref_budget
+    description: "Table SYNTHÉTIQUE du pack Audit : budget, dépenses et recettes par entité et exercice (cas de référence des formules)"
+    columns:
+      - {name: entite, type: varchar, description: "Entité budgétaire (fictive)"}
+      - {name: exercice, type: integer, description: "Exercice budgétaire"}
+      - {name: devise, type: varchar, description: "Devise des montants"}
+      - {name: budget_vote, type: bigint, description: "Budget voté"}
+      - {name: depenses, type: bigint, description: "Dépenses réalisées"}
+      - {name: recettes_prevues, type: bigint, description: "Recettes prévues"}
+      - {name: recettes_encaissees, type: bigint, description: "Recettes encaissées"}
   - name: ventes_detail
     description: "Table principale : une ligne par ligne de commande (article vendu)"
     columns:

@@ -48,6 +48,15 @@ class SyncScheduleCreate(BaseModel):
             raise ValueError(f"connector_type doit être dans {sorted(SUPPORTED_CONNECTORS)}")
         return v
 
+    @field_validator("target_table")
+    @classmethod
+    def target_not_reserved(cls, v: str) -> str:
+        from app.data.duckdb_store import AUDIT_NAMESPACE, UPLOAD_BLOCKED, _safe_name
+        n = _safe_name(v)
+        if n in UPLOAD_BLOCKED or n.startswith(AUDIT_NAMESPACE):
+            raise ValueError("Nom de table réservé (pack Audit) : choisissez un autre nom.")
+        return v
+
     @field_validator("query_or_table")
     @classmethod
     def no_multi_statement(cls, v: str) -> str:

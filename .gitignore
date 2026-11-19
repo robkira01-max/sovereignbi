@@ -36,3 +36,4 @@ auth.db-wal
 
 # Pièces d'audit déposées par les utilisateurs : confidentielles, jamais commitées (P-074)
 data/audit_docs/
+frontend/.vercel/

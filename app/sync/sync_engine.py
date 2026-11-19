@@ -65,12 +65,7 @@ def run_sync(
         return _fail("Le connecteur n'a retourné aucune donnée.")
 
     try:
-        from app.data.duckdb_store import _safe_name
-        safe_table = _safe_name(schedule.target_table)
-        store.con.execute(f'DROP TABLE IF EXISTS "{safe_table}"')
-        store.con.execute(
-            f'CREATE TABLE "{safe_table}" AS SELECT * FROM df'
-        )
+        store.load_dataframe(schedule.target_table, df)      # mêmes gardes qu'un upload : espace audit_, sources de calcul, lignes protégées
         rows = len(df)
     except Exception as exc:
         return _fail(f"Impossible de charger les données dans DuckDB : {exc}")

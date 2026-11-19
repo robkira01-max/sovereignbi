@@ -71,6 +71,7 @@ class ChatResponse(BaseModel):
     run_id: str | None = None
     value: str | None = None
     unit: str | None = None
+    scope: dict | None = None            # P-080 : dimensions retenues (entité, exercice…) pour un calcul
 
 
 # --- système prompt général ---------------------------------------------------

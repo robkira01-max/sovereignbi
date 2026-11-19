@@ -19,7 +19,7 @@ from app.api.v1.router import router as v1_router
 from app.startup import log_startup_warnings, seed_store, validate_env
 from app.cache.query_cache import QueryCache
 from app.cache.persistent_cache import PersistentQueryCache
-from app.data.duckdb_store import DataStore, ReservedTableError
+from app.data.duckdb_store import DataStore, ProtectedTableError, ReservedTableError
 from app.llm import get_llm_client
 from app.pipeline.graph import build_graph, load_semantic
 from app.rag.doc_store import DocStore
@@ -90,6 +90,10 @@ async def lifespan(app: FastAPI):
     log_startup_warnings(warnings)
     findings = audit_configuration()
     log_audit_results(findings)
+    ref_dir = os.environ.get("SOVEREIGN_AUDIT_REFERENCE_DIR", "")
+    if ref_dir:      # P-080 : tables synthétiques du pack Audit (cas de référence des formules)
+        from app.audit_data.reference import load_reference_tables
+        load_reference_tables(app.state.store, ref_dir)
     seed_dir = os.environ.get("SOVEREIGN_SEED_DIR", "")
     if seed_dir:
         seed_store(app.state.store, seed_dir)
@@ -235,6 +239,33 @@ def get_graph():
         app.state.semantic_model = model          # même modèle que celui du graphe (reconnaissance des termes, P-080)
         _graph = build_graph(get_llm_client(), store, sem, doc_store=doc_store, model=model)
     return _graph
+
+
+def _active_model():
+    """Tous les modèles dont les tables sources doivent être protégées : modèle par défaut + chaque secteur.
+    Toute erreur de lecture REMONTE (la garde de remplacement échoue fermée)."""
+    from app.semantic.model import load_model
+    from app.semantic.sectors import list_sectors, load_sector
+    models = [load_model()]
+    models += [load_sector(sec["id"]) for sec in list_sectors() if sec.get("id")]
+    return models
+
+
+from app.financial import trusted as _trusted   # noqa: E402
+
+_trusted.set_model_provider(_active_model)
+
+
+@app.exception_handler(ProtectedTableError)
+async def _protected_table_handler(request, exc):
+    from fastapi.responses import JSONResponse
+    return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+
+@app.exception_handler(ReservedTableError)
+async def _reserved_table_handler(request, exc):
+    from fastapi.responses import JSONResponse
+    return JSONResponse(status_code=400, content={"detail": str(exc)})
 
 
 def get_semantic_model():

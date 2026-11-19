@@ -24,8 +24,15 @@ RESERVED_TABLES = frozenset({"audit_analysis_runs", "audit_calculation_results",
 UPLOAD_BLOCKED = RESERVED_TABLES | {"audit_financial_records"}
 
 
+AUDIT_NAMESPACE = "audit_"     # préfixe réservé au pack Audit : jamais créé par un upload (donc source « de confiance »)
+
+
 class ReservedTableError(ValueError):
     """Nom de table réservé (historique interne) : à traduire en refus 400 par l'appelant."""
+
+
+class ProtectedTableError(ValueError):
+    """Remplacement refusé : la table sert de source à une mesure calculée (P-080/MOYEN-1) ; à traduire en refus 409."""
 
 
 class DataStore:
@@ -40,11 +47,36 @@ class DataStore:
             "SELECT table_name FROM information_schema.tables WHERE table_schema='main'"
         ).fetchall()
         self.tables: set[str] = {row[0] for row in existing if row[0] not in RESERVED_TABLES}
+        # Tables du pack Audit créées PAR LE CODE du produit pendant ce démarrage : seules elles sont de confiance.
+        # Une table `audit_*` retrouvée dans un fichier persistant n'est jamais de confiance d'office.
+        self.trusted: set[str] = set()
+
+    def load_trusted_table(self, name: str, df: pd.DataFrame) -> str:
+        """Création d'une table du pack Audit (préfixe `audit_`) par le code du produit : jamais appelée par une route d'upload."""
+        name = _safe_name(name)
+        if not name.startswith(AUDIT_NAMESPACE) or name in RESERVED_TABLES:
+            raise ReservedTableError(f"« {name} » n'est pas une table du pack Audit.")
+        df = df.copy()
+        df.columns = [_safe_name(str(c)) for c in df.columns]
+        self.con.register("_tmp_df", df)
+        self.con.execute(f'CREATE OR REPLACE TABLE "{name}" AS SELECT * FROM _tmp_df')
+        self.con.unregister("_tmp_df")
+        self.tables.add(name)
+        self.trusted.add(name)
+        return name
+
+    def assert_user_loadable(self, name: str) -> str:
+        """Nom effectif et autorisé pour un dépôt utilisateur (upload, synchro, connecteur) ; lève sinon. Un seul contrôle partagé."""
+        name = _safe_name(name)
+        if name in UPLOAD_BLOCKED or name.startswith(AUDIT_NAMESPACE):
+            raise ReservedTableError(f"« {name} » est un nom réservé (pack Audit) : choisissez un autre nom de table.")
+        if name in self.tables:
+            from app.financial import trusted
+            trusted.check_can_replace(name)
+        return name
 
     def load_dataframe(self, name: str, df: pd.DataFrame) -> str:
-        name = _safe_name(name)
-        if name in UPLOAD_BLOCKED:
-            raise ReservedTableError(f"« {name} » est un nom réservé (historique des analyses) : renommez le fichier ou la table.")
+        name = self.assert_user_loadable(name)
         row_policy.check_can_replace(name)
         df = df.copy()
         df.columns = [_safe_name(str(c)) for c in df.columns]
