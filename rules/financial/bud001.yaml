@@ -1,0 +1,23 @@
+code: BUD001
+family: budget
+versions:
+  - version: 1
+    label: "Taux d'exécution budgétaire"
+    description: "Part du budget voté qui a été dépensée."
+    expression: "depenses / budget_vote * 100"
+    result_unit: "%"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Au-dessus de 100 %, les dépenses dépassent le budget voté."
+    variables:
+      depenses:
+        label: "Dépenses réalisées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      budget_vote:
+        label: "Budget voté"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

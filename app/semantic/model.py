@@ -39,6 +39,8 @@ class MetricInfo:
     methodology: str = ""    # méthode de calcul, couverture, exclusions
     topic: str = ""          # thème (économie, démographie…)
     last_updated: str = ""   # date de dernière mise à jour des données (AAAA-MM-JJ)
+    # P-073 : code d'une formule du registre `rules/financial/` ; vide = mesure exploratoire (SQL généré)
+    formula: str = ""
 
 
 @dataclass
@@ -120,6 +122,7 @@ def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
             methodology=str(m.get("methodology", "") or ""),
             topic=str(m.get("topic", "") or ""),
             last_updated=str(m.get("last_updated", "") or ""),
+            formula=str(m.get("formula", "") or ""),
         )
         for m in raw.get("metrics", [])
     ]

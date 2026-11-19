@@ -1,0 +1,23 @@
+code: BUD006
+family: budget
+versions:
+  - version: 1
+    label: "Solde budgétaire disponible"
+    description: "Budget voté non encore dépensé (0 si le budget est épuisé ou dépassé)."
+    expression: "max(budget_vote - depenses, 0)"
+    result_unit: "monnaie"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Ne peut pas être négatif : voir BUD002 pour un dépassement."
+    variables:
+      budget_vote:
+        label: "Budget voté"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      depenses:
+        label: "Dépenses réalisées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

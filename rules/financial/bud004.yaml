@@ -1,0 +1,23 @@
+code: BUD004
+family: budget
+versions:
+  - version: 1
+    label: "Écart budget / réalisé"
+    description: "Budget voté moins dépenses réalisées. Négatif = dépassement."
+    expression: "budget_vote - depenses"
+    result_unit: "monnaie"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Positif : marge restante. Négatif : dépenses supérieures au budget."
+    variables:
+      budget_vote:
+        label: "Budget voté"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      depenses:
+        label: "Dépenses réalisées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

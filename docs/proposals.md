@@ -566,9 +566,13 @@ Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propos
 
 ---
 
-## P-073 — Moteur de formules financières versionnées
+## P-073 — Moteur de formules financières versionnées ✅ livré 2026-11-18 (sauf liaison avec le chat)
 
-- [ ] En attente d'accord
+- [x] Livré. Documentation d'usage : `docs/formules-financieres.md`.
+
+**Livré :** `app/financial/` (évaluateur `ast` à liste blanche sans `eval`, registre YAML `rules/financial/` versionné avec `definition_hash`, moteur Decimal, persistance `audit_analysis_runs` / `audit_calculation_results`), `app/routers/financial.py` (`/financial/formulas`, `/financial/runs`, comparaison), 11 formules v1 (8 budget, 3 recettes), champ `formula` sur les mesures sémantiques (validé par `GET /semantic/validate`), `COPY rules rules` dans les deux Dockerfiles. Les trois cas de référence (95 %, 114 %, 90 %) sont des tests.
+**Relecture `security-reviewer` : 2 ÉLEVÉS, 3 MOYENS, 3 FAIBLES, tous traités sauf F2 :** E1 les runs issus d'une table ne sont lisibles que par leur auteur et l'admin (sinon la sécurité par ligne se contournait par la lecture de l'historique) ; E2 noms `audit_analysis_runs` / `audit_calculation_results` réservés dans `DataStore` (upload refusé en 400, tables exclues de `store.tables` donc invisibles de l'IA après redémarrage) ; M1 entrées bornées (|exposant| ≤ 30, 38 chiffres) ; M2 audit écrit AVANT le run, 503 si le journal est indisponible ; M3 erreurs DuckDB et entiers démesurés en 422 ; F1 identifiants échappés ; F3 constantes d'expression validées au chargement. **F2 non traité** (un éditeur peut distinguer « table inconnue » de « table protégée » : le schéma est déjà exposé ailleurs).
+**Limites assumées :** (1) le chat n'appelle pas le moteur : une mesure peut pointer vers une formule, mais le text-to-SQL génère toujours son propre SQL, donc un chiffre du chat reste exploratoire (décision D-2 : étiquetage à faire) ; (2) la pastille « calculé » (P-069) n'est pas branchée sur les runs ; (3) le `result_hash` n'est pas signé : le champ `integrity` détecte une altération partielle, pas un forgeage complet par quelqu'un qui écrit dans la base (HMAC possible, `SOVEREIGN_CERT_SECRET` existe) ; (4) l'auteur d'un run par clé API est `api_key:<rôle>` : deux clés du même rôle ne se distinguent pas ; (5) pas de limite de débit propre à `POST /financial/runs`.
 
 **Raison.** C'est le cœur d'AuditCalc : des chiffres reproductibles et traçables. MizanBI a des mesures sémantiques (P-065), mais pas de registre de formules versionnées ni de runs reproductibles.
 

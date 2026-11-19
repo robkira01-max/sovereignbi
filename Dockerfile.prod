@@ -35,6 +35,7 @@ COPY --from=python-builder /usr/local/bin /usr/local/bin
 # Code applicatif
 COPY app app
 COPY semantic semantic
+COPY rules rules
 
 # Frontend buildé (servi sur /app/ par FastAPI)
 COPY --from=frontend-builder /build/dist frontend/dist

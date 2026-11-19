@@ -112,3 +112,28 @@ def test_frequency_must_be_an_sdmx_code_and_date_iso():
 def test_indicator_without_source_or_definition_is_a_warning():
     m = indicator(); m.metrics[0].source = ""; m.metrics[0].description = ""
     assert {("warning", "indicator_without_source"), ("warning", "indicator_without_definition")} <= codes(m)
+
+
+# ── P-073 : mesure liée à une formule du registre financier ─────────────────
+
+def test_metric_formula_must_exist_in_registry():
+    m = base()
+    m.metrics[0].formula = "BUD001"
+    assert validate_model(m) == []                                  # formule livrée : valide
+    m.metrics[0].formula = "NOPE999"
+    assert ("error", "unknown_formula") in codes(m)
+
+
+def test_metric_formula_defaults_to_empty_and_loads_from_yaml(tmp_path):
+    p = tmp_path / "m.yaml"
+    p.write_text("schema_version: '2'\ntables: []\nmetrics:\n  - {name: taux, sql: 'SUM(1)', tables: [], formula: REC001}\n"
+                 "  - {name: autre, sql: 'SUM(1)', tables: []}\n")
+    m = load_model(p)
+    assert [x.formula for x in m.metrics] == ["REC001", ""]
+
+
+def test_broken_registry_is_reported_not_ignored(tmp_path, monkeypatch):
+    monkeypatch.setenv("SOVEREIGN_FORMULAS_DIR", str(tmp_path / "absent"))
+    m = base()
+    m.metrics[0].formula = "BUD001"
+    assert ("error", "formula_registry_unavailable") in codes(m)

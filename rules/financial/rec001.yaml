@@ -1,0 +1,23 @@
+code: REC001
+family: recettes
+versions:
+  - version: 1
+    label: "Taux de recouvrement"
+    description: "Part des recettes prévues qui a été encaissée."
+    expression: "recettes_encaissees / recettes_prevues * 100"
+    result_unit: "%"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "En dessous de 100 %, des recettes prévues ne sont pas encaissées."
+    variables:
+      recettes_encaissees:
+        label: "Recettes encaissées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      recettes_prevues:
+        label: "Recettes prévues"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

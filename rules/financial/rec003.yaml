@@ -1,0 +1,23 @@
+code: REC003
+family: recettes
+versions:
+  - version: 1
+    label: "Reste à recouvrer"
+    description: "Recettes prévues non encore encaissées (0 si l'objectif est atteint ou dépassé)."
+    expression: "max(recettes_prevues - recettes_encaissees, 0)"
+    result_unit: "monnaie"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Ne peut pas être négatif : voir REC002 pour une plus-value."
+    variables:
+      recettes_prevues:
+        label: "Recettes prévues"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      recettes_encaissees:
+        label: "Recettes encaissées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

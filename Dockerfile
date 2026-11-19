@@ -24,6 +24,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 COPY app app
 COPY semantic semantic
+COPY rules rules
 
 RUN chown -R sovereign:sovereign /srv
 USER sovereign

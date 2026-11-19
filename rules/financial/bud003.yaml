@@ -1,0 +1,23 @@
+code: BUD003
+family: budget
+versions:
+  - version: 1
+    label: "Taux de dépassement budgétaire"
+    description: "Dépassement rapporté au budget voté (0 s'il n'y a pas de dépassement)."
+    expression: "max(depenses - budget_vote, 0) / budget_vote * 100"
+    result_unit: "%"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Mesure l'ampleur relative du dépassement."
+    variables:
+      depenses:
+        label: "Dépenses réalisées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      budget_vote:
+        label: "Budget voté"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

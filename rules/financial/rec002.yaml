@@ -1,0 +1,23 @@
+code: REC002
+family: recettes
+versions:
+  - version: 1
+    label: "Écart de recettes"
+    description: "Recettes encaissées moins recettes prévues. Négatif = moins-value."
+    expression: "recettes_encaissees - recettes_prevues"
+    result_unit: "monnaie"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Positif : plus-value de recettes. Négatif : moins-value."
+    variables:
+      recettes_encaissees:
+        label: "Recettes encaissées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      recettes_prevues:
+        label: "Recettes prévues"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
