@@ -190,6 +190,12 @@ Abonnements quotidiens/hebdomadaires/mensuels à un bulletin de tableau de bord,
 ### Sprint H13 — P-066 Métadonnées d'indicateurs et SDMX-CSV ✅ (2026-11-15) — boutons d'export « ↓ SDMX » et d'import SDMX-CSV (vérifier puis charger) ajoutés au client le même jour (418 Vitest)
 Métadonnées d'indicateur sur les mesures (code, source, périodicité SDMX, définition, méthodologie, thème, mise à jour) validées et exposées (`GET /semantic/indicators`) ; `app/sdmx/csv_format.py` (SDMX-CSV 2.0 écriture/lecture, périodes SDMX, anti-injection de formules) ; export SDMX-CSV d'une tuile ; `POST /sdmx/import` (éditeur, préfixe `sdmx_` forcé). 1655 pytest. **Limites** : pas de SDMX-ML ni d'API REST SDMX, pas de DSD/codelists réelles, non validé avec un registre SDMX officiel, bouton d'export ajouté ensuite (pas d'import dans le client). Proposées en attente d'accord : P-064, P-067, P-068.
 
+### Sprint H23 — P-075 Contrôles d'audit AUD001–AUD010 ✅ (2026-11-18)
+10 règles SQL versionnées (`rules/audit/`), signalements « à examiner », relues `security-reviewer`. Voir `docs/controles-audit.md`. 2185 tests. **D-5 : arrêt, validation par un premier utilisateur avant P-076/P-077.**
+
+### Sprint H22 — P-074 Import tabulaire et contrôle qualité ✅ (2026-11-18)
+Pack Audit : dépôt CSV/XLSX durci, original haché, normalisation sans correction silencieuse, anomalies résolubles avec justification, relu `security-reviewer`. Voir `docs/proposals.md` P-074.
+
 ### Sprint H21 — P-073 Moteur de formules financières versionnées ✅ (2026-11-18)
 Premier module du pack Audit (P-073 à P-077, en attente d'accord pour la suite). `app/financial/` (évaluateur sans `eval`, registre YAML versionné, moteur Decimal, historique des analyses), routes `/financial/*`, 11 formules v1, liaison `formula:` dans la couche sémantique. Relecture sécurité : 7 constats sur 8 corrigés (historique protégé de l'upload et de la lecture croisée, entrées bornées, audit avant écriture). Limite : le chat n'appelle pas encore le moteur. 1990 pytest verts. Doc : `docs/formules-financieres.md`.
 
