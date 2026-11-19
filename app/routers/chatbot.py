@@ -65,6 +65,12 @@ class ChatResponse(BaseModel):
     rows: list[list[Any]] = []
     confidence: dict | None = None
     error: str | None = None
+    # P-080 : "calculated" (moteur de formules) | "exploratory" (text-to-SQL) | "formula_unavailable" ; None en mode général
+    provenance: str | None = None
+    formula: dict | None = None
+    run_id: str | None = None
+    value: str | None = None
+    unit: str | None = None
 
 
 # --- système prompt général ---------------------------------------------------
@@ -99,9 +105,17 @@ def _build_history_prompt(history: list[Turn]) -> str:
 
 
 @router.post("", response_model=ChatResponse)
-def chat(req: ChatRequest, request: Request, _: str = Depends(_VIEWER)) -> ChatResponse:
+def chat(req: ChatRequest, request: Request, role: str = Depends(_VIEWER)) -> ChatResponse:
     store = request.app.state.store
     has_tables = bool(store.tables)
+
+    if req.use_data_pipeline:        # P-080 : une question liée à une formule est calculée par le moteur, jamais devinée
+        from app.pipeline.formula_route import route_formula
+        from app.security.actor import actor_label
+        routed = route_formula(request.app.state.get_semantic_model(), req.question, store,
+                               actor=actor_label(request, role), role=role)
+        if routed is not None:
+            return ChatResponse(mode="data", **{k: v for k, v in routed.items() if k in ChatResponse.model_fields})
 
     use_sql = (
         req.use_data_pipeline
@@ -128,6 +142,7 @@ def _answer_with_data(req: ChatRequest, request: Request) -> ChatResponse:
             rows=[list(r) for r in (s.get("rows", [])[:200])],
             confidence=conf,
             error=s.get("error"),
+            provenance="exploratory",
         )
     except Exception as exc:
         # repli gracieux vers le mode général si le pipeline échoue

@@ -114,6 +114,15 @@ def validate_model(model: SemanticModel) -> list[Issue]:
         for m in model.metrics:
             if m.formula and known is not None and m.formula not in known:
                 issues.append(Issue("error", "unknown_formula", f"mesure « {m.name} » : formule « {m.formula} » absente du registre"))
+            if m.formula_inputs and not m.formula:
+                issues.append(Issue("error", "formula_inputs_without_formula", f"mesure « {m.name} » : formula_inputs sans formula"))
+            if m.formula and m.formula in (known or ()):
+                variables = {v.name for v in get_registry().get(m.formula).variables}
+                for var, b in m.formula_inputs.items():
+                    if var not in variables:
+                        issues.append(Issue("error", "unknown_formula_variable", f"mesure « {m.name} » : « {var} » n'est pas une variable de {m.formula}"))
+                    elif b.get("table") not in table_cols or b.get("column") not in table_cols.get(b.get("table"), ()):
+                        issues.append(Issue("error", "unknown_column", f"mesure « {m.name} » : {b.get('table')}.{b.get('column')} absent du modèle"))
 
     # 3. Synonymes de valeurs : table et colonne existantes
     for v in model.value_synonyms:

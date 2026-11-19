@@ -31,6 +31,11 @@ class AskResponse(BaseModel):
     error: str | None = None
     attempts: int | None = None
     confidence: ConfidenceDetail | None = None
+    provenance: str = "exploratory"     # P-080 : "calculated" | "exploratory" | "formula_unavailable"
+    formula: dict | None = None
+    run_id: str | None = None
+    value: str | None = None
+    unit: str | None = None
 
 
 class UploadResponse(BaseModel):

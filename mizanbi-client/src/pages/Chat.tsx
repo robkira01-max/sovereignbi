@@ -3,6 +3,7 @@ import type { Dict } from '../lib/i18n'
 import { DEMO_ALERT, PROVENANCE, REGIONS, fmt } from '../data/demo'
 import { postChat } from '../lib/api'
 import { AbstainBox, Provenance } from '../components/Proof'
+import { ProvenanceBadge, type ProvenanceInfo } from '../components/ProvenanceBadge'
 
 interface Msg {
   role: 'user' | 'assistant'
@@ -14,6 +15,7 @@ interface Msg {
   followUps?: string[]
   verification?: string
   abstain?: boolean
+  prov?: ProvenanceInfo
 }
 
 // P-022 — périmètre démo : emploi, population, pauvreté, Djibouti, 2024.
@@ -36,7 +38,7 @@ function highlight(sql: string) {
   return parts
 }
 
-export default function ChatPage({ t, initialQuestion }: { t: Dict; initialQuestion?: string }) {
+export default function ChatPage({ t, initialQuestion, onOpenRun }: { t: Dict; initialQuestion?: string; onOpenRun?: (runId: string) => void }) {
   const [mode, setMode] = useState<'data' | 'general'>('data')
   const [question, setQuestion] = useState(initialQuestion || '')
   const [messages, setMessages] = useState<Msg[]>([])
@@ -79,7 +81,7 @@ export default function ChatPage({ t, initialQuestion }: { t: Dict; initialQuest
       const rows = j.rows || j.data?.rows || []
       const c = String(j.confidence || '').toLowerCase()
       const conf: Msg['conf'] = c.includes('high') || c.includes('élev') ? 'high' : c.includes('low') || c.includes('faib') ? 'low' : c ? 'medium' : undefined
-      setMessages((m) => [...m, { role: 'assistant', text: j.answer, sql: j.sql, cols, rows, conf }])
+      setMessages((m) => [...m, { role: 'assistant', text: j.answer, sql: j.sql, cols, rows, conf, prov: { provenance: j.provenance, formula: j.formula, runId: j.run_id } }])
     } catch {
       setMessages((m) => [...m, demoAnswer(q)])
     } finally {
@@ -144,6 +146,7 @@ export default function ChatPage({ t, initialQuestion }: { t: Dict; initialQuest
                     )}
                   </div>
                 )}
+                {m.prov && <ProvenanceBadge info={m.prov} onOpenRun={onOpenRun} text={{ calculated: t.provCalculated, exploratory: t.provExploratory, unavailable: t.provUnavailable, seeCalc: t.seeCalc }} />}
                 {/* P-023 — provenance sous chaque réponse (mode Données uniquement). */}
                 {!m.abstain && mode === 'data' && m.sql && (
                   <Provenance table={PROVENANCE.unemployment.table} year={PROVENANCE.unemployment.year} sql={m.sql} confidence={m.conf} />

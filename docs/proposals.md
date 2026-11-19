@@ -788,7 +788,13 @@ Frontend seulement, aucune modification des règles ni des formules. Dépendance
 
 ## P-080 — Chat branché sur le moteur de formules
 
-- [ ] En attente d'accord
+- [x] **Livrée 2026-11-19** (code + tests, relue par `security-reviewer` ; **aucune précision de reconnaissance annoncée**).
+  - Fait : `formula_inputs` sur les mesures (validé par `/semantic/validate`) ; `app/pipeline/formula_route.py` (reconnaissance **déterministe**, sans modèle de langage ; une seule fonction autorisée `perform_run`) ; calcul partagé `app/financial/service.py` (le chiffre du chat = celui de `/financial/runs`, même `result_hash`, test automatisé) ; branché sur `/ask`, `/api/v1/chatbot`, `/api/v1/ask` ; champ `provenance` (`calculated` / `exploratory` / `formula_unavailable`) ; pastille + « Voir le calcul » dans le chat ; exports Excel/PDF marqués « Exploratoire, non certifié » ; jeu `eval/formula_routing.jsonl` (11 cas, `python -m eval.run_formula_routing`).
+  - Écarts avec la proposition : (1) le modèle ne « reconnaît » pas la question, c'est le résolveur sémantique P-065 (plus sûr, mais dépend des alias déclarés) ; (2) les paramètres viennent de `formula_inputs`, **jamais lus dans la question** ; sans liens déclarés le chat dit ce qui manque ; (3) un viewer n'obtient pas de calcul (lancer un run est réservé aux éditeurs, comme `/financial/runs`) ; (4) `embed`, `addin` et l'export PDF/Excel passent toujours par le text-to-SQL (exploratoire) ; (5) aucun seuil de confiance : plusieurs formules reconnues ou aucune ⇒ exploratoire.
+  - Revue sécurité : 0 critique/élevé ; FAIBLE-1 (détails de schéma dans les erreurs), FAIBLE-2 (cas sans table), FAIBLE-3 (échec du graphe) corrigés. **MOYEN-1 laissé en décision propriétaire** : « Calculé » certifie le moteur, pas les données ; `/upload` est ouvert au rôle viewer et remplace une table du même nom, donc une table liée peut être falsifiée avant un calcul. Options : réserver l'upload aux éditeurs, refuser le remplacement d'une table référencée par `formula_inputs`, ou inscrire une empreinte de table dans les `sources` du run.
+  - Non vérifié : parcours navigateur réel du chat (la pastille est testée en rendu statique) ; précision de reconnaissance sur formulations libres ; précision du text-to-SQL par modèle (P-078).
+  - Tests : pytest 2237 (suite complète avant corrections de revue) + 380 ciblés après ; Vitest 466 ; tsc et build propres.
+
 
 ### Raison
 

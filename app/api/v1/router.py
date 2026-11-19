@@ -46,10 +46,17 @@ def health_v1(request: Request) -> HealthResponse:
         403: {"description": "Clé API insuffisante"},
     },
 )
-def ask_v1(req: AskRequest, request: Request, _: str = Depends(_VIEWER)) -> AskResponse:
+def ask_v1(req: AskRequest, request: Request, role: str = Depends(_VIEWER)) -> AskResponse:
     store = request.app.state.store
     if not store.tables:
         raise HTTPException(400, "Aucune donnée chargée. Utilisez /api/v1/upload d'abord.")
+    if not req.dry_run:      # P-080 : question liée à une formule → moteur, sinon exploratoire
+        from app.pipeline.formula_route import route_formula
+        from app.security.actor import actor_label
+        routed = route_formula(request.app.state.get_semantic_model(), req.question, store,
+                               actor=actor_label(request, role), role=role)
+        if routed is not None:
+            return AskResponse(**{k: v for k, v in routed.items() if k in AskResponse.model_fields})
     get_graph = request.app.state.get_graph
     s = get_graph().invoke({"question": req.question, "dry_run": req.dry_run})
     conf = s.get("confidence")

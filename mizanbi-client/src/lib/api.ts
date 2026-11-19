@@ -58,6 +58,11 @@ export interface ChatResponse {
   rows?: (string | number)[][]
   data?: { columns?: string[]; rows?: (string | number)[][] }
   confidence?: string
+  provenance?: 'calculated' | 'exploratory' | 'formula_unavailable' | null
+  formula?: { code: string; version: number; label: string } | null
+  run_id?: string | null
+  value?: string | null
+  unit?: string | null
 }
 
 export async function postChat(question: string, history: { role: string; content: string }[], useData: boolean): Promise<ChatResponse> {

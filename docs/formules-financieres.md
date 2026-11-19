@@ -17,10 +17,40 @@ une version du moteur et un hash.
 ## Ce qu'il ne garantit pas
 
 - Il ne vérifie pas que les données sources sont justes (c'est le rôle de P-074, contrôle qualité).
-- Le chat n'appelle pas encore le moteur : une mesure sémantique peut pointer vers une formule (`formula: BUD001`,
-  validé par `GET /semantic/validate`), mais le pipeline text-to-SQL continue de générer son propre SQL.
-  Un chiffre issu du chat doit donc être considéré comme **exploratoire** tant que cette liaison n'est pas faite.
+- Le chat n'appelle le moteur que dans le cas décrit ci-dessous (« Chat et formules »). Tout autre chiffre du chat
+  reste **exploratoire** (text-to-SQL, requête visible).
 - La pastille « calculé » (P-069) n'est pas encore branchée sur les runs.
+
+## Chat et formules (P-080)
+
+Une mesure de `semantic/model.yaml` peut déclarer une formule et lier ses variables à des colonnes :
+
+```yaml
+- name: "taux d'exécution budgétaire"
+  aliases: ["exécution du budget"]
+  sql: "SUM(realise) / SUM(vote)"        # chemin exploratoire, jamais utilisé quand la formule répond
+  tables: ["budget"]
+  formula: BUD001
+  formula_inputs:                        # variable de la formule → somme d'une colonne numérique
+    depenses: {table: budget, column: realise}
+    budget_vote: {table: budget, column: vote}
+```
+
+Comportement (`app/pipeline/formula_route.py`, aucun modèle de langage dans cette étape) :
+
+- **Reconnaissance déterministe** (résolveur sémantique P-065). Une seule formule reconnue → le moteur calcule ; aucune ou
+  plusieurs → réponse **exploratoire** (on ne choisit pas dans le doute).
+- Réponse « **Calculé** » : formule, version, run, lien « Voir le calcul » (écran Formules). Même chemin de calcul que
+  `POST /financial/runs` : mêmes entrées ⇒ même `result_hash`.
+- **Paramètres manquants** (variable obligatoire sans `formula_inputs`) : le chat dit ce qui manque et ne calcule pas.
+  Les valeurs écrites dans la question ne sont **pas** lues : on ne devine pas.
+- **Division par zéro, table vide, colonne absente** : message explicite, pastille « Calcul non effectué », aucun chiffre.
+- **Rôles** : lancer un calcul est réservé aux éditeurs/admin (comme `/financial/runs`) ; un viewer reçoit un refus explicite.
+- Chaque calcul par le chat est inscrit au journal (`financial_run` avec `via=chat`, puis `chat_formula_answer`).
+- Les exports Excel/PDF d'une réponse du chat portent la mention « Exploratoire, non certifié ».
+- Vérification : `.venv/bin/python -m eval.run_formula_routing` (11 cas déterministes) ; `GET /semantic/validate` contrôle
+  que la formule et les variables existent. **Aucune précision de reconnaissance sur des formulations libres n'est annoncée** :
+  elle dépend des synonymes déclarés ; la précision du text-to-SQL exploratoire par modèle relève de P-078.
 
 ## Ajouter ou modifier une formule
 

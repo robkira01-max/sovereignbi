@@ -4,7 +4,7 @@ import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
@@ -50,6 +50,7 @@ from app.routers.financial import router as financial_router
 from app.routers.row_security import router as row_security_router
 from app.security.principal_mw import PrincipalMiddleware
 from app.security import row_policy
+from app.security.actor import actor_label
 import structlog
 from app.routers.privacy_ops import router as privacy_ops_router
 from app.routers.subscriptions import router as subscriptions_router
@@ -231,11 +232,21 @@ def get_graph():
         else:
             model = load_model()
         sem = model_to_prompt_text(model) if (model.tables or model.metrics or model.glossary) else load_semantic()
+        app.state.semantic_model = model          # même modèle que celui du graphe (reconnaissance des termes, P-080)
         _graph = build_graph(get_llm_client(), store, sem, doc_store=doc_store, model=model)
     return _graph
 
 
+def get_semantic_model():
+    try:
+        get_graph()
+    except Exception:      # construction du graphe impossible (LLM) : le routage formule se désactive, /ask garde son erreur propre
+        return None
+    return getattr(app.state, "semantic_model", None)
+
+
 app.state.get_graph = get_graph
+app.state.get_semantic_model = get_semantic_model
 
 _VIEWER = RequireRole("viewer")
 _EDITOR = RequireRole("editor")
@@ -306,9 +317,15 @@ async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
 
 
 @app.post("/ask")
-def ask(req: AskRequest, _: str = Depends(_VIEWER)):
+def ask(req: AskRequest, request: Request, role: str = Depends(_VIEWER)):
     if not store.tables:
         raise HTTPException(400, "Aucune donnée chargée. Utilisez /upload d'abord.")
+
+    if not req.dry_run:      # P-080 : une question liée à une formule passe par le moteur, jamais par le text-to-SQL
+        from app.pipeline.formula_route import route_formula
+        routed = route_formula(request.app.state.get_semantic_model(), req.question, store, actor=actor_label(request, role), role=role)
+        if routed is not None:
+            return {"sql": None, "columns": [], "rows": [], "attempts": None, "confidence": None, "cached": False, **routed}
 
     table_names = frozenset(store.tables)
     use_cache = req.use_cache and not row_policy.active()      # le cache n'est pas par utilisateur : jamais avec sécurité par ligne
@@ -334,6 +351,7 @@ def ask(req: AskRequest, _: str = Depends(_VIEWER)):
         "attempts": s.get("attempts"),
         "confidence": s.get("confidence"),
         "cached": False,
+        "provenance": "exploratory",      # P-080 : tout chiffre hors moteur de formules est exploratoire
     }
     if use_cache and not req.dry_run and not s.get("error"):
         query_cache.set(req.question, table_names, result)

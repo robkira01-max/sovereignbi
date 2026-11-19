@@ -41,6 +41,9 @@ class MetricInfo:
     last_updated: str = ""   # date de dernière mise à jour des données (AAAA-MM-JJ)
     # P-073 : code d'une formule du registre `rules/financial/` ; vide = mesure exploratoire (SQL généré)
     formula: str = ""
+    # P-080 : variable de la formule → colonne numérique dont on prend la somme (ex. {"depenses": {"table": "budget", "column": "realise"}}).
+    # Sans lien déclaré, le chat demande la valeur au lieu de la deviner.
+    formula_inputs: dict[str, dict[str, str]] = field(default_factory=dict)
 
 
 @dataclass
@@ -123,6 +126,10 @@ def load_model(path: str | Path = "semantic/model.yaml") -> SemanticModel:
             topic=str(m.get("topic", "") or ""),
             last_updated=str(m.get("last_updated", "") or ""),
             formula=str(m.get("formula", "") or ""),
+            formula_inputs={
+                str(k): {"table": str((v or {}).get("table", "")), "column": str((v or {}).get("column", ""))}
+                for k, v in (m.get("formula_inputs", {}) or {}).items()
+            },
         )
         for m in raw.get("metrics", [])
     ]

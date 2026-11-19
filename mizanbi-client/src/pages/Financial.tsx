@@ -58,7 +58,7 @@ export function ComparisonView({ c, a, lang }: { c: Comparison; a: AuditText; la
   )
 }
 
-export default function FinancialPage({ a, lang, role }: { a: AuditText; lang: Lang; role: string }) {
+export default function FinancialPage({ a, lang, role, openRunId }: { a: AuditText; lang: Lang; role: string; openRunId?: string }) {
   const writer = canWrite(role)
   const [formulas, setFormulas] = useState<Formula[] | null>(null)
   const [engine, setEngine] = useState('')
@@ -72,6 +72,8 @@ export default function FinancialPage({ a, lang, role }: { a: AuditText; lang: L
   const [busy, setBusy] = useState(false)
 
   useEffect(() => { auditApi.formulas().then(r => { setFormulas(r.formulas); setEngine(r.engine_version) }).catch(setError) }, [])
+  // P-080 : « Voir le calcul » depuis le chat ouvre le run (lecture seule, soumise aux mêmes droits que /financial/runs/{id})
+  useEffect(() => { if (openRunId) auditApi.finRun(openRunId).then(r => { setRun(r); setCode(r.formula_code) }).catch(setError) }, [openRunId])
   const f = formulas?.find(x => x.code === code) ?? null
   const loadHistory = async (c: string) => { try { setHistory((await auditApi.finRuns(c)).runs) } catch (e) { setError(e) } }
   const pick = (c: string) => { setCode(c); setInputs({}); setRun(null); setCmp(null); setPair([]); setHistory([]); if (c) void loadHistory(c) }

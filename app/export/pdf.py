@@ -7,7 +7,7 @@ _MAX_ROWS = 500
 
 
 def results_to_pdf(
-    columns: list[str], rows: list[list], title: str = "Résultats"
+    columns: list[str], rows: list[list], title: str = "Résultats", note: str | None = None
 ) -> bytes:
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
@@ -16,6 +16,9 @@ def results_to_pdf(
     # Title
     pdf.set_font("Helvetica", "B", 14)
     pdf.cell(0, 10, title, new_x="LMARGIN", new_y="NEXT")
+    if note:      # P-080 : provenance du chiffre, visible en tête de l'export
+        pdf.set_font("Helvetica", "I", 9)
+        pdf.cell(0, 6, note, new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
     if not columns:

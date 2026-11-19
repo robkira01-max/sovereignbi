@@ -22,6 +22,10 @@ _XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 _PDF_MIME = "application/pdf"
 
 
+# P-080 : un export du chat passe toujours par le text-to-SQL, donc son chiffre n'est jamais « Calculé »
+PROVENANCE_NOTE = "Exploratoire, non certifié : requête générée automatiquement, hors moteur de formules."
+
+
 class ExportRequest(BaseModel):
     question: str
 
@@ -44,11 +48,11 @@ def export_excel(
     _: str = Depends(_VIEWER),
 ):
     s = _run_query(request, req.question)
-    data = results_to_excel(s.get("columns", []), s.get("rows", []))
+    data = results_to_excel(s.get("columns", []), s.get("rows", []), note=PROVENANCE_NOTE)
     return StreamingResponse(
         io.BytesIO(data),
         media_type=_XLSX_MIME,
-        headers={"Content-Disposition": "attachment; filename=export.xlsx"},
+        headers={"Content-Disposition": "attachment; filename=export.xlsx", "X-Provenance": "exploratory"},
     )
 
 
@@ -59,11 +63,11 @@ def export_pdf(
     _: str = Depends(_VIEWER),
 ):
     s = _run_query(request, req.question)
-    data = results_to_pdf(s.get("columns", []), s.get("rows", []))
+    data = results_to_pdf(s.get("columns", []), s.get("rows", []), note=PROVENANCE_NOTE)
     return StreamingResponse(
         io.BytesIO(data),
         media_type=_PDF_MIME,
-        headers={"Content-Disposition": "attachment; filename=export.pdf"},
+        headers={"Content-Disposition": "attachment; filename=export.pdf", "X-Provenance": "exploratory"},
     )
 
 
@@ -88,7 +92,7 @@ def export_pdf_offline(
     return StreamingResponse(
         io.BytesIO(data),
         media_type=_PDF_MIME,
-        headers={"Content-Disposition": "attachment; filename=export.pdf"},
+        headers={"Content-Disposition": "attachment; filename=export.pdf", "X-Provenance": "exploratory"},
     )
 
 
@@ -128,5 +132,5 @@ def export_pdf_cached(
     return StreamingResponse(
         io.BytesIO(data),
         media_type=_PDF_MIME,
-        headers={"Content-Disposition": "attachment; filename=export.pdf"},
+        headers={"Content-Disposition": "attachment; filename=export.pdf", "X-Provenance": "exploratory"},
     )

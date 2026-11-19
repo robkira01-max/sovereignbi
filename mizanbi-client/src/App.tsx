@@ -93,6 +93,7 @@ export default function App() {
   const [email, setEmail] = useState<string>(() => localStorage.getItem('mizan_email') || '')
   const [userName, setUserName] = useState<string>(() => localStorage.getItem('mizan_user_name') || '')
   const [page, setPage] = useState<Page>('home')
+  const [finRunId, setFinRunId] = useState<string | undefined>(undefined)
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => loadThemeMode())
   const [cookieConsent, setCookieConsent] = useCookieConsent()
   const [showCookieBanner, setShowCookieBanner] = useState(cookieConsent === null)
@@ -318,7 +319,7 @@ export default function App() {
         {page === 'geoai' && <GeoAIPage t={t} lang={lang} go={go} />}
         {page === 'auditdata' && <AuditDataPage a={t.audit} lang={lang} role={me?.role ?? 'viewer'} />}
         {page === 'auditrules' && <AuditRulesPage a={t.audit} lang={lang} role={me?.role ?? 'viewer'} />}
-        {page === 'financial' && <FinancialPage a={t.audit} lang={lang} role={me?.role ?? 'viewer'} />}
+        {page === 'financial' && <FinancialPage a={t.audit} lang={lang} role={me?.role ?? 'viewer'} openRunId={finRunId} />}
         {page === 'admin' && <AdminPage t={t} lang={lang} service={accounts} me={me} onSelfChanged={refreshMe} />}
         {page === 'ancient' && <AncientMapsPage t={t} />}
         {page === 'sig' && <SigPage t={t} lang={lang} isEditor={me?.role === 'editor' || me?.role === 'admin'} onIndicator={setIndicator} onAncient={() => go('ancient')} />}
@@ -357,7 +358,7 @@ export default function App() {
         <div className="chat-drawer-body">
           {chatMounted && (
             section !== 'sig'
-              ? <Suspense fallback={<p role="status" className="muted" style={{ padding: 16 }}>{t.admin.loading}</p>}><ChatPage t={t} /></Suspense>
+              ? <Suspense fallback={<p role="status" className="muted" style={{ padding: 16 }}>{t.admin.loading}</p>}><ChatPage t={t} onOpenRun={(id) => { setFinRunId(id); go('financial') }} /></Suspense>
               : <p className="muted" style={{ padding: 16 }}>ChatBI — {t.voletBi}.</p>
           )}
         </div>
