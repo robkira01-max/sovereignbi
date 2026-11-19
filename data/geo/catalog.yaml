@@ -46,8 +46,8 @@ layers:
   date_acquired: '2026-10-01'
   description_en: '11 Djibouti City neighbourhoods with tentative commune attribution
     (Boulaos / Ras-Dika / Balbala): Centre-ville, Plateau du Serpent, Arhiba, Farah
-    Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh, Quartier 7.
-    Commune field and density_km2 corrected 2026-11-13.'
+    Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh, Quartier
+    7. Commune field and density_km2 corrected 2026-11-13.'
   description_fr: '11 quartiers de Djibouti-Ville avec attribution communale provisoire
     (Boulaos / Ras-Dika / Balbala) : Centre-ville, Plateau du Serpent, Arhiba, Farah
     Waaberi, Boulaos, Ambouli, PK12, Balbala Nord, Balbala Sud, Hayableh, Quartier
@@ -93,12 +93,13 @@ layers:
   warnings:
   - en: Data from 2020 — verify current operational status before institutional use.
     fr: Données de 2020 — vérifier le statut opérationnel actuel avant usage institutionnel.
-# ── CERD Djibouti-ville layers (UTM 38N → WGS84) ─────────────────────────────
 - api_endpoint: /api/v1/geo/dj/cerd_equipements_scolaires
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'
-  description_en: 31 schools in Djibouti city (primary, secondary, private/public) with names and codes.
-  description_fr: 31 établissements scolaires de Djibouti-ville (primaires, CEM, lycées, public/privé).
+  description_en: 31 schools in Djibouti city (primary, secondary, private/public)
+    with names and codes.
+  description_fr: 31 établissements scolaires de Djibouti-ville (primaires, CEM, lycées,
+    public/privé).
   enabled: true
   feature_count: 31
   file_path: data/geo/cerd/cerd_equipements_scolaires.geojson
@@ -118,8 +119,10 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_equipements_sociaux
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'
-  description_en: 81 socioeconomic facilities (markets, health centres, mosques, sports, admin, military).
-  description_fr: 81 équipements socio-économiques (marchés, sanitaires, religieux, sportifs, administration, militaire).
+  description_en: 81 socioeconomic facilities (markets, health centres, mosques, sports,
+    admin, military).
+  description_fr: 81 équipements socio-économiques (marchés, sanitaires, religieux,
+    sportifs, administration, militaire).
   enabled: true
   feature_count: 81
   file_path: data/geo/cerd/cerd_equipements_sociaux.geojson
@@ -137,7 +140,8 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_secteurs_adressage
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'
-  description_en: 14 address sectors used for postal and civic addressing in Djibouti city.
+  description_en: 14 address sectors used for postal and civic addressing in Djibouti
+    city.
   description_fr: 14 secteurs d'adressage de Djibouti-ville (plan d'adressage urbain).
   enabled: true
   feature_count: 14
@@ -157,12 +161,12 @@ layers:
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'
   description_en: 'Balbala commune boundaries (4th and 5th arrondissements) from CERD
-    cadastre. Note: Djibouti-ville has 3 communes (Boulaos, Ras-Dika, Balbala) —
-    this dataset covers Balbala only; Boulaos and Ras-Dika limits not available in CERD.'
+    cadastre. Note: Djibouti-ville has 3 communes (Boulaos, Ras-Dika, Balbala) — this
+    dataset covers Balbala only; Boulaos and Ras-Dika limits not available in CERD.'
   description_fr: 'Découpage communal de Balbala (4ème et 5ème arrondissements) issu
     du cadastre CERD. Note : Djibouti-ville compte 3 communes (Boulaos, Ras-Dika,
-    Balbala) — ce dataset couvre Balbala uniquement ; les limites de Boulaos et
-    Ras-Dika ne sont pas disponibles dans le CERD.'
+    Balbala) — ce dataset couvre Balbala uniquement ; les limites de Boulaos et Ras-Dika
+    ne sont pas disponibles dans le CERD.'
   enabled: true
   feature_count: 2
   file_path: data/geo/cerd/cerd_communes.geojson
@@ -184,8 +188,10 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_ilots
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'
-  description_en: 4010 city blocks (îlots) with commune, arrondissement, quartier and cadastral zone. Geometry simplified at 2 m.
-  description_fr: 4 010 îlots urbains avec commune, arrondissement, quartier et zone cadastrale. Géométrie simplifiée à 2 m.
+  description_en: 4010 city blocks (îlots) with commune, arrondissement, quartier
+    and cadastral zone. Geometry simplified at 2 m.
+  description_fr: 4 010 îlots urbains avec commune, arrondissement, quartier et zone
+    cadastrale. Géométrie simplifiée à 2 m.
   enabled: true
   feature_count: 4010
   file_path: data/geo/cerd/cerd_ilots.geojson
@@ -243,8 +249,10 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_voirie
   coverage: Djibouti-ville
   date_acquired: '2026-11-11'
-  description_en: 1447 road segments with hierarchy, width and surface type. Geometry simplified at 1 m.
-  description_fr: 1 447 tronçons de voirie avec hiérarchie, largeur et revêtement. Géométrie simplifiée à 1 m.
+  description_en: 1447 road segments with hierarchy, width and surface type. Geometry
+    simplified at 1 m.
+  description_fr: 1 447 tronçons de voirie avec hiérarchie, largeur et revêtement.
+    Géométrie simplifiée à 1 m.
   enabled: true
   feature_count: 1447
   file_path: data/geo/cerd/cerd_voirie.geojson
@@ -298,7 +306,8 @@ layers:
   status: draft
   warnings: []
 - api_endpoint: ''
-  coverage: Djibouti-ville — centre (Ras-Dika, Plateau du Serpent, Arhiba, Quartiers 1-7, Haramous, aéroport)
+  coverage: Djibouti-ville — centre (Ras-Dika, Plateau du Serpent, Arhiba, Quartiers
+    1-7, Haramous, aéroport)
   date_acquired: '2026-11-14'
   description_en: OpenStreetMap road network (primary to residential, no footpaths)
     for central Djibouti-ville, lon 43.125-43.185 / lat 11.530-11.625. Fills the gap
@@ -306,10 +315,9 @@ layers:
     and 5th arrondissements). The CERD topographic survey roads (cerd_routes) cover
     all three communes.
   description_fr: Réseau routier OpenStreetMap (primaire à résidentiel, sans sentiers)
-    du centre de Djibouti-ville, lon 43,125-43,185 / lat 11,530-11,625. Complète
-    l'ancienne couche CERD de voirie (cerd_voirie), qui ne couvre que Balbala (4ème et
-    5ème arrondissements). Les routes du levé topographique CERD (cerd_routes)
-    couvrent les 3 communes.
+    du centre de Djibouti-ville, lon 43,125-43,185 / lat 11,530-11,625. Complète l'ancienne
+    couche CERD de voirie (cerd_voirie), qui ne couvre que Balbala (4ème et 5ème arrondissements).
+    Les routes du levé topographique CERD (cerd_routes) couvrent les 3 communes.
   enabled: true
   feature_count: 1875
   file_path: data/geo/osm_centre_voirie.geojson
@@ -348,7 +356,8 @@ layers:
   name_column: nom
   name_en: Djibouti-ville neighbourhoods (CERD admin_pol)
   name_fr: Quartiers de Djibouti-ville (CERD admin_pol)
-  source: CERD, admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31
+  source: CERD, admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric
+    mapping, 2014-01-31
   status: draft
   warnings:
   - en: Data dates from 2014 — new estates built since may be missing; validate with
@@ -375,7 +384,8 @@ layers:
   name_column: nom
   name_en: Djibouti-ville communes (CERD admin_pol)
   name_fr: Communes de Djibouti-ville (CERD admin_pol)
-  source: CERD, admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric mapping, 2014-01-31
+  source: CERD, admin_pol.shp — Djibouti_New_Zone_ITRF2005, 1/2,500 photogrammetric
+    mapping, 2014-01-31
   status: draft
   warnings:
   - en: Derived by dissolving polygons (includes unbuilt land) — not a legal boundary;
@@ -385,8 +395,11 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_batiments
   coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
   date_acquired: '2026-11-15'
-  description_en: 86,776 building footprints from the CERD survey (>= 12 m2), classified by use with the detailed type.
-  description_fr: 86 776 empreintes de bâtiments du levé CERD (≥ 12 m²), classées par usage (habitat, éducation, santé, administration, commerce, industrie, réseaux, culture, religion, ruines) avec le type détaillé.
+  description_en: 86,776 building footprints from the CERD survey (>= 12 m2), classified
+    by use with the detailed type.
+  description_fr: 86 776 empreintes de bâtiments du levé CERD (≥ 12 m²), classées
+    par usage (habitat, éducation, santé, administration, commerce, industrie, réseaux,
+    culture, religion, ruines) avec le type détaillé.
   enabled: true
   feature_count: 86776
   file_path: data/geo/cerd_batiments.geojson.gz
@@ -401,13 +414,18 @@ layers:
   source: CERD, levé photogrammétrique 1/2 500 (ITRF2005, 2014-01-31)
   status: draft
   warnings: &id001
-  - en: Survey dated 2014 — buildings and roads built since are missing. Gzip file served on demand; spatial analyses (geo/analyze) cannot read it.
-    fr: Levé de 2014 — les constructions et routes postérieures manquent. Fichier gzip servi à la demande ; les analyses spatiales (geo/analyze) ne peuvent pas le lire.
+  - en: Survey dated 2014 — buildings and roads built since are missing. Gzip file
+      served on demand; spatial analyses (geo/analyze) cannot read it.
+    fr: Levé de 2014 — les constructions et routes postérieures manquent. Fichier
+      gzip servi à la demande ; les analyses spatiales (geo/analyze) ne peuvent pas
+      le lire.
 - api_endpoint: /api/v1/geo/dj/cerd_routes
   coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
   date_acquired: '2026-11-15'
-  description_en: '1,155 road surfaces: paved, unpaved, tracks, bridges, improved roads.'
-  description_fr: '1 155 emprises de routes : revêtues, non revêtues, pistes, ponts, voies aménagées.'
+  description_en: '1,155 road surfaces: paved, unpaved, tracks, bridges, improved
+    roads.'
+  description_fr: '1 155 emprises de routes : revêtues, non revêtues, pistes, ponts,
+    voies aménagées.'
   enabled: true
   feature_count: 1155
   file_path: data/geo/cerd_routes.geojson.gz
@@ -425,8 +443,10 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_hydro
   coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
   date_acquired: '2026-11-15'
-  description_en: 'Wadis, canals, lakes and ponds, water, oil and gas tanks: 1,554 features (the sea is the map background).'
-  description_fr: 'Oueds, canaux, lacs et mares, réservoirs d''eau, de pétrole et de gaz : 1 557 entités.'
+  description_en: 'Wadis, canals, lakes and ponds, water, oil and gas tanks: 1,554
+    features (the sea is the map background).'
+  description_fr: 'Oueds, canaux, lacs et mares, réservoirs d''eau, de pétrole et
+    de gaz : 1 557 entités.'
   enabled: true
   feature_count: 1554
   file_path: data/geo/cerd_hydro.geojson.gz
@@ -463,8 +483,10 @@ layers:
 - api_endpoint: /api/v1/geo/dj/cerd_sites
   coverage: Djibouti-ville — Ras-Dika, Boulaos, Balbala (lon 43,03-43,19 / lat 11,52-11,62)
   date_acquired: '2026-11-15'
-  description_en: 'Cemeteries, quarries, free zones and depots, stadiums, car parks, parks, heliports, magazines: 1,408 sites.'
-  description_fr: 'Cimetières, carrières, zones franches et dépôts, stades, parkings, parcs, héliports, poudrières : 1 408 sites.'
+  description_en: 'Cemeteries, quarries, free zones and depots, stadiums, car parks,
+    parks, heliports, magazines: 1,408 sites.'
+  description_fr: 'Cimetières, carrières, zones franches et dépôts, stades, parkings,
+    parcs, héliports, poudrières : 1 408 sites.'
   enabled: true
   feature_count: 1408
   file_path: data/geo/cerd_sites.geojson.gz
@@ -479,4 +501,168 @@ layers:
   source: CERD, levé photogrammétrique 1/2 500 (ITRF2005, 2014-01-31)
   status: draft
   warnings: *id001
+- api_endpoint: /api/v1/geo/dj/jica_systemes_aquiferes
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 61 aquifer-system polygons (class SystAquif, label Name).
+  description_fr: 61 polygones de systèmes aquifères (classe SystAquif, libellé Name).
+  enabled: false
+  feature_count: 61
+  file_path: data/geo/jica/jica_systemes_aquiferes.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_systemes_aquiferes
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: Name
+  name_en: Aquifer systems
+  name_fr: Systèmes aquifères
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
+    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+- api_endpoint: /api/v1/geo/dj/jica_debit_aquiferes
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 61 polygons, yield class (field Debit). Class legend to be obtained.
+  description_fr: 61 polygones, classe de débit (champ Debit). La légende des classes
+    est à obtenir.
+  enabled: false
+  feature_count: 61
+  file_path: data/geo/jica/jica_debit_aquiferes.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_debit_aquiferes
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: Name
+  name_en: Aquifer yield (classes)
+  name_fr: Débit des aquifères (classes)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
+    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+- api_endpoint: /api/v1/geo/dj/jica_pluie_moyenne
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 14 isohyet polygons, mean annual rainfall in mm (field Pluiemoyen).
+  description_fr: 14 polygones d'isohyètes, pluie moyenne annuelle en mm (champ Pluiemoyen).
+  enabled: false
+  feature_count: 14
+  file_path: data/geo/jica/jica_pluie_moyenne.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_pluie_moyenne
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: Pluiemoyen
+  name_en: Mean annual rainfall (mm)
+  name_fr: Pluie moyenne annuelle (mm)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
+    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+- api_endpoint: /api/v1/geo/dj/jica_etp
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 11 PET polygons (field ETP).
+  description_fr: 11 polygones d'ETP (champ ETP).
+  enabled: false
+  feature_count: 11
+  file_path: data/geo/jica/jica_etp.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_etp
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: ETP
+  name_en: Potential evapotranspiration (ETP)
+  name_fr: Évapotranspiration potentielle (ETP)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
+    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+- api_endpoint: /api/v1/geo/dj/jica_etr
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 3 AET polygons (field ETR).
+  description_fr: 3 polygones d'ETR (champ ETR).
+  enabled: false
+  feature_count: 3
+  file_path: data/geo/jica/jica_etr.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_etr
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: ETR
+  name_en: Actual evapotranspiration (ETR)
+  name_fr: Évapotranspiration réelle (ETR)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
+    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+- api_endpoint: /api/v1/geo/dj/jica_zones_climatiques
+  coverage: Djibouti — national
+  date_acquired: '2026-11-19'
+  description_en: 7 climate zones (field zoneclimat).
+  description_fr: 7 zones climatiques (champ zoneclimat).
+  enabled: false
+  feature_count: 7
+  file_path: data/geo/jica/jica_zones_climatiques.geojson.gz
+  format: geojson
+  geometry_type: Polygon
+  id: jica_zones_climatiques
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: zoneclimat
+  name_en: Climate zones
+  name_fr: Zones climatiques
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
+    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+- api_endpoint: /api/v1/geo/dj/jica_points_eau
+  coverage: 5 régions (hors Djibouti-ville)
+  date_acquired: '2026-11-19'
+  description_en: '1223 water points (name, region). Detailed attributes (depth, structure
+    type…) not carried over: to be validated.'
+  description_fr: '1223 points d''eau (nom, région). Attributs détaillés (profondeur,
+    type d''ouvrage…) non repris : à valider.'
+  enabled: false
+  feature_count: 1223
+  file_path: data/geo/jica/jica_points_eau.geojson.gz
+  format: geojson
+  geometry_type: Point
+  id: jica_points_eau
+  license: Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur
+    avant tout usage
+  license_url: ''
+  name_column: nom
+  name_en: Water points (5 regions, finalised versions)
+  name_fr: Points d'eau (5 régions, versions finalisées)
+  source: JICA (source indiquée par le propriétaire, 2026-11-19) — jeu « RDD toutes
+    thèmes », données ~2007-2008
+  status: draft
+  warnings:
+  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
+    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
 version: '1'

@@ -104,6 +104,41 @@
     "provider": "Ministère de la Santé / INSTAD",
     "license": "Données fournies par le propriétaire du projet"
   },
+  "jica_debit_aquiferes": {
+    "name": "Débit des aquifères (classes)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_etp": {
+    "name": "Évapotranspiration potentielle (ETP)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_etr": {
+    "name": "Évapotranspiration réelle (ETR)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_pluie_moyenne": {
+    "name": "Pluie moyenne annuelle (mm)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_points_eau": {
+    "name": "Points d'eau (5 régions, versions finalisées)",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_systemes_aquiferes": {
+    "name": "Systèmes aquifères",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
+  "jica_zones_climatiques": {
+    "name": "Zones climatiques",
+    "provider": "JICA (source indiquée par le propriétaire",
+    "license": "Licence NON confirmée — à obtenir par écrit auprès de la JICA / du détenteur avant tout usage"
+  },
   "osm_centre_voirie": {
     "name": "Voirie du centre de Djibouti-ville (OSM)",
     "provider": "© OpenStreetMap contributors",
