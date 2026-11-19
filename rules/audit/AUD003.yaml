@@ -1,0 +1,18 @@
+code: AUD003
+version: 1
+title: "Dépenses supérieures au budget disponible"
+severity: warning
+description: "Total des dépenses par compte et devise comparé au budget fourni ; compte sans budget déclaré."
+interpretation: "À examiner. Le budget est fourni par l'utilisateur au lancement ; un compte absent de la liste est signalé « sans budget » (peut être un oubli de la liste)."
+requires: [account, amount, currency]
+params:
+  budgets: {type: budgets, required: true}
+message: "Compte {account} : dépenses {amount} {currency}, budget {budget} ({reason})."
+sql: |
+  SELECT s.account, s.currency, s.spent::VARCHAR AS amount, coalesce(b.budget::VARCHAR, 'aucun') AS budget,
+         CASE WHEN b.budget IS NULL THEN 'sans budget déclaré' ELSE 'budget dépassé' END AS reason,
+         s.rows AS source_rows
+  FROM (SELECT account, currency, sum(amount) AS spent, string_agg(source_row::VARCHAR, ',' ORDER BY source_row) AS rows
+        FROM {T} WHERE {base} AND amount > 0 GROUP BY account, currency) s
+  LEFT JOIN {budgets} b ON b.account = s.account AND b.currency = s.currency
+  WHERE b.budget IS NULL OR s.spent > b.budget

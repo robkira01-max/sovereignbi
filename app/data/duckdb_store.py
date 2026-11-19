@@ -18,7 +18,8 @@ def _safe_name(stem: str) -> str:
 # Tables internes du pack Audit (P-073) : ni importables par un utilisateur, ni visibles de l'IA / des tableaux de bord.
 # Elles sont écrites uniquement par app/financial/runs.py via la connexion directe.
 RESERVED_TABLES = frozenset({"audit_analysis_runs", "audit_calculation_results",
-                             "audit_documents", "audit_quality_issues"})
+                             "audit_documents", "audit_quality_issues",
+                             "audit_rule_runs", "audit_findings"})
 # Données normalisées du pack Audit (P-074) : interrogeables (sécurité par ligne applicable) mais jamais remplaçables par un upload.
 UPLOAD_BLOCKED = RESERVED_TABLES | {"audit_financial_records"}
 

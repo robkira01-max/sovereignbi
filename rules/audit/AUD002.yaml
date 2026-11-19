@@ -1,0 +1,18 @@
+code: AUD002
+version: 1
+title: "Paiements de même montant rapprochés"
+severity: info
+description: "Plusieurs lignes de même compte, montant et devise à des dates ou références différentes, dans une fenêtre courte."
+interpretation: "Simple rapprochement à examiner. Deux paiements distincts de même montant sont fréquents (loyers, salaires, abonnements) : aucune conclusion automatique."
+requires: [entry_date, account, amount, currency, reference]
+params:
+  window_days: {type: int, default: 7, min: 1, max: 365}
+message: "{n} lignes de {amount} {currency} sur le compte {account} en {span_days} jour(s) : lignes {source_rows}."
+sql: |
+  SELECT account, amount::VARCHAR AS amount, currency, count(*) AS n,
+         date_diff('day', min(entry_date), max(entry_date)) AS span_days,
+         string_agg(source_row::VARCHAR, ',' ORDER BY source_row) AS source_rows
+  FROM {T} WHERE {base} AND amount > 0
+  GROUP BY account, amount, currency
+  HAVING count(*) > 1 AND count(DISTINCT (entry_date, coalesce(reference, ''))) > 1
+     AND date_diff('day', min(entry_date), max(entry_date)) <= {window_days}

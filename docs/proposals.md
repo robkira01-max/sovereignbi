@@ -623,9 +623,9 @@ Relu `security-reviewer` : 0 critique, 1 élevé (aperçu/anomalies/résumés ho
 
 ---
 
-## P-075 — Moteur de règles de contrôle d'audit (10 contrôles)
+## P-075 — Moteur de règles de contrôle d'audit (10 contrôles) ✅ livré 2026-11-18
 
-- [ ] En attente d'accord
+- [x] Livré (détail ci-dessous)
 
 **Raison.** Détecter des opérations à examiner, de façon explicable. On commence à 10 contrôles, pas 30 : la pertinence se valide avec de vrais utilisateurs avant d'en ajouter.
 
@@ -644,6 +644,11 @@ Relu `security-reviewer` : 0 critique, 1 élevé (aperçu/anomalies/résumés ho
 - AUD004 est présenté comme indicatif, pas comme une irrégularité.
 
 **Impact.** 1 module, 1 table. AUD007 manipule des données personnelles : masquage par défaut, accès éditeur/admin, mention dans le registre de vie privée et le DPA.
+
+**Livré (2026-11-18).** `app/audit_rules/{registry,engine,store}.py`, `app/routers/audit_rules.py` (`/audit-rules`), `rules/audit/AUD001..010.yaml`, doc `docs/controles-audit.md`. Tables réservées `audit_rule_runs` et `audit_findings` (run + règle + version + `ruleset_hash`, statut `to_review`). Aucun seuil ni budget supposé (AUD003/AUD005 exigent leurs paramètres, sinon `not_applicable` avec raison) ; AUD007 `not_applicable` tant qu'aucun champ bancaire n'existe (donc aucune donnée personnelle traitée) ; AUD004 marqué indicatif ; lignes en erreur d'import exclues et comptées. 43 tests, 2185/2185 au total.
+Relu `security-reviewer` : aucune injection ni fuite ; corrigés : littéraux numériques géants (plafond), AUD005 quadratique → fenêtre analytique, délai par règle (interruption), un seul run à la fois (429), doublons de règles, paramètres invalides non renvoyés, ordre déterministe, filtre `has_error` exigé au chargement.
+**Reste ouvert.** (1) Clés API : tous les porteurs d'une clé `editor` partagent l'identité `api_key:editor` et voient mutuellement leurs runs (comme P-073) — préférer les sessions nominatives. (2) Tout éditeur peut lancer des contrôles sur tout document importé (cohérent avec P-074 sans règles par ligne) — à confirmer. (3) `rules/audit/` doit rester non inscriptible par l'application (rechargement à chaud). (4) Pertinence non validée par un utilisateur réel : **D-5, arrêt ici avant P-076/P-077**.
+
 
 ---
 

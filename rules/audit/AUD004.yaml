@@ -1,0 +1,14 @@
+code: AUD004
+version: 1
+title: "Écriture un jour de repos hebdomadaire"
+severity: info
+indicative: true
+description: "Lignes datées d'un jour de repos (par défaut samedi et dimanche ; à adapter, ex. vendredi et samedi à Djibouti)."
+interpretation: "Indicatif seulement, pas une irrégularité : beaucoup d'opérations légitimes sont datées un jour de repos (prélèvements automatiques, régularisations)."
+requires: [entry_date, amount]
+params:
+  weekend_days: {type: int_list, default: [6, 7], min: 1, max: 7}
+message: "Écriture du {entry_date} (jour de repos), compte {account}, {amount} : ligne {source_rows}."
+sql: |
+  SELECT source_row::VARCHAR AS source_rows, entry_date::VARCHAR AS entry_date, account, amount::VARCHAR AS amount
+  FROM {T} WHERE {base} AND amount > 0 AND isodow(entry_date) IN ({weekend_days})

@@ -1,0 +1,19 @@
+code: AUD006
+version: 1
+title: "Montant inhabituel pour le compte"
+severity: info
+description: "Montant dont l'écart à la moyenne du compte dépasse k écarts-types (score z), si le compte compte assez de lignes."
+interpretation: "Statistique descriptive, pas une preuve. Un montant exceptionnel peut être légitime (investissement, régularisation). Calcul sur ce seul fichier."
+requires: [account, amount, currency]
+params:
+  z_threshold: {type: decimal, default: 3, min: 1, max: 20}
+  min_count: {type: int, default: 8, min: 5, max: 10000}
+message: "Montant {amount} {currency} sur le compte {account} (score z {z}) : ligne {source_rows}."
+sql: |
+  WITH s AS (SELECT account, currency, avg(amount) AS mu, stddev_samp(amount) AS sd FROM {T}
+             WHERE {base} AND amount > 0 GROUP BY account, currency HAVING count(*) >= {min_count})
+  SELECT r.source_row::VARCHAR AS source_rows, r.account, r.currency, r.amount::VARCHAR AS amount,
+         round((r.amount - s.mu) / s.sd, 2)::VARCHAR AS z
+  FROM {T} r JOIN s ON r.account = s.account AND r.currency = s.currency
+  WHERE r.document_id = '{doc}' AND r.has_error = FALSE AND r.amount > 0 AND s.sd > 0
+    AND (r.amount - s.mu) / s.sd >= {z_threshold}
