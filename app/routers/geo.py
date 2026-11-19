@@ -31,6 +31,7 @@ router = APIRouter(prefix="/api/v1/geo", tags=["geo"])
 _REPO_ROOT = Path(__file__).parent.parent.parent
 
 _CERD = _REPO_ROOT / "data" / "geo" / "cerd"
+_JICA = _REPO_ROOT / "data" / "geo" / "jica"
 
 _LEVEL_PATHS: dict[str, Path] = {
     "adm1":                       _REPO_ROOT / "data" / "geo" / "dji_adm1.geojson",
@@ -46,6 +47,14 @@ _LEVEL_PATHS: dict[str, Path] = {
     "cerd_hydro":                 _REPO_ROOT / "data" / "geo" / "cerd_hydro.geojson.gz",
     "cerd_rail":                  _REPO_ROOT / "data" / "geo" / "cerd_rail.geojson.gz",
     "cerd_sites":                 _REPO_ROOT / "data" / "geo" / "cerd_sites.geojson.gz",
+    # Couches thématiques JICA (hydrogéologie, climat, points d'eau) — licence non confirmée, voir catalog.yaml
+    "jica_systemes_aquiferes":    _JICA / "jica_systemes_aquiferes.geojson.gz",
+    "jica_debit_aquiferes":       _JICA / "jica_debit_aquiferes.geojson.gz",
+    "jica_pluie_moyenne":         _JICA / "jica_pluie_moyenne.geojson.gz",
+    "jica_etp":                   _JICA / "jica_etp.geojson.gz",
+    "jica_etr":                   _JICA / "jica_etr.geojson.gz",
+    "jica_zones_climatiques":     _JICA / "jica_zones_climatiques.geojson.gz",
+    "jica_points_eau":            _JICA / "jica_points_eau.geojson.gz",
     # CERD Djibouti-ville layers
     "cerd_equipements_scolaires": _CERD / "cerd_equipements_scolaires.geojson",
     "cerd_equipements_sociaux":   _CERD / "cerd_equipements_sociaux.geojson",

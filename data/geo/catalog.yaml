@@ -506,7 +506,7 @@ layers:
   date_acquired: '2026-11-19'
   description_en: 61 aquifer-system polygons (class SystAquif, label Name).
   description_fr: 61 polygones de systèmes aquifères (classe SystAquif, libellé Name).
-  enabled: false
+  enabled: true
   feature_count: 61
   file_path: data/geo/jica/jica_systemes_aquiferes.geojson.gz
   format: geojson
@@ -522,15 +522,17 @@ layers:
     thèmes », données ~2007-2008
   status: draft
   warnings:
-  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
-    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
 - api_endpoint: /api/v1/geo/dj/jica_debit_aquiferes
   coverage: Djibouti — national
   date_acquired: '2026-11-19'
   description_en: 61 polygons, yield class (field Debit). Class legend to be obtained.
   description_fr: 61 polygones, classe de débit (champ Debit). La légende des classes
     est à obtenir.
-  enabled: false
+  enabled: true
   feature_count: 61
   file_path: data/geo/jica/jica_debit_aquiferes.geojson.gz
   format: geojson
@@ -546,14 +548,16 @@ layers:
     thèmes », données ~2007-2008
   status: draft
   warnings:
-  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
-    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
 - api_endpoint: /api/v1/geo/dj/jica_pluie_moyenne
   coverage: Djibouti — national
   date_acquired: '2026-11-19'
   description_en: 14 isohyet polygons, mean annual rainfall in mm (field Pluiemoyen).
   description_fr: 14 polygones d'isohyètes, pluie moyenne annuelle en mm (champ Pluiemoyen).
-  enabled: false
+  enabled: true
   feature_count: 14
   file_path: data/geo/jica/jica_pluie_moyenne.geojson.gz
   format: geojson
@@ -569,14 +573,16 @@ layers:
     thèmes », données ~2007-2008
   status: draft
   warnings:
-  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
-    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
 - api_endpoint: /api/v1/geo/dj/jica_etp
   coverage: Djibouti — national
   date_acquired: '2026-11-19'
   description_en: 11 PET polygons (field ETP).
   description_fr: 11 polygones d'ETP (champ ETP).
-  enabled: false
+  enabled: true
   feature_count: 11
   file_path: data/geo/jica/jica_etp.geojson.gz
   format: geojson
@@ -592,14 +598,16 @@ layers:
     thèmes », données ~2007-2008
   status: draft
   warnings:
-  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
-    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
 - api_endpoint: /api/v1/geo/dj/jica_etr
   coverage: Djibouti — national
   date_acquired: '2026-11-19'
   description_en: 3 AET polygons (field ETR).
   description_fr: 3 polygones d'ETR (champ ETR).
-  enabled: false
+  enabled: true
   feature_count: 3
   file_path: data/geo/jica/jica_etr.geojson.gz
   format: geojson
@@ -615,14 +623,16 @@ layers:
     thèmes », données ~2007-2008
   status: draft
   warnings:
-  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
-    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
 - api_endpoint: /api/v1/geo/dj/jica_zones_climatiques
   coverage: Djibouti — national
   date_acquired: '2026-11-19'
   description_en: 7 climate zones (field zoneclimat).
   description_fr: 7 zones climatiques (champ zoneclimat).
-  enabled: false
+  enabled: true
   feature_count: 7
   file_path: data/geo/jica/jica_zones_climatiques.geojson.gz
   format: geojson
@@ -638,8 +648,10 @@ layers:
     thèmes », données ~2007-2008
   status: draft
   warnings:
-  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
-    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
 - api_endpoint: /api/v1/geo/dj/jica_points_eau
   coverage: 5 régions (hors Djibouti-ville)
   date_acquired: '2026-11-19'
@@ -647,7 +659,7 @@ layers:
     type…) not carried over: to be validated.'
   description_fr: '1223 points d''eau (nom, région). Attributs détaillés (profondeur,
     type d''ouvrage…) non repris : à valider.'
-  enabled: false
+  enabled: true
   feature_count: 1223
   file_path: data/geo/jica/jica_points_eau.geojson.gz
   format: geojson
@@ -663,6 +675,8 @@ layers:
     thèmes », données ~2007-2008
   status: draft
   warnings:
-  - en: 'Licence not confirmed: layer disabled. Do not distribute before written agreement.'
-    fr: 'Licence non confirmée : couche désactivée. Ne pas diffuser avant accord écrit.'
+  - en: 'JICA licence not confirmed: internal use only, do not distribute before written
+      agreement. Data ~2007-2008.'
+    fr: 'Licence JICA non confirmée : usage interne, ne pas diffuser avant accord
+      écrit. Données ~2007-2008.'
 version: '1'
