@@ -697,3 +697,126 @@ Relu `security-reviewer` : aucune injection ni fuite ; corrigés : littéraux nu
 ## Ordre et dépendances
 
 P-073 → P-074 → P-075 → P-076 → P-077. P-073 et P-074 peuvent avancer en parallèle après la définition des tables. Après P-075, faire valider l'utilité des contrôles par un premier utilisateur (D-5) avant P-076/P-077.
+
+
+---
+
+## Propositions P-079 et P-080 — Interface du pack Audit et chat branché sur le moteur
+
+Statut : **en attente d'accord** (hors plan : ne rien implémenter sans accord). Maquettes de principe, données synthétiques : la charte réelle de `mizanbi-client/` prévaut.
+
+> **Écarts constatés avec le code livré (P-073 à P-075), à trancher avant de coder P-079 :**
+> - Taille max : l'API limite à 20 Mo (`SOVEREIGN_AUDIT_MAX_MB`), pas 50 Mo.
+> - « Période et devise » au lancement d'un contrôle : l'API prend des paramètres **par règle** (ex. AUD005 `threshold`, AUD009 `period_start/end`, AUD003 `budgets`), pas une période/devise globale.
+> - « Un fichier avec anomalie bloquante non résolue ne peut pas alimenter un contrôle » : **non appliqué côté serveur** aujourd'hui (les lignes en erreur sont exclues et comptées, le run reste possible). À ajouter côté API si voulu.
+> - AUD007 est « non applicable » (aucun champ bancaire importé) : l'écran n'aura rien à masquer tant qu'un champ dédié n'existe pas.
+> - « Comparer » : `GET /financial/runs/{a}/compare/{b}` existe ; « Reproduire » : à vérifier s'il faut une route dédiée ou relancer via `POST /financial/runs`.
+> - Les résolutions d'anomalie « error » exigent un admin différent de l'importeur : l'écran doit l'expliquer.
+
+---
+
+## P-079 — Interface minimale du pack Audit (mizanbi-client)
+
+- [ ] En attente d'accord
+
+### Raison
+
+P-073, P-074 et P-075 n'existent aujourd'hui que par appels d'API. Sans écran, personne ne peut essayer le pack, donc la validation par un premier utilisateur (décision D-5 de P-073 à P-077) est impossible. P-076 (preuves et revue) a aussi besoin d'un écran de signalements. On livre le strict minimum pour qu'un auditeur ou analyste puisse faire le parcours complet.
+
+### Périmètre
+
+Trois écrans et une section de navigation « Pack Audit » (Données, Formules, Contrôles), dans `mizanbi-client/`. Pages en `React.lazy` (comme le reste), titre d'onglet par écran (`lib/pageTitle.ts`), textes en français d'abord, anglais ensuite.
+
+**Hors périmètre** : preuves et revue (P-076), rapport (P-077), édition de règles ou de formules, nouveaux tableaux de bord.
+
+### Écran 1 — Données (`/audit-data`)
+
+![Écran Données](maquettes/01-donnees.png)
+
+- Dépôt d'un fichier CSV ou XLSX (50 Mo max, extensions listées), avec affichage de l'empreinte SHA-256 et du nombre de lignes.
+- Mapping des colonnes : colonne source → champ normalisé, avec l'état de chaque champ.
+- Liste des anomalies de qualité : type, emplacement, gravité (Bloquante / À examiner).
+- Résolution d'une anomalie : **justification obligatoire** (10 caractères minimum), inscrite au journal d'audit. Aucune correction silencieuse ; l'original n'est jamais modifié.
+- Un fichier avec anomalie bloquante non résolue ne peut pas alimenter un calcul ni un contrôle.
+- États à gérer : vide, chargement, fichier refusé (faux type, trop gros, nom hostile), erreur serveur.
+
+### Écran 2 — Contrôles (`/audit-rules`)
+
+![Écran Contrôles](maquettes/02-controles.png)
+
+- Choix des règles AUD001 à AUD010 (cases à cocher), période et devise, bouton « Lancer ».
+- Résultat du run : identifiant, version du moteur, version de chaque règle, empreinte des données.
+- Pour chaque règle, le nombre de signalements et le détail (facture, fournisseur, montant).
+- Libellé fixe : « signal de risque, pas une preuve d'irrégularité ». Jamais le mot « fraude ».
+- AUD007 : coordonnées bancaires masquées par défaut ; affichage réservé aux éditeurs et admins.
+- AUD004 (week-end) est présenté comme indicatif.
+
+### Écran 3 — Formules (`/financial`)
+
+![Écran Formules](maquettes/03-calcul.png)
+
+- Détail d'une formule : code, version, expression, variables, arrondi, comportement en division par zéro et en valeurs manquantes.
+- Résultat avec pastille « Calculé », version du moteur, empreinte des données.
+- Boutons « Reproduire » (relance le même run et vérifie que le résultat et l'empreinte sont identiques) et « Comparer » (deux versions ou deux périodes).
+- Historique des runs d'une formule.
+
+### Règles transversales
+
+- Rôles : viewer lit ; editor importe, résout, lance ; admin a tout. Aucune action de mutation sans `RequireRole` côté serveur ; l'interface masque les boutons, elle ne remplace pas le contrôle serveur.
+- Montants affichés depuis les chaînes Decimal de l'API : **aucun calcul financier dans React**, aucun `Number()` sur un montant.
+- Accessibilité : navigation au clavier, libellés explicites, contraste vérifié (Lighthouse ou Playwright, comme noté dans l'audit web).
+- Toute clé de stockage local ajoutée est documentée dans la page cookies (un test échoue sinon). Aucun service tiers chargé.
+
+### Critères d'acceptation
+
+- Parcours complet, vérifié en navigateur avec des données synthétiques : import → résolution des anomalies avec justification → lancement de 3 contrôles → lecture des signalements → affichage d'un calcul (95,00 % pour 114 M sur 120 M) → « Reproduire » donne le même résultat.
+- Un viewer ne peut ni importer, ni résoudre, ni lancer (refus serveur vérifié, pas seulement boutons masqués).
+- Tests Vitest sur les trois écrans (états vide, erreur, succès) ; `tsc --noEmit` propre ; build Vite propre ; suite pytest inchangée verte.
+- Une session d'essai avec un utilisateur réel (auditeur, analyste ou comptable) ; retours consignés dans `docs/`. C'est la condition pour décider de continuer avec P-076 et P-077.
+
+### Impact
+
+Frontend seulement, aucune modification des règles ni des formules. Dépendance : P-073 à P-075. Risque : les retours de l'utilisateur d'essai peuvent remettre en cause le choix ou la formulation des contrôles ; c'est le but.
+
+---
+
+## P-080 — Chat branché sur le moteur de formules
+
+- [ ] En attente d'accord
+
+### Raison
+
+Aujourd'hui le chat produit du text-to-SQL ; ses chiffres sont exploratoires. Si le moteur de formules et le chat donnent deux valeurs différentes pour la même notion, la confiance disparaît. Cette proposition applique la décision D-2 : un chiffre issu d'une formule versionnée est « Calculé » (avec formule, version et run) ; tout le reste est « Exploratoire, non certifié ».
+
+### Contenu
+
+![Chat : calculé et exploratoire](maquettes/04-chat.png)
+
+- **Lien sémantique ↔ formule.** Une mesure de `semantic/model.yaml` peut déclarer `formula: TAUX_EXECUTION`. `GET /semantic/validate` échoue si la formule n'existe pas dans le registre (P-073).
+- **Routage dans le pipeline.** Si la question correspond à une mesure liée à une formule, le pipeline appelle le moteur par une **fonction autorisée** (lire un résultat, lancer un calcul sur des paramètres résolus). Sinon, il suit le chemin text-to-SQL actuel et étiquette la réponse « Exploratoire, non certifié ».
+- **Le modèle ne calcule jamais.** Il reconnaît la question et rédige la réponse ; les chiffres viennent du moteur. En mode strict (P-070), aucune ligne de données n'est envoyée au modèle.
+- **Paramètres manquants** (période, projet, devise) : le chat pose la question, il ne devine pas.
+- **Transparence** : chaque réponse « Calculé » affiche formule, version, run et un lien « Voir le calcul » vers l'écran Formules ; chaque réponse exploratoire permet de voir la requête SQL.
+- **Sécurité** : liste blanche de fonctions, aucun SQL ni commande arbitraire fournis par le modèle ; `RequireRole` ; lectures par `DataStore.execute` (sécurité par ligne P-068, échec fermé) ; actions inscrites au journal chaîné ; les instructions contenues dans des documents importés sont traitées comme des données non fiables.
+
+### Critères d'acceptation
+
+- Pour une question liée à une formule, le chiffre du chat est **identique** à celui de `/financial` pour le même run (test automatisé).
+- Question sans formule correspondante : réponse étiquetée « Exploratoire », jamais « Calculé ».
+- Division par zéro ou donnée manquante : message d'erreur explicite, aucun chiffre inventé.
+- Tentative d'injection dans un document importé : aucune fonction non autorisée n'est appelée.
+- Jeu d'évaluation étendu dans `eval/` (cas calculés, exploratoires, ambigus, injections) ; résultats consignés par modèle testé dans P-078. Aucune précision annoncée avant mesure.
+- Pastille visible dans l'interface (« Calculé » / « Exploratoire, non certifié ») et dans les exports qui reprennent une réponse du chat.
+
+### Impact et risques
+
+- Dépendances : P-073 (moteur), P-065 (couche sémantique), P-070 (mode strict) ; P-079 pour le lien « Voir le calcul ».
+- Le chiffre lui-même ne dépend pas du modèle de langage, mais **la reconnaissance de la question en dépend** : mesurer avec le banc d'essai de P-078.
+- Risque principal : associer la mauvaise formule à une question proche. Parades : toujours afficher la formule et les paramètres retenus, seuil de confiance, et dans le doute répondre « exploratoire » plutôt que « calculé ».
+- Sans modèle local disponible, le calcul via l'interface reste utilisable ; seul le chat est dégradé.
+
+---
+
+## Ordre suggéré
+
+P-079 → session d'essai avec un utilisateur → P-076 (preuves et revue, sur l'écran Contrôles) → P-080 → P-077 (rapport). P-078 (choix du modèle) peut avancer en parallèle de P-079.
