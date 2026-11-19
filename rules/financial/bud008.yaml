@@ -1,0 +1,23 @@
+code: BUD008
+family: budget
+versions:
+  - version: 1
+    label: "Taux de paiement des engagements"
+    description: "Part des engagements qui a été payée."
+    expression: "paiements / engagements * 100"
+    result_unit: "%"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Un taux faible peut signaler des retards de paiement."
+    variables:
+      paiements:
+        label: "Paiements effectués"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      engagements:
+        label: "Engagements"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

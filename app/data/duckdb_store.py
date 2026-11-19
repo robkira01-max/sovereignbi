@@ -15,6 +15,19 @@ def _safe_name(stem: str) -> str:
     return name if name and not name[0].isdigit() else f"t_{name}"
 
 
+# Tables internes du pack Audit (P-073) : ni importables par un utilisateur, ni visibles de l'IA / des tableaux de bord.
+# Elles sont écrites uniquement par app/financial/runs.py via la connexion directe.
+RESERVED_TABLES = frozenset({"audit_analysis_runs", "audit_calculation_results",
+                             "audit_documents", "audit_quality_issues",
+                             "audit_rule_runs", "audit_findings"})
+# Données normalisées du pack Audit (P-074) : interrogeables (sécurité par ligne applicable) mais jamais remplaçables par un upload.
+UPLOAD_BLOCKED = RESERVED_TABLES | {"audit_financial_records"}
+
+
+class ReservedTableError(ValueError):
+    """Nom de table réservé (historique interne) : à traduire en refus 400 par l'appelant."""
+
+
 class DataStore:
     def __init__(self):
         # Fichier persistant si SOVEREIGN_DB_PATH est défini, sinon mémoire (tests).
@@ -26,10 +39,12 @@ class DataStore:
         existing = self.con.execute(
             "SELECT table_name FROM information_schema.tables WHERE table_schema='main'"
         ).fetchall()
-        self.tables: set[str] = {row[0] for row in existing}
+        self.tables: set[str] = {row[0] for row in existing if row[0] not in RESERVED_TABLES}
 
     def load_dataframe(self, name: str, df: pd.DataFrame) -> str:
         name = _safe_name(name)
+        if name in UPLOAD_BLOCKED:
+            raise ReservedTableError(f"« {name} » est un nom réservé (historique des analyses) : renommez le fichier ou la table.")
         row_policy.check_can_replace(name)
         df = df.copy()
         df.columns = [_safe_name(str(c)) for c in df.columns]

@@ -1,0 +1,23 @@
+code: BUD005
+family: budget
+versions:
+  - version: 1
+    label: "Écart relatif budget / réalisé"
+    description: "Écart entre dépenses et budget voté, en pourcentage du budget. Positif = dépassement."
+    expression: "(depenses - budget_vote) / budget_vote * 100"
+    result_unit: "%"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Signe opposé à BUD004 : positif = dépenses supérieures au budget."
+    variables:
+      depenses:
+        label: "Dépenses réalisées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      budget_vote:
+        label: "Budget voté"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

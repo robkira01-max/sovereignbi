@@ -1,0 +1,12 @@
+code: AUD008
+version: 1
+title: "Absence de référence de justificatif"
+severity: warning
+description: "Lignes de dépense sans référence de pièce."
+interpretation: "À examiner. Le fichier ne contient pas les pièces : l'absence de référence ne prouve pas l'absence de justificatif."
+requires: [reference, amount]
+params: {}
+message: "Dépense de {amount} sur le compte {account} sans référence de pièce : ligne {source_rows}."
+sql: |
+  SELECT source_row::VARCHAR AS source_rows, account, amount::VARCHAR AS amount
+  FROM {T} WHERE {base} AND amount > 0 AND (reference IS NULL OR trim(reference) = '')

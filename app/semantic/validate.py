@@ -103,6 +103,18 @@ def validate_model(model: SemanticModel) -> list[Issue]:
         if m.code and not (m.definition.strip() or m.description.strip()):
             issues.append(Issue("warning", "indicator_without_definition", f"indicateur « {m.code} » sans définition"))
 
+    # 2c. Mesures liées à une formule du registre financier (P-073) : la formule doit exister
+    if any(m.formula for m in model.metrics):
+        from app.financial.registry import RegistryError, get_registry
+        try:
+            known = set(get_registry().codes())
+        except RegistryError as e:
+            known = None
+            issues.append(Issue("error", "formula_registry_unavailable", f"registre de formules illisible : {e}"))
+        for m in model.metrics:
+            if m.formula and known is not None and m.formula not in known:
+                issues.append(Issue("error", "unknown_formula", f"mesure « {m.name} » : formule « {m.formula} » absente du registre"))
+
     # 3. Synonymes de valeurs : table et colonne existantes
     for v in model.value_synonyms:
         if v.table not in table_cols:

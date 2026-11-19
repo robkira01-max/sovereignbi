@@ -1,0 +1,23 @@
+code: BUD007
+family: budget
+versions:
+  - version: 1
+    label: "Taux d'engagement"
+    description: "Part du budget voté qui est engagée."
+    expression: "engagements / budget_vote * 100"
+    result_unit: "%"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Un taux d'engagement faible en fin d'exercice peut signaler une sous-consommation."
+    variables:
+      engagements:
+        label: "Engagements"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      budget_vote:
+        label: "Budget voté"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

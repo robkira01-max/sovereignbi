@@ -1,0 +1,11 @@
+code: AUD007
+version: 1
+title: "Coordonnées bancaires communes"
+severity: warning
+description: "Fournisseurs ou bénéficiaires distincts partageant les mêmes coordonnées bancaires."
+interpretation: "Non applicable avec le modèle de données actuel (aucun champ de coordonnées bancaires importé). Cette règle ne sera activée qu'avec un champ dédié, masqué par défaut (donnée personnelle)."
+requires: [bank_account]
+params: {}
+message: "Coordonnées communes : lignes {source_rows}."
+sql: |
+  SELECT '' AS source_rows FROM {T} WHERE {base} AND FALSE

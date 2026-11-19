@@ -1,0 +1,23 @@
+code: BUD002
+family: budget
+versions:
+  - version: 1
+    label: "Dépassement budgétaire"
+    description: "Montant dépensé au-delà du budget voté (0 s'il n'y a pas de dépassement)."
+    expression: "max(depenses - budget_vote, 0)"
+    result_unit: "monnaie"
+    precision: 2
+    rounding: ROUND_HALF_UP
+    on_zero_division: error
+    interpretation: "Un montant positif signale un dépassement à examiner, pas une irrégularité en soi."
+    variables:
+      depenses:
+        label: "Dépenses réalisées"
+        unit: "monnaie"
+        required: true
+        allow_negative: false
+      budget_vote:
+        label: "Budget voté"
+        unit: "monnaie"
+        required: true
+        allow_negative: false

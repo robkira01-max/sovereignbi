@@ -1,0 +1,17 @@
+code: AUD009
+version: 1
+title: "Écriture hors période"
+severity: warning
+description: "Date hors de l'exercice déclaré sur la ligne, ou hors de la période fournie (period_start, period_end)."
+interpretation: "À examiner (rattachement à un mauvais exercice, saisie tardive). Une régularisation d'exercice antérieur est parfois normale."
+requires: [entry_date]
+params:
+  period_start: {type: date, default: "1900-01-01"}
+  period_end: {type: date, default: "2999-12-31"}
+message: "Écriture du {entry_date} hors période (exercice {fiscal_year}), compte {account} : ligne {source_rows}."
+sql: |
+  SELECT source_row::VARCHAR AS source_rows, entry_date::VARCHAR AS entry_date, account,
+         coalesce(fiscal_year::VARCHAR, 'non renseigné') AS fiscal_year
+  FROM {T} WHERE {base}
+    AND ((fiscal_year IS NOT NULL AND year(entry_date) <> fiscal_year)
+         OR entry_date NOT BETWEEN DATE '{period_start}' AND DATE '{period_end}')

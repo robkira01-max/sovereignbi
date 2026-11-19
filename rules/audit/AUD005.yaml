@@ -1,0 +1,20 @@
+code: AUD005
+version: 1
+title: "Fractionnement potentiel"
+severity: warning
+description: "Plusieurs lignes d'un même compte, chacune sous le seuil, dont le cumul sur une courte période atteint le seuil."
+interpretation: "Signal à examiner (contournement possible d'un seuil d'approbation). Des achats fréquents légitimes produisent le même schéma. Le seuil doit être fourni : aucune valeur par défaut n'est supposée."
+requires: [entry_date, account, amount, currency]
+params:
+  threshold: {type: decimal, required: true, min: 0.01}
+  window_days: {type: int, default: 3, min: 1, max: 90}
+message: "{n} lignes sous le seuil sur le compte {account}, cumul {amount} {currency} en {window_days} jours : lignes {source_rows}."
+sql: |
+  WITH l AS (SELECT * FROM {T} WHERE {base} AND amount > 0 AND amount < {threshold}),
+  w AS (SELECT account, currency, source_row,
+               count(*) OVER win AS n, sum(amount) OVER win AS total, list(source_row) OVER win AS rows
+        FROM l WINDOW win AS (PARTITION BY account, currency ORDER BY entry_date
+                              RANGE BETWEEN CURRENT ROW AND INTERVAL ({window_days}) DAY FOLLOWING))
+  SELECT account, currency, n, total::VARCHAR AS amount, {window_days} AS window_days,
+         array_to_string(list_sort(list_slice(rows, 1, 50)), ',') AS source_rows
+  FROM w WHERE n > 1 AND total >= {threshold}

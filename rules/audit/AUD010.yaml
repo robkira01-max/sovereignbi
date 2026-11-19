@@ -1,0 +1,17 @@
+code: AUD010
+version: 1
+title: "Écriture déséquilibrée"
+severity: warning
+description: "Pour une même référence d'écriture, total des débits différent du total des crédits."
+interpretation: "À examiner. Applicable seulement si le fichier a des colonnes débit/crédit ; une écriture peut être répartie sur plusieurs références ou fichiers."
+requires: [reference, debit, credit]
+applicable_if: "debit IS NOT NULL OR credit IS NOT NULL"
+params: {}
+message: "Écriture {reference} déséquilibrée : débits {debits}, crédits {credits}, écart {amount} : lignes {source_rows}."
+sql: |
+  SELECT reference, sum(coalesce(debit, 0))::VARCHAR AS debits, sum(coalesce(credit, 0))::VARCHAR AS credits,
+         (sum(coalesce(debit, 0)) - sum(coalesce(credit, 0)))::VARCHAR AS amount,
+         string_agg(source_row::VARCHAR, ',' ORDER BY source_row) AS source_rows
+  FROM {T} WHERE document_id = '{doc}' AND reference IS NOT NULL
+  GROUP BY reference
+  HAVING bool_or(has_error) = FALSE AND sum(coalesce(debit, 0)) <> sum(coalesce(credit, 0))

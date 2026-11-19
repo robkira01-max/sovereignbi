@@ -566,9 +566,13 @@ Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propos
 
 ---
 
-## P-073 — Moteur de formules financières versionnées
+## P-073 — Moteur de formules financières versionnées ✅ livré 2026-11-18 (sauf liaison avec le chat)
 
-- [ ] En attente d'accord
+- [x] Livré. Documentation d'usage : `docs/formules-financieres.md`.
+
+**Livré :** `app/financial/` (évaluateur `ast` à liste blanche sans `eval`, registre YAML `rules/financial/` versionné avec `definition_hash`, moteur Decimal, persistance `audit_analysis_runs` / `audit_calculation_results`), `app/routers/financial.py` (`/financial/formulas`, `/financial/runs`, comparaison), 11 formules v1 (8 budget, 3 recettes), champ `formula` sur les mesures sémantiques (validé par `GET /semantic/validate`), `COPY rules rules` dans les deux Dockerfiles. Les trois cas de référence (95 %, 114 %, 90 %) sont des tests.
+**Relecture `security-reviewer` : 2 ÉLEVÉS, 3 MOYENS, 3 FAIBLES, tous traités sauf F2 :** E1 les runs issus d'une table ne sont lisibles que par leur auteur et l'admin (sinon la sécurité par ligne se contournait par la lecture de l'historique) ; E2 noms `audit_analysis_runs` / `audit_calculation_results` réservés dans `DataStore` (upload refusé en 400, tables exclues de `store.tables` donc invisibles de l'IA après redémarrage) ; M1 entrées bornées (|exposant| ≤ 30, 38 chiffres) ; M2 audit écrit AVANT le run, 503 si le journal est indisponible ; M3 erreurs DuckDB et entiers démesurés en 422 ; F1 identifiants échappés ; F3 constantes d'expression validées au chargement. **F2 non traité** (un éditeur peut distinguer « table inconnue » de « table protégée » : le schéma est déjà exposé ailleurs).
+**Limites assumées :** (1) le chat n'appelle pas le moteur : une mesure peut pointer vers une formule, mais le text-to-SQL génère toujours son propre SQL, donc un chiffre du chat reste exploratoire (décision D-2 : étiquetage à faire) ; (2) la pastille « calculé » (P-069) n'est pas branchée sur les runs ; (3) le `result_hash` n'est pas signé : le champ `integrity` détecte une altération partielle, pas un forgeage complet par quelqu'un qui écrit dans la base (HMAC possible, `SOVEREIGN_CERT_SECRET` existe) ; (4) l'auteur d'un run par clé API est `api_key:<rôle>` : deux clés du même rôle ne se distinguent pas ; (5) pas de limite de débit propre à `POST /financial/runs`.
 
 **Raison.** C'est le cœur d'AuditCalc : des chiffres reproductibles et traçables. MizanBI a des mesures sémantiques (P-065), mais pas de registre de formules versionnées ni de runs reproductibles.
 
@@ -592,7 +596,7 @@ Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propos
 
 ---
 
-## P-074 — Import tabulaire et contrôle de qualité des données
+## P-074 — Import tabulaire et contrôle de qualité des données ✅ livré 2026-11-18
 
 - [ ] En attente d'accord
 
@@ -612,11 +616,16 @@ Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propos
 
 **Impact.** 2 tables, 1 routeur. Dépendance : P-073 pour consommer les enregistrements normalisés.
 
+**Livré (2026-11-18).** `app/audit_data/{files,parse,normalize,repo}.py`, `app/routers/audit_data.py` (`/audit-data`), `app/security/actor.py` (acteur + audit partagés avec P-073). Tables `audit_documents` et `audit_quality_issues` (réservées, invisibles de l'IA) et `audit_financial_records` (DECIMAL(38,6), interrogeable, upload interdit). Dépôt CSV/XLSX avec type réel vérifié, bombes ZIP, macros, liens externes, objets incorporés refusés ; original conservé sous son SHA-256 (0400), doublon détecté ; séparateur décimal et format de date déclarés (jamais devinés) ; devise obligatoire (colonne ou défaut explicite tracé) ; aucune correction silencieuse (valeur illisible = NULL + anomalie) ; résolution d'anomalie avec justification (hash au journal), « error » réservée à un admin autre que l'importeur. 152+ tests P-074, 2142/2142 au total.
+Relu `security-reviewer` : 0 critique, 1 élevé (aperçu/anomalies/résumés hors sécurité par ligne → contenu réservé à l'admin et métadonnées expurgées quand des règles existent), moyens (bornes mémoire CSV/XLSX, ratio ZIP, journal « committed/failed », séparation des tâches, garde Content-Length) et faibles corrigés.
+**Reste ouvert.** (1) `defusedxml>=0.7` à AJOUTER à `pyproject.toml` (fichier en lecture seule : modification refusée, à faire par le propriétaire ; installé dans l'env actuel mais non déclaré). (2) Caddy : ajouter `request_body { max_size 25MB }` (le garde `Content-Length` ne couvre pas un client sans en-tête). (3) Originaux en clair au repos (volume à chiffrer en production). (4) Toute future sortie CSV/XLSX doit préfixer d'une apostrophe les cellules commençant par `= + - @`. (5) Règle de sécurité par ligne par défaut sur `audit_financial_records` à documenter.
+
+
 ---
 
-## P-075 — Moteur de règles de contrôle d'audit (10 contrôles)
+## P-075 — Moteur de règles de contrôle d'audit (10 contrôles) ✅ livré 2026-11-18
 
-- [ ] En attente d'accord
+- [x] Livré (détail ci-dessous)
 
 **Raison.** Détecter des opérations à examiner, de façon explicable. On commence à 10 contrôles, pas 30 : la pertinence se valide avec de vrais utilisateurs avant d'en ajouter.
 
@@ -635,6 +644,11 @@ Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propos
 - AUD004 est présenté comme indicatif, pas comme une irrégularité.
 
 **Impact.** 1 module, 1 table. AUD007 manipule des données personnelles : masquage par défaut, accès éditeur/admin, mention dans le registre de vie privée et le DPA.
+
+**Livré (2026-11-18).** `app/audit_rules/{registry,engine,store}.py`, `app/routers/audit_rules.py` (`/audit-rules`), `rules/audit/AUD001..010.yaml`, doc `docs/controles-audit.md`. Tables réservées `audit_rule_runs` et `audit_findings` (run + règle + version + `ruleset_hash`, statut `to_review`). Aucun seuil ni budget supposé (AUD003/AUD005 exigent leurs paramètres, sinon `not_applicable` avec raison) ; AUD007 `not_applicable` tant qu'aucun champ bancaire n'existe (donc aucune donnée personnelle traitée) ; AUD004 marqué indicatif ; lignes en erreur d'import exclues et comptées. 43 tests, 2185/2185 au total.
+Relu `security-reviewer` : aucune injection ni fuite ; corrigés : littéraux numériques géants (plafond), AUD005 quadratique → fenêtre analytique, délai par règle (interruption), un seul run à la fois (429), doublons de règles, paramètres invalides non renvoyés, ordre déterministe, filtre `has_error` exigé au chargement.
+**Reste ouvert.** (1) Clés API : tous les porteurs d'une clé `editor` partagent l'identité `api_key:editor` et voient mutuellement leurs runs (comme P-073) — préférer les sessions nominatives. (2) Tout éditeur peut lancer des contrôles sur tout document importé (cohérent avec P-074 sans règles par ligne) — à confirmer. (3) `rules/audit/` doit rester non inscriptible par l'application (rechargement à chaud). (4) Pertinence non validée par un utilisateur réel : **D-5, arrêt ici avant P-076/P-077**.
+
 
 ---
 

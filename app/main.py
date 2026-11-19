@@ -19,7 +19,7 @@ from app.api.v1.router import router as v1_router
 from app.startup import log_startup_warnings, seed_store, validate_env
 from app.cache.query_cache import QueryCache
 from app.cache.persistent_cache import PersistentQueryCache
-from app.data.duckdb_store import DataStore
+from app.data.duckdb_store import DataStore, ReservedTableError
 from app.llm import get_llm_client
 from app.pipeline.graph import build_graph, load_semantic
 from app.rag.doc_store import DocStore
@@ -44,6 +44,9 @@ from app.routers.semantic import router as semantic_router
 from app.routers.sdmx import router as sdmx_router
 from app.routers.audit import router as audit_router
 from app.routers.certification import router as certification_router
+from app.routers.audit_data import router as audit_data_router
+from app.routers.audit_rules import router as audit_rules_router
+from app.routers.financial import router as financial_router
 from app.routers.row_security import router as row_security_router
 from app.security.principal_mw import PrincipalMiddleware
 from app.security import row_policy
@@ -183,6 +186,9 @@ app.include_router(semantic_router)
 app.include_router(sdmx_router)
 app.include_router(audit_router)
 app.include_router(certification_router)
+app.include_router(financial_router)
+app.include_router(audit_data_router)
+app.include_router(audit_rules_router)
 app.include_router(row_security_router)
 app.include_router(privacy_ops_router)
 app.include_router(subscriptions_router)
@@ -289,7 +295,10 @@ async def upload(file: UploadFile = File(...), _: str = Depends(_VIEWER)):
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / Path(file.filename).name
         p.write_bytes(data)
-        tables = store.load_file(p)
+        try:
+            tables = store.load_file(p)
+        except ReservedTableError as e:
+            raise HTTPException(400, str(e)) from None
     query_cache.invalidate()
     uploads_total.inc()
     active_tables.set(len(store.tables))

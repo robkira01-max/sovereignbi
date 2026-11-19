@@ -1,0 +1,14 @@
+code: AUD001
+version: 1
+title: "Factures identiques"
+severity: warning
+description: "Lignes strictement identiques (même référence, date, compte, montant et devise) apparaissant plusieurs fois."
+interpretation: "Signal de risque à examiner (doublon de saisie ou de paiement). Une répétition volontaire ou une régularisation reste possible ; seule la pièce justificative permet de conclure."
+requires: [reference, entry_date, account, amount, currency]
+params: {}
+message: "{n} lignes identiques (référence {reference}, compte {account}, {amount} {currency}, {entry_date}) : lignes {source_rows}."
+sql: |
+  SELECT reference, account, entry_date::VARCHAR AS entry_date, amount::VARCHAR AS amount, currency,
+         count(*) AS n, string_agg(source_row::VARCHAR, ',' ORDER BY source_row) AS source_rows
+  FROM {T} WHERE {base} AND reference IS NOT NULL AND amount > 0
+  GROUP BY reference, account, entry_date, amount, currency HAVING count(*) > 1
