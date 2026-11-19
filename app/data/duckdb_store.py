@@ -17,7 +17,10 @@ def _safe_name(stem: str) -> str:
 
 # Tables internes du pack Audit (P-073) : ni importables par un utilisateur, ni visibles de l'IA / des tableaux de bord.
 # Elles sont écrites uniquement par app/financial/runs.py via la connexion directe.
-RESERVED_TABLES = frozenset({"audit_analysis_runs", "audit_calculation_results"})
+RESERVED_TABLES = frozenset({"audit_analysis_runs", "audit_calculation_results",
+                             "audit_documents", "audit_quality_issues"})
+# Données normalisées du pack Audit (P-074) : interrogeables (sécurité par ligne applicable) mais jamais remplaçables par un upload.
+UPLOAD_BLOCKED = RESERVED_TABLES | {"audit_financial_records"}
 
 
 class ReservedTableError(ValueError):
@@ -39,7 +42,7 @@ class DataStore:
 
     def load_dataframe(self, name: str, df: pd.DataFrame) -> str:
         name = _safe_name(name)
-        if name in RESERVED_TABLES:
+        if name in UPLOAD_BLOCKED:
             raise ReservedTableError(f"« {name} » est un nom réservé (historique des analyses) : renommez le fichier ou la table.")
         row_policy.check_can_replace(name)
         df = df.copy()

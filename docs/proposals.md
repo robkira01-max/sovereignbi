@@ -596,7 +596,7 @@ Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propos
 
 ---
 
-## P-074 — Import tabulaire et contrôle de qualité des données
+## P-074 — Import tabulaire et contrôle de qualité des données ✅ livré 2026-11-18
 
 - [ ] En attente d'accord
 
@@ -615,6 +615,11 @@ Ces points existent déjà dans « Reprise » et ne sont pas de nouvelles propos
 - Fichier aberrant (faux type, archive piégée, nom hostile) → refusé et journalisé.
 
 **Impact.** 2 tables, 1 routeur. Dépendance : P-073 pour consommer les enregistrements normalisés.
+
+**Livré (2026-11-18).** `app/audit_data/{files,parse,normalize,repo}.py`, `app/routers/audit_data.py` (`/audit-data`), `app/security/actor.py` (acteur + audit partagés avec P-073). Tables `audit_documents` et `audit_quality_issues` (réservées, invisibles de l'IA) et `audit_financial_records` (DECIMAL(38,6), interrogeable, upload interdit). Dépôt CSV/XLSX avec type réel vérifié, bombes ZIP, macros, liens externes, objets incorporés refusés ; original conservé sous son SHA-256 (0400), doublon détecté ; séparateur décimal et format de date déclarés (jamais devinés) ; devise obligatoire (colonne ou défaut explicite tracé) ; aucune correction silencieuse (valeur illisible = NULL + anomalie) ; résolution d'anomalie avec justification (hash au journal), « error » réservée à un admin autre que l'importeur. 152+ tests P-074, 2142/2142 au total.
+Relu `security-reviewer` : 0 critique, 1 élevé (aperçu/anomalies/résumés hors sécurité par ligne → contenu réservé à l'admin et métadonnées expurgées quand des règles existent), moyens (bornes mémoire CSV/XLSX, ratio ZIP, journal « committed/failed », séparation des tâches, garde Content-Length) et faibles corrigés.
+**Reste ouvert.** (1) `defusedxml>=0.7` à AJOUTER à `pyproject.toml` (fichier en lecture seule : modification refusée, à faire par le propriétaire ; installé dans l'env actuel mais non déclaré). (2) Caddy : ajouter `request_body { max_size 25MB }` (le garde `Content-Length` ne couvre pas un client sans en-tête). (3) Originaux en clair au repos (volume à chiffrer en production). (4) Toute future sortie CSV/XLSX doit préfixer d'une apostrophe les cellules commençant par `= + - @`. (5) Règle de sécurité par ligne par défaut sur `audit_financial_records` à documenter.
+
 
 ---
 

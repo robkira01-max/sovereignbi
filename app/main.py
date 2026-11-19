@@ -44,6 +44,7 @@ from app.routers.semantic import router as semantic_router
 from app.routers.sdmx import router as sdmx_router
 from app.routers.audit import router as audit_router
 from app.routers.certification import router as certification_router
+from app.routers.audit_data import router as audit_data_router
 from app.routers.financial import router as financial_router
 from app.routers.row_security import router as row_security_router
 from app.security.principal_mw import PrincipalMiddleware
@@ -185,6 +186,7 @@ app.include_router(sdmx_router)
 app.include_router(audit_router)
 app.include_router(certification_router)
 app.include_router(financial_router)
+app.include_router(audit_data_router)
 app.include_router(row_security_router)
 app.include_router(privacy_ops_router)
 app.include_router(subscriptions_router)
