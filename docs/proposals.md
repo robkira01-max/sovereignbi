@@ -1126,7 +1126,11 @@ Peu de code. Beaucoup de temps de relecture, de mesure et de dépendance à un t
 - **Raison** : `/upload`, `/api/v1/upload` et les connecteurs sont ouverts au rôle viewer et écrivent dans le même espace de noms de tables que les autres lecteurs. La garde de P-080 empêche le remplacement des sources de calcul et des tables `audit_*`, mais un viewer peut encore déposer ou remplacer toute autre table partagée.
 - **Options** : (a) réserver les dépôts aux éditeurs ; (b) espace personnel par utilisateur (préfixe ou schéma distinct, invisible des autres, jamais source de « Calculé »).
 - **Impact estimé** : (a) petit (une dépendance de rôle + tests) mais change l'usage des viewers ; (b) moyen (schéma, requêtes, nettoyage, sécurité par ligne).
-- [ ] En attente de décision du propriétaire.
+- [x] **Absorbée par P-086** (2026-11-19, décision du propriétaire via le pack consolidé P073-P086) : espace de travail et connecteurs, niveaux A (reste chez vous) et B (cloud tiers désactivé par défaut). Voir `docs/proposals_pack-audit_P073-P086.md`.
+
+## P-086 — Espace de travail et connecteurs (refonte des volets)
+
+- [ ] En attente. Texte complet, maquettes (`docs/maquettes/`) et prompts P-086a (serveur, relecture sécurité obligatoire) / P-086b (client) : `docs/proposals_pack-audit_P073-P086.md` et `docs/prompts_claude-code_P086.md`. Prérequis P-083 : livré (`1871c71`), relecture humaine de `app/auth/` en attente. P-086a exige un plan validé avant de coder et une session séparée (Opus). Le dossier réel ne se connecte qu'après P-084.
 
 ## Ordre suggéré
 
