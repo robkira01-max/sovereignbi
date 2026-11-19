@@ -500,6 +500,8 @@ def tile_export_csv(dashboard_id: str, tile_id: str, request: Request, _: str = 
     """Export tile SQL result as a UTF-8 CSV with BOM (Excel-compatible)."""
     import csv
     import io
+
+    from app.export.sanitize import neutralize_row
     _validate_id(dashboard_id, "dashboard_id")
     _validate_id(tile_id, "tile_id")
     p = _DASHBOARDS_DIR / f"{dashboard_id}.yaml"
@@ -526,10 +528,10 @@ def tile_export_csv(dashboard_id: str, tile_id: str, request: Request, _: str = 
     buf.write("﻿")  # UTF-8 BOM for Excel
     writer = csv.writer(buf)
     if tile.source:
-        writer.writerow([f"# Source : {tile.source}"])
-    writer.writerow(columns)
+        writer.writerow(neutralize_row([f"# Source : {tile.source}"]))
+    writer.writerow(neutralize_row(columns))
     for row in rows:
-        writer.writerow(row)
+        writer.writerow(neutralize_row(row))      # P-082 : texte neutralisé, nombres inchangés
     filename = f"{dashboard_id}-{tile_id}.csv"
     return Response(
         content=buf.getvalue().encode("utf-8"),

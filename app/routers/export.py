@@ -92,7 +92,7 @@ def export_pdf_offline(
     return StreamingResponse(
         io.BytesIO(data),
         media_type=_PDF_MIME,
-        headers={"Content-Disposition": "attachment; filename=export.pdf", "X-Provenance": "exploratory"},
+        headers={"Content-Disposition": "attachment; filename=export.pdf"},
     )
 
 

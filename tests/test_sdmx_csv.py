@@ -83,7 +83,7 @@ def test_obs_value_must_be_numeric_and_missing_is_empty():
 
 def test_formula_injection_is_neutralised_in_text_cells():
     rows = parsed(w([["=HYPERLINK(\"x\")", 2023, 1], ["+1", 2023, 1], ["@a", 2023, 1], ["-ok", 2023, 1]]))
-    assert [r[3] for r in rows[1:]] == ["'=HYPERLINK(\"x\")", "'+1", "'@a", "-ok"]
+    assert [r[3] for r in rows[1:]] == ["'=HYPERLINK(\"x\")", "'+1", "'@a", "'-ok"]   # P-082 : « - » est aussi un déclencheur
 
 
 @pytest.mark.parametrize("kw,msg", [

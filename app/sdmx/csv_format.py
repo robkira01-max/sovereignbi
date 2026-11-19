@@ -17,6 +17,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any, Sequence
 
+from app.export.sanitize import neutralize_cell
+
 FIXED_V2 = ("STRUCTURE", "STRUCTURE_ID", "ACTION")
 RESERVED = set(FIXED_V2) | {"TIME_PERIOD", "OBS_VALUE", "DATAFLOW"}
 ACTIONS = {"I", "M", "R", "D"}
@@ -83,8 +85,7 @@ def _safe_text(value: Any) -> str:
     """Texte de dimension/attribut ; neutralise l'injection de formule si le fichier est ouvert dans un tableur."""
     if value is None:
         return ""
-    s = str(value)
-    return "'" + s if s[:1] in ("=", "+", "@") else s
+    return neutralize_cell(str(value))      # P-082 : ensemble complet de déclencheurs (=, +, -, @, tab, CR, LF)
 
 
 def write_sdmx_csv(

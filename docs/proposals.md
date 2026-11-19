@@ -829,6 +829,283 @@ Aujourd'hui le chat produit du text-to-SQL ; ses chiffres sont exploratoires. Si
 
 ---
 
+> Propositions P-081 à P-084 reprises du document consolidé `docs/proposals_pack-audit_P073-P084.md` (2026-11-19). **MOYEN-1 de P-080** (upload viewer pouvant remplacer une table liée à une formule) : voir la section P-080 ; à traiter avant P-084.
+
+## P-081 — Packs pays : référentiels fiscaux et comptables versionnés (Canada, Djibouti, France)
+
+- [ ] En attente d'accord
+
+### Raison
+
+Chaque pays a ses impôts, ses taxes, son plan comptable et son calendrier fiscal. Si ces règles sont écrites dans le code, chaque changement de taux oblige à modifier l'application, et les anciens résultats ne sont plus reproductibles. On sépare donc :
+
+- **le moteur universel** (formules, contrôles de qualité, contrôles d'audit sans droit fiscal), déjà livré par P-073 à P-075 ;
+- **le pack pays**, un ensemble de données versionnées, datées, sourcées et approuvées, qui paramètre le moteur.
+
+Cela réalise la table `standard_packs` du cahier des charges AuditCalc (section 5 et 11) : « référentiels versionnés, datés, appliqués selon la catégorie d'organisme, développés à partir de sources officielles ».
+
+### Principes (non négociables)
+
+1. **Aucune valeur fiscale en dur dans le code.** Tout taux, seuil ou règle locale vient d'un pack.
+2. **Aucune valeur de mémoire.** Chaque taux et chaque règle cite une source officielle consultée, avec date.
+3. **Aucun défaut silencieux.** Pas de taux applicable à la date de la transaction → erreur explicite, jamais un taux « par défaut ».
+4. **Reproductibilité.** Chaque run enregistre la version du pack (et son empreinte). Un changement de taux crée une nouvelle version ; les anciens runs restent inchangés et rejouables.
+5. **L'outil détecte des écarts. Il ne donne ni conseil fiscal ni avis juridique.** Mention reprise dans les rapports (P-077).
+6. **Pas de copie de textes protégés.** On stocke des paramètres et des références, pas les textes de loi.
+
+### Contenu d'un pack
+
+Arborescence (reprend `standards/` du cahier des charges, avec Djibouti ajouté) :
+
+```
+standards/
+  common/                 # catégories standard, formats communs
+  canada/<pack>/          # ex. fédéral + une province
+  djibouti/<pack>/
+  france/<pack>/
+    pack.yaml             # identité, version, statut, approbation
+    taxes.yaml            # taxes, taux, dates d'effet, sources
+    accounts_map.yaml     # comptes locaux → catégories standard (modèle)
+    fiscal_calendar.yaml  # exercice, échéances, date du fait générateur
+    formats.yaml          # dates, nombres, devise, formats d'identifiants
+    rules/                # règles de contrôle locales (YAML)
+    provenance.md         # sources, dates de consultation, auteur, relecteur
+```
+
+#### `pack.yaml` (exemple de structure)
+
+```yaml
+code: CA-FED-QC            # exemple de forme, à définir avec le premier client
+country: CA
+subdivisions: [FED, QC]
+accounting_framework: PSAS # cadre applicable à la catégorie d'organisme
+version: 0.1.0
+status: draft              # draft | reviewed | approved
+effective_from: "[À RENSEIGNER]"
+reviewed_by: "[À RENSEIGNER]"
+approved_by: "[À RENSEIGNER]"
+languages: [fr, en]
+```
+
+#### Fiche de taux (`taxes.yaml`) — structure uniquement, aucune valeur réelle
+
+```yaml
+- tax_code: "[À RENSEIGNER]"      # code interne du pack
+  jurisdiction: "[À RENSEIGNER]"  # fédéral, province, région…
+  label_fr: "[À RENSEIGNER]"
+  rate: "[À RENSEIGNER]"          # chaîne Decimal, jamais un flottant
+  base_type: "[À RENSEIGNER]"     # sur quoi la taxe se calcule
+  effective_from: "[À RENSEIGNER]"
+  effective_to: null              # null = toujours en vigueur
+  tax_point: "[À RENSEIGNER]"     # date qui détermine le taux (facture, livraison, paiement…)
+  rounding: "[À RENSEIGNER]"      # mode d'arrondi et tolérance de contrôle
+  source_ref: "[À RENSEIGNER]"    # référence officielle
+  source_url: "[À RENSEIGNER]"
+  source_consulted_on: "[À RENSEIGNER]"
+```
+
+**Garde-fou, comme `legalConfig.ts`** : tant qu'un champ contient `[À RENSEIGNER]`, le pack ne peut pas passer au statut `reviewed` ni `approved`, et un test échoue.
+
+### Modèle de données (tables préfixées `audit_`)
+
+- `audit_standard_packs` : id, pays, code, version, statut, dates d'effet, approbateur, date d'approbation, empreinte du contenu.
+- `audit_tax_rates` : pack, juridiction, code de taxe, taux (chaîne Decimal), base, `effective_from`, `effective_to`, source.
+- `audit_account_mappings` : projet, pack, compte local, catégorie standard, auteur, justification.
+- `audit_fx_rates` : date, devise source, devise cible, taux, **source**.
+- `projects` : ajouter pays, subdivision, cadre comptable, pack et version.
+- `audit_analysis_runs` : ajouter la version et l'empreinte du pack.
+
+### Fonctionnement d'une analyse
+
+1. À la création du projet : pays, subdivision, cadre comptable, exercice, devise → un pack et une version sont liés.
+2. Import (P-074) puis **mapping des comptes locaux vers les catégories standard**, validé avec justification, réutilisable ensuite.
+3. Exécution :
+   - formules universelles sur les catégories standard ;
+   - formules et règles du pack (ex. taxe recalculée = base × taux applicable à la date) ;
+   - contrôles d'audit existants (AUD001 à AUD010).
+4. Rapport (P-077) : version du moteur, des règles **et du pack**, statut du pack (`draft` affiche un bandeau « référentiel non validé »).
+
+#### Contrôles locaux proposés (à confirmer avec un expert par pays)
+
+- **Écart de taxe** : taxe déclarée ≠ taxe recalculée au-delà de la tolérance d'arrondi du pack.
+- **Taux inapplicable** : taux utilisé absent du pack pour la date et la juridiction.
+- **Format d'identifiant** : numéro d'enregistrement fiscal ne respecte pas le format du pack. Le contrôle porte sur le format uniquement : il ne confirme pas l'existence de l'entité.
+
+### Comparaison entre pays
+
+- Devise commune obligatoire avec taux de change datés et sourcés ; taux manquant → erreur.
+- Cadres comptables différents (ex. PSAS, M57, plan comptable local) : tant qu'aucune table de correspondance validée n'existe, l'indicateur est marqué **« non comparable »**, jamais calculé en silence.
+- Changements de périmètre, de devise ou de méthode signalés (exigence AC-05).
+
+### Gouvernance d'un pack
+
+- Statuts : `draft` → `reviewed` (relu par une personne compétente du pays) → `approved`.
+- En production, seuls les packs `approved` sont sélectionnables par défaut ; un `draft` est utilisable en test avec bandeau visible.
+- Un changement de taux ou de règle = nouvelle version, avec date d'effet et fiche de provenance mise à jour. Une veille périodique sur les sources officielles est planifiée par pack.
+- Les données propres à un pays peuvent être pilotées par un expert local sans toucher au code : il édite des fichiers YAML relus et testés.
+- Pour Djibouti, les textes officiels peuvent provenir de la veille du projet Lex.Dji, sous réserve de leur statut de publication ; certaines données ne sont pas disponibles sous forme exploitable et devront être saisies à partir de la source officielle.
+
+### Livraison par étapes
+
+| Étape | Contenu | Condition de sortie |
+|---|---|---|
+| P-081a | Schéma, tables, migrations, chargeur de pack, garde-fou `[À RENSEIGNER]`, pack `common` (catégories standard) | Tests verts, aucun taux dans le code |
+| P-081b | Pack Canada : fédéral + **une** province (choisie avec le premier client) | Relu par une personne compétente |
+| P-081c | Pack Djibouti | Relu par une personne compétente localement |
+| P-081d | Pack France | Relu par une personne compétente |
+| P-081e | Comparaisons entre pays | Table de correspondance validée |
+
+Ordre suggéré : Canada, Djibouti (pilote), France. Un pays à la fois.
+
+### Critères d'acceptation
+
+- Même fichier analysé avec deux versions d'un pack → deux runs distincts, chacun reproductible (même résultat, même empreinte).
+- Transaction hors de toute plage de dates de taux → erreur explicite.
+- Pack contenant `[À RENSEIGNER]` → impossible à passer en `reviewed` ou `approved` (test automatisé).
+- Taux de change absent pour une comparaison → erreur ; cadres non mappés → « non comparable ».
+- Aucun taux, seuil ou règle fiscale ne figure dans `app/` (test de recherche dans le code).
+- Le rapport indique le pays, le pack, sa version et son statut.
+- Suite verte : pytest, Vitest, `py_compile`.
+
+### Impact
+
+- Backend : nouveau module, 4 tables, migration de `audit_analysis_runs`.
+- Interface (P-079) : choix du pays et du pack à la création du projet, écran de correspondance des comptes. Hors maquettes de P-079 ; à ajouter après P-081a.
+- Dépendances : P-073, P-074, P-075 ; P-077 pour l'affichage dans le rapport.
+- Licences : les sources de référence ne sont pas redistribuées ; seuls les paramètres et références sont stockés.
+
+### Hors périmètre
+
+Déclarations fiscales, transmission aux administrations, calcul complet de l'impôt sur le revenu ou sur les sociétés, paie, retenues à la source, conseil fiscal.
+
+### Risques
+
+- **Coût de validation** : chaque pack exige une relecture par une personne compétente du pays. C'est le facteur limitant, pas le code.
+- **Disponibilité des données** : variable selon le pays, en particulier Djibouti.
+- **Obsolescence** : taux et plans comptables changent ; sans veille, un pack approuvé devient faux. La date de dernière vérification doit être visible.
+- **Dérive de périmètre** : le pack ne doit pas devenir un outil de conformité fiscale. Les rapports le rappellent.
+
+---
+
+## P-082 — Neutralisation des formules dans tous les exports (injection CSV/Excel)
+
+- [x] **Livrée 2026-11-19** (code + tests ; aucune relecture sécurité exigée par le plan).
+  - Fait : `app/export/sanitize.py` (fonction unique `neutralize_cell` / `neutralize_row` : préfixe `'` si une cellule TEXTE commence par `=`, `+`, `-`, `@`, tabulation, CR ou LF ; nombres, dates, booléens, None intacts). Branchée sur : export Excel (en-têtes, cellules, note ; nombres désormais écrits comme **nombres**, plus comme texte ; cellules texte forcées en type chaîne), CSV de tuile (dont la ligne « Source »), SDMX-CSV (ancien `_safe_text` partiel remplacé). `tests/test_export_sanitize.py` : 11 charges d'attaque dans chaque format, aller-retour lisible, nombres inchangés, **test d'inventaire** (un module qui écrit un CSV ou un classeur sans importer la fonction fait échouer la suite).
+  - Inventaire des exports : Excel, CSV de tuile, SDMX-CSV = couverts. PDF, PPTX et bulletin HTML ne sont pas des tableurs (aucune formule exécutable) ; les abonnements courriel n'ont pas de pièce jointe tabulaire ; l'export de compte (P-064) est du JSON. Tout futur export du pack Audit (P-077) devra utiliser la fonction (le test d'inventaire le vérifie).
+  - Changement de comportement : le test SDMX existant tolérait `-ok` ; `-` est maintenant neutralisé (exigence de P-082). Limite documentée : un texte comme « -5 » stocké en chaîne apparaît avec une apostrophe.
+  - Correction d'une erreur de P-080 : l'en-tête `X-Provenance: exploratory` avait été posé aussi sur `/export/pdf-offline` (données fournies par l'appelant, pas une réponse du chat) ; retiré.
+  - Non vérifié : ouverture réelle des fichiers dans Excel/LibreOffice (vérifié par lecture openpyxl et csv seulement).
+  - Tests : pytest 2255.
+
+
+### Raison
+
+Signalé par la revue lors de P-080, antérieur à cette proposition : les exports ne neutralisent pas les cellules texte qui commencent par `=`, `+`, `-` ou `@`. Le pack Audit importe des fichiers de tiers (fournisseurs, bénéficiaires, descriptions) puis les ré-exporte. Une cellule du type formule peut alors s'exécuter à l'ouverture dans Excel ou LibreOffice (appel externe, fuite de données, lancement d'une commande selon la configuration). C'est un vecteur réaliste dans un outil d'audit.
+
+### Contenu
+
+- Une **fonction unique de neutralisation**, appliquée à toute cellule de type texte avant écriture dans un export : si la valeur commence par `=`, `+`, `-`, `@`, tabulation ou retour chariot, elle est préfixée d'une apostrophe.
+- Exports à couvrir (inventaire à confirmer dans le code) : CSV, Excel, export de tuiles, bulletin, **SDMX-CSV** (P-066), pièces jointes des **abonnements courriel** (P-067), et tout futur export du pack Audit (P-077).
+- Pour Excel, écrire les textes comme cellules de type chaîne explicite, en plus du préfixe.
+- Les **valeurs numériques réelles** (types numériques, montants Decimal exportés comme nombres) ne sont pas modifiées : seule une cellule de type texte est neutralisée.
+- L'import reste intact : l'original n'est jamais modifié (principe d'AuditCalc). La neutralisation se fait uniquement à la sortie.
+- Documenter la limite : un texte comme `-5` stocké comme chaîne apparaîtra avec une apostrophe, par prudence.
+
+### Critères d'acceptation
+
+- Jeu de charges de test (formules d'appel de lien, appel externe, `@SUM`, `+1`, `-1`, tabulation, retour chariot) : aucune cellule d'un export ne commence par un caractère déclencheur, dans chaque format.
+- Aller-retour visible : le texte lisible par l'utilisateur reste identique, hors l'apostrophe.
+- Les montants numériques exportés restent des nombres exploitables.
+- Test d'inventaire : tout nouvel export qui n'utilise pas la fonction fait échouer la suite.
+- pytest, Vitest, `py_compile` verts.
+
+### Impact
+
+Petit correctif transversal, sans nouvelle table. Peut toucher des tests existants qui comparent le contenu exact des exports. Dépendances : aucune. À faire avant que le pack Audit ne produise des rapports (P-077).
+
+---
+
+## P-083 — Identité par personne pour les actions éditeur (fin des clés partagées)
+
+- [ ] En attente d'accord
+
+### Raison
+
+Signalé par la revue lors de P-080, antérieur à cette proposition : les porteurs d'une même clé API éditeur partagent le même acteur. Le journal d'audit chaîné (P-071) ne peut donc pas dire **qui** a résolu une anomalie, lancé un contrôle ou revu un signalement. P-076 exige un auteur identifiable avec justification pour chaque résolution et revue, et le rapport d'audit (P-077) s'appuie sur cette attribution. Sans identité individuelle, la traçabilité promise n'est pas tenue.
+
+### Contenu
+
+- **Une clé API = un propriétaire** (un utilisateur nommé), avec date de création, dernière utilisation, révocation et rotation. Aucune clé « d'équipe ».
+- **Actions sensibles par session nominative** : résolution d'anomalie (P-074), revue et validation (P-076), lancement de run de l'audit, modification de formules ou de packs (P-081) exigent une session utilisateur, pas une clé partagée.
+- **Journal** : chaque événement enregistre l'identifiant de la personne, la méthode (session ou clé) et l'identifiant de la clé.
+- **Migration** : les clés existantes reçoivent un propriétaire, ou sont marquées « partagée (héritée) » avec droits réduits (lecture) puis retirées après une période annoncée.
+- **Sécurité par ligne (P-068)** : une clé hérite des périmètres de son propriétaire ; sans périmètre, l'accès reste refusé (échec fermé, comportement existant).
+- **Relecture** : la règle Sécurité de `CLAUDE.md` s'applique (relecture par `security-reviewer`, puis relecture humaine du propriétaire, voir `docs/auth-review.md`).
+
+### Critères d'acceptation
+
+- Deux personnes avec deux clés produisent deux acteurs distincts dans le journal ; `/audit/verify` reste valide.
+- Résolution ou revue avec une clé partagée héritée : refusée avec un message explicite.
+- Révoquer une clé la rend inutilisable immédiatement ; la rotation ne casse pas les périmètres de l'utilisateur.
+- Aucune route de mutation sans `RequireRole` ; tests de non-régression sur les rôles viewer / editor / admin.
+- pytest, Vitest, `py_compile` verts.
+
+### Impact
+
+Touche `app/auth/` : changement sensible, relecture obligatoire. Dépendances : P-068, P-071. **Prérequis de P-076.** Alimente aussi la relecture d'auth de P-084.
+
+---
+
+## P-084 — Porte « données réelles » : points à régler avant toute donnée non synthétique
+
+- [ ] En attente d'accord
+
+### Raison
+
+Plusieurs points restent ouverts dans la section « Reprise » de `CLAUDE.md` et le résumé du projet. Le pack Audit promet la reproductibilité et la restauration ; MizanBI promet que les données restent chez le client. Tant que les quatre points suivants ne sont pas réglés, **aucune donnée réelle** (client, organisme, dossier non synthétique) ne doit être chargée. Cette proposition est surtout une liste de contrôle, avec des critères de sortie vérifiables.
+
+### Les quatre points
+
+**1. Restauration d'une sauvegarde testée.** Jamais testée à ce jour.
+- Procédure écrite (`docs/`) : sauvegarde, restauration sur une copie, vérification.
+- Vérifications après restauration : empreintes SHA-256 des originaux, `GET /audit/verify` (chaîne du journal), pastilles de certification (P-069), un run rejoué donne le même résultat et la même empreinte.
+- Mesure du temps de restauration sur le matériel de référence documenté (aucune promesse universelle).
+- Sauvegardes chiffrées ; clés conservées séparément.
+- À refaire après chaque changement de schéma (migrations).
+
+**2. Précision SQL mesurée.** Aucune mesure exploitable à ce jour.
+- Banc d'essai de **P-078** sur le modèle visé, en mode strict, avec un jeu de questions majoritairement françaises.
+- Ajouter la mesure de **reconnaissance des formulations libres** de P-080 (bonne formule, bons paramètres, repli « exploratoire » en cas de doute).
+- Seuils fixés **par le propriétaire avant** la mesure, consignés dans `docs/eval-llm-2026-11.md`. Aucune précision annoncée avant ces mesures.
+
+**3. Relecture humaine de `app/auth/`.** Règle Sécurité de `CLAUDE.md` : en attente du propriétaire (`docs/auth-review.md`).
+- Inclure les changements de **P-083** (clés par personne, actions par session).
+- Inclure `erase_account` (P-064), qui attend la relecture `security-reviewer` et du propriétaire, et la sécurité par ligne (P-068) : relecture du propriétaire due.
+
+**4. Test d'intrusion par un tiers.**
+- Portée proposée : API et sessions, import de fichiers (types, archives, noms), exports (**P-082**), sécurité par ligne, partage public, abonnements courriel, injection d'instructions dans des documents importés (chat et IA).
+- Corriger les constats critiques et élevés avant d'accepter des données ; conserver le rapport et les preuves de correction.
+
+### Autres points déjà notés dans le projet (à traiter avant production, pas bloquants pour un essai sur données synthétiques)
+
+- **Chiffrement au repos** (base, fichiers, sauvegardes) : non traité dans le cahier des charges d'AuditCalc ni dans le résumé de MizanBI ; à décider. *(Point ajouté par ce document, pas tiré du dépôt.)*
+- Envoi SMTP jamais testé sur un vrai serveur ; pas de double opt-in.
+- Ancrer `entries` et `head` du journal hors du serveur (la chaîne n'est pas signée).
+- Pages juridiques et DPA : compléter `legalConfig.ts`, validation par un juriste, puis `draft: false`.
+- Licences : CERD (écrite), BIE et BCD (Q-001) ; ne jamais écrire « certifié INSTAD » sans confirmation écrite.
+- `LLM_PROVIDER` sur Oracle, rebuild de l'image, `VITE_SITE_URL`, HSTS et Lighthouse sur l'URL publique.
+
+### Critères de sortie
+
+- Liste de contrôle signée par le propriétaire, avec dates, pour chacun des quatre points, et références aux preuves (procédure, rapport de mesure, compte rendu de relecture, rapport de test d'intrusion).
+- Tant qu'un point reste ouvert : mention « données synthétiques uniquement » dans la documentation d'installation et dans l'interface d'administration.
+
+### Impact
+
+Peu de code. Beaucoup de temps de relecture, de mesure et de dépendance à un tiers (test d'intrusion). Dépendances : P-078, P-080, P-082, P-083. À planifier tôt, car le délai d'un test d'intrusion n'est pas compressible.
+
+---
+
 ## Ordre suggéré
 
 P-079 → session d'essai avec un utilisateur → P-076 (preuves et revue, sur l'écran Contrôles) → P-080 → P-077 (rapport). P-078 (choix du modèle) peut avancer en parallèle de P-079.
