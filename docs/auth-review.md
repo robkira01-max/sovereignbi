@@ -108,6 +108,32 @@ Tous les endpoints `/auth/users` nécessitent le rôle `admin`. Le rôle est vé
 
 ---
 
+## Addendum P-083 — identité par personne (à relire séparément)
+
+**Statut :** ⏳ relecture humaine requise (changement sensible dans `app/auth/` et `app/security/`).
+
+### Ce qui change
+| Élément | Comportement |
+|---|---|
+| Clés personnelles | `mzb_` + 32 octets aléatoires ; **seule l'empreinte SHA-256** est en base, avec un préfixe non secret (12 caractères). Affichée en clair **une fois** (création, rotation). Comparaison `hmac.compare_digest`. |
+| Propriété | Une personne peut avoir jusqu'à 10 clés actives, chacune a un seul propriétaire. **Seul le propriétaire crée ou fait tourner** sa clé (session requise, jamais par une clé). L'administrateur peut **lister et révoquer**, pas créer. |
+| Rôle | **Jamais copié dans la clé** : relu depuis l'utilisateur à chaque requête. Rétrogradation, désactivation, effacement de compte (P-064) et révocation jouent à la requête suivante ; aucun cache. |
+| Durée de vie | 1 à 365 jours (90 par défaut), expiration obligatoire. « Dernière utilisation » écrite au plus une fois par minute. |
+| Ce qu'une clé ouvre | lecture, import, lancement de calculs. **Ne l'ouvrent pas** : résolution d'anomalie (et plus tard revue, validation), gestion des comptes, gestion des clés → **session nominative** seulement. |
+| Journal | Chaque événement porte `auth_method` (`session`, `api_key`, `legacy_key`), `key_id` et `key_ref` (préfixe non secret). L'acteur est `user:<id>` pour une personne, `legacy:<rôle>:<empreinte de 8 caractères>` pour une clé partagée (jamais un fragment de la clé). |
+| Clés d'environnement | « Partagées (héritées) », non attribuables. **Échéance ferme** `SOVEREIGN_LEGACY_KEYS_DEADLINE` : après, refusées. En production : échéance obligatoire (≤ 180 jours), lecture seule par défaut, clés de test connues et valeurs par défaut **refusées au démarrage**. Avertissement au démarrage et `GET /auth/keys/legacy-status` (admin). |
+| Sécurité par ligne | Une clé personnelle hérite des périmètres de son propriétaire (`Principal("user", id)`) ; une clé héritée reste `Principal("key")` (accès refusé aux tables protégées, comportement existant). |
+
+### Première clé d'une automatisation
+Un compte de service est un **compte nommé** : l'administrateur le crée (`POST /auth/users`), la personne responsable s'y connecte et crée la clé depuis cette session. Aucune commande d'amorçage, donc aucune création de clé hors session.
+
+### Décisions à confirmer
+| # | Décision | Choix proposé |
+|---|---|---|
+| 5 | Les clés héritées en lecture seule : **hors production**, le plafond est désactivé par défaut (les tests et le développement utilisent encore ces clés) ; en production il est actif par défaut. | ✓ Oui, ou plafond partout |
+| 6 | Préfixe affiché pour une clé héritée : **empreinte SHA-256 de 8 caractères** plutôt que les premiers caractères de la clé (ne divulgue rien de la clé). | ✓ Oui |
+| 7 | Le sous-système `X-Admin-Key` de `app/routers/admin.py` compare encore `SOVEREIGN_ADMIN_KEY` directement ; il n'est pas couvert par cette tâche. | À traiter (voir revue) |
+
 ## Checklist de validation
 
 - [ ] Lu et compris par le propriétaire
@@ -115,6 +141,7 @@ Tous les endpoints `/auth/users` nécessitent le rôle `admin`. Le rôle est vé
 - [ ] `ADMIN_EMAIL` et `ADMIN_PASSWORD` (≥12 caractères) définis dans `.env` de production
 - [ ] `APP_ENV=production` dans `.env` de production
 - [ ] Choix bcrypt/Argon2id documenté dans `docs/adr/`
+- [ ] Addendum P-083 relu ; `SOVEREIGN_LEGACY_KEYS_DEADLINE` fixée dans `.env` de production ; clés de test absentes
 
 ---
 

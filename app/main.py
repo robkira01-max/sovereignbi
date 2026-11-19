@@ -76,6 +76,7 @@ from app.security.rbac import RequireRole
 from app.security.audit import audit_configuration, log_audit_results
 from app.auth.security import init_auth_db, seed_admin
 from app.auth.router import router as auth_router
+from app.auth.keys_router import router as keys_router
 from app.auth.users_router import router as users_router
 
 
@@ -85,8 +86,10 @@ log = structlog.get_logger()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_auth_db()
+    from app.security import legacy_keys
+    legacy_keys.enforce_production_config()      # P-083 : clés de test/par défaut, échéance obligatoire en production (refus de démarrer)
     seed_admin()
-    warnings = validate_env()
+    warnings = validate_env() + legacy_keys.startup_warnings()
     log_startup_warnings(warnings)
     findings = audit_configuration()
     log_audit_results(findings)
@@ -170,6 +173,7 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=512)
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(keys_router)
 app.include_router(v1_router)
 app.include_router(admin_router)
 app.include_router(dashboards_router)

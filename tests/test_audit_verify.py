@@ -228,7 +228,7 @@ def test_route_audits_the_verification_itself_without_content(client):
     c, p = client
     c.get("/audit/verify", headers=ADMIN)
     last = json.loads(lines(p)[-1])
-    assert last["action"] == "audit_verified" and last["details"] == {"valid": True, "entries": 3}
+    assert last["action"] == "audit_verified" and {k: v for k, v in last["details"].items() if k not in ("auth_method", "key_ref")} == {"valid": True, "entries": 3}
     assert verify_audit_chain(p).valid
 
 

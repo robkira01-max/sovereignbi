@@ -20,6 +20,8 @@ from app.security.rbac import RequireRole
 
 router = APIRouter(prefix="/audit-data", tags=["audit-data"])
 _VIEWER, _EDITOR = RequireRole("viewer"), RequireRole("editor")
+# Résolution d'anomalie : action de personne connectée (P-083) — ni clé API, même personnelle, ni clé partagée.
+_EDITOR_SESSION = RequireRole("editor", session_only=True)
 PREVIEW_ROWS = 20
 
 
@@ -232,7 +234,7 @@ def list_issues(document_id: str, request: Request, status: Literal["open", "res
 
 
 @router.post("/issues/{issue_id}/resolve")
-def resolve_issue(issue_id: str, body: ResolveBody, request: Request, role: str = Depends(_EDITOR)):
+def resolve_issue(issue_id: str, body: ResolveBody, request: Request, role: str = Depends(_EDITOR_SESSION)):
     store, actor = _store(request), actor_label(request, role)
     try:
         issue = repo.get_issue(store, issue_id)

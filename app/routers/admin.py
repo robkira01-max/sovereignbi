@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 import yaml
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import Request, APIRouter, Depends, Header, HTTPException
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
 
@@ -23,12 +23,40 @@ _KEY_HEADER = APIKeyHeader(name="X-Admin-Key", auto_error=False)
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
-def _require_admin(key: str | None = Depends(_KEY_HEADER)) -> None:
+async def _require_admin(request: Request, key: str | None = Depends(_KEY_HEADER)) -> None:
+    """Lecture : session administrateur, ou clé partagée héritée (échéance, lecture seule : GET seulement, P-083).
+    `async` : le ContextVar d'identité doit rester visible de la route (une dépendance synchrone tourne dans une copie du contexte)."""
+    from starlette.concurrency import run_in_threadpool
+
+    from app.security import legacy_keys
+    from app.security.identity import Identity, current_identity
+    if not key:
+        auth = request.headers.get("authorization", "")
+        if auth.startswith("Bearer "):
+            from app.auth.security import verify_session
+            user = await run_in_threadpool(verify_session, auth[7:])
+            if user and user["role"] == "admin":
+                current_identity.set(Identity("session", "admin", user_id=int(user["id"])))
+                return
+        raise HTTPException(403, "Clé d'administration invalide")
     expected = os.environ.get("SOVEREIGN_ADMIN_KEY", "")
     if not expected:
         raise HTTPException(503, "SOVEREIGN_ADMIN_KEY non configuré")
-    if not hmac.compare_digest(key or "", expected):
+    if not hmac.compare_digest(key.encode(), expected.encode()):
         raise HTTPException(403, "Clé d'administration invalide")
+    if legacy_keys.expired():
+        raise HTTPException(401, "Clé partagée (héritée) expirée : connectez-vous avec un compte administrateur.")
+    if legacy_keys.read_only() and request.method not in ("GET", "HEAD"):
+        raise HTTPException(403, "Clé partagée (héritée) en lecture seule : connectez-vous avec un compte administrateur.")
+    current_identity.set(Identity("legacy_key", "admin", key_ref=legacy_keys.fingerprint(key), configured_role="admin"))
+
+
+async def _require_admin_session(request: Request, _: None = Depends(_require_admin)) -> None:
+    """Modification du modèle sémantique ou des propositions : session nominative seulement (jamais une clé partagée)."""
+    from app.security.identity import current_identity
+    ident = current_identity.get()
+    if ident is None or ident.method != "session":
+        raise HTTPException(403, "Action réservée aux sessions nominatives : une clé partagée (héritée) ne suffit pas.")
 
 
 def _load() -> SemanticModel:
@@ -73,7 +101,7 @@ def get_semantic(_=Depends(_require_admin)):
 
 
 @router.put("/semantic")
-def put_semantic(body: dict, _=Depends(_require_admin)):
+def put_semantic(body: dict, _=Depends(_require_admin_session)):
     """Remplace le fichier semantic/model.yaml par le contenu fourni."""
     if "schema_version" not in body:
         raise HTTPException(422, "schema_version requis")
@@ -139,7 +167,7 @@ def list_proposals(status: str | None = None, _=Depends(_require_admin)):
 
 
 @router.post("/proposals/apply")
-def apply_proposals(_=Depends(_require_admin)):
+def apply_proposals(_=Depends(_require_admin_session)):
     """Apply all approved proposals as rules in model.yaml (snapshot first)."""
     from app.learning.rule_proposer import apply_approved_rules
 
@@ -151,7 +179,7 @@ def apply_proposals(_=Depends(_require_admin)):
 def approve_proposal(
     proposal_id: str,
     x_reviewer: str | None = Header(default=None),
-    _=Depends(_require_admin),
+    _=Depends(_require_admin_session),
 ):
     """Approve a pending proposal."""
     from app.learning.rule_proposer import approve_proposal as _approve
@@ -168,7 +196,7 @@ def approve_proposal(
 def reject_proposal(
     proposal_id: str,
     x_reviewer: str | None = Header(default=None),
-    _=Depends(_require_admin),
+    _=Depends(_require_admin_session),
 ):
     """Reject a pending proposal."""
     from app.learning.rule_proposer import reject_proposal as _reject
@@ -190,7 +218,7 @@ def list_versions(_=Depends(_require_admin)):
 
 
 @router.post("/versions/snapshot")
-def create_snapshot(body: SnapshotRequest, _=Depends(_require_admin)):
+def create_snapshot(body: SnapshotRequest, _=Depends(_require_admin_session)):
     """Create a manual snapshot of the current model.yaml."""
     from app.learning.versioning import snapshot
 
@@ -199,7 +227,7 @@ def create_snapshot(body: SnapshotRequest, _=Depends(_require_admin)):
 
 
 @router.post("/versions/rollback")
-def rollback_version(body: RollbackRequest, _=Depends(_require_admin)):
+def rollback_version(body: RollbackRequest, _=Depends(_require_admin_session)):
     """Rollback model.yaml to a previous version (auto-snapshots current state)."""
     from app.learning.versioning import rollback
 

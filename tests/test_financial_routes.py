@@ -63,7 +63,7 @@ def test_reference_run_is_returned_with_full_traceability(env):
     assert r["formula_code"] == "BUD001" and r["formula_version"] == 1 and r["engine_version"]
     assert all(r[k] for k in ("definition_hash", "input_snapshot_hash", "result_hash", "ruleset_version"))
     assert r["inputs"] == {"budget_vote": "120000000", "depenses": "114000000"}
-    assert r["definition_status"] == "unchanged" and r["created_by"] == "api_key:editor"
+    assert r["definition_status"] == "unchanged" and r["created_by"].startswith("legacy:editor:")
 
 
 def test_same_analysis_same_parameters_same_result_and_hash(env):
@@ -283,7 +283,7 @@ def test_run_visibility_follows_the_author_not_just_the_role(env):
     c, store, _ = env
     load(store)
     mine = post(c, TABLE_RUN, ADMIN).json()
-    assert mine["created_by"] == "api_key:admin"
+    assert mine["created_by"].startswith("legacy:admin:")
     assert c.get(f"/financial/runs/{mine['run_id']}", headers=EDITOR).status_code == 404
 
 

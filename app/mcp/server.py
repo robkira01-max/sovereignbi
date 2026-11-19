@@ -17,7 +17,8 @@ import httpx
 from mcp.server.fastmcp import FastMCP
 
 _BASE = os.environ.get("SOVEREIGN_MCP_BASE_URL", "http://localhost:9001").rstrip("/")
-_KEY = os.environ.get("SOVEREIGN_VIEWER_KEY", "viewer")
+# P-083 : une clé personnelle (mzb_…) du compte de service ; SOVEREIGN_VIEWER_KEY (héritée) reste acceptée jusqu'à son échéance.
+_KEY = os.environ.get("SOVEREIGN_API_KEY") or os.environ.get("SOVEREIGN_VIEWER_KEY", "viewer")
 _HEADERS = {"X-Api-Key": _KEY, "Content-Type": "application/json"}
 
 mcp = FastMCP(

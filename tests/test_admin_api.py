@@ -84,7 +84,7 @@ def test_get_metrics_list():
 
 # ── PUT /admin/semantic ───────────────────────────────────────────────────────
 
-def test_put_semantic_roundtrip(tmp_path, monkeypatch):
+def test_put_semantic_roundtrip(tmp_path, monkeypatch, admin_session):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "semantic").mkdir()
     payload = {
@@ -101,11 +101,11 @@ def test_put_semantic_roundtrip(tmp_path, monkeypatch):
         "rules": ["Règle test"],
         "glossary": [],
     }
-    r = client.put("/admin/semantic", json=payload, headers=HEADERS)
+    r = client.put("/admin/semantic", json=payload, headers=admin_session)
     assert r.status_code == 200
     assert r.json()["saved"] is True
 
 
-def test_put_semantic_missing_version():
-    r = client.put("/admin/semantic", json={"tables": []}, headers=HEADERS)
+def test_put_semantic_missing_version(admin_session):
+    r = client.put("/admin/semantic", json={"tables": []}, headers=admin_session)
     assert r.status_code == 422

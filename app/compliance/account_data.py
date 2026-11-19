@@ -86,6 +86,7 @@ def erase_account(user_id: int, confirm_email: str) -> dict:
             if others == 0:
                 raise AccountError("Impossible de supprimer le dernier administrateur actif.")
         sessions = c.execute("DELETE FROM sessions WHERE user_id=?", (user_id,)).rowcount
+        keys = c.execute("DELETE FROM api_keys WHERE user_id=?", (user_id,)).rowcount      # P-083 : plus aucune clé après l'effacement
         c.execute("DELETE FROM users WHERE id=?", (user_id,))
 
     scopes_deleted = row_policy.delete_user_scopes(user_id)
@@ -105,5 +106,5 @@ def erase_account(user_id: int, confirm_email: str) -> dict:
     removed_subs = [s.id for s in subs.list_all() if s.email == email.lower()]
     for sid in removed_subs:
         subs.remove(sid)
-    return {"user_id": user_id, "sessions_deleted": sessions, "consents_deleted": len(consents) - len(kept),
+    return {"user_id": user_id, "sessions_deleted": sessions, "api_keys_deleted": keys, "consents_deleted": len(consents) - len(kept),
             "requests_pseudonymised": pseudonymised, "subscriptions_deleted": len(removed_subs), "scopes_deleted": scopes_deleted}

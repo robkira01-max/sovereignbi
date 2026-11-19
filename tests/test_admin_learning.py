@@ -65,7 +65,7 @@ def test_proposals_filter_by_status(tmp_path, monkeypatch):
 # ── POST /admin/proposals/{id}/approve ───────────────────────────────────────
 
 
-def test_approve_proposal_api(tmp_path, monkeypatch):
+def test_approve_proposal_api(tmp_path, monkeypatch, admin_session):
     monkeypatch.chdir(tmp_path)
     from app.learning.rule_proposer import RuleProposal, save_proposal
 
@@ -82,7 +82,7 @@ def test_approve_proposal_api(tmp_path, monkeypatch):
 
     r = client.post(
         "/admin/proposals/ccdd5678/approve",
-        headers={**HEADERS, "X-Reviewer": "test_reviewer"},
+        headers={**admin_session, "X-Reviewer": "test_reviewer"},
     )
     assert r.status_code == 200
     data = r.json()
@@ -90,16 +90,16 @@ def test_approve_proposal_api(tmp_path, monkeypatch):
     assert data["reviewed_by"] == "test_reviewer"
 
 
-def test_approve_unknown_proposal(tmp_path, monkeypatch):
+def test_approve_unknown_proposal(tmp_path, monkeypatch, admin_session):
     monkeypatch.chdir(tmp_path)
-    r = client.post("/admin/proposals/nonexistent/approve", headers=HEADERS)
+    r = client.post("/admin/proposals/nonexistent/approve", headers=admin_session)
     assert r.status_code == 404
 
 
 # ── POST /admin/proposals/{id}/reject ────────────────────────────────────────
 
 
-def test_reject_proposal_api(tmp_path, monkeypatch):
+def test_reject_proposal_api(tmp_path, monkeypatch, admin_session):
     monkeypatch.chdir(tmp_path)
     from app.learning.rule_proposer import RuleProposal, save_proposal
 
@@ -114,7 +114,7 @@ def test_reject_proposal_api(tmp_path, monkeypatch):
     (tmp_path / "data").mkdir()
     save_proposal(p, path=tmp_path / "data" / "rule_proposals.jsonl")
 
-    r = client.post("/admin/proposals/eeff9012/reject", headers=HEADERS)
+    r = client.post("/admin/proposals/eeff9012/reject", headers=admin_session)
     assert r.status_code == 200
     assert r.json()["status"] == "rejected"
 
@@ -160,7 +160,7 @@ def test_list_versions_empty(tmp_path, monkeypatch):
     assert r.json() == []
 
 
-def test_create_snapshot_api(tmp_path, monkeypatch):
+def test_create_snapshot_api(tmp_path, monkeypatch, admin_session):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "semantic").mkdir()
     import yaml as _yaml
@@ -169,6 +169,6 @@ def test_create_snapshot_api(tmp_path, monkeypatch):
         _yaml.dump({"schema_version": "2", "rules": []}), encoding="utf-8"
     )
 
-    r = client.post("/admin/versions/snapshot", json={"label": "test"}, headers=HEADERS)
+    r = client.post("/admin/versions/snapshot", json={"label": "test"}, headers=admin_session)
     assert r.status_code == 200
     assert "snapshot" in r.json()

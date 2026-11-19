@@ -1037,7 +1037,12 @@ Petit correctif transversal, sans nouvelle table. Peut toucher des tests existan
 
 ## P-083 — Identité par personne pour les actions éditeur (fin des clés partagées)
 
-- [ ] En attente d'accord
+- [x] **Livrée 2026-11-19, en attente de votre relecture humaine de `app/auth/`** (addendum dans `docs/auth-review.md`).
+  - Fait : table `api_keys` (empreinte SHA-256 seule, préfixe `mzb_`, une clé = un propriétaire, expiration, dernière utilisation limitée à 1/min, révocation et son auteur, rotation) ; rôle relu à chaque requête ; clés désactivées avec le compte (désactivation, effacement P-064, changement de mot de passe) ; création par session seulement, l'admin révoque sans créer ; résolution d'anomalie, modification du modèle sémantique et gestion des comptes réservées aux sessions ; journal avec `auth_method`, `key_id`, `key_ref` (non écrasables) ; clés d'environnement « héritées » : acteur `legacy:<rôle>:<empreinte>`, échéance ferme, lecture seule par défaut en production, refus au démarrage des clés de test/par défaut et sans échéance ; avertissement au démarrage + `GET /auth/keys/legacy-status`. Test d'inventaire : tout module qui écrit une table est listé et justifié.
+  - Revue `security-reviewer` : 0 critique, 2 élevés (routeur `/admin` hors politique ; ContextVar perdu dans une dépendance synchrone), 4 moyens (clés non révoquées au changement de mot de passe, absence de limite de création, détection de production trop stricte, en-têtes dupliqués), plusieurs faibles : corrigés. **Non traités, à décider** : F4 empreinte de 8 hex d'une clé héritée faible (proposé : HMAC avec secret serveur + longueur minimale en production), F7 rotation concurrente, F8 favoris des tableaux de bord indexés par hachage de `x-api-key` (à indexer par `user_id`).
+  - Compte de service : un compte nommé crée sa clé depuis sa session (pas de commande d'amorçage).
+  - Tests : pytest 2308.
+
 
 ### Raison
 

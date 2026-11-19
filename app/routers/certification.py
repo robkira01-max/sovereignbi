@@ -27,15 +27,9 @@ def _audit(action: str, **details) -> None:
 
 
 def _actor(request: Request) -> str:
-    if request.headers.get("x-api-key"):
-        return "api_key"
-    auth = request.headers.get("authorization", "")
-    if auth.startswith("Bearer "):
-        from app.auth.security import verify_session
-        u = verify_session(auth[7:])
-        if u:
-            return f"user:{u['id']}"
-    return "unknown"
+    from app.security.identity import current_identity
+    ident = current_identity.get()
+    return ident.actor if ident else "unknown"
 
 
 class CertifyBody(BaseModel):

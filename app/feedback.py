@@ -91,6 +91,10 @@ def record_audit(
 ) -> None:
     p = path or AUDIT_PATH
     _ensure_dir(p)
+    from app.security.identity import current_identity      # P-083 : qui, comment, avec quelle clé (jamais la clé elle-même)
+    ident = current_identity.get()
+    if ident is not None:
+        details = {**details, **ident.audit_details()}      # l'identité ne peut pas être écrasée par l'appelant
     # Reading the previous hash and appending must be one atomic step, otherwise two
     # concurrent callers chain from the same predecessor and fork the log. The thread
     # lock covers the threadpool; flock covers several worker processes.

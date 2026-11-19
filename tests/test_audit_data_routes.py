@@ -25,11 +25,24 @@ BODY = {"mapping": {"entry_date": "Date", "account": "Compte", "label": "Libell�
 def env(tmp_path, monkeypatch):
     monkeypatch.setattr(feedback, "AUDIT_PATH", tmp_path / "audit.jsonl")
     monkeypatch.setenv("SOVEREIGN_AUDIT_DOCS_DIR", str(tmp_path / "docs"))
+    monkeypatch.setenv("SOVEREIGN_AUTH_DB", str(tmp_path / "auth.db"))
+    from app.auth import security as sec
+    sec.init_auth_db()
     from app.main import app
     store = DataStore()
     monkeypatch.setattr(app.state, "store", store, raising=False)
     with TestClient(app) as c:
         yield c, store, tmp_path
+
+
+def session(c, role: str, email: str | None = None) -> tuple[dict, str]:
+    """Session nominative (résolution, revue et validation l'exigent, P-083) : (en-têtes Bearer, acteur `user:<id>`)."""
+    from app.auth import security as sec
+    email = email or f"{role}-{os.urandom(3).hex()}@example.org"
+    uid = sec.create_user(email, "Un-mot-de-passe-long-1", role)
+    r = c.post("/auth/login", json={"email": email, "password": "Un-mot-de-passe-long-1"})
+    assert r.status_code == 200, r.text
+    return {"Authorization": f"Bearer {r.json()['token']}"}, f"user:{uid}"
 
 
 def upload(c, name="compta.csv", data=CSV, headers=EDITOR):
@@ -69,7 +82,7 @@ def test_upload_returns_preview_suggestions_and_stores_by_hash(env):
     j = r.json()
     doc = j["document"]
     assert j["duplicate"] is False and doc["status"] == "uploaded" and doc["rows_total"] == 2
-    assert doc["uploaded_by"] == "api_key:editor" and doc["display_name"] == "compta.csv"
+    assert doc["uploaded_by"].startswith("legacy:editor:") and doc["display_name"] == "compta.csv"
     assert j["preview"]["headers"] == ["Date", "Compte", "Libellé", "Montant", "Devise"]
     assert j["suggestions"]["mapping"]["amount"] == "Montant" and j["suggestions"]["decimal_separator"] == ","
     assert (tmp / "docs" / f"{doc['sha256']}.csv").read_bytes() == CSV
@@ -238,12 +251,15 @@ def test_resolution_requires_justification_and_records_author_and_audit(env):
     c, _, tmp = env
     d, ids = _doc_with_issues(c)
     w = ids["duplicate_row"]
+    EDITOR_S, who = session(c, "editor")
+    EDITOR, VIEWER_S = EDITOR_S, session(c, "viewer")[0]
+    assert c.post(f"/audit-data/issues/{w}/resolve", json={"justification": "Une justification suffisante"}, headers=globals()["EDITOR"]).status_code == 403      # clé partagée : refusée
     assert c.post(f"/audit-data/issues/{w}/resolve", json={"justification": "court"}, headers=EDITOR).status_code == 422
     assert c.post(f"/audit-data/issues/{w}/resolve", json={}, headers=EDITOR).status_code == 422
-    assert c.post(f"/audit-data/issues/{w}/resolve", json={"justification": "Deux achats légitimes le même jour"}, headers=VIEWER).status_code == 403
+    assert c.post(f"/audit-data/issues/{w}/resolve", json={"justification": "Deux achats légitimes le même jour"}, headers=VIEWER_S).status_code == 403
     r = c.post(f"/audit-data/issues/{w}/resolve", json={"justification": "  Deux achats légitimes le même jour  "}, headers=EDITOR)
     j = r.json()
-    assert r.status_code == 200 and j["status"] == "resolved" and j["resolved_by"] == "api_key:editor" and j["resolved_at"]
+    assert r.status_code == 200 and j["status"] == "resolved" and j["resolved_by"] == who and j["resolved_at"]
     assert j["justification"] == "Deux achats légitimes le même jour"
     assert "audit_issue_resolved" in audit_actions(tmp)
     assert c.post(f"/audit-data/issues/{w}/resolve", json={"justification": "Encore une justification"}, headers=EDITOR).status_code == 409
@@ -255,14 +271,15 @@ def test_error_severity_issues_can_only_be_resolved_by_admin(env):
     _, ids = _doc_with_issues(c)
     e = ids["invalid_date"]
     just = {"justification": "Date illisible, confirmée par le comptable"}
-    assert c.post(f"/audit-data/issues/{e}/resolve", json=just, headers=EDITOR).status_code == 403
-    assert c.post(f"/audit-data/issues/{e}/resolve", json=just, headers=ADMIN).json()["resolved_by"] == "api_key:admin"
+    assert c.post(f"/audit-data/issues/{e}/resolve", json=just, headers=session(c, "editor")[0]).status_code == 403
+    admin_h, who = session(c, "admin")
+    assert c.post(f"/audit-data/issues/{e}/resolve", json=just, headers=admin_h).json()["resolved_by"] == who
 
 
 def test_issue_ids_are_validated_and_unknown_ids_are_404(env):
     c, *_ = env
     for bad in ("x", "' OR 1=1 --", "00000000-0000-0000-0000-000000000000"):
-        assert c.post(f"/audit-data/issues/{bad}/resolve", json={"justification": "Une justification"}, headers=ADMIN).status_code == 404
+        assert c.post(f"/audit-data/issues/{bad}/resolve", json={"justification": "Une justification"}, headers=session(c, "admin")[0]).status_code == 404
         assert c.get(f"/audit-data/documents/{bad}", headers=VIEWER).status_code == 404
 
 
@@ -375,17 +392,21 @@ def test_oversized_declared_body_is_refused_early(env):
 def test_importer_cannot_resolve_own_error_alone(env):
     c, *_ = env
     data = b"Date;Compte;Montant;Devise\n99/99/2026;602;5;DJF\n"
-    d = upload(c, data=data, headers=ADMIN).json()["document"]["document_id"]
-    c.post(f"/audit-data/documents/{d}/import", json={**BODY, "mapping": {"entry_date": "Date", "account": "Compte", "amount": "Montant", "currency": "Devise"}}, headers=ADMIN)
-    iid = c.get(f"/audit-data/documents/{d}/issues", headers=ADMIN).json()["issues"][0]["issue_id"]
-    r = c.post(f"/audit-data/issues/{iid}/resolve", json={"justification": "Je valide ma propre erreur"}, headers=ADMIN)
+    a, _who = session(c, "admin")
+    d = upload(c, data=data, headers=a).json()["document"]["document_id"]
+    c.post(f"/audit-data/documents/{d}/import", json={**BODY, "mapping": {"entry_date": "Date", "account": "Compte", "amount": "Montant", "currency": "Devise"}}, headers=a)
+    iid = c.get(f"/audit-data/documents/{d}/issues", headers=a).json()["issues"][0]["issue_id"]
+    r = c.post(f"/audit-data/issues/{iid}/resolve", json={"justification": "Je valide ma propre erreur"}, headers=a)
     assert r.status_code == 403 and "Séparation" in r.json()["detail"]
+    b, who_b = session(c, "admin")          # une AUTRE personne : deux acteurs distincts
+    r = c.post(f"/audit-data/issues/{iid}/resolve", json={"justification": "Revue par un second administrateur"}, headers=b)
+    assert r.status_code == 200 and r.json()["resolved_by"] == who_b
 
 
 def test_resolution_audit_carries_justification_hash_not_text(env):
     c, _, tmp = env
     _, ids = _doc_with_issues(c)
-    c.post(f"/audit-data/issues/{ids['duplicate_row']}/resolve", json={"justification": "Texte confidentiel unique"}, headers=EDITOR)
+    c.post(f"/audit-data/issues/{ids['duplicate_row']}/resolve", json={"justification": "Texte confidentiel unique"}, headers=session(c, "editor")[0])
     raw = (tmp / "audit.jsonl").read_text()
     assert "justification_sha256" in raw and "Texte confidentiel unique" not in raw
 

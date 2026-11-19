@@ -295,7 +295,7 @@ def test_audit_records_events_without_secrets(client, db):
     client.put(f"/auth/users/{created['id']}/password", json={"password": NEW_PW}, headers=ADMIN)
     log = _audit_text(db)
     assert '"user_created"' in log and '"user_updated"' in log and '"user_password_reset"' in log
-    assert '"actor": "user:1"' in log and '"actor": "api_key"' in log
+    assert '"actor": "user:1"' in log and '"actor": "legacy:admin:' in log
     assert PW not in log and NEW_PW not in log and "$2b$" not in log
     assert "u@example.org" not in log
     entries = feedback.load_audit(db.parent / "audit.jsonl")
@@ -498,6 +498,7 @@ def test_default_admin_api_key_still_works_outside_production(client, monkeypatc
 
 def test_real_admin_key_and_admin_sessions_work_in_production(client, monkeypatch):
     monkeypatch.setenv("APP_ENV", "production")
+    monkeypatch.setenv("SOVEREIGN_LEGACY_KEYS_READ_ONLY", "0")      # P-083 : en production la clé héritée est en lecture seule par défaut
     assert client.get("/auth/users", headers=ADMIN).status_code == 200
     sec.create_user("boss@example.org", PW, "admin")
     assert client.get("/auth/users", headers=_bearer(client, "boss@example.org")).status_code == 200

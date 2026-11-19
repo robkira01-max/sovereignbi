@@ -62,17 +62,19 @@ class PasswordChange(BaseModel):
 
 
 def _actor(request: Request, _role: str = Depends(_ADMIN)) -> str:
-    """Who is acting, for the audit trail. Mirrors RequireRole: X-Api-Key wins over Bearer."""
-    api_key = request.headers.get("x-api-key", "")
-    if api_key:
-        # An admin API key can mint permanent accounts that outlive its rotation, so a
-        # placeholder key from .env.example must never be honoured in production.
-        if os.environ.get("APP_ENV", "development").lower() == "production" and api_key in _DEFAULT_KEYS:
+    """Who is acting, for the audit trail (identité posée par `RequireRole`, P-083)."""
+    from app.security.identity import current_identity
+    ident = current_identity.get()
+    if ident is None:
+        return "session:revoked"
+    if ident.method == "api_key":
+        # Gérer les comptes est une action de personne connectée : une clé personnelle ne l'ouvre pas.
+        raise HTTPException(403, "La gestion des comptes exige une session nominative, pas une clé API.")
+    if ident.method == "legacy_key":
+        # Une clé admin d'environnement peut créer des comptes permanents qui survivent à sa rotation : jamais une valeur par défaut en production.
+        if os.environ.get("APP_ENV", "development").lower() == "production" and request.headers.get("x-api-key", "") in _DEFAULT_KEYS:
             raise HTTPException(403, "Clé API par défaut refusée en production.")
-        return "api_key"
-    auth = request.headers.get("authorization", "")
-    user = sec.verify_session(auth[7:]) if auth.startswith("Bearer ") else None
-    return f"user:{user['id']}" if user else "session:revoked"
+    return ident.actor
 
 
 def _audit(action: str, actor: str, **details) -> None:

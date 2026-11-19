@@ -72,6 +72,8 @@ def init_auth_db() -> None:
         # Sessions are stored as 64-char SHA-256 hex; anything else is a legacy
         # plaintext token that must not outlive the migration.
         c.execute("DELETE FROM sessions WHERE length(token) != 64")
+        from app.auth.apikeys import SCHEMA as _API_KEYS_SCHEMA      # P-083 : clés personnelles (empreinte seule)
+        c.executescript(_API_KEYS_SCHEMA)
 
 
 class UserExistsError(ValueError):
@@ -184,6 +186,9 @@ def update_user(user_id: int, role: str | None = None, is_active: bool | None = 
         c.execute("UPDATE users SET role=?, is_active=? WHERE id=?", (new_role, new_active, user_id))
         if not new_active:
             c.execute("DELETE FROM sessions WHERE user_id=?", (user_id,))
+            # Les clés d'un compte désactivé sont révoquées (et non seulement ignorées) : une réactivation ne les ressuscite pas.
+            c.execute("UPDATE api_keys SET revoked_at=?, revoked_reason='compte désactivé' WHERE user_id=? AND revoked_at IS NULL",
+                      (datetime.now(tz=timezone.utc).isoformat(), user_id))
         return _user_dict(c.execute(f"SELECT {_USER_COLS} FROM users WHERE id=?", (user_id,)).fetchone())
 
 
@@ -196,6 +201,9 @@ def set_password(user_id: int, new_password: str, keep_token: str | None = None)
         if cur.rowcount == 0:
             raise UserNotFoundError(user_id)
         c.execute("DELETE FROM sessions WHERE user_id=? AND token != ?", (user_id, keep))
+        # Un changement de mot de passe révoque aussi les clés personnelles (sinon une session volée en aurait créé une durable).
+        c.execute("UPDATE api_keys SET revoked_at=?, revoked_reason='mot de passe changé' WHERE user_id=? AND revoked_at IS NULL",
+                  (datetime.now(tz=timezone.utc).isoformat(), user_id))
 
 
 def change_own_password(user_id: int, current: str, new: str, keep_token: str | None = None) -> bool:

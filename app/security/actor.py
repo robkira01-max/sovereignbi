@@ -11,19 +11,18 @@ import structlog
 from fastapi import HTTPException, Request
 
 from app.feedback import record_audit
+from app.security.identity import current_identity
 
 log = structlog.get_logger()
 
 
 def actor_label(request: Request, role: str) -> str:
+    """Acteur du journal : `user:<id>` (session OU clé personnelle) ou `legacy:<rôle>:<empreinte>` (clé partagée héritée)."""
+    ident = current_identity.get()
+    if ident is not None:
+        return ident.actor
     if request.headers.get("x-api-key"):
-        return f"api_key:{role}"
-    auth = request.headers.get("authorization", "")
-    if auth.startswith("Bearer "):
-        from app.auth.security import verify_session
-        u = verify_session(auth[7:])
-        if u:
-            return f"user:{u['id']}"
+        return f"legacy:{role}:unresolved"
     return "unknown"
 
 

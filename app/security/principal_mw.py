@@ -8,16 +8,20 @@ principal, donc accès refusé aux tables protégées ; la route renverra de tou
 from __future__ import annotations
 
 from app.security import row_policy
-from app.security.rbac import get_role_from_key
+from app.security.identity import ApiKeyRejected
+from app.security.rbac import resolve_api_identity
 
 
 def _resolve(headers: dict[bytes, bytes]) -> row_policy.Principal | None:
     key = headers.get(b"x-api-key", b"").decode("latin-1")
     if key:
-        role = get_role_from_key(key)
-        if role == "admin":
-            return row_policy.Principal("admin")
-        return row_policy.Principal("key") if role else None
+        try:
+            ident = resolve_api_identity(key)
+        except ApiKeyRejected:
+            return None
+        if ident.method == "api_key":      # clé personnelle : hérite des périmètres de son propriétaire
+            return row_policy.Principal("admin") if ident.role == "admin" else row_policy.Principal("user", ident.user_id)
+        return row_policy.Principal("admin") if ident.role == "admin" else row_policy.Principal("key")
     auth = headers.get(b"authorization", b"").decode("latin-1")
     if auth.startswith("Bearer "):
         from app.auth.security import verify_session
@@ -26,6 +30,14 @@ def _resolve(headers: dict[bytes, bytes]) -> row_policy.Principal | None:
             return None
         return row_policy.Principal("admin") if user["role"] == "admin" else row_policy.Principal("user", int(user["id"]))
     return None
+
+
+def _first_headers(raw) -> dict[bytes, bytes]:
+    """Première occurrence de chaque en-tête (comme `Header()` de FastAPI) : les deux décisions ne divergent jamais."""
+    out: dict[bytes, bytes] = {}
+    for k, v in raw:
+        out.setdefault(k, v)
+    return out
 
 
 class PrincipalMiddleware:
@@ -37,7 +49,7 @@ class PrincipalMiddleware:
             await self.app(scope, receive, send)
             return
         try:
-            principal = _resolve(dict(scope.get("headers", [])))
+            principal = _resolve(_first_headers(scope.get("headers", [])))
         except Exception:  # noqa: BLE001 - base d'auth indisponible : pas d'identité = accès refusé
             principal = None
         with row_policy.as_principal(principal):
